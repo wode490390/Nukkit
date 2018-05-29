@@ -84,7 +84,7 @@ public abstract class Entity extends Location implements Metadatable {
     public static final int DATA_ENDERMAN_HELD_ITEM_ID = 23; //short
     public static final int DATA_ENDERMAN_HELD_ITEM_DAMAGE = 24; //short
     public static final int DATA_ENTITY_AGE = 25; //short
-    public static final int DATA_PLAYER_FLAGS = 29; //byte
+    public static final int DATA_PLAYER_FLAGS = 27; //byte
     /* 28 (int) player "index"? */
     public static final int DATA_PLAYER_BED_POSITION = 29; //block coords
     public static final int DATA_FIREBALL_POWER_X = 30; //float
