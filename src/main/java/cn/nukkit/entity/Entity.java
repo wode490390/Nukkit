@@ -182,6 +182,7 @@ public abstract class Entity extends Location implements Metadatable {
     public static final int DATA_FLAG_CAN_POWER_JUMP = 44;
     public static final int DATA_FLAG_LINGER = 45;
     public static final int DATA_FLAG_GRAVITY = 46;
+    public static final int DATA_FLAG_SWIMMING = 55;  //1.4+ only
 
     public static long entityCount = 1;
 
@@ -483,6 +484,18 @@ public abstract class Entity extends Location implements Metadatable {
 
     public void setSneaking(boolean value) {
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_SNEAKING, value);
+    }
+
+    public boolean isSwimming() {
+        return this.getDataFlag(DATA_FLAGS, DATA_FLAG_SWIMMING);
+    }
+
+    public void setSwimming() {
+        this.setSwimming(true);
+    }
+
+    public void setSwimming(boolean value) {
+        this.setDataFlag(DATA_FLAGS, DATA_FLAG_SWIMMING, value);
     }
 
     public boolean isSprinting() {
