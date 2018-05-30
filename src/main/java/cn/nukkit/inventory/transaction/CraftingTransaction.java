@@ -125,9 +125,10 @@ public class CraftingTransaction extends InventoryTransaction {
         for (int y = 0; y < reindexed.length; y++) {
             Item[] row = reindexed[y];
 
-            for (int x = 0; x < row.length; x++) {
+            System.arraycopy(this.inputs[y + yOffset], xOffset, reindexed[y], 0, row.length); //hope I converted it right :D
+            /*for (int x = 0; x < row.length; x++) {
                 reindexed[y][x] = this.inputs[y + yOffset][x + xOffset];
-            }
+            }*/
         }
 
         return reindexed;
@@ -151,15 +152,17 @@ public class CraftingTransaction extends InventoryTransaction {
     protected void sendInventories() {
         super.sendInventories();
 
-		/*
+        /*
          * TODO: HACK!
-		 * we can't resend the contents of the crafting window, so we force the client to close it instead.
-		 * So people don't whine about messy desync issues when someone cancels CraftItemEvent, or when a crafting
-		 * transaction goes wrong.
-		 */
+         * we can't resend the contents of the crafting window, so we force the client to close it instead.
+         * So people don't whine about messy desync issues when someone cancels CraftItemEvent, or when a crafting
+         * transaction goes wrong.
+         */
         ContainerClosePacket pk = new ContainerClosePacket();
         pk.windowId = ContainerIds.NONE;
         this.source.dataPacket(pk);
+
+        this.source.resetCraftingGridType();
     }
 
     public boolean execute() {

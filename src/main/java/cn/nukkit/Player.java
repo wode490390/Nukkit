@@ -841,6 +841,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected void doFirstSpawn() {
         this.spawned = true;
 
+        this.setEnableClientCommand(true);
         this.getAdventureSettings().update();
 
         this.sendPotionEffects(this);
@@ -1972,8 +1973,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (this.isOp()) {
             this.setRemoveFormat(false);
         }
-
-        this.setEnableClientCommand(true);
 
         this.server.addOnlinePlayer(this);
         this.server.onPlayerCompleteLoginSequence(this);
@@ -4258,13 +4257,24 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public void resetCraftingGridType() {
-        if (this.craftingGrid instanceof BigCraftingGrid) {
+        if (this.craftingGrid != null) {
             Item[] drops = this.inventory.addItem(this.craftingGrid.getContents().values().stream().toArray(Item[]::new));
-            for (Item drop : drops) {
-                this.dropItem(drop);
+
+            if (drops.length > 0) {
+                for (Item drop : drops) {
+                    this.dropItem(drop);
+                }
+            }
+            this.craftingGrid.clearAll();
+
+            if (this.craftingGrid instanceof BigCraftingGrid) {
+                this.craftingGrid = new CraftingGrid(this);
+
+                ContainerClosePacket pk = new ContainerClosePacket(); //be sure, big crafting is really closed
+                pk.windowId = ContainerIds.NONE;
+                this.dataPacket(pk);
             }
 
-            this.craftingGrid = new CraftingGrid(this);
             this.craftingType = 0;
         }
     }
