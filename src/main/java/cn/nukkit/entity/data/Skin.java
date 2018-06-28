@@ -106,11 +106,25 @@ public class Skin {
     }
 
     public Skin(String base64) {
-        this(Base64.getDecoder().decode(base64));
+    	byte[] decode = null;
+    	try {
+    		decode = Base64.getUrlDecoder().decode(base64);
+    	} catch(IllegalArgumentException e) {
+    		decode = Base64.getDecoder().decode(base64);
+    	}
+    	this.setData(decode);
+        this.setModel(MODEL_STEVE);
     }
 
     public Skin(String base64, String model) {
-        this(Base64.getDecoder().decode(base64), model);
+    	byte[] decode = null;
+    	try {
+    		decode = Base64.getUrlDecoder().decode(base64);
+    	} catch(IllegalArgumentException e) {
+    		decode = Base64.getDecoder().decode(base64);
+    	}
+    	this.setData(decode);
+        this.setModel(model);
     }
 
     public void parseBufferedImage(BufferedImage image) {
@@ -217,7 +231,13 @@ public class Skin {
         }
 
         public Cape(String base64) {
-            this(Base64.getDecoder().decode(base64));
+        	byte[] decode = null;
+        	try {
+        		decode = Base64.getUrlDecoder().decode(base64);
+        	} catch(IllegalArgumentException e) {
+        		decode = Base64.getDecoder().decode(base64);
+        	}
+        	this.setData(decode);
         }
 
         public void setData(byte[] data) {

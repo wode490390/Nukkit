@@ -73,14 +73,30 @@ public class LoginPacket extends DataPacket {
         if (skinToken.has("SkinId")) skinId = skinToken.get("SkinId").getAsString();
         if (skinToken.has("SkinData")) {
             this.skin = new Skin(skinToken.get("SkinData").getAsString(), skinId);
-            if (skinToken.has("CapeData"))
-                this.skin.setCape(this.skin.new Cape(Base64.getDecoder().decode(skinToken.get("CapeData").getAsString())));
+            if (skinToken.has("CapeData")) {
+            	String asString = skinToken.get("CapeData").getAsString();
+            	byte[] decode = null;
+            	try {
+            		decode = Base64.getUrlDecoder().decode(asString);
+            	} catch(IllegalArgumentException e) {
+            		decode = Base64.getDecoder().decode(asString);
+            	}
+                this.skin.setCape(this.skin.new Cape(decode));
+            }
         }
 
         if (skinToken.has("SkinGeometryName"))
             this.skinGeometryName = skinToken.get("SkinGeometryName").getAsString();
-        if (skinToken.has("SkinGeometry"))
-            this.skinGeometry = new String(Base64.getDecoder().decode(skinToken.get("SkinGeometry").getAsString()));
+        if (skinToken.has("SkinGeometry")) {
+        	String asString = skinToken.get("SkinGeometry").getAsString();
+        	byte[] decode = null;
+        	try {
+        		decode = Base64.getUrlDecoder().decode(asString);
+        	} catch(IllegalArgumentException e) {
+        		decode = Base64.getDecoder().decode(asString);
+        	}
+            this.skinGeometry = new String(decode);
+        }
         //JsonObject geometryToken = new Gson().fromJson(this.skinGeometry, JsonObject.class);
         //Server.getInstance().getLogger().info(this.skinGeometry);
     }
@@ -88,7 +104,14 @@ public class LoginPacket extends DataPacket {
     private JsonObject decodeToken(String token) {
         String[] base = token.split("\\.");
         if (base.length < 2) return null;
-        return new Gson().fromJson(new String(Base64.getDecoder().decode(base[1]), StandardCharsets.UTF_8), JsonObject.class);
+        
+        byte[] decode = null;
+    	try {
+    		decode = Base64.getUrlDecoder().decode(base[1]);
+    	} catch(IllegalArgumentException e) {
+    		decode = Base64.getDecoder().decode(base[1]);
+    	}
+        return new Gson().fromJson(new String(decode, StandardCharsets.UTF_8), JsonObject.class);
     }
 
     @Override
