@@ -14,6 +14,7 @@ import cn.nukkit.utils.DyeColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author CreeperFace
@@ -36,6 +37,8 @@ public class ItemFirework extends Item {
             if (tag == null) {
                 tag = new CompoundTag();
 
+                Random rand = new Random();
+
                 CompoundTag ex = new CompoundTag()
                         .putByteArray("FireworkColor", new byte[]{(byte) DyeColor.BLACK.getDyeData()})
                         .putByteArray("FireworkFade", new byte[]{})
@@ -46,6 +49,7 @@ public class ItemFirework extends Item {
                 tag.putCompound("Fireworks", new CompoundTag("Fireworks")
                         .putList(new ListTag<CompoundTag>("Explosions").add(ex))
                         .putByte("Flight", 1)
+                        .putInt("LifeTime", 30 + rand.nextInt(6) + rand.nextInt(7))
                 );
                 this.setNamedTag(tag);
             }
@@ -110,6 +114,21 @@ public class ItemFirework extends Item {
                 .putByte("FireworkType", explosion.type.ordinal());
 
         explosions.add(tag);
+    }
+
+    public void setLifeTime(int lifeTime) {
+        CompoundTag tag = this.getNamedTag();
+        if (tag != null) {
+            tag.putInt("LifeTime", lifeTime);
+        }
+    }
+
+    public int getLifeTime() {
+        CompoundTag tag = this.getNamedTag();
+        if (tag != null && tag.contains("LifeTime")) {
+            return tag.getInt("LifeTime");
+        }
+        return 30;
     }
 
     public void clearExplosions() {
