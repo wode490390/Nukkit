@@ -407,7 +407,7 @@ public abstract class Entity extends Location implements Metadatable {
         this.fireTicks = this.namedTag.getShort("Fire");
 
         if (!this.namedTag.contains("Air")) {
-            this.namedTag.putShort("Air", 300);
+            this.namedTag.putShort("Air", 400);
         }
         this.setDataProperty(new ShortEntityData(DATA_AIR, this.namedTag.getShort("Air")), false);
 
