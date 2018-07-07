@@ -196,18 +196,25 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     @Override
     public boolean entityBaseTick(int tickDiff) {
         Timings.livingEntityBaseTickTimer.startTiming();
-        this.setDataFlag(DATA_FLAGS, DATA_FLAG_BREATHING, !this.isInsideOfWater());
 
         boolean hasUpdate = super.entityBaseTick(tickDiff);
 
         if (this.isAlive() && this.needLivingBaseTick) {
+            boolean insideOfWater;
+            //始终不窒息也不显示
+            if (this instanceof Player && (((Player) this).isCreative() || ((Player) this).isSpectator())) {
+                insideOfWater = false;
+            } else
+                insideOfWater = this.isInsideOfWater();
+
+            this.setDataFlag(DATA_FLAGS, DATA_FLAG_BREATHING, !insideOfWater);
 
             if (this.isInsideOfSolid()) {
                 hasUpdate = true;
                 this.attack(new EntityDamageEvent(this, DamageCause.SUFFOCATION, 1));
             }
 
-            if (!this.hasEffect(Effect.WATER_BREATHING) && this.isInsideOfWater()) {
+            if (!this.hasEffect(Effect.WATER_BREATHING) && insideOfWater) {
                 if (this instanceof EntityWaterAnimal) {
                     this.setDataProperty(new ShortEntityData(DATA_AIR, 400));
                 } else {
@@ -233,7 +240,13 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
                     this.setDataProperty(new ShortEntityData(DATA_AIR, airTicks));
                 } else {
-                    this.setDataProperty(new ShortEntityData(DATA_AIR, 400));
+                    hasUpdate = true;
+                    int airTicks = this.getDataPropertyInt(DATA_AIR) + tickDiff * 5;
+
+                    if (airTicks > this.getDataPropertyShort(Entity.DATA_MAX_AIR)) {
+                        airTicks = this.getDataPropertyShort(Entity.DATA_MAX_AIR);
+                    }
+                    this.setDataProperty(new ShortEntityData(DATA_AIR, airTicks));
                 }
             }
         }
