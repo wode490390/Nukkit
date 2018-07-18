@@ -53,7 +53,7 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
         if (eids.length > 0) {
             update |= 0x08;
         }
-        if (decorators.length > 0) {
+        if (decorators.length > 0 || decoratorEntities.length > 0) {
             update |= DECORATIONS_UPDATE;
         }
 
@@ -77,6 +77,7 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
         if ((update & DECORATIONS_UPDATE) != 0) {
             this.putUnsignedVarInt(decoratorEntities.length);
             for (long id : this.decoratorEntities) {
+                //this.putLInt(0);
                 this.putEntityUniqueId(id);
             }
 

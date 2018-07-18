@@ -119,5 +119,7 @@ public interface ProtocolInfo {
     byte SERVER_SETTINGS_RESPONSE_PACKET = 0x67;
     byte SHOW_PROFILE_PACKET = 0x68;
     byte SET_DEFAULT_GAME_TYPE_PACKET = 0x69;
+    byte MOVE_ENTITY_DELTA_PACKET = 0x6f;
+    byte SET_LOCAL_PLAYER_AS_INITIALIZED_PACKET = 0x70;
     byte BATCH_PACKET = (byte) 0xff;
 }
