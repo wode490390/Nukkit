@@ -1444,7 +1444,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             double yS = 0.5 + this.ySize;
             if (diffY >= -yS || diffY <= yS) {
-                diffY = 0;
+                //diffY = 0;
             }
 
             if (diffX != 0 || diffY != 0 || diffZ != 0) {
@@ -4066,7 +4066,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 pkList.add(chunk);
             }
         }
-        Server.getInstance().batchPackets(new Player[]{this}, pkList.stream().toArray(DataPacket[]::new));
+        //Server.getInstance().batchPackets(new Player[]{this}, pkList.stream().toArray(DataPacket[]::new), true);
+        pkList.forEach(this::dataPacket);
     }
 
     public void teleportImmediate(Location location) {
