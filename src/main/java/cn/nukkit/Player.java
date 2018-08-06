@@ -2236,7 +2236,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     Item item = this.inventory.getItem(mobEquipmentPacket.hotbarSlot);
 
-                    if (!item.equals(mobEquipmentPacket.item)) {
+                    if (!item.equals(mobEquipmentPacket.item, false, false)) {
                         this.server.getLogger().debug("Tried to equip " + mobEquipmentPacket.item + " but have " + item + " in target slot");
                         this.inventory.sendContents(this);
                         return;
@@ -2883,7 +2883,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                                     if (this.isCreative()) {
                                         item = this.inventory.getItemInHand();
-                                    } else if (!this.inventory.getItemInHand().equals(useItemData.itemInHand)) {
+                                    } else if (!this.inventory.getItemInHand().equals(useItemData.itemInHand, false, false)) {
                                         this.inventory.sendHeldItem(this);
                                         break packetswitch;
                                     } else {
@@ -3837,7 +3837,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
             //Critical hit
 
-            if (!damager.onGround && damager instanceof Player && (this.getLoginChainData().getDeviceOS() == 7 || (((Player) damager).speed != null && ((Player) damager).speed.y > 0))) add = true;
+            if (!damager.onGround && damager instanceof Player && ((Player) damager).speed != null && ((Player) damager).speed.y > 0) add = true;
             if (add) source.setDamage((float) (source.getDamage() * 1.3));
         }
 
