@@ -789,11 +789,12 @@ public class Level implements ChunkManager, Metadatable {
 
         for(BlockUpdateEntry entry : this.nextTickUpdates) {
             if (isAreaLoaded(new AxisAlignedBB(entry.pos, entry.pos))) {
+                this.timings.blockUpdate.startTiming();
                 Block block = this.getBlock(entry.pos);
-
                 if (Block.equals(block, entry.block, false)) {
                     block.onUpdate(BLOCK_UPDATE_SCHEDULED);
                 }
+                this.timings.blockUpdate.stopTiming();
             } else {
                 this.scheduleUpdate(entry.block, entry.pos, 0);
             }
@@ -808,7 +809,7 @@ public class Level implements ChunkManager, Metadatable {
         if (!this.updateEntities.isEmpty()) {
             for (long id : new ArrayList<>(this.updateEntities.keySet())) {
                 Entity entity = this.updateEntities.get(id);
-                if (entity.closed || !entity.onUpdate(currentTick)) {
+                if (entity == null || entity.closed || !entity.onUpdate(currentTick)) {
                     this.updateEntities.remove(id);
                 }
             }
@@ -2371,9 +2372,9 @@ public class Level implements ChunkManager, Metadatable {
             this.provider.setChunk(chunkX, chunkZ, chunk);
             this.chunks.put(index, chunk);
         } else {
-            Map<Long, Entity> oldEntities = oldChunk != null ? oldChunk.getEntities() : new HashMap<>();
+            Map<Long, Entity> oldEntities = oldChunk != null ? new ConcurrentHashMap<>(oldChunk.getEntities()) : new ConcurrentHashMap<>();
 
-            Map<Long, BlockEntity> oldBlockEntities = oldChunk != null ? oldChunk.getBlockEntities() : new HashMap<>();
+            Map<Long, BlockEntity> oldBlockEntities = oldChunk != null ? new ConcurrentHashMap<>(oldChunk.getBlockEntities()) : new ConcurrentHashMap<>();
 
             for (Entity entity : oldEntities.values()) {
                 chunk.addEntity(entity);
