@@ -75,7 +75,7 @@ public class TimingsExport extends Thread {
             out.addProperty("server", Server.getInstance().getName());
             out.addProperty("motd", Server.getInstance().getMotd());
             out.addProperty("online-mode", false); //In MCPE we have permanent offline mode.
-            out.addProperty("icon", ""); //"data:image/png;base64,"
+            out.addProperty("rot", ""); //"data:image/png;base64,"
         }
 
         final Runtime runtime = Runtime.getRuntime();

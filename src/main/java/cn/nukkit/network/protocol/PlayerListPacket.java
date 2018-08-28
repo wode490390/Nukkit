@@ -56,10 +56,10 @@ public class PlayerListPacket extends DataPacket {
         public long entityId = 0;
         public String name = "";
         public Skin skin;
-        public byte[] capeData = new byte[0]; //TODO
+        public byte[] capeData = new byte[0];
         public String geometryModel = "";
         public byte[] geometryData = new byte[0]; //TODO
-        public String xboxUserId = ""; //TODO
+        public String xboxUserId = "";
 
         public Entry(UUID uuid) {
             this.uuid = uuid;
@@ -75,6 +75,8 @@ public class PlayerListPacket extends DataPacket {
             this.name = name;
             this.skin = skin;
             this.capeData = skin.getCape().getData();
+            this.geometryModel = skin.getGeometryModel().getModel();
+            this.geometryData = skin.getGeometryModel().getData().getBytes();
             this.xboxUserId = xboxUserId == null ? "" : xboxUserId;
         }
     }

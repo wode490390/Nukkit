@@ -43,6 +43,10 @@ public abstract class InventoryAction {
         return targetItem.clone();
     }
 
+    public void setTargetItem(Item targetItem) {
+        this.targetItem = targetItem;
+    }
+
     /**
      * Called by inventory transactions before any actions are processed. If this returns false, the transaction will
      * be cancelled.

@@ -28,6 +28,7 @@ public class Skin {
     private byte[] data = new byte[SINGLE_SKIN_SIZE];
     private String model;
     private Cape cape = new Cape(new byte[0]);  //default no cape
+    private SkinGeometry geometryModel = new SkinGeometry();
 
     public Skin(byte[] data) {
         this(data, MODEL_STEVE);
@@ -179,6 +180,15 @@ public class Skin {
         return this.data.length == SINGLE_SKIN_SIZE || this.data.length == DOUBLE_SKIN_SIZE || this.data.length == SKIN_128_64_SIZE || this.data.length == SKIN_128_128_SIZE;
     }
 
+    public SkinGeometry getGeometryModel() {
+        return geometryModel;
+    }
+
+    public Skin setGeometryModel(SkinGeometry geometryModel) {
+        this.geometryModel = geometryModel;
+        return this;
+    }
+
     public class Cape {
 
         public byte[] data;
@@ -265,4 +275,35 @@ public class Skin {
             this.setData(outputStream.toByteArray());
         }
     }
+
+    public static class SkinGeometry {
+        private String model;
+        private String data;
+
+        public SkinGeometry() {
+            this("", "");
+        }
+
+        public SkinGeometry(String model, String data) {
+            this.model = model == null ? "" : model;
+            this.data = data == null ? "" : data;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public String getData() {
+            return data;
+        }
+    }
+
 }

@@ -293,6 +293,7 @@ public class Network {
         this.registerPacket(ProtocolInfo.TAKE_ITEM_ENTITY_PACKET, TakeItemEntityPacket.class);
         this.registerPacket(ProtocolInfo.TEXT_PACKET, TextPacket.class);
         this.registerPacket(ProtocolInfo.UPDATE_BLOCK_PACKET, UpdateBlockPacket.class);
+        this.registerPacket(ProtocolInfo.PHOTO_TRANSFER_PACKET, PhotoTransferPacket.class);
         this.registerPacket(ProtocolInfo.UPDATE_TRADE_PACKET, UpdateTradePacket.class);
     }
 }

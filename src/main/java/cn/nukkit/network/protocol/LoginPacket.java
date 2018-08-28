@@ -97,6 +97,7 @@ public class LoginPacket extends DataPacket {
         	}
             this.skinGeometry = new String(decode);
         }
+        this.skin.setGeometryModel(new Skin.SkinGeometry(this.skinGeometryName, this.skinGeometry));
         //JsonObject geometryToken = new Gson().fromJson(this.skinGeometry, JsonObject.class);
         //Server.getInstance().getLogger().info(this.skinGeometry);
     }
