@@ -45,7 +45,10 @@ public class Nukkit {
     public static boolean shortTitle = false;
     public static int DEBUG = 1;
 
+    private static Thread mainThread;
+
     public static void main(String[] args) {
+        mainThread = Thread.currentThread();
 
         //Shorter title for windows 8/2012
         String osName = System.getProperty("os.name").toLowerCase();
@@ -129,5 +132,7 @@ public class Nukkit {
         System.exit(0);
     }
 
-
+    public static Thread getMainThread() {
+        return mainThread;
+    }
 }
