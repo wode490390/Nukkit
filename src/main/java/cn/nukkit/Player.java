@@ -32,7 +32,6 @@ import cn.nukkit.inventory.*;
 import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
-import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.inventory.transaction.data.ReleaseItemData;
 import cn.nukkit.inventory.transaction.data.UseItemData;
 import cn.nukkit.inventory.transaction.data.UseItemOnEntityData;
@@ -48,8 +47,6 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.particle.CriticalParticle;
-import cn.nukkit.level.particle.GenericParticle;
-import cn.nukkit.level.particle.Particle;
 import cn.nukkit.level.particle.PunchBlockParticle;
 import cn.nukkit.level.sound.ExperienceOrbSound;
 import cn.nukkit.level.sound.ItemFrameItemRemovedSound;
@@ -69,7 +66,6 @@ import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.potion.Potion;
 import cn.nukkit.resourcepacks.ResourcePack;
-import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.*;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
@@ -81,6 +77,7 @@ import java.nio.ByteOrder;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -176,7 +173,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected Map<Long, Integer> loadQueue = new HashMap<>();
     protected int nextChunkOrderRun = 5;
 
-    protected Map<UUID, Player> hiddenPlayers = new HashMap<>();
+    protected Map<UUID, Player> hiddenPlayers = new ConcurrentHashMap<>();
 
     protected Vector3 newPosition = null;
 

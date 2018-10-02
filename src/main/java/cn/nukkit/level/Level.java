@@ -97,9 +97,9 @@ public class Level implements ChunkManager, Metadatable {
 
     private final Map<Long, BlockEntity> blockEntities = new HashMap<>();
 
-    private final Map<Long, Player> players = new HashMap<>();
+    private final Map<Long, Player> players = new ConcurrentHashMap<>();
 
-    private final Map<Long, Entity> entities = new HashMap<>();
+    private final Map<Long, Entity> entities = new ConcurrentHashMap<>();
 
     public final Map<Long, Entity> updateEntities = new HashMap<>();
 
