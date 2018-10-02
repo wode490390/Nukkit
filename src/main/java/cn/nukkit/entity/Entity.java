@@ -189,7 +189,7 @@ public abstract class Entity extends Location implements Metadatable {
     private static final Map<String, Class<? extends Entity>> knownEntities = new HashMap<>();
     private static final Map<String, String> shortNames = new HashMap<>();
 
-    protected Map<Integer, Player> hasSpawned = new HashMap<>();
+    protected Map<Integer, Player> hasSpawned = new ConcurrentHashMap<>();
 
     protected final Map<Integer, Effect> effects = new ConcurrentHashMap<>();
 
