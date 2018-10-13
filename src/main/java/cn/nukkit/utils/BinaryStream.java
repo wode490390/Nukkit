@@ -48,6 +48,12 @@ public class BinaryStream {
         this.count = 0;
     }
 
+    public final void superReset() {
+        this.buffer = new byte[32];
+        this.offset = 0;
+        this.count = 0;
+    }
+
     public void setBuffer(byte[] buffer) {
         this.buffer = buffer;
         this.count = buffer == null ? -1 : buffer.length;

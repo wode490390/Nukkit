@@ -136,6 +136,8 @@ public abstract class Entity extends Location implements Metadatable {
     public static final int DATA_MAX_STRENGTH = 76; //int
     /* 77 (int)
      * 78 (int) */
+    public static final int DATA_ALWAYS_SHOW_NAMETAG = 80; // byte
+
     public static final int DATA_FLAG_ONFIRE = 0;
     public static final int DATA_FLAG_SNEAKING = 1;
     public static final int DATA_FLAG_RIDING = 2;
@@ -471,7 +473,7 @@ public abstract class Entity extends Location implements Metadatable {
     }
 
     public void setNameTagAlwaysVisible(boolean value) {
-        this.setDataFlag(DATA_FLAGS, DATA_FLAG_ALWAYS_SHOW_NAMETAG, value);
+        this.setDataProperty(new ByteEntityData(DATA_ALWAYS_SHOW_NAMETAG, value ? 1 : 0));
     }
 
     public boolean isSneaking() {
