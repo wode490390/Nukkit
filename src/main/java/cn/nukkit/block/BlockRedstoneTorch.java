@@ -36,27 +36,24 @@ public class BlockRedstoneTorch extends BlockTorch {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        Block below = this.down();
-        Vector3 pos = getLocation();
+        if (!super.place(item, block, target, face, fx, fy, fz, player)) {
+            return false;
+        }
 
-        if (!target.isTransparent() && face != BlockFace.DOWN) {
-            this.meta = getFacing(face.getIndex()).getIndex();
-            this.getLevel().setBlock(block, this, true, true);
+        if (!checkState()) {
+            BlockFace facing = getFacing().getOpposite();
+            Vector3 pos = getLocation();
 
             for (BlockFace side : BlockFace.values()) {
+                if (facing == side) {
+                    continue;
+                }
+
                 this.level.updateAround(pos.getSide(side));
             }
-            return true;
-        } else if (!below.isTransparent() || below instanceof BlockFence || below.getId() == COBBLE_WALL) {
-            this.meta = 0;
-            this.getLevel().setBlock(block, this, true, true);
-
-            for (BlockFace side : BlockFace.values()) {
-                this.level.updateAroundRedstone(pos.getSide(side), null);
-            }
-            return true;
         }
-        return false;
+
+        return true;
     }
 
     @Override
@@ -79,6 +76,27 @@ public class BlockRedstoneTorch extends BlockTorch {
             this.level.updateAroundRedstone(pos.getSide(side), null);
         }
         return true;
+    }
+
+    protected boolean checkState() {
+        BlockFace face = getFacing().getOpposite();
+        Vector3 pos = getLocation();
+
+        if (this.level.isSidePowered(pos.getSide(face), face)) {
+            this.level.setBlock(pos, new BlockRedstoneTorchUnlit(getDamage()), false, true);
+
+            for (BlockFace side : BlockFace.values()) {
+                if (side == face) {
+                    continue;
+                }
+
+                this.level.updateAroundRedstone(pos.getSide(side), null);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
