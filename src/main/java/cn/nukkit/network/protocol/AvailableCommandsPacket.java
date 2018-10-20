@@ -14,7 +14,7 @@ public class AvailableCommandsPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.AVAILABLE_COMMANDS_PACKET;
     public Map<String, CommandDataVersions> commands;
-    public final Map<String, List<String>> softEnums = new HashMap<>();
+    public final List<CommandEnum> softEnums = new ArrayList<>();
 
     public static final int ARG_FLAG_VALID = 0x100000;
     public static final int ARG_TYPE_INT = 0x01;
