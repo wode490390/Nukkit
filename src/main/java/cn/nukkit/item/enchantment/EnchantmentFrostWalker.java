@@ -1,7 +1,7 @@
 package cn.nukkit.item.enchantment;
 
 public class EnchantmentFrostWalker extends Enchantment {
-    protected EnchantmentFrostWalker() {
+    protected EnchantmentFrostWalker() {//消除岩浆块造成的伤害
         super(ID_FROST_WALKER, "frostWalker", 2, EnchantmentType.ARMOR_FEET);
     }
 
@@ -18,5 +18,15 @@ public class EnchantmentFrostWalker extends Enchantment {
     @Override
     public int getMaxLevel() {
         return 2;
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return true;
+    }
+
+    @Override
+    public boolean isCompatibleWith(Enchantment enchantment) {
+        return super.isCompatibleWith(enchantment) && enchantment.id != ID_WATER_WALKER;
     }
 }
