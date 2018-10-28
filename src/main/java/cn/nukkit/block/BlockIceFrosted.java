@@ -54,7 +54,7 @@ public class BlockIceFrosted extends BlockIce {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_SCHEDULED) {
-            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) > 11) {
+            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) > 11) {/*
                 List<Block> nearFrosted = new ArrayList<Block>();
                 int floorX = this.getFloorX();
                 int coordX1 = floorX - 1;
@@ -78,7 +78,7 @@ public class BlockIceFrosted extends BlockIce {
                         age--;
                         this.setDamage(age);
                     }
-                }*/
+                }*//*
                 if (age + 1 > 3) {
                     this.getLevel().setBlock(this, new BlockWaterStill(), true);
                     if (nearFrosted.size() < 2) {
@@ -92,7 +92,7 @@ public class BlockIceFrosted extends BlockIce {
                     }
                 } else {
                     this.setDamage(age + 1);
-                }
+                }*/this.getLevel().setBlock(iceBlock, new BlockWaterStill(), true);
                 return Level.BLOCK_UPDATE_SCHEDULED;
             }
         }
