@@ -1477,7 +1477,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             if (diffX != 0 || diffZ != 0) {
-                processFrost = true;
+                processFrost = true;this.sendMessage("-1");
             }
         }
 
@@ -1520,13 +1520,13 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.teleport(ev.getTo(), null);
                     } else {
                         this.addMovement(this.x, this.y + this.getEyeHeight(), this.z, this.yaw, this.pitch, this.yaw);
-
+this.sendMessage("0");
                         //FrostWalker
-                        if (inventory.getBoots() != null) {
+                        if (inventory.getBoots() != null) {this.sendMessage("1");
                             Enchantment[] enchantments = inventory.getBoots().getEnchantments();
                             for (Enchantment enchantment : enchantments) {
-                                if (enchantment.getId() == Enchantment.ID_FROST_WALKER && processFrost) {
-                                    if (this.y >= 1 && this.y < 257) {
+                                if (enchantment.getId() == Enchantment.ID_FROST_WALKER && processFrost) {this.sendMessage("2");
+                                    if (this.y >= 1 && this.y < 257) {this.sendMessage("3");
                                         int lvl = 2 + enchantment.getLevel();
                                         int floorX = this.getFloorX();
                                         int coordX1 = floorX - lvl;
@@ -1537,7 +1537,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                         int floorY = this.getFloorY();
                                         for (int coordX = coordX1; coordX < coordX2 + 1; coordX++) {
                                             for (int coordZ = coordZ1; coordZ < coordZ2 + 1; coordZ++) {
-                                                if (level.getBlockIdAt(coordX, floorY - 1, coordZ) == 9 && level.getBlockIdAt(coordX, floorY, coordZ) == 0) {
+                                                if (level.getBlockIdAt(coordX, floorY - 1, coordZ) == 9 && level.getBlockIdAt(coordX, floorY, coordZ) == 0) {this.sendMessage("4");
                                                     level.setBlockAt(coordX, floorY - 1, coordZ, Block.FROSTED_ICE);
                                                 }
                                             }
