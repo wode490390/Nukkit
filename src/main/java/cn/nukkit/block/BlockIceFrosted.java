@@ -24,13 +24,13 @@ public class BlockIceFrosted extends BlockIce {
     public boolean onBreak(Item item) {
         this.getLevel().setBlock(this, new BlockWaterStill(), true);
         List<Block> nearFrosted = new ArrayList<Block>();
-        int coordX1 = this.x - 1;
-        int coordX2 = this.x + 1;
-        int coordZ1 = this.z - 1;
-        int coordZ2 = this.z + 1;
+        int coordX1 = (int) this.x - 1;
+        int coordX2 = (int) this.x + 1;
+        int coordZ1 = (int) this.z - 1;
+        int coordZ2 = (int) this.z + 1;
         for (int coordX = coordX1; coordX < coordX2 + 1; coordX++) {
             for (int coordZ = coordZ1; coordZ < coordZ2 + 1; coordZ++) {
-                Block nearBlock = this.getLevel().getBlock(coordX, this.y, coordZ);
+                Block nearBlock = this.getLevel().getBlock(coordX, (int) this.y, coordZ);
                 if (nearBlock instanceof BlockIceFrosted) {
                     nearFrosted.add(nearBlock);
                 }
