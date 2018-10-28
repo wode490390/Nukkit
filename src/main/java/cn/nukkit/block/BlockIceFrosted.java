@@ -53,7 +53,7 @@ public class BlockIceFrosted extends BlockIce {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
+        if (type == Level.BLOCK_UPDATE_RANDOM) {
             //if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) > 11) {
                 List<Block> nearFrosted = new ArrayList<Block>();
                 int floorX = this.getFloorX();
@@ -93,7 +93,7 @@ public class BlockIceFrosted extends BlockIce {
                 } else {
                     this.setDamage(age + 1);
                 }
-                return Level.BLOCK_UPDATE_SCHEDULED;
+                return Level.BLOCK_UPDATE_RANDOM;
             //}
         }
         return 0;
