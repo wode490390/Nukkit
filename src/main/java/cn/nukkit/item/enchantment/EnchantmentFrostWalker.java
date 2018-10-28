@@ -1,7 +1,7 @@
 package cn.nukkit.item.enchantment;
 
 public class EnchantmentFrostWalker extends Enchantment {
-    protected EnchantmentFrostWalker() {//消除岩浆块造成的伤害
+    protected EnchantmentFrostWalker() {
         super(ID_FROST_WALKER, "frostWalker", 2, EnchantmentType.ARMOR_FEET);
     }
 
