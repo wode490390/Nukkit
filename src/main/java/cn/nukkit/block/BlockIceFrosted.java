@@ -10,7 +10,15 @@ import java.util.List;
 
 public class BlockIceFrosted extends BlockIce {
 
+    protected int age;
+
     public BlockIceFrosted() {
+        this(0);
+    }
+
+    public BlockIceFrosted(int meta) {
+        super(meta);
+        this.age = 0;
     }
 
     @Override
@@ -49,6 +57,14 @@ public class BlockIceFrosted extends BlockIce {
             }
         }
         return true;
+    }
+
+    protected int getAge() {
+        return this.age;
+    }
+
+    protected void setAge(int age) {
+        this.age = age;
     }
 
     @Override
