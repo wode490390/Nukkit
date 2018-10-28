@@ -1531,7 +1531,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                         int floorY = this.getFloorY();
                                         for (int coordX = coordX1; coordX < coordX2 + 1; coordX++) {
                                             for (int coordZ = coordZ1; coordZ < coordZ2 + 1; coordZ++) {
-                                                if (level.getBlockIdAt(coordX, floorY - 1, coordZ) == 9 && level.getBlockIdAt(coordX, floorY, coordZ) == 0) {
+                                                if (level.getBlockIdAt(coordX, floorY - 1, coordZ) == Block.STILL_WATER && level.getBlockIdAt(coordX, floorY, coordZ) == Block.AIR) {
                                                     level.setBlockAt(coordX, floorY - 1, coordZ, Block.FROSTED_ICE);
                                                 }
                                             }
