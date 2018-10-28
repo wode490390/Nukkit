@@ -53,7 +53,7 @@ public class BlockIceFrosted extends BlockIce {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_RANDOM || type == BLOCK_UPDATE_NORMAL) {
+        if (type == Level.BLOCK_UPDATE_RANDOM || type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) > 11) {
                 List<Block> nearFrosted = new ArrayList<Block>();
                 int floorX = this.getFloorX();
