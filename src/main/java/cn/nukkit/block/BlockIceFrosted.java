@@ -13,11 +13,6 @@ public class BlockIceFrosted extends BlockIce {
     protected int age;
 
     public BlockIceFrosted() {
-        this(0);
-    }
-
-    public BlockIceFrosted(int meta) {
-        super(meta);
         this.age = 0;
     }
 
