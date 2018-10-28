@@ -53,7 +53,7 @@ public class BlockIceFrosted extends BlockIce {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_RANDOM) {
+        if (type == Level.BLOCK_UPDATE_RANDOM || type == BLOCK_UPDATE_NORMAL) {
             if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) > 11) {
                 List<Block> nearFrosted = new ArrayList<Block>();
                 int floorX = this.getFloorX();
@@ -72,13 +72,13 @@ public class BlockIceFrosted extends BlockIce {
 
                     }
                 }
-                int age = this.getDamage();
+                int age = this.getDamage();/*
                 if ((new NukkitRandom()).nextRange(0, 2) == 0 || nearFrosted.size() < 4) {
                     if (age >= 1) {
                         age--;
                         this.setDamage(age);
                     }
-                }
+                }*/
                 if (age + 1 > 3) {
                     this.getLevel().setBlock(this, new BlockWater(), true);
                     if (nearFrosted.size() < 2) {
