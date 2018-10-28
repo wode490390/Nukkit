@@ -83,8 +83,8 @@ public class BlockIceFrosted extends BlockIce {
 
                     }
                 }
-                int age = this.getDamage();
-                if ((new NukkitRandom()).nextRange(0, 2) == 0 || nearFrosted.size() < 4) {
+                //int age = this.getDamage();
+                if ((new NukkitRandom()).nextRange(0, 2) == 0/* || nearFrosted.size() < 4*/) {
                     if (age >= 1) {
                         age--;
                         this.setDamage(age);
@@ -102,6 +102,7 @@ public class BlockIceFrosted extends BlockIce {
                         }
                     }
                 } else {
+                    age++;
                     this.setDamage(age + 1);
                 }
                 return Level.BLOCK_UPDATE_RANDOM;
