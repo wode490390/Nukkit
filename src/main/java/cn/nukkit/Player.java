@@ -1427,6 +1427,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         double tdz = newPos.z - this.z;
         double distance = Math.sqrt(tdx * tdx + tdz * tdz);
 
+        boolean processFrost = false;
+
         if (!revert && distanceSquared != 0) {
             double dx = newPos.x - this.x;
             double dy = newPos.y - this.y;
@@ -1474,31 +1476,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 this.boundingBox.setBounds(this.x - radius, this.y, this.z - radius, this.x + radius, this.y + this.getHeight(), this.z + radius);
             }
 
-            if (this.inventory.getBoots() != null) {
-                Enchantment[] enchantments = this.inventory.getBoots().getEnchantments();
-                for (Enchantment enchantment : enchantments) {
-                    if (enchantment.getId() == Enchantment.ID_FROST_WALKER) {
-                        if (diffX != 0 || diffZ != 0) {
-                            if (this.y >= 1 && this.y < 257) {
-                                int lvl = 2 + enchantment.getLevel();
-                                int floorX = this.getFloorX();
-                                int coordX1 = floorX - lvl;
-                                int coordX2 = floorX + lvl;
-                                int floorZ = this.getFloorZ();
-                                int coordZ1 = floorZ - lvl;
-                                int coordZ2 = floorZ + lvl;
-                                int floorY = this.getFloorY();
-                                for (int coordX = coordX1; coordX < coordX2 + 1; coordX++) {
-                                    for (int coordZ = coordZ1; coordZ < coordZ2 + 1; coordZ++) {
-                                        if (level.getBlockIdAt(coordX, floorY - 1, coordZ) == 9 && level.getBlockIdAt(coordX, floorY, coordZ) == 0) {
-                                            level.setBlockAt(coordX, floorY - 1, coordZ, Block.FROSTED_ICE);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            if (diffX != 0 || diffZ != 0) {
+                processFrost = true;
             }
         }
 
@@ -1541,6 +1520,33 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.teleport(ev.getTo(), null);
                     } else {
                         this.addMovement(this.x, this.y + this.getEyeHeight(), this.z, this.yaw, this.pitch, this.yaw);
+
+                        //FrostWalker
+                        if (inventory.getBoots() != null) {
+                            Enchantment[] enchantments = inventory.getBoots().getEnchantments();
+                            for (Enchantment enchantment : enchantments) {
+                                if (enchantment.getId() == Enchantment.ID_FROST_WALKER && processFrost) {
+                                    if (this.y >= 1 && this.y < 257) {
+                                        int lvl = 2 + enchantment.getLevel();
+                                        int floorX = this.getFloorX();
+                                        int coordX1 = floorX - lvl;
+                                        int coordX2 = floorX + lvl;
+                                        int floorZ = this.getFloorZ();
+                                        int coordZ1 = floorZ - lvl;
+                                        int coordZ2 = floorZ + lvl;
+                                        int floorY = this.getFloorY();
+                                        for (int coordX = coordX1; coordX < coordX2 + 1; coordX++) {
+                                            for (int coordZ = coordZ1; coordZ < coordZ2 + 1; coordZ++) {
+                                                if (level.getBlockIdAt(coordX, floorY - 1, coordZ) == 9 && level.getBlockIdAt(coordX, floorY, coordZ) == 0) {
+                                                    level.setBlockAt(coordX, floorY - 1, coordZ, Block.FROSTED_ICE);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                     }
                     //Biome biome = Biome.biomes[level.getBiomeId(this.getFloorX(), this.getFloorZ())];
                     //sendTip(biome.getName() + " (" + biome.doesOverhang() + " " + biome.getBaseHeight() + "-" + biome.getHeightVariation() + ")");
