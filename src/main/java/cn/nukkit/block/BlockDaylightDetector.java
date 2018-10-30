@@ -30,6 +30,11 @@ public class BlockDaylightDetector extends BlockTransparent {
     }
 
     @Override
+    public int getToolType() {
+        return ItemTool.TYPE_AXE;
+    }
+
+    @Override
     public BlockColor getColor() {
         return BlockColor.WOOD_BLOCK_COLOR;
     }
