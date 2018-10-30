@@ -49,7 +49,7 @@ public class SlotChangeAction extends InventoryAction {
     public boolean isValid(Player source) {
         Item check = inventory.getItem(this.inventorySlot);
 
-        return check.equalsExact(this.sourceItem);
+        return check.equals(this.sourceItem, false, false) && check.count == this.sourceItem.count;
     }
 
     /**
