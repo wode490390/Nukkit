@@ -50,7 +50,7 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
         if (eids.length > 0) {
             update |= 0x08;
         }
-        if (decorators.length > 0) {
+        if (decorators.length > 0 || trackedEntities.length > 0) {
             update |= DECORATIONS_UPDATE;
         }
 
