@@ -161,7 +161,7 @@ public class EntityHuman extends EntityHumanType {
 
             AddPlayerPacket pk = new AddPlayerPacket();
             pk.uuid = this.getUniqueId();
-            pk.username = this.getName();
+            pk.username = this.getNameTag();
             pk.entityUniqueId = this.getId();
             pk.entityRuntimeId = this.getId();
             pk.x = (float) this.x;
