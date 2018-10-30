@@ -50,10 +50,10 @@ public class Nukkit {
     public static boolean shortTitle = false;
     public static int DEBUG = 1;
     
-    private static Thread mainThread;
+    //private static Thread mainThread;
 
     public static void main(String[] args) {
-        mainThread = Thread.currentThread();
+        //mainThread = Thread.currentThread();
 
         // Force IPv4 since Nukkit is not compatible with IPv6
         System.setProperty("java.net.preferIPv4Stack" , "true");
@@ -140,11 +140,11 @@ public class Nukkit {
         }
         System.exit(0);
     }
-
+/*
     public static Thread getMainThread() {
         return mainThread;
     }
-
+*/
     private static Properties getGitInfo() {
         InputStream gitFileStream = Nukkit.class.getClassLoader().getResourceAsStream("git.properties");
         if (gitFileStream == null) {
