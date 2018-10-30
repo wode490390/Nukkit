@@ -4127,17 +4127,23 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     protected void forceSendEmptyChunks() {
+        this.forceSendEmptyChunks(this.chunkRadius);
+    }
+
+    protected void forceSendEmptyChunks(int chunkRadius) {
         int chunkPositionX = this.getFloorX() >> 4;
         int chunkPositionZ = this.getFloorZ() >> 4;
+        List<FullChunkDataPacket> pkList = new ArrayList<>();
         for (int x = -chunkRadius; x < chunkRadius; x++) {
             for (int z = -chunkRadius; z < chunkRadius; z++) {
                 FullChunkDataPacket chunk = new FullChunkDataPacket();
                 chunk.chunkX = chunkPositionX + x;
                 chunk.chunkZ = chunkPositionZ + z;
                 chunk.data = new byte[0];
-                this.dataPacket(chunk);
+                pkList.add(chunk);
             }
         }
+        pkList.forEach(this::dataPacket);
     }
 
     public void teleportImmediate(Location location) {
