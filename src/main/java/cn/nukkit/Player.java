@@ -2283,7 +2283,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     Item item = this.inventory.getItem(mobEquipmentPacket.hotbarSlot);
 
-                    if (!item.equals(mobEquipmentPacket.item)) {
+                    if (!item.equals(mobEquipmentPacket.item, false, false)) {
                         this.server.getLogger().debug("Tried to equip " + mobEquipmentPacket.item + " but have " + item + " in target slot");
                         this.inventory.sendContents(this);
                         return;
