@@ -157,7 +157,7 @@ public class BlockVine extends BlockTransparentMeta {
         }
         this.setDamage(facesPlace.getOrDefault(face, 0));
         if (block.getId() == this.getId()) {
-            this.setDamage(this.getDamage() |= block.getDamage()) ;
+            this.setDamage(this.getDamage() | block.getDamage()) ;
         }
         this.getLevel().setBlock(block, this, true, true);
         return true;
