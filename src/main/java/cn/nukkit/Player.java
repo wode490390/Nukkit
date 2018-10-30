@@ -144,6 +144,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public int craftingType = CRAFTING_SMALL;
 
     protected PlayerCursorInventory cursorInventory;
+    protected PlayerOffhandInventory offhandInventory;
     protected CraftingGrid craftingGrid;
     protected CraftingTransaction craftingTransaction;
 
@@ -1681,7 +1682,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         Block block = level.getBlock(this);
                         boolean onLadder = block.getId() == BlockID.LADDER;
 
-                        if (!this.hasEffect(Effect.JUMP) && diff > 0.6 && expectedVelocity < this.speed.y && !onLadder) {
+                        if (!this.hasEffect(Effect.JUMP) && !this.isSwimming() && diff > 0.6 && expectedVelocity < this.speed.y && !onLadder) {
                             if (this.inAirTicks < 100) {
                                 //this.sendSettings();
                                 this.setMotion(new Vector3(0, expectedVelocity, 0));
@@ -2989,6 +2990,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                             Entity target = this.level.getEntity(useItemOnEntityData.entityRuntimeId);
                             if (target == null) {
+                                item = this.inventory.getItemInHand();
+                                PlayerInteractEvent interactEvent = new PlayerInteractEvent(this, item, this.getDirectionVector(), BlockFace.UP, Action.CLICK_UNKNOWN_ENTITY);
+                                this.server.getPluginManager().callEvent(interactEvent);
                                 return;
                             }
 
@@ -4364,7 +4368,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.addWindow(this.getInventory(), ContainerIds.INVENTORY, true);
 
         this.cursorInventory = new PlayerCursorInventory(this);
+        this.offhandInventory = new PlayerOffhandInventory(this);
         this.addWindow(this.cursorInventory, ContainerIds.CURSOR, true);
+        this.addWindow(this.offhandInventory, ContainerIds.OFFHAND, true);
 
         this.craftingGrid = new CraftingGrid(this);
 
@@ -4373,6 +4379,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public PlayerCursorInventory getCursorInventory() {
         return this.cursorInventory;
+    }
+
+    public PlayerOffhandInventory getOffhandInventory() {
+        return offhandInventory;
     }
 
     public CraftingGrid getCraftingGrid() {
