@@ -17,7 +17,6 @@ public class LevelTimings {
     public final Timing tickChunks;
     public final Timing entityTick;
     public final Timing blockEntityTick;
-    public final Timing blockUpdate;
 
     public final Timing syncChunkSendTimer;
     public final Timing syncChunkSendPrepareTimer;
@@ -37,7 +36,6 @@ public class LevelTimings {
         this.tickChunks = TimingsManager.getTiming(name + "tickChunks");
         this.entityTick = TimingsManager.getTiming(name + "entityTick");
         this.blockEntityTick = TimingsManager.getTiming(name + "blockEntityTick");
-        this.blockUpdate = TimingsManager.getTiming(name + "blockUpdate");
 
         this.syncChunkSendTimer = TimingsManager.getTiming(name + "syncChunkSend");
         this.syncChunkSendPrepareTimer = TimingsManager.getTiming(name + "syncChunkSendPrepare");
