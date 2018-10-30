@@ -222,6 +222,7 @@ public class DummyBossBar {
     public void create() {
         createBossEntity();
         sendAttributes();
+        updateBossEntityNameTag();
         sendShowBossBar();
         if (color != null) this.sendSetBossBarTexture();
     }

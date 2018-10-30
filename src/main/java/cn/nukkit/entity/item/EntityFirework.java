@@ -35,7 +35,6 @@ public class EntityFirework extends Entity {
 
         this.fireworkAge = 0;
         Random rand = new Random();
-        this.lifetime = 30 + rand.nextInt(6) + rand.nextInt(7);
 
         this.motionX = rand.nextGaussian() * 0.001D;
         this.motionZ = rand.nextGaussian() * 0.001D;
@@ -47,9 +46,12 @@ public class EntityFirework extends Entity {
             firework = new ItemFirework();
         }
 
+        this.lifetime = firework instanceof ItemFirework ? ((ItemFirework) firework).getLifeTime() : 30;
+
         this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, firework));
         this.setDataProperty(new IntEntityData(Entity.DATA_DISPLAY_OFFSET, 1));
         this.setDataProperty(new ByteEntityData(Entity.DATA_HAS_DISPLAY, 1));
+
     }
 
     @Override

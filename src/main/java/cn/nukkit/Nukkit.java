@@ -49,8 +49,11 @@ public class Nukkit {
     public static boolean TITLE = false;
     public static boolean shortTitle = false;
     public static int DEBUG = 1;
+    
+    private static Thread mainThread;
 
     public static void main(String[] args) {
+        mainThread = Thread.currentThread();
 
         // Force IPv4 since Nukkit is not compatible with IPv6
         System.setProperty("java.net.preferIPv4Stack" , "true");
@@ -136,6 +139,10 @@ public class Nukkit {
             System.out.print((char) 0x1b + "]0;Server Stopped" + (char) 0x07);
         }
         System.exit(0);
+    }
+
+    public static Thread getMainThread() {
+        return mainThread;
     }
 
     private static Properties getGitInfo() {
