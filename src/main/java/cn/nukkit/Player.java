@@ -81,6 +81,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteOrder;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -180,7 +181,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected final Long2ObjectLinkedOpenHashMap<Boolean> loadQueue = new Long2ObjectLinkedOpenHashMap<>();
     protected int nextChunkOrderRun = 1;
 
-    protected final Map<UUID, Player> hiddenPlayers = new HashMap<>();
+    protected final Map<UUID, Player> hiddenPlayers = new ConcurrentHashMap<>();
 
     protected Vector3 newPosition = null;
 
