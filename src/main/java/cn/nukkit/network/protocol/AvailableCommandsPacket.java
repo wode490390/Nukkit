@@ -34,7 +34,7 @@ public class AvailableCommandsPacket extends DataPacket {
     public static final int ARG_FLAG_POSTFIX = 0x1000000;
 
     public Map<String, CommandDataVersions> commands;
-    public final Map<String, List<String>> softEnums = new HashMap<>();
+    public final List<CommandEnum> softEnums = new ArrayList<>();
 
     @Override
     public byte pid() {
