@@ -26,6 +26,7 @@ public class CommandRequestPacket extends DataPacket {
 
     public String command;
     public CommandOriginData data;
+    public boolean isInternal;
 
     @Override
     public byte pid() {
@@ -35,15 +36,8 @@ public class CommandRequestPacket extends DataPacket {
     @Override
     public void decode() {
         this.command = this.getString();
-
-        CommandOriginData.Origin type = CommandOriginData.Origin.values()[this.getVarInt()];
-        UUID uuid = this.getUUID();
-        String requestId = this.getString();
-        Long varLong = null;
-        if (type == CommandOriginData.Origin.DEV_CONSOLE || type == CommandOriginData.Origin.TEST) {
-            varLong = this.getVarLong();
-        }
-        this.data = new CommandOriginData(type, uuid, requestId, varLong);
+        this.data = this.getCommandOriginData();
+        this.isInternal = this.getBoolean();
     }
 
     @Override
