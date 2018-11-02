@@ -10,9 +10,7 @@ public class ExplodePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.EXPLODE_PACKET;
 
-    public float x;
-    public float y;
-    public float z;
+    public Vector3 position;
     public float radius;
     public Vector3[] records = new Vector3[0];
 
@@ -35,12 +33,12 @@ public class ExplodePacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.position.asVector3f());
         this.putVarInt((int) (this.radius * 32));
         this.putUnsignedVarInt(this.records.length);
         if (this.records.length > 0) {
             for (Vector3 record : records) {
-                this.putBlockVector3((int) record.x, (int) record.y, (int) record.z);
+                this.putSignedBlockPosition(record.asBlockVector3());
             }
         }
     }
