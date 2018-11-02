@@ -22,7 +22,7 @@ public enum InventoryType {
     DISPENSER(0, "Dispenser", 6), //9 CONTAINER
     DROPPER(9, "Dropper", 7), //9 CONTAINER
     HOPPER(5, "Hopper", 8), //5 CONTAINER
-    CAULDRON(1, "Cauldron", 9),
+    //CAULDRON(1, "Cauldron", 9),
     MINECART_CHEST(27, "Minecart Chest", 10),
     MINECART_HOPPER(5, "Minecart Hopper", 11),
     HORSE(2, "Horse", 12),
