@@ -8,6 +8,7 @@ import cn.nukkit.level.GameRules;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3f;
+import cn.nukkit.network.protocol.types.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -377,7 +378,7 @@ public class BinaryStream {
         VarInt.writeUnsignedVarLong(this, v);
     }
 
-    public BlockVector3 getBlockVector3() {
+    public BlockVector3 getBlockPosition() {
         return new BlockVector3(this.getVarInt(), (int) this.getUnsignedVarInt(), this.getVarInt());
     }
 
@@ -386,30 +387,30 @@ public class BinaryStream {
     }
 
     public void putSignedBlockPosition(BlockVector3 v) {
-        putVarInt(v.x);
-        putVarInt(v.y);
-        putVarInt(v.z);
+        this.putVarInt(v.x);
+        this.putVarInt(v.y);
+        this.putVarInt(v.z);
     }
 
     public void putBlockVector3(BlockVector3 v) {
-        this.putBlockVector3(v.x, v.y, v.z);
+        this.putBlockPosition(v.x, v.y, v.z);
     }
 
-    public void putBlockVector3(int x, int y, int z) {
+    public void putBlockPosition(int x, int y, int z) {
         this.putVarInt(x);
         this.putUnsignedVarInt(y);
         this.putVarInt(z);
     }
 
-    public Vector3f getVector3f() {
+    public Vector3f getVector3() {
         return new Vector3f(this.getLFloat(4), this.getLFloat(4), this.getLFloat(4));
     }
 
-    public void putVector3f(Vector3f v) {
-        this.putVector3f(v.x, v.y, v.z);
+    public void putVector3(Vector3f v) {
+        this.putVector3(v.x, v.y, v.z);
     }
 
-    public void putVector3f(float x, float y, float z) {
+    public void putVector3(float x, float y, float z) {
         this.putLFloat(x);
         this.putLFloat(y);
         this.putLFloat(z);
@@ -495,5 +496,61 @@ public class BinaryStream {
         return (minCapacity > MAX_ARRAY_SIZE) ?
                 Integer.MAX_VALUE :
                 MAX_ARRAY_SIZE;
+    }
+
+    public CommandOriginData getCommandOriginData() {
+        CommandOriginData.Origin type = CommandOriginData.Origin.values()[(int) this.getUnsignedVarInt()];
+        UUID uuid = this.getUUID();
+        String requestId = this.getString();
+        Long varLong = null;
+        if (type == CommandOriginData.Origin.DEV_CONSOLE || type == CommandOriginData.Origin.TEST) {
+            varLong = this.getVarLong();
+        }
+        return new CommandOriginData(type, uuid, requestId, varLong);
+    }
+
+    public void putCommandOriginData(CommandOriginData data) {
+        this.putUnsignedVarInt(data.type.ordinal());
+        this.putUUID(data.uuid);
+        this.putString(data.requestId);
+        if (data.type == CommandOriginData.Origin.DEV_CONSOLE || data.type == CommandOriginData.Origin.TEST) {
+            OptionalLong varLong = data.getVarLong();
+            if (varLong.isPresent()) {
+                this.putVarLong(varLong.getAsLong());
+            }
+        }
+    }
+
+    public void putEntityLink(EntityLink link) {
+        this.putEntityUniqueId(link.fromEntityUniqueId);
+        this.putEntityUniqueId(link.toEntityUniqueId);
+        this.putByte((byte) link.type);
+        this.putBoolean(link.immediate);
+    }
+
+    public EntityLink getEntityLink() {
+        long fromEntityUniqueId = this.getEntityUniqueId();
+        long toEntityUniqueId = this.getEntityUniqueId();
+        byte type = (byte) this.getByte();
+        boolean immediate = this.getBoolean();
+        return new EntityLink(fromEntityUniqueId, toEntityUniqueId, type, immediate);
+    }
+
+    public void putVector3Nullable() {
+        this.putLFloat(0);
+        this.putLFloat(0);
+        this.putLFloat(0);
+    }
+
+    public void putVector3Nullable(Vector3f vector) {
+        this.putVector3(vector);
+    }
+
+    public void putByteRotation(float rotation) {
+        this.putByte((byte) (rotation / (360 / 256)));
+    }
+
+    public float getByteRotation() {
+        return this.getByte() * (360 / 256);
     }
 }
