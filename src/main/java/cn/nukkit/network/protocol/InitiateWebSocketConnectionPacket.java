@@ -13,7 +13,7 @@ public class InitiateWebSocketConnectionPacket extends DataPacket {
 
     @Override
     public void decode() {
-
+        this.serverUri = this.getString();
     }
 
     @Override
