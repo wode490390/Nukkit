@@ -1883,8 +1883,6 @@ public class Level implements ChunkManager, Metadatable {
             }
         }
 
-        target.onBreak(item);
-
         BlockEntity blockEntity = this.getBlockEntity(target);
         if (blockEntity != null) {
             if (blockEntity instanceof InventoryHolder) {
@@ -1902,7 +1900,9 @@ public class Level implements ChunkManager, Metadatable {
             this.updateComparatorOutputLevel(target);
         }
 
+        target.onBreak(item);
         item.useOn(target);
+
         if (item.isTool() && item.getDamage() >= item.getMaxDurability()) {
             item = new ItemBlock(new BlockAir(), 0, 0);
         }

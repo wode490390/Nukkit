@@ -76,16 +76,16 @@ public class BlockChest extends BlockTransparent {
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         BlockEntityChest chest = null;
         int[] faces = {2, 5, 3, 4};
-        this.meta = faces[player != null ? player.getDirection().getHorizontalIndex() : 0];
+        this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
 
         for (int side = 2; side <= 5; ++side) {
-            if ((this.meta == 4 || this.meta == 5) && (side == 4 || side == 5)) {
+            if ((this.getDamage() == 4 || this.getDamage() == 5) && (side == 4 || side == 5)) {
                 continue;
-            } else if ((this.meta == 3 || this.meta == 2) && (side == 2 || side == 3)) {
+            } else if ((this.getDamage() == 3 || this.getDamage() == 2) && (side == 2 || side == 3)) {
                 continue;
             }
             Block c = this.getSide(BlockFace.fromIndex(side));
-            if (c instanceof BlockChest && c.getDamage() == this.meta) {
+            if (c instanceof BlockChest && c.getDamage() == this.getDamage()) {
                 BlockEntity blockEntity = this.getLevel().getBlockEntity(c);
                 if (blockEntity instanceof BlockEntityChest && !((BlockEntityChest) blockEntity).isPaired()) {
                     chest = (BlockEntityChest) blockEntity;
@@ -113,11 +113,11 @@ public class BlockChest extends BlockTransparent {
             }
         }
 
-        BlockEntity blockEntity = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        BlockEntityChest blockEntity = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
 
         if (chest != null) {
-            chest.pairWith(((BlockEntityChest) blockEntity));
-            ((BlockEntityChest) blockEntity).pairWith(chest);
+            chest.pairWith(blockEntity);
+            blockEntity.pairWith(chest);
         }
 
         return true;
@@ -185,5 +185,10 @@ public class BlockChest extends BlockTransparent {
         }
 
         return super.getComparatorInputOverride();
+    }
+
+    @Override
+    public Item[] getDrops(Item item) {
+        return super.getDrops(item);
     }
 }
