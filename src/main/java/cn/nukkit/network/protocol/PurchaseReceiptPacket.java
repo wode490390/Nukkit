@@ -1,10 +1,10 @@
 package cn.nukkit.network.protocol;
 
-public class PhotoTransferPacket extends DataPacket {
+public class PurchaseReceiptPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PURCHASE_RECEIPT_PACKET;
 
-    public String[] entries = new String[0];
+    public String[] entries;
 
     @Override
     public byte pid() {

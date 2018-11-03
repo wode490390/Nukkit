@@ -45,7 +45,7 @@ public class CommandOutputPacket extends DataPacket {
         this.putString(message.messageId);
 
         this.putUnsignedVarInt(message.parameters.length);
-        for (String parameter : parameters) {
+        for (String parameter : message.parameters) {
             this.putString(parameter);
         }
     }

@@ -23,7 +23,7 @@ public class SetScorePacket extends DataPacket {
     }
 
     @Override
-    public void encode() {
+    public void encode() throws Exception {
         this.reset();
         this.putByte((byte) this.type);
         this.putUnsignedVarInt(this.entries.length);

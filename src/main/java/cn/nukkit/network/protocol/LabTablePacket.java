@@ -21,7 +21,7 @@ public class LabTablePacket extends DataPacket {
 
     @Override
     public void decode() {
-        this.uselessByte = this.putByte();
+        this.uselessByte = (byte) this.getByte();
         BlockVector3 vector = this.getSignedBlockPosition();
         this.x = vector.x;
         this.y = vector.y;
@@ -34,6 +34,6 @@ public class LabTablePacket extends DataPacket {
         this.reset();
         this.putByte(this.uselessByte);
         this.putSignedBlockPosition(new BlockVector3(this.x, this.y, this.z));
-        this.putByte(this.reactionType);
+        this.putByte((byte) this.reactionType);
     }
 }

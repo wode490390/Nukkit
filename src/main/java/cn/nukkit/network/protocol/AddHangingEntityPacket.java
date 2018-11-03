@@ -4,7 +4,7 @@ public class AddHangingEntityPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ADD_HANGING_ENTITY_PACKET;
 
-    public long entityUniqueId = null;
+    public long entityUniqueId;
     public int entityRuntimeId;
     public int x;
     public int y;
