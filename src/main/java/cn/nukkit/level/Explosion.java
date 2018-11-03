@@ -196,9 +196,7 @@ public class Explosion {
         }
 
         ExplodePacket pk = new ExplodePacket();
-        pk.x = (float) this.source.x;
-        pk.y = (float) this.source.y;
-        pk.z = (float) this.source.z;
+        pk.position = this.source;
         pk.radius = (float) this.size;
         pk.records = send.toArray(new Vector3[0]);
 
