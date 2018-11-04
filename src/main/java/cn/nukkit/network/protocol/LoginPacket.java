@@ -1,6 +1,5 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.Server;
 import cn.nukkit.entity.data.Skin;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -22,10 +21,6 @@ public class LoginPacket extends DataPacket {
     public long clientId;
 
     public Skin skin;
-    public String skinGeometryName;
-    public String skinGeometry;
-
-    public byte[] capeData;
 
     @Override
     public byte pid() {
@@ -68,38 +63,26 @@ public class LoginPacket extends DataPacket {
 
     private void decodeSkinData() {
         JsonObject skinToken = decodeToken(new String(this.get(this.getLInt())));
-        String skinId = null;
         if (skinToken.has("ClientRandomId")) this.clientId = skinToken.get("ClientRandomId").getAsLong();
-        if (skinToken.has("SkinId")) skinId = skinToken.get("SkinId").getAsString();
+        skin = new Skin();
+        if (skinToken.has("SkinId")) {
+            skin.setSkinId(skinToken.get("SkinId").getAsString());
+        }
         if (skinToken.has("SkinData")) {
-            this.skin = new Skin(skinToken.get("SkinData").getAsString(), skinId);
-            if (skinToken.has("CapeData")) {
-            	String asString = skinToken.get("CapeData").getAsString();
-            	byte[] decode = null;
-            	try {
-            		decode = Base64.getUrlDecoder().decode(asString);
-            	} catch(IllegalArgumentException e) {
-            		decode = Base64.getDecoder().decode(asString);
-            	}
-                this.skin.setCape(this.skin.new Cape(decode));
-            }
+            skin.setSkinData(Base64.getDecoder().decode(skinToken.get("SkinData").getAsString()));
         }
 
-        if (skinToken.has("SkinGeometryName"))
-            this.skinGeometryName = skinToken.get("SkinGeometryName").getAsString();
-        if (skinToken.has("SkinGeometry")) {
-        	String asString = skinToken.get("SkinGeometry").getAsString();
-        	byte[] decode = null;
-        	try {
-        		decode = Base64.getUrlDecoder().decode(asString);
-        	} catch(IllegalArgumentException e) {
-        		decode = Base64.getDecoder().decode(asString);
-        	}
-            this.skinGeometry = new String(decode);
+        if (skinToken.has("CapeData")) {
+            this.skin.setCapeData(Base64.getDecoder().decode(skinToken.get("CapeData").getAsString()));
         }
-        this.skin.setGeometryModel(new Skin.SkinGeometry(this.skinGeometryName, this.skinGeometry));
-        //JsonObject geometryToken = new Gson().fromJson(this.skinGeometry, JsonObject.class);
-        //Server.getInstance().getLogger().info(this.skinGeometry);
+
+        if (skinToken.has("SkinGeometryName")) {
+            skin.setGeometryName(skinToken.get("SkinGeometryName").getAsString());
+        }
+
+        if (skinToken.has("SkinGeometry")) {
+            skin.setGeometryData(skinToken.get("SkinGeometry").getAsString());
+        }
     }
 
     private JsonObject decodeToken(String token) {

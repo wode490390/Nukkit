@@ -1,6 +1,5 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.Server;
 import cn.nukkit.entity.data.Skin;
 
 import java.util.UUID;
@@ -34,9 +33,6 @@ public class PlayerListPacket extends DataPacket {
                 this.putVarLong(entry.entityId);
                 this.putString(entry.name);
                 this.putSkin(entry.skin);
-                this.putByteArray(entry.skin.getCape().getData());
-                this.putString(entry.geometryModel);
-                this.putByteArray(entry.geometryData);
                 this.putString(entry.xboxUserId);
             } else {
                 this.putUUID(entry.uuid);
@@ -56,9 +52,6 @@ public class PlayerListPacket extends DataPacket {
         public long entityId = 0;
         public String name = "";
         public Skin skin;
-        public byte[] capeData = new byte[0];
-        public String geometryModel = "";
-        public byte[] geometryData = new byte[0]; //TODO
         public String xboxUserId = "";
 
         public Entry(UUID uuid) {
@@ -74,9 +67,6 @@ public class PlayerListPacket extends DataPacket {
             this.entityId = entityId;
             this.name = name;
             this.skin = skin;
-            this.capeData = skin.getCape().getData();
-            this.geometryModel = skin.getGeometryModel().getModel();
-            this.geometryData = skin.getGeometryModel().getData().getBytes();
             this.xboxUserId = xboxUserId == null ? "" : xboxUserId;
         }
     }
