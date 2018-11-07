@@ -1427,6 +1427,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         double tdz = newPos.z - this.z;
         double distance = Math.sqrt(tdx * tdx + tdz * tdz);
 
+        boolean processFrost = false;
+
         if (!revert && distanceSquared != 0) {
             double dx = newPos.x - this.x;
             double dy = newPos.y - this.y;
@@ -1473,6 +1475,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 double radius = this.getWidth() / 2;
                 this.boundingBox.setBounds(this.x - radius, this.y, this.z - radius, this.x + radius, this.y + this.getHeight(), this.z + radius);
             }
+
+            if (diffY < 1) {
+                processFrost = true;
+            }
         }
 
         Location from = new Location(
@@ -1516,7 +1522,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.addMovement(this.x, this.y + this.getEyeHeight(), this.z, this.yaw, this.pitch, this.yaw);
 
                         //FrostWalker
-                        if (inventory.getBoots() != null) {
+                        if (inventory.getBoots() != null && processFrost) {
                             Enchantment[] enchantments = inventory.getBoots().getEnchantments();
                             for (Enchantment enchantment : enchantments) {
                                 if (enchantment.getId() == Enchantment.ID_FROST_WALKER) {
