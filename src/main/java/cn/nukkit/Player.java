@@ -1476,7 +1476,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 this.boundingBox.setBounds(this.x - radius, this.y, this.z - radius, this.x + radius, this.y + this.getHeight(), this.z + radius);
             }
 
-            if (diffY < 1) {
+            if (diffY == 0) {
                 processFrost = true;
             }
         }
