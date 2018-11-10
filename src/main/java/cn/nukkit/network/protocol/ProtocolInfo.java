@@ -130,5 +130,5 @@ public interface ProtocolInfo {
     byte UPDATE_SOFT_ENUM_PACKET = 0x72;
     byte NETWORK_STACK_LATENCY_PACKET = 0x73;
     byte SCRIPT_CUSTOM_EVENT_PACKET = 0x75;
-    byte BATCH_PACKET = (byte) 0xff;
+    byte BATCH_PACKET = (byte) 0xfe;
 }
