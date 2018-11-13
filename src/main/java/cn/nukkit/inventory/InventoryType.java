@@ -5,14 +5,13 @@ package cn.nukkit.inventory;
  * Nukkit Project
  */
 public enum InventoryType {
-    
     PLAYER(40, "Player", -1), //36 CONTAINER, 4 ARMOR
     CURSOR(1, "Cursor", -1),
     OFFHAND(1, "Offhand", -1),
     CHEST(27, "Chest", 0),
     ENDER_CHEST(27, "Ender Chest", 0),
     SHULKER_BOX(27, "Shulker Box", 0),
-    DOUBLE_CHEST(27 + 27, "Double Chest", 0),
+    DOUBLE_CHEST(27 * 2, "Double Chest", 0),
     CRAFTING(5, "Crafting", 1), //4 CRAFTING slots, 1 RESULT
     WORKBENCH(10, "Crafting", 1), //9 CRAFTING slots, 1 RESULT
     FURNACE(3, "Furnace", 2),
@@ -25,7 +24,7 @@ public enum InventoryType {
     //CAULDRON(1, "Cauldron", 9),
     MINECART_CHEST(27, "Minecart Chest", 10),
     MINECART_HOPPER(5, "Minecart Hopper", 11),
-    HORSE(2, "Horse", 12),
+    HORSE(17, "Horse", 12),
     BEACON(1, "Beacon", 13),
     //STRUCTURE_EDITOR(1, "Structure Editor", 14),
     TRADING(3, "Trading", 15);
