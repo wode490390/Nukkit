@@ -1389,6 +1389,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
+    @Override
+    public boolean canBeMovedByCurrents(int tickDiff) {
+        return false; //currently has no server-side movement
+    }
+
     protected void checkNearEntities() {
         for (Entity entity : this.level.getNearbyEntities(this.boundingBox.grow(1, 0.5, 1), this)) {
             entity.scheduleUpdate();
