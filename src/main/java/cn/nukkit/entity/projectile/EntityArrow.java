@@ -108,6 +108,7 @@ public class EntityArrow extends EntityProjectile {
 
         if (this.onGround || this.hadCollision) {
             this.setCritical(false);
+            this.namedTag.putBoolean("inGround", true);
         }
 
         if (this.age > 1200) {
