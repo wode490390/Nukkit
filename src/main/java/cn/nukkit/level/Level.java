@@ -1983,7 +1983,7 @@ public class Level implements ChunkManager, Metadatable {
             return null;
         }
 
-        if (player != null && !player.hasInteracted.get()) {
+        if (player != null && (getBlockEntity(target) != null || !player.hasInteracted.get())) {
             PlayerInteractEvent ev = new PlayerInteractEvent(player, item, target, face,
                     target.getId() == 0 ? Action.RIGHT_CLICK_AIR : Action.RIGHT_CLICK_BLOCK);
 
@@ -2022,6 +2022,8 @@ public class Level implements ChunkManager, Metadatable {
                 return null;
             }
 
+        } else if (player != null && player.hasInteracted.get()) {
+            return null;
         } else if (target.canBeActivated() && target.onActivate(item, player)) {
             if (item.isTool() && item.getDamage() >= item.getMaxDurability()) {
                 item = new ItemBlock(new BlockAir(), 0, 0);
