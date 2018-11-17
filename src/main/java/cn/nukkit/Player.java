@@ -4637,6 +4637,25 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     return false;
                 }
 
+                if (entity.namedTag.contains("pickup")) {
+                    swite (entity.namedTag.getByte("pickup")) {
+                        case 0:
+                            return false;
+                        case 2:
+                            if (this.isCreative()) {
+                                break;
+                            }
+                            return false;
+                        case 1:
+                        default:
+                            break;
+                    }
+                } else if (entity.namedTag.contains("player")) {
+                    if (!entity.namedTag.getBoolean("player")) {
+                        return false;
+                    }
+                }
+
                 InventoryPickupArrowEvent ev;
                 this.server.getPluginManager().callEvent(ev = new InventoryPickupArrowEvent(this.inventory, (EntityArrow) entity));
                 if (ev.isCancelled()) {
