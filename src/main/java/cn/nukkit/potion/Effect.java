@@ -40,6 +40,9 @@ public class Effect implements Cloneable {
     public static final int HEALTH_BOOST = 21;
     public static final int ABSORPTION = 22;
     public static final int SATURATION = 23;
+    public static final int LEVITATION = 24;
+    public static final int FATAL_POISON = 25;
+    public static final int CONDUIT_POWER = 26;
 
     protected static Effect[] effects;
 
@@ -72,6 +75,10 @@ public class Effect implements Cloneable {
 
         effects[Effect.ABSORPTION] = new Effect(Effect.ABSORPTION, "%potion.absorption", 36, 107, 251);
         effects[Effect.SATURATION] = new Effect(Effect.SATURATION, "%potion.saturation", 255, 0, 255);
+
+        effects[Effect.LEVITATION] = new Effect(Effect.LEVITATION, "%potion.levitation", 206, 255, 255);
+        effects[Effect.FATAL_POISON] = new Effect(Effect.FATAL_POISON, "%potion.poison", 78, 147, 49, true);
+        effects[Effect.CONDUIT_POWER] = new Effect(Effect.CONDUIT_POWER, "%potion.conduitPower", 29, 194, 209);
     }
 
     public static Effect getEffect(int id) {
@@ -171,6 +178,7 @@ public class Effect implements Cloneable {
         int interval;
         switch (this.id) {
             case Effect.POISON: //POISON
+            case Effect.FATAL_POISON:
                 if ((interval = (25 >> this.amplifier)) > 0) {
                     return (this.duration % interval) == 0;
                 }

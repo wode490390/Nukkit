@@ -1332,7 +1332,7 @@ public abstract class Entity extends Location implements Metadatable {
             fallDistance = (float) (this.highestPosition - this.y);
 
             if (fallDistance > 0) {
-                if (this instanceof EntityLiving && !this.isInsideOfWater()) {
+                if (this instanceof EntityLiving && !this.isInsideOfWater(false)) {
                     this.fall(fallDistance);
                 }
                 this.resetFallDistance();
@@ -1474,7 +1474,11 @@ public abstract class Entity extends Location implements Metadatable {
     }
 
     public boolean isInsideOfWater() {
-        double y = this.y + this.getEyeHeight();
+        return this.isInsideOfWater(true);
+    }
+
+    public boolean isInsideOfWater(boolean eyeHeight) {
+        double y = eyeHeight ? (this.y + this.getEyeHeight()) : this.y;
         Block block = this.level.getBlock(this.temporalVector.setComponents(NukkitMath.floorDouble(this.x), NukkitMath.floorDouble(y), NukkitMath.floorDouble(this.z)));
 
         if (block instanceof BlockWater) {
