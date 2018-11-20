@@ -53,6 +53,14 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     protected boolean needLivingBaseTick = true;
     protected boolean needCollidingWithRideable = true;
 
+    public boolean isNeedCollidingWithRideable() {
+        return needCollidingWithRideable;
+    }
+
+    public boolean isNeedLivingBaseTick() {
+        return needLivingBaseTick;
+    }
+
     @Override
     protected void initEntity() {
         super.initEntity();
