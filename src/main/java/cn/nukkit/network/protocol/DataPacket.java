@@ -22,9 +22,9 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
 
     public abstract byte pid();
 
-    public abstract void decode() throws Exception;
+    public abstract void decode();
 
-    public abstract void encode() throws Exception;
+    public abstract void encode();
 
     @Override
     public DataPacket reset() {
