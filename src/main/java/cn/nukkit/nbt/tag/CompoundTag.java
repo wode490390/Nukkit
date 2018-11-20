@@ -119,8 +119,10 @@ public class CompoundTag extends Tag implements Cloneable {
         return tags.containsKey(name);
     }
 
-    public CompoundTag remove(String name) {
-        tags.remove(name);
+    public CompoundTag remove(String... names) {
+        for (String name : names) {
+            tags.remove(name);
+        }
         return this;
     }
 
