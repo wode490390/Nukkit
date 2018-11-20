@@ -37,7 +37,7 @@ public class UpdateBlockPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putBlockVector3(x, y, z);
+        this.putBlockPosition(x, y, z);
         this.putUnsignedVarInt(blockRuntimeId);
         this.putUnsignedVarInt(flags);
         this.putUnsignedVarInt(dataLayer);

@@ -25,7 +25,7 @@ public class SetSpawnPositionPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putVarInt(this.spawnType);
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBlockPosition(this.x, this.y, this.z);
         this.putBoolean(this.spawnForced);
     }
 

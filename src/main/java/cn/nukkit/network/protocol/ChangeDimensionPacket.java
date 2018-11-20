@@ -25,7 +25,7 @@ public class ChangeDimensionPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putVarInt(this.dimension);
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.x, this.y, this.z);
         this.putBoolean(this.respawn);
     }
 

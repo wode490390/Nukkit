@@ -26,6 +26,6 @@ public class SetEntityMotionPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putEntityRuntimeId(this.eid);
-        this.putVector3f(this.motionX, this.motionY, this.motionZ);
+        this.putVector3(this.motionX, this.motionY, this.motionZ);
     }
 }

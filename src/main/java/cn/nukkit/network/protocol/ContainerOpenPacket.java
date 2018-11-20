@@ -25,7 +25,7 @@ public class ContainerOpenPacket extends DataPacket {
     public void decode() {
         this.windowId = this.getByte();
         this.type = this.getByte();
-        BlockVector3 v = this.getBlockVector3();
+        BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -37,7 +37,7 @@ public class ContainerOpenPacket extends DataPacket {
         this.reset();
         this.putByte((byte) this.windowId);
         this.putByte((byte) this.type);
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBlockPosition(this.x, this.y, this.z);
         this.putEntityUniqueId(this.entityId);
     }
 }

@@ -30,7 +30,7 @@ public class MovePlayerPacket extends DataPacket {
     @Override
     public void decode() {
         this.eid = this.getEntityRuntimeId();
-        Vector3f v = this.getVector3f();
+        Vector3f v = this.getVector3();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -50,7 +50,7 @@ public class MovePlayerPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putEntityRuntimeId(this.eid);
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.x, this.y, this.z);
         this.putLFloat(this.pitch);
         this.putLFloat(this.yaw);
         this.putLFloat(this.headYaw);

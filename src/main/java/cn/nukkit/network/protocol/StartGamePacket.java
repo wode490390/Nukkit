@@ -77,7 +77,7 @@ public class StartGamePacket extends DataPacket {
         this.putEntityUniqueId(this.entityUniqueId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putVarInt(this.playerGamemode);
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.x, this.y, this.z);
         this.putLFloat(this.yaw);
         this.putLFloat(this.pitch);
 
@@ -86,7 +86,7 @@ public class StartGamePacket extends DataPacket {
         this.putVarInt(this.generator);
         this.putVarInt(this.worldGamemode);
         this.putVarInt(this.difficulty);
-        this.putBlockVector3(this.spawnX, this.spawnY, this.spawnZ);
+        this.putBlockPosition(this.spawnX, this.spawnY, this.spawnZ);
         this.putBoolean(this.hasAchievementsDisabled);
         this.putVarInt(this.dayCycleStopTime);
         this.putBoolean(this.eduMode);

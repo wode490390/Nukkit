@@ -104,7 +104,7 @@ public class LevelEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.evid = this.getVarInt();
-        Vector3f v = this.getVector3f();
+        Vector3f v = this.getVector3();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -115,7 +115,7 @@ public class LevelEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putVarInt(this.evid);
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.x, this.y, this.z);
         this.putVarInt(this.data);
     }
 }

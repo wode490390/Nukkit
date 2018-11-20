@@ -46,7 +46,7 @@ public class PlayerActionPacket extends DataPacket {
     public void decode() {
         this.entityId = this.getEntityRuntimeId();
         this.action = this.getVarInt();
-        BlockVector3 v = this.getBlockVector3();
+        BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -58,7 +58,7 @@ public class PlayerActionPacket extends DataPacket {
         this.reset();
         this.putEntityRuntimeId(this.entityId);
         this.putVarInt(this.action);
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBlockPosition(this.x, this.y, this.z);
         this.putVarInt(this.face);
     }
 

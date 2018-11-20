@@ -39,8 +39,8 @@ public class AddItemEntityPacket extends DataPacket {
         this.putEntityUniqueId(this.entityUniqueId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putSlot(this.item);
-        this.putVector3f(this.x, this.y, this.z);
-        this.putVector3f(this.speedX, this.speedY, this.speedZ);
+        this.putVector3(this.x, this.y, this.z);
+        this.putVector3(this.speedX, this.speedY, this.speedZ);
         this.put(Binary.writeMetadata(metadata));
         this.putBoolean(this.isFromFishing);
     }

@@ -1,6 +1,5 @@
 package cn.nukkit.network.protocol;
 
-
 import cn.nukkit.math.Vector3f;
 
 public class LevelSoundEventPacket extends DataPacket {
@@ -197,7 +196,7 @@ public class LevelSoundEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.sound = this.getByte();
-        Vector3f v = this.getVector3f();
+        Vector3f v = this.getVector3();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -211,7 +210,7 @@ public class LevelSoundEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putByte((byte) this.sound);
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.x, this.y, this.z);
         this.putVarInt(this.extraData);
         this.putVarInt(this.pitch);
         this.putBoolean(this.isBabyMob);

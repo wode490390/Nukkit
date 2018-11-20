@@ -26,7 +26,7 @@ public class CommandBlockUpdatePacket extends DataPacket {
     public void decode() {
         this.isBlock = this.getBoolean();
         if (this.isBlock) {
-            BlockVector3 v = this.getBlockVector3();
+            BlockVector3 v = this.getBlockPosition();
             this.x = v.x;
             this.y = v.y;
             this.z = v.z;
@@ -47,7 +47,7 @@ public class CommandBlockUpdatePacket extends DataPacket {
         this.reset();
         this.putBoolean(this.isBlock);
         if (this.isBlock) {
-            this.putBlockVector3(this.x, this.y, this.z);
+            this.putBlockPosition(this.x, this.y, this.z);
             this.putUnsignedVarInt(this.commandBlockMode);
             this.putBoolean(this.isRedstoneMode);
             this.putBoolean(this.isConditional);
