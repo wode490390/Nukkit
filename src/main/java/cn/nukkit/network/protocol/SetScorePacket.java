@@ -23,7 +23,7 @@ public class SetScorePacket extends DataPacket {
     }
 
     @Override
-    public void encode() throws Exception {
+    public void encode() {
         this.reset();
         this.putByte((byte) this.type);
         this.putUnsignedVarInt(this.entries.length);
@@ -38,9 +38,8 @@ public class SetScorePacket extends DataPacket {
                     this.putString(entry.customName);
                     break;
                 default:
-                    throw new Exception("Unknown entry type " + entry.type);
+                    //throw new Exception("Unknown entry type " + entry.type);
             }
         }
     }
-
 }
