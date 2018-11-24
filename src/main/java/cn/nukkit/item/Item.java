@@ -597,7 +597,8 @@ public class Item implements Cloneable, BlockID, ItemID {
             ench = tag.getList("ench", CompoundTag.class);
         }
 
-        for (CompoundTag entry : ench){
+        for (int k = 0; k < ench.size(); k++) {
+            CompoundTag entry = ench.get(k);
             if (entry.getShort("id") == id && (level == -1 || entry.getShort("lvl") == level)) {
                 ench.remove(entry);
                 break;
