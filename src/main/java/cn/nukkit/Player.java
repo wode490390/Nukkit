@@ -1387,7 +1387,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     @Override
-    public boolean canBeMovedByCurrents(int tickDiff) {
+    public boolean canBeMovedByCurrents() {
         return false; //currently has no server-side movement
     }
 
@@ -4635,7 +4635,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 }
 
                 if (entity.namedTag.contains("pickup")) {
-                    swite (entity.namedTag.getByte("pickup")) {
+                    switch (entity.namedTag.getByte("pickup")) {
                         case 0:
                             return false;
                         case 2:
