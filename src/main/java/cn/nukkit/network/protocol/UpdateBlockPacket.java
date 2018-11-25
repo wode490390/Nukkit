@@ -1,11 +1,11 @@
 package cn.nukkit.network.protocol;
 
-
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class UpdateBlockPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_BLOCK_PACKET;
 
     public static final int FLAG_NONE = 0b0000;
@@ -24,7 +24,7 @@ public class UpdateBlockPacket extends DataPacket {
     public int z;
     public int y;
     public int blockRuntimeId;
-    public int flags;
+    public int flags = 0x02;
     public int dataLayerId = DATA_LAYER_NORMAL;
 
     @Override
