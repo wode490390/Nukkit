@@ -55,10 +55,15 @@ public class NetworkInventoryAction {
      */
     public static final int SOURCE_TYPE_CONTAINER_DROP_CONTENTS = -100;
 
+    public static final int ACTION_MAGIC_SLOT_CREATIVE_DELETE_ITEM = 0;
+    public static final int ACTION_MAGIC_SLOT_CREATIVE_CREATE_ITEM = 1;
+
+    public static final int ACTION_MAGIC_SLOT_DROP_ITEM = 0;
+    public static final int ACTION_MAGIC_SLOT_PICKUP_ITEM = 1;
 
     public int sourceType;
-    public int windowId;
-    public long unknown;
+    public int windowId = ContainerIds.NONE;
+    public long sourceFlags = 0;
     public int inventorySlot;
     public Item oldItem;
     public Item newItem;
@@ -71,13 +76,12 @@ public class NetworkInventoryAction {
                 this.windowId = packet.getVarInt();
                 break;
             case SOURCE_WORLD:
-                this.unknown = packet.getUnsignedVarInt();
+                this.sourceFlags = packet.getUnsignedVarInt();
                 break;
             case SOURCE_CREATIVE:
                 break;
             case SOURCE_TODO:
                 this.windowId = packet.getVarInt();
-
                 switch (this.windowId) {
                     case SOURCE_TYPE_CRAFTING_RESULT:
                     case SOURCE_TYPE_CRAFTING_USE_INGREDIENT:
@@ -102,7 +106,7 @@ public class NetworkInventoryAction {
                 packet.putVarInt(this.windowId);
                 break;
             case SOURCE_WORLD:
-                packet.putUnsignedVarInt(this.unknown);
+                packet.putUnsignedVarInt(this.sourceFlags);
                 break;
             case SOURCE_CREATIVE:
                 break;
@@ -143,10 +147,10 @@ public class NetworkInventoryAction {
                 int type;
 
                 switch (this.inventorySlot) {
-                    case InventoryTransactionPacket.ACTION_MAGIC_SLOT_CREATIVE_DELETE_ITEM:
+                    case ACTION_MAGIC_SLOT_CREATIVE_DELETE_ITEM:
                         type = CreativeInventoryAction.TYPE_DELETE_ITEM;
                         break;
-                    case InventoryTransactionPacket.ACTION_MAGIC_SLOT_CREATIVE_CREATE_ITEM:
+                    case ACTION_MAGIC_SLOT_CREATIVE_CREATE_ITEM:
                         type = CreativeInventoryAction.TYPE_CREATE_ITEM;
                         break;
                     default:
@@ -188,22 +192,18 @@ public class NetworkInventoryAction {
 
                     switch (this.windowId) {
                         case SOURCE_TYPE_ANVIL_INPUT:
-                            //System.out.println("action input");
                             this.inventorySlot = 0;
                             return new SlotChangeAction(anvil, this.inventorySlot, this.oldItem, this.newItem);
                         case SOURCE_TYPE_ANVIL_MATERIAL:
-                            //System.out.println("material");
                             this.inventorySlot = 1;
                             return new SlotChangeAction(anvil, this.inventorySlot, this.oldItem, this.newItem);
                         case SOURCE_TYPE_ANVIL_OUTPUT:
-                            //System.out.println("action output");
                             break;
                         case SOURCE_TYPE_ANVIL_RESULT:
                             this.inventorySlot = 2;
                             anvil.clear(0);
                             anvil.clear(1);
                             anvil.setItem(2, this.oldItem);
-                            //System.out.println("action result");
                             return new SlotChangeAction(anvil, this.inventorySlot, this.oldItem, this.newItem);
                     }
                 }
