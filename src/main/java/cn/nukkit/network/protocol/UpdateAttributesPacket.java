@@ -2,9 +2,6 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.Attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Nukkit Project Team
  */
