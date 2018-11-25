@@ -9,25 +9,25 @@ public class ResourcePackClientResponsePacket extends DataPacket {
     public static final byte STATUS_HAVE_ALL_PACKS = 3;
     public static final byte STATUS_COMPLETED = 4;
 
-    public byte responseStatus;
-    public Entry[] packEntries;
+    public byte status;
+    public Entry[] packIds;
 
     @Override
     public void decode() {
-        this.responseStatus = (byte) this.getByte();
-        this.packEntries = new Entry[this.getLShort()];
-        for (int i = 0; i < this.packEntries.length; i++) {
+        this.status = (byte) this.getByte();
+        this.packIds = new Entry[this.getLShort()];
+        for (int i = 0; i < this.packIds.length; i++) {
             String[] entry = this.getString().split("_");
-            this.packEntries[i] = new Entry(entry[0], entry[1]);
+            this.packIds[i] = new Entry(entry[0], entry[1]);
         }
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putByte(this.responseStatus);
-        this.putLShort(this.packEntries.length);
-        for (Entry entry : this.packEntries) {
+        this.putByte(this.status);
+        this.putLShort(this.packIds.length);
+        for (Entry entry : this.packIds) {
             this.putString(entry.uuid.toString() + '_' + entry.version);
         }
     }
