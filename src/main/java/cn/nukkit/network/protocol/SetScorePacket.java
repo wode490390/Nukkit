@@ -10,7 +10,7 @@ public class SetScorePacket extends DataPacket {
     public static final int TYPE_REMOVE = 1;
 
     public int type;
-    public ScorePacketEntry[] entries = new ScorePacketEntry[];
+    public ScorePacketEntry[] entries = new ScorePacketEntry[0];
 
     @Override
     public byte pid() {
