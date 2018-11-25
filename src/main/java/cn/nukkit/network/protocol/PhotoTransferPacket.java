@@ -6,7 +6,7 @@ public class PhotoTransferPacket extends DataPacket {
 
     public String photoName;
     public String photoData;
-    public String bookId;
+    public String bookId; //photos are stored in a sibling directory to the games folder (screenshots/(some UUID)/bookID/example.png)
 
     @Override
     public byte pid() {
@@ -25,5 +25,4 @@ public class PhotoTransferPacket extends DataPacket {
         this.putString(this.photoData);
         this.putString(this.bookId);
     }
-
 }
