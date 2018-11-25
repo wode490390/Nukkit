@@ -7,6 +7,7 @@ public class ResourcePackStackPacket extends DataPacket {
     public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_STACK_PACKET;
 
     public boolean mustAccept = false;
+
     public ResourcePack[] behaviourPackStack = new ResourcePack[0];
     public ResourcePack[] resourcePackStack = new ResourcePack[0];
 
@@ -24,12 +25,14 @@ public class ResourcePackStackPacket extends DataPacket {
         for (ResourcePack entry : this.behaviourPackStack) {
             this.putString(entry.getPackId());
             this.putString(entry.getPackVersion());
+            this.putString(""); //TODO: subpack name
         }
 
         this.putUnsignedVarInt(this.resourcePackStack.length);
         for (ResourcePack entry : this.resourcePackStack) {
             this.putString(entry.getPackId());
             this.putString(entry.getPackVersion());
+            this.putString(""); //TODO: subpack name
         }
     }
 
