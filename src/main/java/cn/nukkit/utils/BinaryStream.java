@@ -547,10 +547,10 @@ public class BinaryStream {
     }
 
     public void putByteRotation(float rotation) {
-        this.putByte((byte) (rotation / (360 / 256)));
+        this.putByte((byte) (rotation / (360d / 256d)));
     }
 
     public float getByteRotation() {
-        return this.getByte() * (360 / 256);
+        return this.getByte() * (360d / 256d);
     }
 }
