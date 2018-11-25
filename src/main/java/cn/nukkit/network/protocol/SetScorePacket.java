@@ -2,6 +2,8 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.network.protocol.types.ScorePacketEntry;
 
+import java.util.List;
+
 public class SetScorePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_SCORE_PACKET;
@@ -10,7 +12,7 @@ public class SetScorePacket extends DataPacket {
     public static final int TYPE_REMOVE = 1;
 
     public int type;
-    public ScorePacketEntry[] entries;
+    public List<ScorePacketEntry> entries;
 
     @Override
     public byte pid() {
@@ -26,19 +28,22 @@ public class SetScorePacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putByte((byte) this.type);
-        this.putUnsignedVarInt(this.entries.length);
+        this.putUnsignedVarInt(this.entries.size());
         for (ScorePacketEntry entry : entries) {
-            this.putByte((byte) entry.type);
             switch (entry.type) {
                 case ScorePacketEntry.TYPE_PLAYER:
                 case ScorePacketEntry.TYPE_ENTITY:
+                    this.putByte((byte) entry.type);
                     this.putEntityUniqueId(entry.entityUniqueId);
                     break;
                 case ScorePacketEntry.TYPE_FAKE_PLAYER:
+                    this.putByte((byte) entry.type);
                     this.putString(entry.customName);
                     break;
                 default:
-                    //throw new Exception("Unknown entry type " + entry.type);
+                    this.putByte((byte) ScorePacketEntry.TYPE_FAKE_PLAYER);
+                    this.putString("Unknown type " + entry.type);
+                    break;
             }
         }
     }
