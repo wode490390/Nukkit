@@ -28,20 +28,22 @@ public class SetScorePacket extends DataPacket {
         this.putByte((byte) this.type);
         this.putUnsignedVarInt(this.entries.length);
         for (ScorePacketEntry entry : entries) {
-            switch (entry.type) {
-                case ScorePacketEntry.TYPE_PLAYER:
-                case ScorePacketEntry.TYPE_ENTITY:
-                    this.putByte((byte) entry.type);
-                    this.putEntityUniqueId(entry.entityUniqueId);
-                    break;
-                case ScorePacketEntry.TYPE_FAKE_PLAYER:
-                    this.putByte((byte) entry.type);
-                    this.putString(entry.customName);
-                    break;
-                default:
-                    this.putByte((byte) ScorePacketEntry.TYPE_FAKE_PLAYER);
-                    this.putString("Unknown type " + entry.type);
-                    break;
+            this.putVarLong(entry.scoreboardId);
+            this.putString(entry.objectiveName);
+            this.putLInt(entry.score);
+            if (this.type != TYPE_REMOVE) {
+                this.putByte((byte) entry.type);
+                switch (entry.type) {
+                    case ScorePacketEntry.TYPE_PLAYER:
+                    case ScorePacketEntry.TYPE_ENTITY:
+                        this.putEntityUniqueId(entry.entityUniqueId);
+                        break;
+                    case ScorePacketEntry.TYPE_FAKE_PLAYER:
+                        this.putString(entry.customName);
+                        break;
+                    default:
+                        throw new RuntimeException("Unknown entry type " + entry.type);
+                }
             }
         }
     }
