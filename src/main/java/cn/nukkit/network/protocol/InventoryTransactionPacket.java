@@ -8,6 +8,8 @@ import cn.nukkit.network.protocol.types.NetworkInventoryAction;
 
 public class InventoryTransactionPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
+
     public static final int TYPE_NORMAL = 0;
     public static final int TYPE_MISMATCH = 1;
     public static final int TYPE_USE_ITEM = 2;
@@ -24,26 +26,23 @@ public class InventoryTransactionPacket extends DataPacket {
     public static final int USE_ITEM_ON_ENTITY_ACTION_INTERACT = 0;
     public static final int USE_ITEM_ON_ENTITY_ACTION_ATTACK = 1;
 
-
-    public static final int ACTION_MAGIC_SLOT_DROP_ITEM = 0;
-    public static final int ACTION_MAGIC_SLOT_PICKUP_ITEM = 1;
-
-    public static final int ACTION_MAGIC_SLOT_CREATIVE_DELETE_ITEM = 0;
-    public static final int ACTION_MAGIC_SLOT_CREATIVE_CREATE_ITEM = 1;
-
     public int transactionType;
-    public NetworkInventoryAction[] actions;
-    public TransactionData transactionData;
 
     /**
      * NOTE: THIS FIELD DOES NOT EXIST IN THE PROTOCOL, it's merely used for convenience for PocketMine-MP to easily
      * determine whether we're doing a crafting transaction.
      */
     public boolean isCraftingPart = false;
+    //TODO: public boolean isFinalCraftingPart = false;
+
+    public NetworkInventoryAction[] actions;
+
+    public TransactionData trData;
+
 
     @Override
     public byte pid() {
-        return ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -61,7 +60,7 @@ public class InventoryTransactionPacket extends DataPacket {
             case TYPE_MISMATCH:
                 break;
             case TYPE_USE_ITEM:
-                UseItemData useItemData = (UseItemData) this.transactionData;
+                UseItemData useItemData = (UseItemData) this.trData;
 
                 this.putUnsignedVarInt(useItemData.actionType);
                 this.putBlockVector3(useItemData.blockPos);
@@ -72,7 +71,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 this.putVector3(useItemData.clickPos);
                 break;
             case TYPE_USE_ITEM_ON_ENTITY:
-                UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) this.transactionData;
+                UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) this.trData;
 
                 this.putEntityRuntimeId(useItemOnEntityData.entityRuntimeId);
                 this.putUnsignedVarInt(useItemOnEntityData.actionType);
@@ -82,7 +81,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 this.putVector3(useItemOnEntityData.clickPos.asVector3f());
                 break;
             case TYPE_RELEASE_ITEM:
-                ReleaseItemData releaseItemData = (ReleaseItemData) this.transactionData;
+                ReleaseItemData releaseItemData = (ReleaseItemData) this.trData;
 
                 this.putUnsignedVarInt(releaseItemData.actionType);
                 this.putVarInt(releaseItemData.hotbarSlot);
