@@ -22,10 +22,10 @@ public class LabTablePacket extends DataPacket {
     @Override
     public void decode() {
         this.uselessByte = (byte) this.getByte();
-        BlockVector3 vector = this.getSignedBlockPosition();
-        this.x = vector.x;
-        this.y = vector.y;
-        this.z = vector.z;
+        BlockVector3 v = this.getSignedBlockPosition();
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
         this.reactionType = this.getByte();
     }
 
