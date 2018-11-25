@@ -10,7 +10,7 @@ public class ResourcePackClientResponsePacket extends DataPacket {
     public static final byte STATUS_COMPLETED = 4;
 
     public byte status;
-    public Entry[] packIds;
+    public Entry[] packIds = new Entry[0];
 
     @Override
     public void decode() {
