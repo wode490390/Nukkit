@@ -6,42 +6,49 @@ import java.util.UUID;
 
 public class PlayerSkinPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.PLAYER_SKIN_PACKET;
+
     public UUID uuid;
-    public Skin skin;
-    public String newSkinName;
-    public String oldSkinName;
-    public boolean premium;
+    public String oldSkinName = "";
+    public String newSkinName = "";
+    public Skin skin = new Skin();
+    public boolean premiumSkin = false;
 
     @Override
     public byte pid() {
-        return ProtocolInfo.PLAYER_SKIN_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
     public void decode() {
-        uuid = getUUID();
-        skin = new Skin();
-        skin.setSkinId(getString());
-        newSkinName = getString();
-        oldSkinName = getString();
-        skin.setSkinData(getByteArray());
-        skin.setCapeData(getByteArray());
-        skin.setGeometryName(getString());
-        skin.setGeometryData(getString());
-        premium = getBoolean();
+        this.uuid = this.getUUID();
+
+        this.skin = new Skin();
+
+        this.skin.setSkinId(this.getString());
+        this.newSkinName = this.getString();
+        this.oldSkinName = this.getString();
+        this.skin.setSkinData(this.getByteArray());
+        this.skin.setCapeData(this.getByteArray());
+        this.skin.setGeometryName(this.getString());
+        this.skin.setGeometryData(this.getString());
+
+        this.premiumSkin = this.getBoolean();
     }
 
     @Override
     public void encode() {
         reset();
-        putUUID(uuid);
-        putString(skin.getGeometryName());
-        putString(newSkinName);
-        putString(oldSkinName);
-        putByteArray(skin.getSkinData());
-        putByteArray(skin.getCapeData());
-        putString(skin.getGeometryName());
-        putString(skin.getGeometryData());
-        putBoolean(premium);
+        this.putUUID(this.uuid);
+
+        this.putString(this.skin.getGeometryName());
+        this.putString(this.newSkinName);
+        this.putString(this.oldSkinName);
+        this.putByteArray(this.skin.getSkinData());
+        this.putByteArray(this.skin.getCapeData());
+        this.putString(this.skin.getGeometryName());
+        this.putString(this.skin.getGeometryData());
+
+        this.putBoolean(this.premiumSkin);
     }
 }
