@@ -13,7 +13,7 @@ public class RemoveObjectivePacket extends DataPacket {
 
     @Override
     public void decode() {
-
+        this.objectiveName = getString();
     }
 
     @Override
@@ -21,5 +21,4 @@ public class RemoveObjectivePacket extends DataPacket {
         this.reset();
         this.putString(this.objectiveName);
     }
-
 }
