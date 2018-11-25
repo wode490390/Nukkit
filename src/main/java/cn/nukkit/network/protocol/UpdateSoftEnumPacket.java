@@ -17,7 +17,7 @@ public class UpdateSoftEnumPacket extends DataPacket {
 
     @Override
     public byte pid() {
-        return ProtocolInfo.UPDATE_SOFT_ENUM_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
