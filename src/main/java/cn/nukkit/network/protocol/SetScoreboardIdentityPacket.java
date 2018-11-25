@@ -2,6 +2,7 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.network.protocol.types.ScoreboardIdentityPacketEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SetScoreboardIdentityPacket extends DataPacket {
@@ -12,7 +13,7 @@ public class SetScoreboardIdentityPacket extends DataPacket {
     public static final int TYPE_CLEAR_IDENTITY = 1;
 
     public int type;
-    public List<ScoreboardIdentityPacketEntry> entries;
+    public List<ScoreboardIdentityPacketEntry> entries = new ArrayList<ScoreboardIdentityPacketEntry>();
 
     @Override
     public byte pid() {
