@@ -2,7 +2,6 @@ package cn.nukkit.network.protocol.types;
 
 public class ScorePacketEntry {
 
-    public static final int TYPE_INVALID = 0;
     public static final int TYPE_PLAYER = 1;
     public static final int TYPE_ENTITY = 2;
     public static final int TYPE_FAKE_PLAYER = 3;
