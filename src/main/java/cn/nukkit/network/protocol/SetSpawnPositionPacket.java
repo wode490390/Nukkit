@@ -11,9 +11,9 @@ public class SetSpawnPositionPacket extends DataPacket {
     public static final int TYPE_WORLD_SPAWN = 1;
 
     public int spawnType;
+    public int x;
     public int y;
     public int z;
-    public int x;
     public boolean spawnForced = false;
 
     @Override
