@@ -2,6 +2,7 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.network.protocol.types.ScorePacketEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SetScorePacket extends DataPacket {
@@ -12,7 +13,7 @@ public class SetScorePacket extends DataPacket {
     public static final int TYPE_REMOVE = 1;
 
     public int type;
-    public List<ScorePacketEntry> entries;
+    public List<ScorePacketEntry> entries = new ArrayList<ScorePacketEntry>();
 
     @Override
     public byte pid() {
