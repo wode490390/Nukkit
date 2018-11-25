@@ -2,6 +2,9 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.Attribute;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Nukkit Project Team
  */
@@ -9,8 +12,8 @@ public class UpdateAttributesPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_ATTRIBUTES_PACKET;
 
-    public Attribute[] entries;
-    public long entityId;
+    public long entityRuntimeId;
+    public List<Attribute> entries = new ArrayList<Attribute>();
 
     @Override
     public byte pid() {
@@ -24,12 +27,12 @@ public class UpdateAttributesPacket extends DataPacket {
     public void encode() {
         this.reset();
 
-        this.putEntityRuntimeId(this.entityId);
+        this.putEntityRuntimeId(this.entityRuntimeId);
 
         if (this.entries == null) {
             this.putUnsignedVarInt(0);
         } else {
-            this.putUnsignedVarInt(this.entries.length);
+            this.putUnsignedVarInt(this.entries.size());
             for (Attribute entry : this.entries) {
                 this.putLFloat(entry.getMinValue());
                 this.putLFloat(entry.getMaxValue());
@@ -39,5 +42,4 @@ public class UpdateAttributesPacket extends DataPacket {
             }
         }
     }
-
 }
