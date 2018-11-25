@@ -28,7 +28,7 @@ public class UpdateSoftEnumPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putString(this.enumName);
-        this.putUnsignedVarInt(this.values.length);
+        this.putUnsignedVarInt(this.values.size());
         for (String value : this.values) {
             this.putString(value);
         }
