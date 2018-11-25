@@ -20,11 +20,8 @@ public class PurchaseReceiptPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putUnsignedVarInt(this.entries.length);
-        if (this.entries.length > 0) {
-            for (String entry : entries) {
-                this.putString(entry);
-            }
+        for (String entry : entries) {
+            this.putString(entry);
         }
     }
-
 }
