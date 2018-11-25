@@ -137,7 +137,7 @@ public class NetworkInventoryAction {
                 player.getServer().getLogger().debug("Player " + player.getName() + " has no open container with window ID " + this.windowId);
                 return null;
             case SOURCE_WORLD:
-                if (this.inventorySlot != InventoryTransactionPacket.ACTION_MAGIC_SLOT_DROP_ITEM) {
+                if (this.inventorySlot != ACTION_MAGIC_SLOT_DROP_ITEM) {
                     player.getServer().getLogger().debug("Only expecting drop-item world actions from the client!");
                     return null;
                 }
