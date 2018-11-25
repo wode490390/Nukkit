@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3f;
+import cn.nukkit.math.Vector3;
 
 /**
  * @author Nukkit Project Team
@@ -9,22 +9,17 @@ public class RespawnPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESPAWN_PACKET;
 
-    public float x;
-    public float y;
-    public float z;
+    public Vector3 position;
 
     @Override
     public void decode() {
-        Vector3f v = this.getVector3();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
+        this.position = this.getVector3().asVector3();
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putVector3(this.x, this.y, this.z);
+        this.putVector3(this.position.asVector3f());
     }
 
     @Override
