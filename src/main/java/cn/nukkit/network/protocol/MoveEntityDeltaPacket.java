@@ -1,22 +1,24 @@
 package cn.nukkit.network.protocol;
 
 public class MoveEntityDeltaPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.MOVE_ENTITY_DELTA_PACKET;
 
     public static final int FLAG_HAS_X = 0b1;
     public static final int FLAG_HAS_Y = 0b10;
     public static final int FLAG_HAS_Z = 0b100;
-    public static final int FLAG_HAS_YAW = 0b1000;
-    public static final int FLAG_HAS_HEAD_YAW = 0b10000;
-    public static final int FLAG_HAS_PITCH = 0b100000;
+    public static final int FLAG_HAS_ROT_X = 0b1000;
+    public static final int FLAG_HAS_ROT_Y = 0b1010;
+    public static final int FLAG_HAS_ROT_Z = 0b10100;
 
-    public int flags = 0;
-    public int xDelta = 0;
-    public int yDelta = 0;
-    public int zDelta = 0;
-    public double yawDelta = 0;
-    public double headYawDelta = 0;
-    public double pitchDelta = 0;
+    public long entityRuntimeId;
+    public int flags;
+    public int xDiff = 0;
+    public int yDiff = 0;
+    public int zDiff = 0;
+    public double xRot = 0d;
+    public double yRot = 0d;
+    public double zRot = 0d;
 
     @Override
     public byte pid() {
@@ -25,49 +27,51 @@ public class MoveEntityDeltaPacket extends DataPacket {
 
     @Override
     public void decode() {
+        this.entityRuntimeId = this.getEntityRuntimeId();
         this.flags = this.getByte();
-        this.xDelta = getCoordinate(FLAG_HAS_X);
-        this.yDelta = getCoordinate(FLAG_HAS_Y);
-        this.zDelta = getCoordinate(FLAG_HAS_Z);
-        this.yawDelta = getRotation(FLAG_HAS_YAW);
-        this.headYawDelta = getRotation(FLAG_HAS_HEAD_YAW);
-        this.pitchDelta = getRotation(FLAG_HAS_PITCH);
+        this.xDiff = this.maybeReadCoord(FLAG_HAS_X);
+        this.yDiff = this.maybeReadCoord(FLAG_HAS_Y);
+        this.zDiff = this.maybeReadCoord(FLAG_HAS_Z);
+        this.xRot = this.maybeReadRotation(FLAG_HAS_ROT_X);
+        this.yRot = this.maybeReadRotation(FLAG_HAS_ROT_Y);
+        this.zRot = this.maybeReadRotation(FLAG_HAS_ROT_Z);
     }
 
     @Override
     public void encode() {
+        this.putEntityRuntimeId(this.entityRuntimeId);
         this.putByte((byte) flags);
-        putCoordinate(FLAG_HAS_X, this.xDelta);
-        putCoordinate(FLAG_HAS_Y, this.yDelta);
-        putCoordinate(FLAG_HAS_Z, this.zDelta);
-        putRotation(FLAG_HAS_YAW, this.yawDelta);
-        putRotation(FLAG_HAS_HEAD_YAW, this.headYawDelta);
-        putRotation(FLAG_HAS_PITCH, this.pitchDelta);
+        this.maybeWriteCoord(FLAG_HAS_X, this.xDiff);
+        this.maybeWriteCoord(FLAG_HAS_Y, this.yDiff);
+        this.maybeWriteCoord(FLAG_HAS_Z, this.zDiff);
+        this.maybeWriteRotation(FLAG_HAS_ROT_X, this.xRot);
+        this.maybeWriteRotation(FLAG_HAS_ROT_Y, this.yRot);
+        this.maybeWriteRotation(FLAG_HAS_ROT_Z, this.zRot);
     }
 
-    private int getCoordinate(int flag) {
-        if ((flags & flag) != 0) {
+    private int maybeReadCoord(int flag) {
+        if ((this.flags & flag) != 0) {
             return this.getVarInt();
         }
         return 0;
     }
 
-    private double getRotation(int flag) {
-        if ((flags & flag) != 0) {
-            return this.getByte() * (360d / 256d);
+    private double maybeReadRotation(int flag) {
+        if ((this.flags & flag) != 0) {
+            return this.getByteRotation();
         }
         return 0d;
     }
 
-    private void putCoordinate(int flag, int value) {
-        if ((flags & flag) != 0) {
-            this.putVarInt(value);
+    private void maybeWriteCoord(int flag, int val) {
+        if ((this.flags & flag) != 0) {
+            this.putVarInt(val);
         }
     }
 
-    private void putRotation(int flag, double value) {
-        if ((flags & flag) != 0) {
-            this.putByte((byte) (value / (360d / 256d)));
+    private void maybeWriteRotation(int flag, double val) {
+        if ((this.flags & flag) != 0) {
+            this.putByteRotation(val);
         }
     }
 }
