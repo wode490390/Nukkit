@@ -1,8 +1,5 @@
 package cn.nukkit.network.protocol;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class UpdateSoftEnumPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_SOFT_ENUM_PACKET;
@@ -12,7 +9,7 @@ public class UpdateSoftEnumPacket extends DataPacket {
     public static final int TYPE_SET = 2;
 
     public String enumName = "";
-    public List<String> values = new ArrayList<String>();
+    public String[] values = new String[0];
     public int type;
 
     @Override
