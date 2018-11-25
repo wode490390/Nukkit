@@ -1,12 +1,13 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3f;
+import cn.nukkit.math.Vector3;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class LevelEventPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.LEVEL_EVENT_PACKET;
 
     public static final int EVENT_SOUND_CLICK = 1000;
@@ -68,7 +69,7 @@ public class LevelEventPacket extends DataPacket {
     public static final int EVENT_START_THUNDER = 3002;
     public static final int EVENT_STOP_RAIN = 3003;
     public static final int EVENT_STOP_THUNDER = 3004;
-    public static final int EVENT_PAUSE_GAME = 3005;
+    public static final int EVENT_PAUSE_GAME = 3005; //data: 1 to pause, 0 to resume
 
     public static final int EVENT_REDSTONE_TRIGGER = 3500;
     public static final int EVENT_CAULDRON_EXPLODE = 3501;
@@ -91,9 +92,7 @@ public class LevelEventPacket extends DataPacket {
     public static final int EVENT_ADD_PARTICLE_MASK = 0x4000;
 
     public int evid;
-    public float x = 0;
-    public float y = 0;
-    public float z = 0;
+    public Vector3 position;
     public int data = 0;
 
     @Override
@@ -104,10 +103,7 @@ public class LevelEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.evid = this.getVarInt();
-        Vector3f v = this.getVector3();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
+        this.position = this.getVector3().asVector3();
         this.data = this.getVarInt();
     }
 
@@ -115,7 +111,7 @@ public class LevelEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putVarInt(this.evid);
-        this.putVector3(this.x, this.y, this.z);
+        this.putVector3(this.position.asVector3f());
         this.putVarInt(this.data);
     }
 }
