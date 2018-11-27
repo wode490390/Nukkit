@@ -64,6 +64,8 @@ public class BossEventPacket extends DataPacket {
             case TYPE_TITLE:
                 this.title = this.getString();
                 break;
+            default:
+                break;
         }
     }
 
@@ -91,6 +93,8 @@ public class BossEventPacket extends DataPacket {
                 break;
             case TYPE_TITLE:
                 this.putString(this.title);
+                break;
+            default:
                 break;
         }
     }
