@@ -7,6 +7,7 @@ import cn.nukkit.math.BlockVector3;
  * Nukkit Project
  */
 public class ContainerOpenPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.CONTAINER_OPEN_PACKET;
 
     @Override
@@ -19,7 +20,7 @@ public class ContainerOpenPacket extends DataPacket {
     public int x;
     public int y;
     public int z;
-    public long entityId = -1;
+    public long entityUniqueId = -1;
 
     @Override
     public void decode() {
@@ -29,7 +30,7 @@ public class ContainerOpenPacket extends DataPacket {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
-        this.entityId = this.getEntityUniqueId();
+        this.entityUniqueId = this.getEntityUniqueId();
     }
 
     @Override
@@ -38,6 +39,6 @@ public class ContainerOpenPacket extends DataPacket {
         this.putByte((byte) this.windowId);
         this.putByte((byte) this.type);
         this.putBlockPosition(this.x, this.y, this.z);
-        this.putEntityUniqueId(this.entityId);
+        this.putEntityUniqueId(this.entityUniqueId);
     }
 }
