@@ -26,11 +26,12 @@ public class BossEventPacket extends DataPacket {
     public static final int TYPE_TEXTURE = 7;
 
     public long bossEid;
-    public int type;
+    public int eventType;
+
     public long playerEid;
     public float healthPercent;
     public String title = "";
-    public short unknown;
+    public short unknownShort;
     public int color;
     public int overlay;
     
@@ -42,7 +43,7 @@ public class BossEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.bossEid = this.getEntityUniqueId();
-        this.type = (int) this.getUnsignedVarInt();
+        this.eventType = (int) this.getUnsignedVarInt();
         switch (this.type) {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
@@ -52,7 +53,7 @@ public class BossEventPacket extends DataPacket {
                 this.title = this.getString();
                 this.healthPercent = this.getLFloat();
             case TYPE_UNKNOWN_6:
-                this.unknown = (short) this.getShort();
+                this.unknownShort = (short) this.getLShort();
             case TYPE_TEXTURE:
                 this.color = (int) this.getUnsignedVarInt();
                 this.overlay = (int) this.getUnsignedVarInt();
@@ -70,7 +71,7 @@ public class BossEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putEntityUniqueId(this.bossEid);
-        this.putUnsignedVarInt(this.type);
+        this.putUnsignedVarInt(this.eventType);
         switch (this.type) {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
@@ -80,7 +81,7 @@ public class BossEventPacket extends DataPacket {
                 this.putString(this.title);
                 this.putLFloat(this.healthPercent);
             case TYPE_UNKNOWN_6:
-                this.putShort(this.unknown);
+                this.putLShort(this.unknownShort);
             case TYPE_TEXTURE:
                 this.putUnsignedVarInt(this.color);
                 this.putUnsignedVarInt(this.overlay);
