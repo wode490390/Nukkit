@@ -1407,23 +1407,36 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (!this.isAlive() || !this.spawned || this.newPosition == null || this.teleportPosition != null || this.isSleeping()) {
             return;
         }
+
         Vector3 newPos = this.newPosition;
         double distanceSquared = newPos.distanceSquared(this);
+
         boolean revert = false;
-        if ((distanceSquared / ((double) (tickDiff * tickDiff))) > 100 && (newPos.y - this.y) > -5) {
+
+        if ((distanceSquared / ((double) (tickDiff * tickDiff))) > 100/* && (newPos.y - this.y) > -5*/) {
+            /* !!! BEWARE YE WHO ENTER HERE !!!
+             *
+             * This is NOT an anti-cheat check. It is a safety check.
+             * Without it hackers can teleport with freedom on their own and cause lots of undesirable behaviour, like
+             * freezes, lag spikes and memory exhaustion due to sync chunk loading and collision checks across large distances.
+             * Not only that, but high-latency players can trigger such behaviour innocently.
+             *
+             * If you must tamper with this code, be aware that this can cause very nasty results. Do not waste our time
+             * asking for help if you suffer the consequences of messing with this.
+             */
+            this.getServer().getLogger().warning(this.getName() + " moved too fast, reverting movement");
+            this.getServer().getLogger().debug("Old position: " + this.asVector3() + ", new position: " + this.newPosition);
             revert = true;
-        } else {
-            if (this.chunk == null || !this.chunk.isGenerated()) {
-                BaseFullChunk chunk = this.level.getChunk((int) newPos.x >> 4, (int) newPos.z >> 4, false);
-                if (chunk == null || !chunk.isGenerated()) {
-                    revert = true;
-                    this.nextChunkOrderRun = 0;
-                } else {
-                    if (this.chunk != null) {
-                        this.chunk.removeEntity(this);
-                    }
-                    this.chunk = chunk;
+        } else if (this.chunk == null || !this.chunk.isGenerated()) {
+            BaseFullChunk chunk = this.level.getChunk((int) newPos.x >> 4, (int) newPos.z >> 4, false);
+            if (chunk == null || !chunk.isGenerated()) {
+                revert = true;
+                this.nextChunkOrderRun = 0;
+            } else {
+                if (this.chunk != null) {
+                    this.chunk.removeEntity(this);
                 }
+                this.chunk = chunk;
             }
         }
 
@@ -1437,6 +1450,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             double dz = newPos.z - this.z;
 
             this.fastMove(dx, dy, dz);
+
             if (this.newPosition == null) {
                 return; //maybe solve that in better way
             }
@@ -1455,8 +1469,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     // Some say: I cant move my head when riding because the server
                     // blocked my movement
                     if (!this.isSleeping() && this.riding == null) {
-                        double diffHorizontalSqr = (diffX * diffX + diffZ * diffZ) / ((double) (tickDiff * tickDiff));
-                        if (diffHorizontalSqr > 0.125) {
+                        //double diffHorizontalSqr = (diffX * diffX + diffZ * diffZ) / ((double) (tickDiff * tickDiff));
+                        double diff = this.distanceSquared(newPos) / ((double) (tickDiff * tickDiff));
+                        if (diff > 0.0625/*diffHorizontalSqr > 0.125*/) {
                             PlayerInvalidMoveEvent ev;
                             this.getServer().getPluginManager().callEvent(ev = new PlayerInvalidMoveEvent(this, true));
                             if (!ev.isCancelled()) {
@@ -1464,6 +1479,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                                 if (revert) {
                                     this.server.getLogger().warning(this.getServer().getLanguage().translateString("nukkit.player.invalidMove", this.getName()));
+                                    this.getServer().getLogger().debug("Old position: " + this.asVector3() + ", new position: " + this.newPosition);
                                 }
                             }
                         }
