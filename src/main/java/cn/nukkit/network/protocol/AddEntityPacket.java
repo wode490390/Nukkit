@@ -2,6 +2,8 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.Attribute;
 import cn.nukkit.entity.data.EntityMetadata;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.utils.Binary;
 
 /**
@@ -9,6 +11,7 @@ import cn.nukkit.utils.Binary;
  * Nukkit Project
  */
 public class AddEntityPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.ADD_ENTITY_PACKET;
 
     @Override
@@ -16,21 +19,18 @@ public class AddEntityPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long entityUniqueId;
+    public long entityUniqueId; //TODO
     public long entityRuntimeId;
     public int type;
-    public float x;
-    public float y;
-    public float z;
-    public float speedX = 0f;
-    public float speedY = 0f;
-    public float speedZ = 0f;
-    public float yaw;
-    public float pitch;
-    public float headYaw;
-    public EntityMetadata metadata = new EntityMetadata();
+    public Vector3 position;
+    public Vector3 motion;
+    public float pitch = 0f;
+    public float yaw = 0f;
+    public float headYaw = 0f;
+
     public Attribute[] attributes = new Attribute[0];
-    public final Object[][] links = new Object[0][3];
+    public EntityMetadata metadata = new EntityMetadata();
+    public EntityLink[] links = new EntityLink[0];
 
     @Override
     public void decode() {
@@ -40,21 +40,27 @@ public class AddEntityPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityUniqueId(this.entityUniqueId);
+        this.putEntityUniqueId(this.entityUniqueId || this.entityRuntimeId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putUnsignedVarInt(this.type);
-        this.putVector3(this.x, this.y, this.z);
-        this.putVector3(this.speedX, this.speedY, this.speedZ);
+        this.putVector3(this.position.asVector3f());
+        this.putVector3Nullable(this.motion.asVector3f());
         this.putLFloat(this.pitch);
         this.putLFloat(this.yaw);
         this.putLFloat(this.headYaw);
-        this.putAttributeList(this.attributes);
+
+        this.putUnsignedVarInt(this.attributes.length);
+        for (Attribute attribute : attributes) {
+            this.putString(attribute.getId());
+            this.putLFloat(attribute.getMinValue());
+            this.putLFloat(attribute.getValue());
+            this.putLFloat(attribute.getMaxValue());
+        }
+
         this.put(Binary.writeMetadata(this.metadata));
         this.putUnsignedVarInt(this.links.length);
-        for (Object[] link : this.links) {
-            this.putVarLong((long) link[0]);
-            this.putVarLong((long) link[1]);
-            this.putByte((byte) link[2]);
+        for (EntityLink[] link : this.links) {
+            this.putEntityLink(link);
         }
     }
 }
