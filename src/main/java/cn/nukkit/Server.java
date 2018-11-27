@@ -1720,8 +1720,13 @@ public class Server {
         if (Objects.equals(name.trim(), "")) {
             return false;
         }
+        String path;
+        if (name.contains("/") || name.contains("\\")) {
+            path = name;
+        } else {
+            path = this.getDataPath() + "worlds/" + name + "/";
+        }
 
-        String path = this.getDataPath() + "worlds/" + name + "/";
         if (this.getLevelByName(name) == null) {
 
             if (LevelProviderManager.getProvider(path) == null) {
