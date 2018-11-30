@@ -263,6 +263,7 @@ public class Level implements ChunkManager, Metadatable {
         this.autoSave = server.getAutoSave();
 
         boolean convert = provider == McRegion.class || provider == LevelDB.class;
+        if (convert) throw new LevelException("We don't need to load LevelDB maps!");
         try {
             if (convert) {
                 String newPath = new File(path).getParent() + "/" + name + ".old/";
