@@ -8,6 +8,10 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class ItemPotionSplash extends ProjectileItem {
 
+    public ItemPotionSplash() {
+        this(0, 1);
+    }
+
     public ItemPotionSplash(Integer meta) {
         this(meta, 1);
     }
