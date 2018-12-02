@@ -1,6 +1,6 @@
 package cn.nukkit.item;
 
-public class ItemPotionLingering extends Item {
+public class ItemPotionLingering extends ProjectileItem {
 
     public ItemPotionLingering() {
         this(0, 1);
@@ -17,5 +17,25 @@ public class ItemPotionLingering extends Item {
     @Override
     public int getMaxStackSize() {
         return 1;
+    }
+
+    @Override
+    public boolean canBeActivated() {
+        return true;
+    }
+
+    @Override
+    public String getProjectileEntityType() {
+        return "LingeringPotion";
+    }
+
+    @Override
+    public float getThrowForce() {
+        return 1f;
+    }
+
+    @Override
+    protected void correctNBT(CompoundTag nbt) {
+        nbt.putInt("PotionId", this.meta);
     }
 }
