@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 
 /**
  * Created on 2016/1/5 by xtypr.
@@ -11,7 +11,7 @@ public class ChangeDimensionPacket extends DataPacket {
     public static final byte NETWORK_ID = ProtocolInfo.CHANGE_DIMENSION_PACKET;
 
     public int dimension;
-    public Vector3 position;
+    public Vector3f position;
     public boolean respawn = false;
 
     @Override
@@ -23,7 +23,7 @@ public class ChangeDimensionPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putVarInt(this.dimension);
-        this.putVector3(this.position.asVector3f());
+        this.putVector3(this.position);
         this.putBoolean(this.respawn);
     }
 
