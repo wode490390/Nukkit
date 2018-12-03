@@ -2,7 +2,7 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.item.Item;
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 import cn.nukkit.utils.Binary;
 
 /**
@@ -21,8 +21,8 @@ public class AddItemEntityPacket extends DataPacket {
     public long entityUniqueId; //TODO
     public long entityRuntimeId;
     public Item item;
-    public Vector3 position;
-    public Vector3 motion;
+    public Vector3f position;
+    public Vector3f motion;
     public EntityMetadata metadata = new EntityMetadata();
     public boolean isFromFishing = false;
 
@@ -37,8 +37,8 @@ public class AddItemEntityPacket extends DataPacket {
         this.putEntityUniqueId(this.entityUniqueId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putSlot(this.item);
-        this.putVector3(this.position.asVector3f());
-        this.putVector3(this.motion.asVector3f());
+        this.putVector3(this.position);
+        this.putVector3(this.motion);
         this.put(Binary.writeMetadata(metadata));
         this.putBoolean(this.isFromFishing);
     }
