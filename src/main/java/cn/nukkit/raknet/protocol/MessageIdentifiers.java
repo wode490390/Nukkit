@@ -2,6 +2,7 @@ package cn.nukkit.raknet.protocol;
 
 public interface MessageIdentifiers {
     //From https://github.com/OculusVR/RakNet/blob/master/Source/MessageIdentifiers.h
+
     //
     // RESERVED TYPES - DO NOT CHANGE THESE
     // All types from RakPeer
@@ -53,9 +54,12 @@ public interface MessageIdentifiers {
     /// message did not arrive (it may or may not have been delivered, probably not). On disconnect or shutdown, you will not get
     /// ID_SND_RECEIPT_LOSS for unsent messages, you should consider those messages as all lost.
     byte ID_SND_RECEIPT_LOSS = 0x0f;
+
+
     //
     // USER TYPES - DO NOT CHANGE THESE
     //
+
     /// RakPeer - In a client/server environment, our connection request to the server has been accepted.
     byte ID_CONNECTION_REQUEST_ACCEPTED = 0x10;
     /// RakPeer - Sent to the player when a connection request cannot be completed due to inability to connect.
@@ -98,6 +102,7 @@ public interface MessageIdentifiers {
     /// partLength (unsigned int), first part data (length <= MAX_MTU_SIZE). See the three parameters partCount, partTotal
     ///  and partLength in OnFileProgress in FileListTransferCBInterface.h
     byte ID_DOWNLOAD_PROGRESS = 0x1e;
+
     /// ConnectionGraph2 plugin - In a client/server environment, a client other than ourselves has disconnected gracefully.
     ///   Packet::systemAddress is modified to reflect the systemAddress of this client.
     byte ID_REMOTE_DISCONNECTION_NOTIFICATION = 0x1f;
@@ -106,16 +111,20 @@ public interface MessageIdentifiers {
     byte ID_REMOTE_CONNECTION_LOST = 0x20;
     /// ConnectionGraph2 plugin: Bytes 1-4 = count. for (count items) contains {SystemAddress, RakNetGUID, 2 byte ping}
     byte ID_REMOTE_NEW_INCOMING_CONNECTION = 0x21;
+
     /// FileListTransfer plugin - Setup data
     byte ID_FILE_LIST_TRANSFER_HEADER = 0x22;
     /// FileListTransfer plugin - A file
     byte ID_FILE_LIST_TRANSFER_FILE = 0x23;
     // Ack for reference push, to send more of the file
     byte ID_FILE_LIST_REFERENCE_PUSH_ACK = 0x24;
+
     /// DirectoryDeltaTransfer plugin - Request from a remote system for a download of a directory
     byte ID_DDT_DOWNLOAD_REQUEST = 0x25;
+
     /// RakNetTransport plugin - Transport provider message, used for remote console
     byte ID_TRANSPORT_STRING = 0x26;
+
     /// ReplicaManager plugin - Create an object
     byte ID_REPLICA_MANAGER_CONSTRUCTION = 0x27;
     /// ReplicaManager plugin - Changed scope of an object
@@ -126,6 +135,7 @@ public interface MessageIdentifiers {
     byte ID_REPLICA_MANAGER_DOWNLOAD_STARTED = 0x2a;
     /// ReplicaManager plugin - Finished downloading all serialized objects
     byte ID_REPLICA_MANAGER_DOWNLOAD_COMPLETE = 0x2b;
+
     /// RakVoice plugin - Open a communication channel
     byte ID_RAKVOICE_OPEN_CHANNEL_REQUEST = 0x2c;
     /// RakVoice plugin - Communication channel accepted
@@ -134,6 +144,7 @@ public interface MessageIdentifiers {
     byte ID_RAKVOICE_CLOSE_CHANNEL = 0x2e;
     /// RakVoice plugin - Voice data
     byte ID_RAKVOICE_DATA = 0x2f;
+
     /// Autopatcher plugin - Get a list of files that have changed since a certain date
     byte ID_AUTOPATCHER_GET_CHANGELIST_SINCE_DATE = 0x30;
     /// Autopatcher plugin - A list of files to create
@@ -153,6 +164,7 @@ public interface MessageIdentifiers {
     byte ID_AUTOPATCHER_FINISHED = 0x38;
     /// Autopatcher plugin - Returned to the user: You must restart the application to finish patching.
     byte ID_AUTOPATCHER_RESTART_APPLICATION = 0x39;
+
     /// NATPunchthrough plugin: internal
     byte ID_NAT_PUNCHTHROUGH_REQUEST = 0x3a;
     /// NATPunchthrough plugin: internal
@@ -167,6 +179,7 @@ public interface MessageIdentifiers {
     byte ID_NAT_CLIENT_READY = 0x3d;
     /// NATPunchthrough plugin: internal
     //ID_NAT_GROUP_PUNCHTHROUGH_FAILURE_NOTIFICATION,
+
     /// NATPunchthrough plugin: Destination system is not connected to the server. Bytes starting at offset 1 contains the
     ///  RakNetGUID destination field of NatPunchthroughClient::OpenNAT().
     byte ID_NAT_TARGET_NOT_CONNECTED = 0x3e;
@@ -186,6 +199,7 @@ public interface MessageIdentifiers {
     /// NATPunchthrough plugin: Punchthrough succeeded. See packet::systemAddress and packet::guid. Byte 1 contains 1 if you are the sender,
     ///  0 if not. You can now use RakPeer::Connect() or other calls to communicate with this system.
     byte ID_NAT_PUNCHTHROUGH_SUCCEEDED = 0x43;
+
     /// ReadyEvent plugin - Set the ready state for a particular system
     /// First 4 bytes after the message contains the id
     byte ID_READY_EVENT_SET = 0x44;
@@ -198,23 +212,29 @@ public interface MessageIdentifiers {
     /// \internal, do not process in your game
     /// ReadyEvent plugin - Request of ready event state - used for pulling data when newly connecting
     byte ID_READY_EVENT_QUERY = 0x47;
+
     /// Lobby packets. Second byte indicates type.
     byte ID_LOBBY_GENERAL = 0x48;
+
     // RPC3, RPC4 error
     byte ID_RPC_REMOTE_ERROR = 0x49;
     /// Plugin based replacement for RPC system
     byte ID_RPC_PLUGIN = 0x4a;
+
     /// FileListTransfer transferring large files in chunks that are read only when needed, to save memory
     byte ID_FILE_LIST_REFERENCE_PUSH = 0x4b;
     /// Force the ready event to all set
     byte ID_READY_EVENT_FORCE_ALL_SET = 0x4c;
+
     /// Rooms function
     byte ID_ROOMS_EXECUTE_FUNC = 0x4d;
     byte ID_ROOMS_LOGON_STATUS = 0x4e;
     byte ID_ROOMS_HANDLE_CHANGE = 0x4f;
+
     /// Lobby2 message
     byte ID_LOBBY2_SEND_MESSAGE = 0x50;
     byte ID_LOBBY2_SERVER_ERROR = 0x51;
+
     /// Informs user of a new host GUID. Packet::Guid contains this new host RakNetGuid. The old host can be read out using BitStream->Read(RakNetGuid) starting on byte 1
     /// This is not returned until connected to a remote system
     /// If the oldHost is UNASSIGNED_RAKNET_GUID, then this is the first time the host has been determined
@@ -257,18 +277,22 @@ public interface MessageIdentifiers {
     /// \note Only the designated client gets this message
     /// \sa RespondOnVerifiedJoinCapable()
     byte ID_FCM2_VERIFIED_JOIN_REJECTED = 0x5b;
+
     /// UDP proxy messages. Second byte indicates type.
     byte ID_UDP_PROXY_GENERAL = 0x5c;
+
     /// SQLite3Plugin - execute
     byte ID_SQLite3_EXEC = 0x5d;
     /// SQLite3Plugin - Remote database is unknown
     byte ID_SQLite3_UNKNOWN_DB = 0x5e;
     /// Events happening with SQLiteClientLoggerPlugin
     byte ID_SQLLITE_LOGGER = 0x5f;
+
     /// Sent to NatTypeDetectionServer
     byte ID_NAT_TYPE_DETECTION_REQUEST = 0x60;
     /// Sent to NatTypeDetectionClient. Byte 1 contains the type of NAT detected.
     byte ID_NAT_TYPE_DETECTION_RESULT = 0x61;
+
     /// Used by the router2 plugin
     byte ID_ROUTER_2_INTERNAL = 0x62;
     /// No path is available or can be established to the remote system
@@ -291,6 +315,7 @@ public interface MessageIdentifiers {
     /// The IP address for a forwarded connection has changed
     /// Read endpointGuid and port as per ID_ROUTER_2_FORWARDING_ESTABLISHED
     byte ID_ROUTER_2_REROUTED = 0x65;
+
     /// \internal Used by the team balancer plugin
     byte ID_TEAM_BALANCER_INTERNAL = 0x66;
     /// Cannot switch to the desired team because it is full. However, if someone on that team leaves, you will
@@ -304,10 +329,13 @@ public interface MessageIdentifiers {
     byte ID_TEAM_BALANCER_TEAM_REQUESTED_CANCELLED = 0x69;
     /// Team balancer plugin informing you of your team. Byte 1 contains the team you requested to join. Following bytes contain NetworkID of which member.
     byte ID_TEAM_BALANCER_TEAM_ASSIGNED = 0x6a;
+
     /// Gamebryo Lightspeed integration
     byte ID_LIGHTSPEED_INTEGRATION = 0x6b;
+
     /// XBOX integration
     byte ID_XBOX_LOBBY = 0x6c;
+
     /// The password we used to challenge the other system passed, meaning the other system has called TwoWayAuthentication::AddPassword() with the same password we passed to TwoWayAuthentication::Challenge()
     /// You can read the identifier used to challenge as follows:
     /// RakNet::BitStream bs(packet->data, packet->length, false); bs.IgnoreBytes(sizeof(RakNet::MessageID)); RakNet::RakString password; bs.Read(password);
@@ -326,6 +354,7 @@ public interface MessageIdentifiers {
     byte ID_TWO_WAY_AUTHENTICATION_OUTGOING_CHALLENGE_TIMEOUT = 0x71;
     /// \internal
     byte ID_TWO_WAY_AUTHENTICATION_NEGOTIATION = 0x72;
+
     /// CloudClient / CloudServer
     byte ID_CLOUD_POST_REQUEST = 0x73;
     byte ID_CLOUD_RELEASE_REQUEST = 0x74;
@@ -334,8 +363,10 @@ public interface MessageIdentifiers {
     byte ID_CLOUD_UNSUBSCRIBE_REQUEST = 0x77;
     byte ID_CLOUD_SERVER_TO_SERVER_COMMAND = 0x78;
     byte ID_CLOUD_SUBSCRIPTION_NOTIFICATION = 0x79;
+
     // LibVoice
     byte ID_LIB_VOICE = 0x7a;
+
     byte ID_RELAY_PLUGIN = 0x7b;
     byte ID_NAT_REQUEST_BOUND_ADDRESSES = 0x7c;
     byte ID_NAT_RESPOND_BOUND_ADDRESSES = 0x7d;
@@ -347,6 +378,7 @@ public interface MessageIdentifiers {
     byte ID_RESERVED_7 = 0x83;
     byte ID_RESERVED_8 = 0x84;
     byte ID_RESERVED_9 = 0x85;
+
     // For the user to use.  Start your first enumeration at this value.
     byte ID_USER_PACKET_ENUM = 0x86;
     //-------------------------------------------------------------------------------------------------------------
