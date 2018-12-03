@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 
 /**
  * Created on 15-10-14.
@@ -15,7 +15,7 @@ public class MovePlayerPacket extends DataPacket {
     public static final int MODE_PITCH = 3; //facepalm Mojang
 
     public long entityRuntimeId;
-    public Vector3 position;
+    public Vector3f position;
     public float pitch;
     public float yaw;
     public float headYaw;
@@ -28,7 +28,7 @@ public class MovePlayerPacket extends DataPacket {
     @Override
     public void decode() {
         this.entityRuntimeId = this.getEntityRuntimeId();
-        this.position = this.getVector3().asVector3();
+        this.position = this.getVector3();
         this.pitch = this.getLFloat();
         this.yaw = this.getLFloat();
         this.headYaw = this.getLFloat();
@@ -45,7 +45,7 @@ public class MovePlayerPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putEntityRuntimeId(this.entityRuntimeId);
-        this.putVector3(this.position.asVector3f());
+        this.putVector3(this.position);
         this.putLFloat(this.pitch);
         this.putLFloat(this.yaw);
         this.putLFloat(this.headYaw);
