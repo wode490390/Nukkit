@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 
 /**
  * author: MagicDroidX
@@ -10,9 +10,9 @@ public class ExplodePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.EXPLODE_PACKET;
 
-    public Vector3 position;
+    public Vector3f position;
     public float radius;
-    public Vector3[] records = new Vector3[0];
+    public Vector3f[] records = new Vector3f[0];
 
     @Override
     public byte pid() {
@@ -21,7 +21,7 @@ public class ExplodePacket extends DataPacket {
 
     @Override
     public DataPacket clean() {
-        this.records = new Vector3[0];
+        this.records = new Vector3f[0];
         return super.clean();
     }
 
@@ -33,11 +33,11 @@ public class ExplodePacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putVector3(this.position.asVector3f());
+        this.putVector3(this.position);
         this.putVarInt((int) (this.radius * 32));
         this.putUnsignedVarInt(this.records.length);
         if (this.records.length > 0) {
-            for (Vector3 record : records) {
+            for (Vector3f record : records) {
                 this.putSignedBlockPosition(record.asBlockVector3());
             }
         }
