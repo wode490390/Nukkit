@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 
 /**
  * author: MagicDroidX
@@ -92,7 +92,7 @@ public class LevelEventPacket extends DataPacket {
     public static final int EVENT_ADD_PARTICLE_MASK = 0x4000;
 
     public int evid;
-    public Vector3 position;
+    public Vector3f position;
     public int data = 0;
 
     @Override
@@ -103,7 +103,7 @@ public class LevelEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.evid = this.getVarInt();
-        this.position = this.getVector3().asVector3();
+        this.position = this.getVector3();
         this.data = this.getVarInt();
     }
 
@@ -111,7 +111,7 @@ public class LevelEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putVarInt(this.evid);
-        this.putVector3(this.position.asVector3f());
+        this.putVector3(this.position);
         this.putVarInt(this.data);
     }
 }
