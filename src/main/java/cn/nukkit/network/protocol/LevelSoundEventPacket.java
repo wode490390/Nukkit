@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 
 public class LevelSoundEventPacket extends DataPacket {
 
@@ -220,7 +220,7 @@ public class LevelSoundEventPacket extends DataPacket {
     public static final int SOUND_UNDEFINED = 214;
 
     public int sound;
-    public Vector3 position;
+    public Vector3f position;
     public int extraData = -1; //TODO: Check name
     public int pitch = 1; //TODO: Check name
     public boolean isBabyMob = false; //...
@@ -229,7 +229,7 @@ public class LevelSoundEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.sound = this.getByte();
-        this.position = this.getVector3().asVector3();
+        this.position = this.getVector3();
         this.extraData = this.getVarInt();
         this.pitch = this.getVarInt();
         this.isBabyMob = this.getBoolean();
@@ -240,7 +240,7 @@ public class LevelSoundEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putByte((byte) this.sound);
-        this.putVector3(this.position.asVector3f());
+        this.putVector3(this.position);
         this.putVarInt(this.extraData);
         this.putVarInt(this.pitch);
         this.putBoolean(this.isBabyMob);
