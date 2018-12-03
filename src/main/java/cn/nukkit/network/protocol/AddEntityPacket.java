@@ -2,7 +2,7 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.Attribute;
 import cn.nukkit.entity.data.EntityMetadata;
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.utils.Binary;
 
@@ -22,8 +22,8 @@ public class AddEntityPacket extends DataPacket {
     public long entityUniqueId; //TODO
     public long entityRuntimeId;
     public int type;
-    public Vector3 position;
-    public Vector3 motion;
+    public Vector3f position;
+    public Vector3f motion;
     public float pitch = 0f;
     public float yaw = 0f;
     public float headYaw = 0f;
@@ -43,8 +43,8 @@ public class AddEntityPacket extends DataPacket {
         this.putEntityUniqueId(this.entityUniqueId || this.entityRuntimeId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putUnsignedVarInt(this.type);
-        this.putVector3(this.position.asVector3f());
-        this.putVector3Nullable(this.motion.asVector3f());
+        this.putVector3(this.position);
+        this.putVector3Nullable(this.motion);
         this.putLFloat(this.pitch);
         this.putLFloat(this.yaw);
         this.putLFloat(this.headYaw);
