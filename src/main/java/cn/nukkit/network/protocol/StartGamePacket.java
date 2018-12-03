@@ -2,7 +2,7 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.level.GameRules;
 import cn.nukkit.level.GlobalBlockPalette;
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 import cn.nukkit.network.protocol.types.PlayerPermissions;
 
 /**
@@ -23,7 +23,7 @@ public class StartGamePacket extends DataPacket {
     public long entityRuntimeId;
     public int playerGamemode;
 
-    public Vector3 playerPosition;
+    public Vector3f playerPosition;
 
     public float pitch;
     public float yaw;
@@ -82,8 +82,7 @@ public class StartGamePacket extends DataPacket {
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putVarInt(this.playerGamemode);
 
-        this.putVector3(this.playerPosition.asVector3f());
-        this.putVector3(this.x, this.y, this.z);
+        this.putVector3(this.playerPosition);
 
         this.putLFloat(this.pitch);
         this.putLFloat(this.yaw);
