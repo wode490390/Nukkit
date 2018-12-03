@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 
 /**
  * author: MagicDroidX
@@ -15,7 +15,7 @@ public class MoveEntityAbsolutePacket extends DataPacket {
 
     public long entityRuntimeId;
     public int flags = 0;
-    public Vector3 position;
+    public Vector3f position;
     public double xRot;
     public double yRot;
     public double zRot;
@@ -40,7 +40,7 @@ public class MoveEntityAbsolutePacket extends DataPacket {
         this.reset();
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putByte(this.flags);
-        this.putVector3(this.position.asVector3f());
+        this.putVector3(this.position);
         this.putByteRotation(this.xRot);
         this.putByteRotation(this.yRot);
         this.putByteRotation(this.zRot);
