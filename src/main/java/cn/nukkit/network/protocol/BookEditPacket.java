@@ -36,6 +36,7 @@ public class BookEditPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putByte((byte) this.type);
+        this.putByte((byte) this.inventorySlot);
 
         switch (this.type) {
             case TYPE_REPLACE_PAGE:
