@@ -53,7 +53,7 @@ public class LoginPacket extends DataPacket {
 
     @Override
     public boolean mayHaveUnreadBytes() {
-        return this.protocol != null && this.protocol != ProtocolInfo.CURRENT_PROTOCOL;
+        return this.protocol != ProtocolInfo.CURRENT_PROTOCOL;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class LoginPacket extends DataPacket {
                 JsonObject extra = webtoken.get("extraData").getAsJsonObject();
                 if (extra.has("displayName")) this.username = extra.get("displayName").getAsString();
                 if (extra.has("identity")) this.clientUUID = UUID.fromString(extra.get("identity").getAsString());
-                if (extra.has("XUID")) this.xuid = extra.get("XUID").getAsString());
+                if (extra.has("XUID")) this.xuid = extra.get("XUID").getAsString();
             }
 
             if (webtoken.has("identityPublicKey")) this.identityPublicKey = webtoken.get("identityPublicKey").getAsString();
@@ -98,9 +98,9 @@ public class LoginPacket extends DataPacket {
         this.clientData = this.decodeToken(this.clientDataJwt);
 
         if (this.clientData.has("ClientRandomId")) this.clientId = this.clientData.get("ClientRandomId").getAsLong();
-        if (this.clientData.has("ServerAddress")) this.serverAddress = this.clientData.get("ServerAddress").getAsLong();
+        if (this.clientData.has("ServerAddress")) this.serverAddress = this.clientData.get("ServerAddress").getAsString();
 
-        if (this.clientData.has("LanguageCode")) this.locale = this.clientData.get("LanguageCode").getAsLong();
+        if (this.clientData.has("LanguageCode")) this.locale = this.clientData.get("LanguageCode").getAsString();
 
         this.skin = new Skin();
 
