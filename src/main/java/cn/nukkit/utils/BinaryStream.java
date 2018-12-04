@@ -233,7 +233,7 @@ public class BinaryStream {
 
                 list.add(attr);
             } else {
-                throw new Exception("Unknown attribute type \"" + name + "\"");
+                throw new Exception("Unknown attribute type \"" + id + "\"");
             }
         }
 
@@ -507,25 +507,26 @@ public class BinaryStream {
     }
 
     public CommandOriginData getCommandOriginData() {
-        CommandOriginData.Origin type = CommandOriginData.Origin.values()[(int) this.getUnsignedVarInt()];
-        UUID uuid = this.getUUID();
-        String requestId = this.getString();
-        Long varLong = null;
-        if (type == CommandOriginData.Origin.DEV_CONSOLE || type == CommandOriginData.Origin.TEST) {
-            varLong = this.getVarLong();
+        CommandOriginData result = new CommandOriginData();
+
+        result.type = (int) this.getUnsignedVarInt();
+        result.uuid = this.getUUID();
+        result.requestId = this.getString();
+
+        if (result.type == CommandOriginData.ORIGIN_DEV_CONSOLE || result.type == CommandOriginData.ORIGIN_TEST) {
+            result.varlong1 = this.getVarLong();
         }
-        return new CommandOriginData(type, uuid, requestId, varLong);
+
+        return result;
     }
 
     public void putCommandOriginData(CommandOriginData data) {
-        this.putUnsignedVarInt(data.type.ordinal());
+        this.putUnsignedVarInt(data.type);
         this.putUUID(data.uuid);
         this.putString(data.requestId);
-        if (data.type == CommandOriginData.Origin.DEV_CONSOLE || data.type == CommandOriginData.Origin.TEST) {
-            OptionalLong varLong = data.getVarLong();
-            if (varLong.isPresent()) {
-                this.putVarLong(varLong.getAsLong());
-            }
+
+        if (data.type == CommandOriginData.ORIGIN_DEV_CONSOLE || data.type == CommandOriginData.ORIGIN_TEST) {
+            this.putVarLong(data.varlong1);
         }
     }
 
@@ -559,6 +560,6 @@ public class BinaryStream {
     }
 
     public float getByteRotation() {
-        return this.getByte() * (360d / 256d);
+        return (float) (this.getByte() * (360d / 256d));
     }
 }
