@@ -2,6 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
@@ -98,8 +99,8 @@ public class BlockNoteblock extends BlockSolidMeta {
         pk.x = (int) this.x;
         pk.y = (int) this.y;
         pk.z = (int) this.z;
-        pk.case1 = instrument.ordinal();
-        pk.case2 = this.getStrength();
+        pk.eventType = instrument.ordinal();
+        pk.eventData = this.getStrength();
         this.getLevel().addChunkPacket((int) this.x >> 4, (int) this.z >> 4, pk);
 
         this.getLevel().addSound(this, instrument.getSound(), 1, this.getStrength()); //TODO: correct pitch
@@ -145,5 +146,10 @@ public class BlockNoteblock extends BlockSolidMeta {
         public Sound getSound() {
             return sound;
         }
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
     }
 }

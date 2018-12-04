@@ -3,6 +3,7 @@ package cn.nukkit.item;
 public class ItemPotion extends Item {
 
     public static final int NO_EFFECTS = 0;
+    public static final int WATER = 0;
     public static final int MUNDANE = 1;
     public static final int MUNDANE_II = 2;
     public static final int THICK = 3;
@@ -38,7 +39,12 @@ public class ItemPotion extends Item {
     public static final int STRENGTH_II = 33;
     public static final int WEAKNESS = 34;
     public static final int WEAKNESS_LONG = 35;
-    public static final int DECAY = 36;
+    public static final int WITHER_II = 36;
+    public static final int TURTLE_MASTER = 37;
+    public static final int TURTLE_MASTER_LONG = 38;
+    public static final int TURTLE_MASTER_II = 39;
+    public static final int SLOW_FALLING = 40;
+    public static final int SLOW_FALLING_LONG = 41;
 
     public ItemPotion() {
         this(0, 1);

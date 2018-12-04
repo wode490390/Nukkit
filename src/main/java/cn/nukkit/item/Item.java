@@ -577,7 +577,55 @@ public class Item implements Cloneable, BlockID, ItemID {
         return null;
     }
 
-    public void addEnchantment(Enchantment... enchantments) {
+    public Item removeEnchantment(int id) {
+        return this.removeEnchantment(id, -1);
+    }
+
+    public Item removeEnchantment(int id, int level) {
+        CompoundTag tag;
+        if (!this.hasCompoundTag()) {
+            tag = new CompoundTag();
+        } else {
+            tag = this.getNamedTag();
+        }
+
+        ListTag<CompoundTag> ench;
+        if (!tag.contains("ench")) {
+            ench = new ListTag<>("ench");
+            tag.putList(ench);
+        } else {
+            ench = tag.getList("ench", CompoundTag.class);
+        }
+
+        for (int k = 0; k < ench.size(); k++) {
+            CompoundTag entry = ench.get(k);
+            if (entry.getShort("id") == id && (level == -1 || entry.getShort("lvl") == level)) {
+                ench.remove(entry);
+                break;
+            }
+        }
+
+        this.setNamedTag(tag);
+
+        return this;
+    }
+
+    public Item removeEnchantments() {
+        CompoundTag tag;
+        if (!this.hasCompoundTag()) {
+            tag = new CompoundTag();
+        } else {
+            tag = this.getNamedTag();
+        }
+
+        tag.putList(new ListTag<>("ench"));
+
+        this.setNamedTag(tag);
+
+        return this;
+    }
+
+    public Item addEnchantment(Enchantment... enchantments) {
         CompoundTag tag;
         if (!this.hasCompoundTag()) {
             tag = new CompoundTag();
@@ -617,6 +665,8 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
 
         this.setNamedTag(tag);
+        
+        return this;
     }
 
     public Enchantment[] getEnchantments() {
@@ -998,7 +1048,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     public final boolean equals(Item item, boolean checkDamage, boolean checkCompound) {
-        if (this.getId() == item.getId() && (!checkDamage || this.getDamage() == item.getDamage())) {
+        if (item != null && this.getId() == item.getId() && (!checkDamage || this.getDamage() == item.getDamage())) {
             if (checkCompound) {
                 if (Arrays.equals(this.getCompoundTag(), item.getCompoundTag())) {
                     return true;

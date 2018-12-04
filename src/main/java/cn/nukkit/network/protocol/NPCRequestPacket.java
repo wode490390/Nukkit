@@ -2,9 +2,16 @@ package cn.nukkit.network.protocol;
 
 public class NPCRequestPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.NPC_REQUEST_PACKET;
+
+    public long entityRuntimeId;
+    public int requestType;
+    public String commandString;
+    public int actionType;
+
     @Override
     public byte pid() {
-        return ProtocolInfo.NPC_REQUEST_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -14,6 +21,10 @@ public class NPCRequestPacket extends DataPacket {
 
     @Override
     public void encode() {
-        //TODO
+        this.reset();
+        this.putEntityRuntimeId(this.entityRuntimeId);
+        this.putByte((byte) this.requestType);
+        this.putString(this.commandString);
+        this.putByte((byte) this.actionType);
     }
 }
