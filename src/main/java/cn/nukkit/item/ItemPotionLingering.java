@@ -1,5 +1,7 @@
 package cn.nukkit.item;
 
+import cn.nukkit.nbt.tag.CompoundTag;
+
 public class ItemPotionLingering extends ProjectileItem {
 
     public ItemPotionLingering() {
