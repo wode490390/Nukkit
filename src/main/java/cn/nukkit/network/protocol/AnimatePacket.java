@@ -14,7 +14,7 @@ public class AnimatePacket extends DataPacket {
 
     public int action;
     public long entityRuntimeId;
-    public float unknown = 0.0; //TODO (Boat rowing time?)
+    public float unknown = 0.0f; //TODO (Boat rowing time?)
 
     @Override
     public void decode() {
