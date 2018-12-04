@@ -69,7 +69,7 @@ public class Attribute implements Cloneable {
     }
 
     public static Attribute getAttribute(String id) {
-        return attributes.containsKey(id)) ? attributes.get(id).clone() : null;
+        return attributes.containsKey(id) ? attributes.get(id).clone() : null;
     }
 
     private Attribute(String id, float minValue, float maxValue, float defaultValue) {
@@ -78,7 +78,6 @@ public class Attribute implements Cloneable {
 
     private Attribute(String id, float minValue, float maxValue, float defaultValue, boolean shouldSend) {
         this.id = id;
-        this.name = name;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.defaultValue = defaultValue;
@@ -141,10 +140,6 @@ public class Attribute implements Cloneable {
 
     public float getValue() {
         return this.currentValue;
-    }
-
-    public Attribute setValue(float value) {
-        return setValue(value, true);
     }
 
     public Attribute setValue(float value) {
