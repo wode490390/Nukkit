@@ -71,7 +71,7 @@ public class MoveEntityDeltaPacket extends DataPacket {
 
     private void maybeWriteRotation(int flag, double val) {
         if ((this.flags & flag) != 0) {
-            this.putByteRotation(val);
+            this.putByteRotation((float) val);
         }
     }
 }
