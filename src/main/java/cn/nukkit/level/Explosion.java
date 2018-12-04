@@ -196,9 +196,9 @@ public class Explosion {
         }
 
         ExplodePacket pk = new ExplodePacket();
-        pk.position = this.source;
+        pk.position = this.source.asVector3f();
         pk.radius = (float) this.size;
-        pk.records = send.toArray(new Vector3[0]);
+        pk.records = send.toArray(new Vector3f[0]);
 
         this.level.addChunkPacket((int) source.x >> 4, (int) source.z >> 4, pk);
         this.level.addParticle(new HugeExplodeSeedParticle(this.source));
