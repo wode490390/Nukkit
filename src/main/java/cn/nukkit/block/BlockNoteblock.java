@@ -99,8 +99,8 @@ public class BlockNoteblock extends BlockSolidMeta {
         pk.x = (int) this.x;
         pk.y = (int) this.y;
         pk.z = (int) this.z;
-        pk.case1 = instrument.ordinal();
-        pk.case2 = this.getStrength();
+        pk.eventType = instrument.ordinal();
+        pk.eventData = this.getStrength();
         this.getLevel().addChunkPacket((int) this.x >> 4, (int) this.z >> 4, pk);
 
         this.getLevel().addSound(this, instrument.getSound(), 1, this.getStrength()); //TODO: correct pitch
