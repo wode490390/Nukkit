@@ -3033,6 +3033,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                         break;
                                     }
 
+                                    if (target instanceof EntityRideable) {
+                                        ((EntityRideable) target).mountEntity(this);
+                                    }
+
                                     if (target.onInteract(this, item) && this.isSurvival()) {
                                         if (item.isTool()) {
                                             if (item.useOn(target) && item.getDamage() >= item.getMaxDurability()) {
