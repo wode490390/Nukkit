@@ -118,7 +118,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 itemData.playerPos = this.getVector3().asVector3();
                 itemData.clickPos = this.getVector3();
 
-                this.transactionData = itemData;
+                this.trData = itemData;
                 break;
             case TYPE_USE_ITEM_ON_ENTITY:
                 UseItemOnEntityData useItemOnEntityData = new UseItemOnEntityData();
@@ -130,7 +130,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 useItemOnEntityData.playerPos = this.getVector3().asVector3();
                 useItemOnEntityData.clickPos = this.getVector3().asVector3();
 
-                this.transactionData = useItemOnEntityData;
+                this.trData = useItemOnEntityData;
                 break;
             case TYPE_RELEASE_ITEM:
                 ReleaseItemData releaseItemData = new ReleaseItemData();
@@ -140,7 +140,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 releaseItemData.itemInHand = getSlot();
                 releaseItemData.headRot = this.getVector3().asVector3();
 
-                this.transactionData = releaseItemData;
+                this.trData = releaseItemData;
                 break;
             default:
                 throw new RuntimeException("Unknown transaction type " + this.transactionType);
