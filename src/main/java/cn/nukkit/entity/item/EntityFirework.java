@@ -11,6 +11,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFirework;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
@@ -96,7 +97,7 @@ public class EntityFirework extends Entity {
 
             if (this.fireworkAge == 0) {
                 PlaySoundPacket pk = new PlaySoundPacket();
-                pk.name = Sound.FIREWORK_LAUNCH.getSound();
+                pk.soundName = Sound.FIREWORK_LAUNCH.getSound();
                 pk.volume = 1;
                 pk.pitch = 1;
                 pk.x = getFloorX();
@@ -111,17 +112,13 @@ public class EntityFirework extends Entity {
             hasUpdate = true;
             if (this.fireworkAge >= this.lifetime) {
                 EntityEventPacket pk = new EntityEventPacket();
-                pk.data = 0;
-                pk.event = EntityEventPacket.FIREWORK_EXPLOSION;
-                pk.eid = this.getId();
+                pk.event = EntityEventPacket.FIREWORK_PARTICLES;
+                pk.entityRuntimeId = this.getId();
 
                 LevelSoundEventPacket pk2 = new LevelSoundEventPacket();
                 pk2.sound = LevelSoundEventPacket.SOUND_LARGE_BLAST;
-                pk2.extraData = -1;
                 pk2.pitch = -1;
-                pk2.x = (float) getX();
-                pk2.y = (float) getY();
-                pk2.z = (float) getZ();
+                pk2.position = new Vector3(this.x, this.y, this.z).asVector3f();
 
                 Server.broadcastPacket(getViewers().values(), pk);
                 this.level.addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk2);
