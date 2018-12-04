@@ -44,7 +44,7 @@ public class BossEventPacket extends DataPacket {
     public void decode() {
         this.bossEid = this.getEntityUniqueId();
         this.eventType = (int) this.getUnsignedVarInt();
-        switch (this.type) {
+        switch (this.eventType) {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
                 this.playerEid = this.getEntityUniqueId();
@@ -74,7 +74,7 @@ public class BossEventPacket extends DataPacket {
         this.reset();
         this.putEntityUniqueId(this.bossEid);
         this.putUnsignedVarInt(this.eventType);
-        switch (this.type) {
+        switch (this.eventType) {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
                 this.putEntityUniqueId(this.playerEid);
