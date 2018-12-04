@@ -11,10 +11,14 @@ public class EntityLink {
     public int type;
     public boolean immediate; //for dismounting on mount death
 
+    public EntityLink(long fromEntityUniqueId, long toEntityUniqueId, int type) {
+        this(fromEntityUniqueId, toEntityUniqueId, type, false)
+    }
+
     public EntityLink(long fromEntityUniqueId, long toEntityUniqueId, int type, boolean immediate) {
         this.fromEntityUniqueId = fromEntityUniqueId;
         this.toEntityUniqueId = toEntityUniqueId;
         this.type = type;
-        this.immediate = immediate || false;
+        this.immediate = immediate;
     }
 }
