@@ -25,6 +25,7 @@ import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.*;
+import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.Task;
@@ -849,10 +850,7 @@ public abstract class Entity extends Location implements Metadatable {
 
         if (this.riding != null) {
             SetEntityLinkPacket pkk = new SetEntityLinkPacket();
-            pkk.rider = this.riding.getId();
-            pkk.riding = this.getId();
-            pkk.type = 1;
-            pkk.unknownByte = 1;
+            pkk.link = new EntityLink(this.riding.getId(), this.getId(), EntityLink.TYPE_RIDER, true);
 
             player.dataPacket(pkk);
         }
@@ -866,12 +864,8 @@ public abstract class Entity extends Location implements Metadatable {
         addEntity.yaw = (float) this.yaw;
         addEntity.headYaw = (float) this.yaw;
         addEntity.pitch = (float) this.pitch;
-        addEntity.x = (float) this.x;
-        addEntity.y = (float) this.y;
-        addEntity.z = (float) this.z;
-        addEntity.speedX = (float) this.motionX;
-        addEntity.speedY = (float) this.motionY;
-        addEntity.speedZ = (float) this.motionZ;
+        addEntity.position = this.asVector3f();
+        addEntity.motion = this.getMotion().asVector3f();
         addEntity.metadata = this.dataProperties;
         return addEntity;
     }
@@ -883,7 +877,7 @@ public abstract class Entity extends Location implements Metadatable {
     public void sendPotionEffects(Player player) {
         for (Effect effect : this.effects.values()) {
             MobEffectPacket pk = new MobEffectPacket();
-            pk.eid = this.getId();
+            pk.entityRuntimeId = this.getId();
             pk.effectId = effect.getId();
             pk.amplifier = effect.getAmplifier();
             pk.particles = effect.isVisible();
@@ -900,7 +894,7 @@ public abstract class Entity extends Location implements Metadatable {
 
     public void sendData(Player player, EntityMetadata data) {
         SetEntityDataPacket pk = new SetEntityDataPacket();
-        pk.eid = this.getId();
+        pk.entityRuntimeId = this.getId();
         pk.metadata = data == null ? this.dataProperties : data;
 
         player.dataPacket(pk);
@@ -912,7 +906,7 @@ public abstract class Entity extends Location implements Metadatable {
 
     public void sendData(Player[] players, EntityMetadata data) {
         SetEntityDataPacket pk = new SetEntityDataPacket();
-        pk.eid = this.getId();
+        pk.entityRuntimeId = this.getId();
         pk.metadata = data == null ? this.dataProperties : data;
 
         for (Player player : players) {
@@ -929,7 +923,7 @@ public abstract class Entity extends Location implements Metadatable {
     public void despawnFrom(Player player) {
         if (this.hasSpawned.containsKey(player.getLoaderId())) {
             RemoveEntityPacket pk = new RemoveEntityPacket();
-            pk.eid = this.getId();
+            pk.entityUniqueId = this.getId();
             player.dataPacket(pk);
             this.hasSpawned.remove(player.getLoaderId());
         }
@@ -1268,10 +1262,8 @@ public abstract class Entity extends Location implements Metadatable {
         int chunkX = this.getFloorX() >> 16;
         int chunkZ = this.getFloorZ() >> 16;
         SetEntityMotionPacket pk = new SetEntityMotionPacket();
-        pk.eid = this.getId();
-        pk.motionX = (float) motionX;
-        pk.motionY = (float) motionY;
-        pk.motionZ = (float) motionZ;
+        pk.entityRuntimeId = this.getId();
+        pk.motion = new Vector3(motionX, motionY, motionZ).asVector3f();
         this.level.addChunkPacket(chunkX, chunkZ, pk);
     }
 
