@@ -19,11 +19,11 @@ public class AddEntityPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long entityUniqueId; //TODO
-    public long entityRuntimeId;
-    public int type;
-    public Vector3f position;
-    public Vector3f motion;
+    public long entityUniqueId = 0; //TODO
+    public long entityRuntimeId = 0;
+    public int type = 0;
+    public Vector3f position = new Vector3f();
+    public Vector3f motion = new Vector3f();
     public float pitch = 0f;
     public float yaw = 0f;
     public float headYaw = 0f;
