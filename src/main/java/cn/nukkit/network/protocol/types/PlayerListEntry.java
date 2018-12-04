@@ -17,15 +17,15 @@ public class PlayerListEntry {
         this.uuid = uuid;
     }
 
-    public PlayerListEntry(UUID uuid, int entityUniqueId, String username, Skin skin) {
+    public PlayerListEntry(UUID uuid, long entityUniqueId, String username, Skin skin) {
         this(uuid, entityUniqueId, username, skin, "");
     }
 
-    public PlayerListEntry(UUID uuid, int entityUniqueId, String username, Skin skin, String xboxUserId) {
+    public PlayerListEntry(UUID uuid, long entityUniqueId, String username, Skin skin, String xboxUserId) {
         this(uuid, entityUniqueId, username, skin, xboxUserId, "");
     }
 
-    public PlayerListEntry(UUID uuid, int entityUniqueId, String username, Skin skin, String xboxUserId, String platformChatId) { //createAdditionEntry
+    public PlayerListEntry(UUID uuid, long entityUniqueId, String username, Skin skin, String xboxUserId, String platformChatId) { //createAdditionEntry
         this.uuid = uuid;
         this.entityUniqueId = entityUniqueId;
         this.username = username;
