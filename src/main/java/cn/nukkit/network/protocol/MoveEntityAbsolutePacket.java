@@ -39,10 +39,10 @@ public class MoveEntityAbsolutePacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putEntityRuntimeId(this.entityRuntimeId);
-        this.putByte(this.flags);
+        this.putByte((byte) this.flags);
         this.putVector3(this.position);
-        this.putByteRotation(this.xRot);
-        this.putByteRotation(this.yRot);
-        this.putByteRotation(this.zRot);
+        this.putByteRotation((float) this.xRot);
+        this.putByteRotation((float) this.yRot);
+        this.putByteRotation((float) this.zRot);
     }
 }
