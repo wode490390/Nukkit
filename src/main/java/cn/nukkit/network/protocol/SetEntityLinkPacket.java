@@ -9,7 +9,7 @@ public class SetEntityLinkPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_ENTITY_LINK_PACKET;
 
-    public EntityLink link;
+    public EntityLink link = new EntityLink();
 
     @Override
     public void decode() {
