@@ -91,8 +91,8 @@ public class LevelEventPacket extends DataPacket {
 
     public static final int EVENT_ADD_PARTICLE_MASK = 0x4000;
 
-    public int evid;
-    public Vector3f position;
+    public int evid = 0;
+    public Vector3f position = new Vector3f();
     public int data = 0;
 
     @Override
