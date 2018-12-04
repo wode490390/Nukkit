@@ -12,19 +12,19 @@ public class EntityLink {
     public boolean immediate = false; //for dismounting on mount death
 
     public EntityLink() {
-        this(0)
+        this(0);
     }
 
     public EntityLink(long fromEntityUniqueId) {
-        this(fromEntityUniqueId, 0)
+        this(fromEntityUniqueId, 0);
     }
 
     public EntityLink(long fromEntityUniqueId, long toEntityUniqueId) {
-        this(fromEntityUniqueId, toEntityUniqueId, 0)
+        this(fromEntityUniqueId, toEntityUniqueId, 0);
     }
 
     public EntityLink(long fromEntityUniqueId, long toEntityUniqueId, int type) {
-        this(fromEntityUniqueId, toEntityUniqueId, type, false)
+        this(fromEntityUniqueId, toEntityUniqueId, type, false);
     }
 
     public EntityLink(long fromEntityUniqueId, long toEntityUniqueId, int type, boolean immediate) {
