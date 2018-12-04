@@ -139,12 +139,8 @@ public class EntityThrownTrident extends EntityProjectile {
         pk.type = EntityThrownTrident.NETWORK_ID;
         pk.entityUniqueId = this.getId();
         pk.entityRuntimeId = this.getId();
-        pk.x = (float) this.x;
-        pk.y = (float) this.y;
-        pk.z = (float) this.z;
-        pk.speedX = (float) this.motionX;
-        pk.speedY = (float) this.motionY;
-        pk.speedZ = (float) this.motionZ;
+        pk.position = this.asVector3f();
+        pk.motion = this.getMotion().asVector3f();
         pk.yaw = (float) this.yaw;
         pk.pitch = (float) this.pitch;
         pk.metadata = this.dataProperties;
