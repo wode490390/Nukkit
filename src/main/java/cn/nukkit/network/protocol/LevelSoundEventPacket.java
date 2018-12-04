@@ -219,8 +219,8 @@ public class LevelSoundEventPacket extends DataPacket {
     public static final int SOUND_BUCKET_EMPTY_FISH = 213;
     public static final int SOUND_UNDEFINED = 214;
 
-    public int sound;
-    public Vector3f position;
+    public int sound = -1;
+    public Vector3f position = new Vector3f();
     public int extraData = -1; //TODO: Check name
     public int pitch = 1; //TODO: Check name
     public boolean isBabyMob = false; //...
