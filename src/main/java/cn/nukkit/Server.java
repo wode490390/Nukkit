@@ -54,6 +54,7 @@ import cn.nukkit.network.protocol.BatchPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.PlayerListPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
+import cn.nukkit.network.protocol.types.PlayerListEntry;
 import cn.nukkit.network.query.QueryHandler;
 import cn.nukkit.network.rcon.RCON;
 import cn.nukkit.permission.BanEntry;
@@ -922,7 +923,7 @@ public class Server {
 
             PlayerListPacket pk = new PlayerListPacket();
             pk.type = PlayerListPacket.TYPE_REMOVE;
-            pk.entries = new PlayerListPacket.Entry[]{new PlayerListPacket.Entry(player.getUniqueId())};
+            pk.entries = new PlayerListEntry[]{new PlayerListEntry(player.getUniqueId())};
 
             Server.broadcastPacket(this.playerList.values(), pk);
         }
@@ -943,7 +944,7 @@ public class Server {
     public void updatePlayerListData(UUID uuid, long entityId, String name, Skin skin, String xboxUserId, Player[] players) {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_ADD;
-        pk.entries = new PlayerListPacket.Entry[]{new PlayerListPacket.Entry(uuid, entityId, name, skin, xboxUserId)};
+        pk.entries = new PlayerListEntry[]{new PlayerListEntry(uuid, entityId, name, skin, xboxUserId)};
         Server.broadcastPacket(players, pk);
     }
 
@@ -961,7 +962,7 @@ public class Server {
     public void removePlayerListData(UUID uuid, Player[] players) {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_REMOVE;
-        pk.entries = new PlayerListPacket.Entry[]{new PlayerListPacket.Entry(uuid)};
+        pk.entries = new PlayerListEntry[]{new PlayerListEntry(uuid)};
         Server.broadcastPacket(players, pk);
     }
 
@@ -973,13 +974,13 @@ public class Server {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_ADD;
         pk.entries = this.playerList.values().stream()
-                .map(p -> new PlayerListPacket.Entry(
+                .map(p -> new PlayerListEntry(
                 p.getUniqueId(),
                 p.getId(),
                 p.getDisplayName(),
                 p.getSkin(),
                 p.getLoginChainData().getXUID()))
-                .toArray(PlayerListPacket.Entry[]::new);
+                .toArray(PlayerListEntry[]::new);
 
         player.dataPacket(pk);
     }
