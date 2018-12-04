@@ -13,12 +13,12 @@ public class MoveEntityAbsolutePacket extends DataPacket {
     public static final int FLAG_GROUND = 0x01;
     public static final int FLAG_TELEPORT = 0x02;
 
-    public long entityRuntimeId;
+    public long entityRuntimeId = 0;
     public int flags = 0;
-    public Vector3f position;
-    public double xRot;
-    public double yRot;
-    public double zRot;
+    public Vector3f position = new Vector3f();
+    public double xRot = 0.0d;
+    public double yRot = 0.0d;
+    public double zRot = 0.0d;
 
     @Override
     public byte pid() {
