@@ -461,7 +461,7 @@ public class Level implements ChunkManager, Metadatable {
         Preconditions.checkArgument(pitch >= 0, "Sound pitch must be higher than 0");
 
         PlaySoundPacket packet = new PlaySoundPacket();
-        packet.name = sound.getSound();
+        packet.soundName = sound.getSound();
         packet.volume = 1;
         packet.pitch = 1;
         packet.x = pos.getFloorX();
@@ -492,10 +492,8 @@ public class Level implements ChunkManager, Metadatable {
         pk.sound = type;
         pk.pitch = pitch;
         pk.extraData = data;
-        pk.x = (float) pos.x;
-        pk.y = (float) pos.y;
-        pk.z = (float) pos.z;
-        pk.isGlobal = isGlobal;
+        pk.position = pos.asVector3f();
+        pk.disableRelativeVolume = isGlobal;
 
         this.addChunkPacket(pos.getFloorX() >> 4, pos.getFloorZ() >> 4, pk);
     }
@@ -936,9 +934,7 @@ public class Level implements ChunkManager, Metadatable {
     public void sendBlockExtraData(int x, int y, int z, int id, int data, Player[] players) {
         LevelEventPacket pk = new LevelEventPacket();
         pk.evid = LevelEventPacket.EVENT_SET_DATA;
-        pk.x = x + 0.5f;
-        pk.y = y + 0.5f;
-        pk.z = z + 0.5f;
+        pk.position = new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f);
         pk.data = (data << 8) | id;
 
         Server.broadcastPacket(players, pk);
@@ -947,9 +943,7 @@ public class Level implements ChunkManager, Metadatable {
     public void sendBlockExtraData(int x, int y, int z, int id, int data, Collection<Player> players) {
         LevelEventPacket pk = new LevelEventPacket();
         pk.evid = LevelEventPacket.EVENT_SET_DATA;
-        pk.x = x + 0.5f;
-        pk.y = y + 0.5f;
-        pk.z = z + 0.5f;
+        pk.position = new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f);
         pk.data = (data << 8) | id;
 
         Server.broadcastPacket(players, pk);
@@ -3150,23 +3144,24 @@ public class Level implements ChunkManager, Metadatable {
 
     public void addEntityMotion(int chunkX, int chunkZ, long entityId, double x, double y, double z) {
         SetEntityMotionPacket pk = new SetEntityMotionPacket();
-        pk.eid = entityId;
-        pk.motionX = (float) x;
-        pk.motionY = (float) y;
-        pk.motionZ = (float) z;
+        pk.entityRuntimeId = entityId;
+        pk.motion = new Vector3(x, y, z).asVector3f();
 
         this.addChunkPacket(chunkX, chunkZ, pk);
     }
 
     public void addEntityMovement(int chunkX, int chunkZ, long entityId, double x, double y, double z, double yaw, double pitch, double headYaw) {
         MoveEntityAbsolutePacket pk = new MoveEntityAbsolutePacket();
-        pk.eid = entityId;
-        pk.x = (float) x;
-        pk.y = (float) y;
-        pk.z = (float) z;
-        pk.yaw = (float) yaw;
-        pk.headYaw = (float) yaw;
-        pk.pitch = (float) pitch;
+        pk.entityRuntimeId = entityId;
+        pk.flags = MoveEntityAbsolutePacket.FLAG_GROUND;
+        pk.position = new Vector3(x, y, z).asVector3f();
+
+        //this looks very odd but is correct as of 1.5.0.7
+        //for arrows this is actually x/y/z rotation
+        //for mobs x and z are used for pitch and yaw, and y is used for headyaw
+        pk.xRot = pitch;
+        pk.yRot = yaw; //TODO: head yaw
+        pk.zRot = yaw;
 
         this.addChunkPacket(chunkX, chunkZ, pk);
     }
