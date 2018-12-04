@@ -40,7 +40,7 @@ public class AddEntityPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityUniqueId(this.entityUniqueId || this.entityRuntimeId);
+        this.putEntityUniqueId(this.entityUniqueId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putUnsignedVarInt(this.type);
         this.putVector3(this.position);
@@ -59,7 +59,7 @@ public class AddEntityPacket extends DataPacket {
 
         this.put(Binary.writeMetadata(this.metadata));
         this.putUnsignedVarInt(this.links.length);
-        for (EntityLink[] link : this.links) {
+        for (EntityLink link : this.links) {
             this.putEntityLink(link);
         }
     }
