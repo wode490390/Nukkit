@@ -4,7 +4,7 @@ public class ModalFormResponsePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MODAL_FORM_RESPONSE_PACKET;
 
-    public int formId;
+    public long formId;
     public String formData; //json
 
     @Override
