@@ -24,7 +24,7 @@ public class AddHangingEntityPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityUniqueId(this.entityUniqueId || this.entityRuntimeId);
+        this.putEntityUniqueId(this.entityUniqueId);
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putBlockPosition(this.x, this.y, this.z);
         this.putVarInt(this.direction);
