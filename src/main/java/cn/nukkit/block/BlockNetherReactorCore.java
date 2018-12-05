@@ -11,13 +11,13 @@ public class BlockNetherReactorCore extends BlockSolidMeta {
     public static final int STATE_ACTIVE = 1;
     public static final int STATE_USED = 2;
 
-	public BlockNetherReactorCore() {
+    public BlockNetherReactorCore() {
         this(0);
-	}
+    }
 
-	public BlockNetherReactorCore(int meta) {
+    public BlockNetherReactorCore(int meta) {
         super(meta);
-	}
+    }
 
     @Override
     public String getName() {
