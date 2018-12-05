@@ -216,6 +216,11 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
         return this.namedTag.getList("Patterns").size();
     }
 
+    @Override
+    public CompoundTag getSpawnCompound() {
+        return null;
+    }
+
     public static class Pattern {
 
         public int color;
