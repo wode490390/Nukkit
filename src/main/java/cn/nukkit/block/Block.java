@@ -295,7 +295,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
             list[PODZOL] = BlockPodzol.class; //243
             list[BEETROOT_BLOCK] = BlockBeetroot.class; //244
-			list[STONECUTTER] = BlockStonecutter.class; //245
+            list[STONECUTTER] = BlockStonecutter.class; //245
             list[GLOWING_OBSIDIAN] = BlockObsidianGlowing.class; //246
             list[NETHER_REACTOR_CORE] = BlockNetherReactorCore.class; //247
 
