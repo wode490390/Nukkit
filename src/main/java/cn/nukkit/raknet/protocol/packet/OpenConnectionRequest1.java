@@ -1,13 +1,15 @@
 package cn.nukkit.raknet.protocol.packet;
 
 import cn.nukkit.raknet.RakNet;
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
+import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class OpenConnectionRequest1 extends Packet {
+public class OpenConnectionRequest1 extends OfflineMessage {
 
     public static final byte ID = MessageIdentifiers.ID_OPEN_CONNECTION_REQUEST_1;
 
