@@ -19,4 +19,6 @@ public interface ServerInstance {
     void notifyACK(String identifier, int identifierACK);
 
     void handleOption(String option, String value);
+
+    void updatePing(String identifier, int pingMS);
 }
