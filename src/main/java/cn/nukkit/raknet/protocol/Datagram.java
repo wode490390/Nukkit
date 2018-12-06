@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class DataPacket extends Packet {
+public abstract class Datagram extends Packet {
 
     public ConcurrentLinkedQueue<Object> packets = new ConcurrentLinkedQueue<>();
 
@@ -56,10 +56,9 @@ public abstract class DataPacket extends Packet {
     }
 
     @Override
-    public DataPacket clone() throws CloneNotSupportedException {
-        DataPacket packet = (DataPacket) super.clone();
+    public Datagram clone() throws CloneNotSupportedException {
+        Datagram packet = (Datagram) super.clone();
         packet.packets = new ConcurrentLinkedQueue<>(this.packets);
         return packet;
     }
-
 }
