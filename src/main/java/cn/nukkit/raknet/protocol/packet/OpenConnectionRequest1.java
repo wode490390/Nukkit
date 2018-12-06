@@ -7,21 +7,22 @@ import cn.nukkit.raknet.protocol.Packet;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class OPEN_CONNECTION_REQUEST_1 extends Packet {
-    public static final byte ID = (byte) 0x05;
+public class OpenConnectionRequest1 extends Packet {
+
+    public static final byte ID = MessageIdentifiers.ID_OPEN_CONNECTION_REQUEST_1;
 
     @Override
     public byte getID() {
         return ID;
     }
 
-    public byte protocol = RakNet.PROTOCOL;
+    public byte protocol = RakNet.PROTOCOL; //RakNet.DEFAULT_PROTOCOL_VERSION
     public short mtuSize;
 
     @Override
     public void encode() {
         super.encode();
-        this.put(RakNet.MAGIC);
+        this.writeMagic();
         this.putByte(this.protocol);
         this.put(new byte[this.mtuSize - 18]);
     }
@@ -29,7 +30,7 @@ public class OPEN_CONNECTION_REQUEST_1 extends Packet {
     @Override
     public void decode() {
         super.decode();
-        this.offset += 16; //skip magic bytes
+        this.readMagic();
         this.protocol = this.getByte();
         this.mtuSize = (short) this.buffer.length;
     }
@@ -38,9 +39,8 @@ public class OPEN_CONNECTION_REQUEST_1 extends Packet {
 
         @Override
         public Packet create() {
-            return new OPEN_CONNECTION_REQUEST_1();
+            return new OpenConnectionRequest1();
         }
 
     }
-
 }
