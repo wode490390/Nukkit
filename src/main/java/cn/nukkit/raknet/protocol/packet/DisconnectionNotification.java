@@ -1,13 +1,15 @@
 package cn.nukkit.raknet.protocol.packet;
 
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class CLIENT_DISCONNECT_DataPacket extends Packet {
-    public static final byte ID = (byte) 0x15;
+public class DisconnectionNotification extends Packet {
+
+    public static final byte ID = MessageIdentifiers.ID_DISCONNECTION_NOTIFICATION;
 
     @Override
     public byte getID() {
@@ -18,7 +20,7 @@ public class CLIENT_DISCONNECT_DataPacket extends Packet {
 
         @Override
         public Packet create() {
-            return new CLIENT_DISCONNECT_DataPacket();
+            return new DisconnectionNotification();
         }
 
     }
