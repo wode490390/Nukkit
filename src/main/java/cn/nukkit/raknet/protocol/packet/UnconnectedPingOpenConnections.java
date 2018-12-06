@@ -1,13 +1,15 @@
 package cn.nukkit.raknet.protocol.packet;
 
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class UNCONNECTED_PING_OPEN_CONNECTIONS extends UNCONNECTED_PING {
-    public static final byte ID = (byte) 0x02;
+public class UnconnectedPingOpenConnections extends UnconnectedPing {
+
+    public static final byte ID = MessageIdentifiers.ID_UNCONNECTED_PING_OPEN_CONNECTIONS;
 
     @Override
     public byte getID() {
@@ -18,7 +20,7 @@ public class UNCONNECTED_PING_OPEN_CONNECTIONS extends UNCONNECTED_PING {
 
         @Override
         public Packet create() {
-            return new UNCONNECTED_PING_OPEN_CONNECTIONS();
+            return new UnconnectedPingOpenConnections();
         }
 
     }
