@@ -18,35 +18,35 @@ public abstract class PacketReliability {
     public static final int RELIABLE_ORDERED_WITH_ACK_RECEIPT = 7;
 
     public static boolean isReliable(int reliability) {
-		return (
-			reliability == RELIABLE ||
-			reliability == RELIABLE_ORDERED ||
-			reliability == RELIABLE_SEQUENCED ||
-			reliability == RELIABLE_WITH_ACK_RECEIPT ||
-			reliability == RELIABLE_ORDERED_WITH_ACK_RECEIPT
-		);
+        return (
+            reliability == RELIABLE ||
+            reliability == RELIABLE_ORDERED ||
+            reliability == RELIABLE_SEQUENCED ||
+            reliability == RELIABLE_WITH_ACK_RECEIPT ||
+            reliability == RELIABLE_ORDERED_WITH_ACK_RECEIPT
+        );
     }
 
     public static boolean isSequenced(int reliability) {
-		return (
-			reliability == UNRELIABLE_SEQUENCED ||
-			reliability == RELIABLE_SEQUENCED
-		);
+        return (
+            reliability == UNRELIABLE_SEQUENCED ||
+            reliability == RELIABLE_SEQUENCED
+        );
     }
 
     public static boolean isOrdered(int reliability) {
-		return (
-			reliability == RELIABLE_ORDERED ||
-			reliability == RELIABLE_ORDERED_WITH_ACK_RECEIPT
-		);
+        return (
+            reliability == RELIABLE_ORDERED ||
+            reliability == RELIABLE_ORDERED_WITH_ACK_RECEIPT
+        );
     }
 
     public static boolean isSequencedOrOrdered(int reliability) {
-		return (
-			reliability == UNRELIABLE_SEQUENCED ||
-			reliability == RELIABLE_ORDERED ||
-			reliability == RELIABLE_SEQUENCED ||
-			reliability == RELIABLE_ORDERED_WITH_ACK_RECEIPT
-		);
+        return (
+            reliability == UNRELIABLE_SEQUENCED ||
+            reliability == RELIABLE_ORDERED ||
+            reliability == RELIABLE_SEQUENCED ||
+            reliability == RELIABLE_ORDERED_WITH_ACK_RECEIPT
+        );
     }
 }
