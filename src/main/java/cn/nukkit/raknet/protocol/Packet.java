@@ -1,6 +1,7 @@
 package cn.nukkit.raknet.protocol;
 
 import cn.nukkit.utils.Binary;
+import cn.nukkit.utils.IPv6Converter;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,8 @@ import java.util.Arrays;
  * Nukkit Project
  */
 public abstract class Packet implements Cloneable {
+
+    public static final byte ID = -1;
 
     protected int offset = 0;
     public byte[] buffer;
@@ -143,8 +146,14 @@ public abstract class Packet implements Cloneable {
                 this.putByte((byte) ((~Integer.valueOf(b)) & 0xff));
             }
             this.putShort(port);
+        } else if (version == 6) {
+            this.put(Binary.writeLShort(10));
+            this.putShort(port);
+            this.putInt(0);
+            this.put(IPv6Converter.toByte(addr));
+            this.putInt(0);
         } else {
-            //todo ipv6
+            throw new RuntimeException("IP version " + version + " is not supported");
         }
     }
 
@@ -157,13 +166,14 @@ public abstract class Packet implements Cloneable {
     }
 
     public void decode() {
-        this.offset = 1;
+        this.getByte(); //PID
     }
 
     public Packet clean() {
         this.buffer = null;
         this.offset = 0;
         this.sendTime = null;
+
         return this;
     }
 
