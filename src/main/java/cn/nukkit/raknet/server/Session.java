@@ -18,13 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Nukkit Project
  */
 public class Session {
-    public final static int STATE_UNCONNECTED = 0;
-    public final static int STATE_CONNECTING_1 = 1;
-    public final static int STATE_CONNECTING_2 = 2;
-    public final static int STATE_CONNECTED = 3;
+    public final static int STATE_CONNECTING = 0;
+    public final static int STATE_CONNECTED = 1;
+    public final static int STATE_DISCONNECTING = 2;
+    public final static int STATE_DISCONNECTED = 3;
 
     public final static int MAX_SPLIT_SIZE = 128;
     public final static int MAX_SPLIT_COUNT = 4;
+
+    private final static int CHANNEL_COUNT = 32;
 
     public static final int WINDOW_SIZE = 2048;
 
@@ -37,7 +39,7 @@ public class Session {
     private SessionManager sessionManager;
     private final String address;
     private final int port;
-    private int state = STATE_UNCONNECTED;
+    private int state = STATE_CONNECTING;
     //private List<EncapsulatedPacket> preJoinQueue = new ArrayList<>();
     private int mtuSize = MIN_MTU_SIZE;
     private long id = 0;
@@ -53,7 +55,7 @@ public class Session {
 
     private final List<DataPacket> packetToSend = new ArrayList<>();
 
-    private boolean isActive;
+    private boolean isActive = false;
 
     private Map<Integer, Integer> ACKQueue = new HashMap<>();
     private Map<Integer, Integer> NACKQueue = new HashMap<>();
@@ -69,17 +71,23 @@ public class Session {
     private int windowStart;
     private final Map<Integer, Integer> receivedWindow = new TreeMap<>();
     private int windowEnd;
+    private int highestSeqNumberThisTick = -1;
 
     private int reliableWindowStart;
     private int reliableWindowEnd;
     private final Map<Integer, EncapsulatedPacket> reliableWindow = new TreeMap<>();
     private int lastReliableIndex = -1;
 
-    public Session(SessionManager sessionManager, String address, int port) {
+    private int lastPingTime = -1;
+    private int lastPingMeasure = 1;
+
+    public Session(SessionManager sessionManager, String address, int port, int clientId, int mtuSize) {
         this.sessionManager = sessionManager;
         this.address = address;
         this.port = port;
+        this.id = clientId;
         this.sendQueue = new DATA_PACKET_4();
+
         this.lastUpdate = System.currentTimeMillis();
         this.startTime = System.currentTimeMillis();
         this.isActive = false;
@@ -92,6 +100,8 @@ public class Session {
         for (int i = 0; i < 32; i++) {
             this.channelIndex.put(i, 0);
         }
+
+        this.mtuSize = mtuSize;
     }
 
     public String getAddress() {
@@ -199,6 +209,16 @@ public class Session {
             this.recoveryQueue.put(this.sendQueue.seqNumber, this.sendQueue);
             this.sendQueue = new DATA_PACKET_4();
         }
+    }
+
+    public void sendPing() throws Exception {
+        this.sendPing(PacketReliability.UNRELIABLE);
+    }
+
+    public void sendPing(int reliability) throws Exception {
+        ConnectedPing pk = new ConnectedPing();
+		pk.sendPingTime = this.sessionManager.getRakNetTimeMS();
+		this.queueConnectedPacket(pk, reliability, 0, RakNet.PRIORITY_IMMEDIATE);
     }
 
     private void addToQueue(EncapsulatedPacket pk) throws Exception {
@@ -370,6 +390,10 @@ public class Session {
         return isTemporal;
     }
 
+    public boolean isConnected() {
+        return this.state != STATE_DISCONNECTING && this.state != STATE_DISCONNECTED;
+    }
+
     private void handleEncapsulatedPacketRoute(EncapsulatedPacket packet) throws Exception {
         if (this.sessionManager == null) {
             return;
@@ -458,9 +482,15 @@ public class Session {
         }
     }
 
+    public void handlePong(int sendPingTime, int sendPongTime) throws Exception {
+        this.lastPingMeasure = this.sessionManager.getRakNetTimeMS() - sendPingTime;
+        this.sessionManager.streamPingMeasure(this, this.lastPingMeasure);
+    }
+
     public void handlePacket(Packet packet) throws Exception {
         this.isActive = true;
         this.lastUpdate = System.currentTimeMillis();
+
         if (this.state == STATE_CONNECTED || this.state == STATE_CONNECTING_2) {
             if (((packet.buffer[0] & 0xff) >= 0x80 || (packet.buffer[0] & 0xff) <= 0x8f) && packet instanceof DataPacket) {
                 DataPacket dp = (DataPacket) packet;
@@ -545,6 +575,11 @@ public class Session {
                 }
             }
         }
+    }
+
+    public void flagForDisconnection() {
+        this.state = STATE_DISCONNECTING;
+        this.disconnectionTime = System.currentTimeMillis();
     }
 
     public void close() throws Exception {
