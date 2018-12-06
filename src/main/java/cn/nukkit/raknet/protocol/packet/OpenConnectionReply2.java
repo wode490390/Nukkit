@@ -1,6 +1,7 @@
 package cn.nukkit.raknet.protocol.packet;
 
-import cn.nukkit.raknet.RakNet;
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
+import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
 
 import java.net.InetSocketAddress;
@@ -9,8 +10,9 @@ import java.net.InetSocketAddress;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class OPEN_CONNECTION_REPLY_2 extends Packet {
-    public static final byte ID = (byte) 0x08;
+public class OpenConnectionReply2 extends Packet {
+
+    public static final byte ID = MessageIdentifiers.ID_OPEN_CONNECTION_REPLY_2;
 
     @Override
     public byte getID() {
@@ -21,33 +23,35 @@ public class OPEN_CONNECTION_REPLY_2 extends Packet {
     public String clientAddress;
     public int clientPort;
     public short mtuSize;
+    public boolean serverSecurity = false;
 
     @Override
     public void encode() {
         super.encode();
-        this.put(RakNet.MAGIC);
+        this.writeMagic();
         this.putLong(this.serverID);
         this.putAddress(this.clientAddress, this.clientPort);
         this.putShort(this.mtuSize);
-        this.putByte((byte) 0); //server security
+        this.putByte((byte) (this.serverSecurity ? 1 : 0));
     }
 
     @Override
     public void decode() {
         super.decode();
-        this.offset += 16; //skip magic bytes
+        this.readMagic();
         this.serverID = this.getLong();
         InetSocketAddress address = this.getAddress();
         this.clientAddress = address.getHostString();
         this.clientPort = address.getPort();
-        this.mtuSize = this.getSignedShort();
+        this.mtuSize = this.getShort();
+        this.serverSecurity = (this.getByte() != 0);
     }
 
     public static final class Factory implements Packet.PacketFactory {
 
         @Override
         public Packet create() {
-            return new OPEN_CONNECTION_REPLY_2();
+            return new OpenConnectionReply2();
         }
 
     }
