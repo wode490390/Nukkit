@@ -1,14 +1,16 @@
 package cn.nukkit.raknet.protocol.packet;
 
-import cn.nukkit.raknet.RakNet;
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
+import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class UNCONNECTED_PONG extends Packet {
-    public static final byte ID = (byte) 0x1c;
+public class UnconnectedPong extends OfflineMessage {
+
+    public static final byte ID = MessageIdentifiers.ID_UNCONNECTED_PONG;
 
     @Override
     public byte getID() {
@@ -24,7 +26,7 @@ public class UNCONNECTED_PONG extends Packet {
         super.encode();
         this.putLong(this.pingID);
         this.putLong(this.serverID);
-        this.put(RakNet.MAGIC);
+        this.writeMagic();
         this.putString(this.serverName);
     }
 
@@ -33,7 +35,7 @@ public class UNCONNECTED_PONG extends Packet {
         super.decode();
         this.pingID = this.getLong();
         this.serverID = this.getLong();
-        this.offset += 16; //skip magic bytes todo:check magic?
+        this.readMagic();
         this.serverName = this.getString();
     }
 
@@ -41,7 +43,7 @@ public class UNCONNECTED_PONG extends Packet {
 
         @Override
         public Packet create() {
-            return new UNCONNECTED_PONG();
+            return new UnconnectedPong();
         }
 
     }
