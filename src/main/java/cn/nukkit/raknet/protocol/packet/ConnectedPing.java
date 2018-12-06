@@ -1,38 +1,40 @@
 package cn.nukkit.raknet.protocol.packet;
 
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class PING_DataPacket extends Packet {
-    public static final byte ID = (byte) 0x00;
+public class ConnectedPing extends Packet {
+
+    public static final byte ID = MessageIdentifiers.ID_CONNECTED_PING;
 
     @Override
     public byte getID() {
         return ID;
     }
 
-    public long pingID;
+    public long sendPingTime;
 
     @Override
     public void encode() {
         super.encode();
-        this.putLong(this.pingID);
+        this.putLong(this.sendPingTime);
     }
 
     @Override
     public void decode() {
         super.decode();
-        this.pingID = this.getLong();
+        this.sendPingTime = this.getLong();
     }
 
     public static final class Factory implements Packet.PacketFactory {
 
         @Override
         public Packet create() {
-            return new PING_DataPacket();
+            return new ConnectedPing();
         }
 
     }
