@@ -1,6 +1,5 @@
 package cn.nukkit.raknet.protocol.packet;
 
-import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.MessageIdentifiers;
 import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
