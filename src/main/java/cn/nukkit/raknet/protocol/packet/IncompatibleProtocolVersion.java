@@ -1,6 +1,8 @@
 package cn.nukkit.raknet.protocol;
 
-import cn.nukkit.raknet.RakNet;
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
+import cn.nukkit.raknet.protocol.OfflineMessage;
+import cn.nukkit.raknet.protocol.Packet;
 
 public class IncompatibleProtocolVersion extends OfflineMessage {
 
@@ -13,12 +15,6 @@ public class IncompatibleProtocolVersion extends OfflineMessage {
 
     public int protocolVersion = 0;
     public long serverId = 0;
-
-    @Override
-    public Packet clean() {
-        this.magic = new byte[16];
-        return super.clean();
-    }
 
     @Override
     public void encode() {
@@ -34,5 +30,14 @@ public class IncompatibleProtocolVersion extends OfflineMessage {
         this.protocolVersion = this.getByte();
         this.readMagic();
         this.serverId = this.getLong();
+    }
+
+    public static final class Factory implements Packet.PacketFactory {
+
+        @Override
+        public Packet create() {
+            return new IncompatibleProtocolVersion();
+        }
+
     }
 }
