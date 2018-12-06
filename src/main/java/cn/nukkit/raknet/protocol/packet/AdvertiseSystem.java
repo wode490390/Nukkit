@@ -7,7 +7,7 @@ import cn.nukkit.raknet.protocol.Packet;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class ADVERTISE_SYSTEM extends Packet {
+public class AdvertiseSystem extends Packet {
 
     public static final byte ID = MessageIdentifiers.ID_ADVERTISE_SYSTEM;
 
@@ -34,7 +34,7 @@ public class ADVERTISE_SYSTEM extends Packet {
 
         @Override
         public Packet create() {
-            return new ADVERTISE_SYSTEM();
+            return new AdvertiseSystem();
         }
 
     }
