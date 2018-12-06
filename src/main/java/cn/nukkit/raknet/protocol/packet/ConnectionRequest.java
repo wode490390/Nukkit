@@ -1,5 +1,6 @@
 package cn.nukkit.raknet.protocol.packet;
 
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
@@ -7,7 +8,8 @@ import cn.nukkit.raknet.protocol.Packet;
  * Nukkit Project
  */
 public class ConnectionRequest extends Packet {
-    public static final byte ID = (byte) 0x09;
+
+    public static final byte ID = MessageIdentifiers.ID_CONNECTION_REQUEST;
 
     @Override
     public byte getID() {
