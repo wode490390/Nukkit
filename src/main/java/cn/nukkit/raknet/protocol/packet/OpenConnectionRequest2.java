@@ -1,6 +1,8 @@
 package cn.nukkit.raknet.protocol.packet;
 
 import cn.nukkit.raknet.RakNet;
+import cn.nukkit.raknet.protocol.MessageIdentifiers;
+import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
 
 import java.net.InetSocketAddress;
@@ -9,8 +11,9 @@ import java.net.InetSocketAddress;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class OPEN_CONNECTION_REQUEST_2 extends Packet {
-    public static final byte ID = (byte) 0x07;
+public class OpenConnectionRequest2 extends OfflineMessage {
+
+    public static final byte ID = MessageIdentifiers.ID_OPEN_CONNECTION_REQUEST_2;
 
     @Override
     public byte getID() {
@@ -25,7 +28,7 @@ public class OPEN_CONNECTION_REQUEST_2 extends Packet {
     @Override
     public void encode() {
         super.encode();
-        this.put(RakNet.MAGIC);
+        this.writeMagic();
         this.putAddress(this.serverAddress, this.serverPort);
         this.putShort(this.mtuSize);
         this.putLong(this.clientID);
@@ -34,11 +37,11 @@ public class OPEN_CONNECTION_REQUEST_2 extends Packet {
     @Override
     public void decode() {
         super.decode();
-        this.offset += 16; //skip magic bytes
+        this.readMagic();
         InetSocketAddress address = this.getAddress();
         this.serverAddress = address.getHostString();
         this.serverPort = address.getPort();
-        this.mtuSize = this.getSignedShort();
+        this.mtuSize = this.getShort();
         this.clientID = this.getLong();
     }
 
@@ -46,7 +49,7 @@ public class OPEN_CONNECTION_REQUEST_2 extends Packet {
 
         @Override
         public Packet create() {
-            return new OPEN_CONNECTION_REQUEST_2();
+            return new OpenConnectionRequest2();
         }
 
     }
