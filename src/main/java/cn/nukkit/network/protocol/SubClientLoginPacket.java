@@ -18,6 +18,7 @@ public class SubClientLoginPacket extends DataPacket {
 
     @Override
     public void encode() {
+        this.reset();
         this.putString(this.connectionRequestData);
     }
 }
