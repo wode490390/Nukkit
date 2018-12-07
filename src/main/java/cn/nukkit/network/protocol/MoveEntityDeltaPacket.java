@@ -39,6 +39,7 @@ public class MoveEntityDeltaPacket extends DataPacket {
 
     @Override
     public void encode() {
+        this.reset();
         this.putEntityRuntimeId(this.entityRuntimeId);
         this.putByte((byte) flags);
         this.maybeWriteCoord(FLAG_HAS_X, this.xDiff);
