@@ -38,7 +38,7 @@ public class PlayerSkinPacket extends DataPacket {
 
     @Override
     public void encode() {
-        reset();
+        this.reset();
         this.putUUID(this.uuid);
 
         this.putString(this.skin.getGeometryName());
