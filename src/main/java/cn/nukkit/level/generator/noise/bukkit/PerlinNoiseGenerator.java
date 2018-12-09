@@ -1,4 +1,4 @@
-package cn.nukkit.level.generator.noise;
+package cn.nukkit.level.generator.noise.bukkit;
 
 import cn.nukkit.level.Level;
 import java.util.Random;
