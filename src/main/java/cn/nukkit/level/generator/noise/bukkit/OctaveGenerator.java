@@ -1,4 +1,4 @@
-package cn.nukkit.level.generator.noise;
+package cn.nukkit.level.generator.noise.bukkit;
 
 public abstract class OctaveGenerator {
 
