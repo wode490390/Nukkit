@@ -64,7 +64,9 @@ public class ConnectionRequestAccepted extends Packet {
     @Override
     public void decode() {
         super.decode();
-        this.address = this.getAddress();
+        InetSocketAddress addr = this.getAddress();
+        this.address = addr.getHostName();
+        this.port = addr.getPort();
         this.getShort(); //TODO: check this
 
         for (int i = 0; i < RakNet.SYSTEM_ADDRESS_COUNT; ++i) {
