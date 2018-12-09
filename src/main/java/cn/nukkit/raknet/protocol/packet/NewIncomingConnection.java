@@ -29,7 +29,7 @@ public class NewIncomingConnection extends Packet {
     @Override
     public void encode() {
         super.encode();
-        this.putAddress(this.address);
+        this.putAddress(new InetSocketAddress(this.address, this.port));
         for (InetSocketAddress address : systemAddresses) {
             this.putAddress(address);
         }
