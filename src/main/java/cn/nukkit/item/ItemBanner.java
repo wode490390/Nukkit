@@ -32,7 +32,11 @@ public class ItemBanner extends Item {
      * @return int
      */
     public int getBaseColor() {
-        return this.getNamedTag().getInt("Base") || 0;
+        if (this.getNamedTag().contains("Base")) {
+            return this.getNamedTag().getInt("Base");
+        } else {
+            return 0;
+        }
     }
 
     /**
