@@ -2,6 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntityBanner;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
@@ -62,11 +63,11 @@ public class BlockStandingBanner extends BlockTransparentMeta {
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         if (face != BlockFace.DOWN) {
             if (face == BlockFace.UP && player != null) {
-                this.meta = NukkitMath.floorDouble(((player.yaw + 180) * 16 / 360) + 0.5) & 0x0f;
+                this.setDamage(NukkitMath.floorDouble(((player.yaw + 180) * 16 / 360) + 0.5) & 0x0f);
                 this.getLevel().setBlock(block, this, true);
             } else {
-                this.meta = face.getIndex();
-                this.getLevel().setBlock(block, new BlockWallBanner(this.meta), true);
+                this.setDamage(face.getIndex());
+                this.getLevel().setBlock(block, new BlockWallBanner(this.getDamage()), true);
             }
 
             CompoundTag nbt = new CompoundTag()
