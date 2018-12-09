@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class OpenConnectionReply2 extends Packet {
+public class OpenConnectionReply2 extends OfflineMessage {
 
     public static final byte ID = MessageIdentifiers.ID_OPEN_CONNECTION_REPLY_2;
 
@@ -43,7 +43,7 @@ public class OpenConnectionReply2 extends Packet {
         InetSocketAddress address = this.getAddress();
         this.clientAddress = address.getHostString();
         this.clientPort = address.getPort();
-        this.mtuSize = this.getShort();
+        this.mtuSize = (short) this.getShort();
         this.serverSecurity = (this.getByte() != 0);
     }
 
