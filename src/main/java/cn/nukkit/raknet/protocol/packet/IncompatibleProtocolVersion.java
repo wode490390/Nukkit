@@ -1,4 +1,4 @@
-package cn.nukkit.raknet.protocol;
+package cn.nukkit.raknet.protocol.packet;
 
 import cn.nukkit.raknet.protocol.MessageIdentifiers;
 import cn.nukkit.raknet.protocol.OfflineMessage;
@@ -19,7 +19,7 @@ public class IncompatibleProtocolVersion extends OfflineMessage {
     @Override
     public void encode() {
         super.encode();
-        this.putByte(this.protocolVersion);
+        this.putByte((byte) this.protocolVersion);
         this.writeMagic();
         this.putLong(this.serverId);
     }
