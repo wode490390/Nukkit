@@ -30,7 +30,7 @@ public abstract class Datagram extends Packet {
 
     @Override
     public void encode() {
-        this.putByte(BITFLAG_VALID | this.headerFlags);
+        this.putByte((byte) (BITFLAG_VALID | this.headerFlags));
         this.putLTriad(this.seqNumber);
         for (Object packet : this.packets) {
             this.put(packet instanceof EncapsulatedPacket ? ((EncapsulatedPacket) packet).toBinary() : (byte[]) packet);
