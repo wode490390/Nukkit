@@ -40,7 +40,7 @@ public class OpenConnectionRequest2 extends OfflineMessage {
         InetSocketAddress address = this.getAddress();
         this.serverAddress = address.getHostString();
         this.serverPort = address.getPort();
-        this.mtuSize = this.getShort();
+        this.mtuSize = (short) this.getShort();
         this.clientID = this.getLong();
     }
 
