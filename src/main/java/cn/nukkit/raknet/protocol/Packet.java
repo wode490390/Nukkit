@@ -83,17 +83,16 @@ public abstract class Packet implements Cloneable {
         if (version == 4) {
             String addr = ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff);
             int port = this.getShort();
-            return new InetSocketAddress(addr, port);
-        } else {
+            return new InetSocketAddress(addr, port);/*
+        } else if (version == 6) {
             //http://man7.org/linux/man-pages/man7/ipv6.7.html
             Binary.readLShort(this.get(2)); //Family, AF_INET6
             int port = this.getShort();
             this.getInt(); //flow info
             String addr = IPv6Converter.splitKey(this.get(16));
             this.getInt(); //scope ID
-            return new InetSocketAddress(addr, port);
+            return new InetSocketAddress(addr, port);*/
         } else {
-            //todo IPV6 SUPPORT
             throw new RuntimeException("IP version " + version + " is not supported");
         }
     }
