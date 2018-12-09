@@ -36,7 +36,7 @@ public class OpenConnectionReply1 extends OfflineMessage {
         this.readMagic();
         this.serverID = this.getLong();
         this.serverSecurity = (this.getByte() != 0);
-        this.mtuSize = this.getShort();
+        this.mtuSize = (short) this.getShort();
     }
 
     public static final class Factory implements Packet.PacketFactory {
