@@ -1,5 +1,8 @@
 package cn.nukkit.block;
 
+import cn.nukkit.level.Level;
+import cn.nukkit.math.BlockFace;
+
 public class BlockWallBanner extends BlockStandingBanner {
 
     public BlockWallBanner() {
