@@ -19,17 +19,18 @@ import java.util.*;
  * Nukkit Project
  */
 public class SessionManager {
+
     protected final Packet.PacketFactory[] packetPool = new Packet.PacketFactory[256];
 
     protected final RakNetServer server;
-
     protected final UDPServerSocket socket;
 
     protected int receiveBytes = 0;
     protected int sendBytes = 0;
 
-    protected final Map<String, Session> sessions = new HashMap<>();
+    protected final Map<String, Session> sessions = new HashMap<String, Session>();
 
+    protected OfflineMessageHandler offlineMessageHandler;
     protected String name = "";
 
     protected int packetLimit = 1000;
@@ -39,27 +40,57 @@ public class SessionManager {
     protected long ticks = 0;
     protected long lastMeasure;
 
-    protected final Map<String, Long> block = new HashMap<>();
-    protected final Map<String, Integer> ipSec = new HashMap<>();
+    protected final Map<String, Long> block = new HashMap<String, Long>();
+    protected final Map<String, Integer> ipSec = new HashMap<String, Integer>();
 
     public boolean portChecking = true;
+
+    protected long startTimeMS;
+
+    protected short maxMtuSize;
+
+    protected String reusableAddress;
 
     public final long serverId;
 
     protected String currentSource = "";
 
-    public SessionManager(RakNetServer server, UDPServerSocket socket) throws Exception {
+    public SessionManager(RakNetServer server, UDPServerSocket socket, short maxMtuSize) throws Exception {
         this.server = server;
         this.socket = socket;
-        this.registerPackets();
+
+        this.startTimeMS = System.currentTimeMillis();
+        this.maxMtuSize = maxMtuSize;
+
+        this.offlineMessageHandler = new OfflineMessageHandler(this);
+
+        this.reusableAddress = this.socket.getBindAddress();
 
         this.serverId = new Random().nextLong();
+
+        this.registerPackets();
 
         this.run();
     }
 
+    /**
+     * Returns the time in milliseconds since server start.
+     * @return int
+     */
+    public long getRakNetTimeMS() {
+        return System.currentTimeMillis() - this.startTimeMS;
+    }
+
     public int getPort() {
         return this.server.port;
+    }
+
+    public int getMaxMtuSize() {
+        return this.maxMtuSize;
+    }
+
+    public int getProtocolVersion() {
+        return this.server.getProtocolVersion();
     }
 
     public ThreadedLogger getLogger() {
@@ -171,7 +202,7 @@ public class SessionManager {
 
                 byte pid = buffer[0];
 
-                if (pid == UNCONNECTED_PONG.ID) {
+                if (pid == UnconnectedPong.ID) {
                     return false;
                 }
 
@@ -180,18 +211,18 @@ public class SessionManager {
                     packet.buffer = buffer;
                     this.getSession(source, port).handlePacket(packet);
                     return true;
-                } else if (pid == UNCONNECTED_PING.ID) {
-                    packet = new UNCONNECTED_PING();
+                } else if (pid == UnconnectedPing.ID) {
+                    packet = new UnconnectedPing();
                     packet.buffer = buffer;
                     packet.decode();
 
-                    UNCONNECTED_PONG pk = new UNCONNECTED_PONG();
+                    UnconnectedPong pk = new UnconnectedPong();
                     pk.serverID = this.getID();
-                    pk.pingID = ((UNCONNECTED_PING) packet).pingID;
+                    pk.pingID = ((UnconnectedPing) packet).pingID;
                     pk.serverName = this.getName();
                     this.sendPacket(pk, source, port);
                 } else if (buffer.length != 0) {
-                    this.streamRAW(source, port, buffer);
+                    this.streamRaw(source, port, buffer);
                     return true;
                 } else {
                     return false;
@@ -230,7 +261,7 @@ public class SessionManager {
         this.server.pushThreadToMainPacket(buffer);
     }
 
-    public void streamRAW(String address, int port, byte[] payload) {
+    public void streamRaw(String address, int port, byte[] payload) {
         byte[] buffer = Binary.appendBytes(
                 RakNet.PACKET_RAW,
                 new byte[]{(byte) (address.length() & 0xff)},
@@ -295,25 +326,15 @@ public class SessionManager {
         this.server.pushThreadToMainPacket(buffer);
     }
 
-    private void checkSessions() {
-        int size = this.sessions.size();
-        if (size > 4096) {
-            List<String> keyToRemove = new ArrayList<>();
-            for (String i : this.sessions.keySet()) {
-                Session s = this.sessions.get(i);
-                if (s.isTemporal()) {
-                    keyToRemove.add(i);
-                    size--;
-                    if (size <= 4096) {
-                        break;
-                    }
-                }
-            }
-
-            for (String i : keyToRemove) {
-                this.sessions.remove(i);
-            }
-        }
+    protected void streamPingMeasure(Session session, long pingMS) {
+        String identifier = session.getAddress() + ":" + session.getPort();
+        byte[] buffer = Binary.appendBytes(
+                RakNet.PACKET_REPORT_PING,
+                new byte[]{(byte) (identifier.length() & 0xff)},
+                identifier.getBytes(StandardCharsets.UTF_8),
+                Binary.writeInt((int) pingMS)
+        );
+        this.server.pushThreadToMainPacket(buffer);
     }
 
     public boolean receiveStream() throws Exception {
@@ -398,7 +419,9 @@ public class SessionManager {
                     break;
                 case RakNet.PACKET_EMERGENCY_SHUTDOWN:
                     this.shutdown = true;
+                    break;
                 default:
+                    this.getLogger().debug("Unknown RakNet internal packet (ID " + id + ") received from main thread");
                     return false;
             }
             return true;
@@ -427,19 +450,30 @@ public class SessionManager {
 
     public void unblockAddress(String address) {
         this.block.remove(address);
+        this.getLogger().debug("Unblocked " + address);
     }
 
     public Session getSession(String ip, int port) {
         String id = ip + ":" + port;
         if (!this.sessions.containsKey(id)) {
-            this.checkSessions();
-            Session session = new Session(this, ip, port);
-            this.sessions.put(id, session);
-
-            return session;
+            return null;
         }
 
         return this.sessions.get(id);
+    }
+
+    public boolean sessionExists(String ip, int port) {
+        String id = ip + ":" + port;
+        return this.sessions.containsKey(id);
+    }
+
+    public Session createSession(String ip, int port, long clientId, short mtuSize) {
+        String id = ip + ":" + port;
+        this.checkSessions();
+        Session session = new Session(this, ip, port, clientId, mtuSize);
+        this.sessions.put(id, session);
+        this.getLogger().debug("Created session for " + id + " with MTU size " + mtuSize);
+        return session;
     }
 
     public void removeSession(Session session) throws Exception {
@@ -450,13 +484,39 @@ public class SessionManager {
         String id = session.getAddress() + ":" + session.getPort();
         if (this.sessions.containsKey(id)) {
             this.sessions.get(id).close();
-            this.sessions.remove(id);
+            this.removeSessionInternal(session);
             this.streamClose(id, reason);
         }
     }
 
+    public void removeSessionInternal(Session session) throws Exception {
+        String id = session.getAddress() + ":" + session.getPort();
+        this.sessions.remove(id);
+    }
+
     public void openSession(Session session) {
         this.streamOpen(session);
+    }
+
+    private void checkSessions() {
+        int size = this.sessions.size();
+        if (size > 4096) {
+            List<String> keyToRemove = new ArrayList<String>();
+            for (String i : this.sessions.keySet()) {
+                Session s = this.sessions.get(i);
+                if (s.isTemporal()) {
+                    keyToRemove.add(i);
+                    size--;
+                    if (size <= 4096) {
+                        break;
+                    }
+                }
+            }
+
+            for (String i : keyToRemove) {
+                this.sessions.remove(i);
+            }
+        }
     }
 
     public void notifyACK(Session session, int identifierACK) {
@@ -464,11 +524,11 @@ public class SessionManager {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public long getID() {
-        return this.serverId;
+        return this.server.getServerId();
     }
 
     private void registerPacket(byte id, Packet.PacketFactory factory) {
@@ -483,14 +543,14 @@ public class SessionManager {
         // fill with dummy returning null
         Arrays.fill(this.packetPool, (Packet.PacketFactory) () -> null);
 
-        //this.registerPacket(UNCONNECTED_PING.ID, UNCONNECTED_PING.class);
-        this.registerPacket(UNCONNECTED_PING_OPEN_CONNECTIONS.ID, new UNCONNECTED_PING_OPEN_CONNECTIONS.Factory());
-        this.registerPacket(OPEN_CONNECTION_REQUEST_1.ID, new OPEN_CONNECTION_REQUEST_1.Factory());
-        this.registerPacket(OPEN_CONNECTION_REPLY_1.ID, new OPEN_CONNECTION_REPLY_1.Factory());
-        this.registerPacket(OPEN_CONNECTION_REQUEST_2.ID, new OPEN_CONNECTION_REQUEST_2.Factory());
-        this.registerPacket(OPEN_CONNECTION_REPLY_2.ID, new OPEN_CONNECTION_REPLY_2.Factory());
-        this.registerPacket(UNCONNECTED_PONG.ID, new UNCONNECTED_PONG.Factory());
-        this.registerPacket(ADVERTISE_SYSTEM.ID, new ADVERTISE_SYSTEM.Factory());
+        this.registerPacket(UnconnectedPing.ID, new UnconnectedPing.Factory());
+        this.registerPacket(UnconnectedPingOpenConnections.ID, new UnconnectedPingOpenConnections.Factory());
+        this.registerPacket(OpenConnectionRequest1.ID, new OpenConnectionRequest1.Factory());
+        this.registerPacket(OpenConnectionReply1.ID, new OpenConnectionReply1.Factory());
+        this.registerPacket(OpenConnectionRequest2.ID, new OpenConnectionRequest2.Factory());
+        this.registerPacket(OpenConnectionReply2.ID, new OpenConnectionReply2.Factory());
+        this.registerPacket(UnconnectedPong.ID, new UnconnectedPong.Factory());
+        this.registerPacket(AdvertiseSystem.ID, new AdvertiseSystem.Factory());
         this.registerPacket(DATA_PACKET_0.ID, new DATA_PACKET_0.Factory());
         this.registerPacket(DATA_PACKET_1.ID, new DATA_PACKET_1.Factory());
         this.registerPacket(DATA_PACKET_2.ID, new DATA_PACKET_2.Factory());

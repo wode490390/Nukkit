@@ -1,17 +1,19 @@
 package cn.nukkit.raknet.server;
 
-import cn.nukkit.raknet.protocol.IncompatibleProtocolVersion;
 import cn.nukkit.raknet.protocol.OfflineMessage;
-import cn.nukkit.raknet.protocol.OpenConnectionReply1;
-import cn.nukkit.raknet.protocol.OpenConnectionReply2;
-import cn.nukkit.raknet.protocol.OpenConnectionRequest1;
-import cn.nukkit.raknet.protocol.OpenConnectionRequest2;
-import cn.nukkit.raknet.protocol.UnconnectedPing;
-import cn.nukkit.raknet.protocol.UnconnectedPong;
+import cn.nukkit.raknet.protocol.packet.IncompatibleProtocolVersion;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionReply1;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionReply2;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest1;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest2;
+import cn.nukkit.raknet.protocol.packet.UnconnectedPing;
+import cn.nukkit.raknet.protocol.packet.UnconnectedPong;
+
+import java.io.IOException;
 
 public class OfflineMessageHandler {
 
-    private RakNetServer sessionManager;
+    private final SessionManager sessionManager;
 
     public OfflineMessageHandler(SessionManager manager) {
         this.sessionManager = manager;
@@ -20,39 +22,55 @@ public class OfflineMessageHandler {
     public boolean handle(OfflineMessage packet, String address, int port) {
         switch (packet.ID) {
             case UnconnectedPing.ID:
-                UnconnectedPong pk = new UnconnectedPong();
-                pk.serverID = this.sessionManager.getID();
-                pk.pingID = packet.pingID;
-                pk.serverName = this.sessionManager.getName();
-                this.sessionManager.sendPacket(pk, address, port);
+                UnconnectedPong pk1 = new UnconnectedPong();
+                pk1.serverID = this.sessionManager.getID();
+                pk1.pingID = ((UnconnectedPong) packet).pingID;
+                pk1.serverName = this.sessionManager.getName();
+                try {
+                    this.sessionManager.sendPacket(pk1, address, port);
+                } catch (IOException e) {
+                    //ignore
+                }
                 return true;
             case OpenConnectionRequest1.ID:
-                serverProtocol = this.sessionManager.getProtocolVersion();
-                if (packet.protocol != serverProtocol) {
-                    IncompatibleProtocolVersion pk = new IncompatibleProtocolVersion();
-                    pk.protocolVersion = serverProtocol;
-                    pk.serverId = this.sessionManager.getID();
-                    this.sessionManager.sendPacket(pk, address, port);
-                    this.sessionManager.getLogger().notice("Refused connection from address due to incompatible RakNet protocol version (expected " + serverProtocol + ", got " + packet.protocol + ")");
+                int serverProtocol = this.sessionManager.getProtocolVersion();
+                if (((OpenConnectionRequest1) packet).protocol != serverProtocol) {
+                    IncompatibleProtocolVersion pk2 = new IncompatibleProtocolVersion();
+                    pk2.protocolVersion = serverProtocol;
+                    pk2.serverId = this.sessionManager.getID();
+                    try {
+                        this.sessionManager.sendPacket(pk2, address, port);
+                    } catch (IOException e) {
+                        //ignore
+                    }
+                    this.sessionManager.getLogger().notice("Refused connection from address due to incompatible RakNet protocol version (expected " + serverProtocol + ", got " + ((OpenConnectionRequest1) packet).protocol + ")");
                 } else {
-                    OpenConnectionReply1 pk = new OpenConnectionReply1();
-                    pk.mtuSize = packet.mtuSize + 28; //IP header size (20 bytes) + UDP header size (8 bytes)
-                    pk.serverID = this.sessionManager.getID();
-                    this.sessionManager.sendPacket(pk, address, port);
+                    OpenConnectionReply1 pk3 = new OpenConnectionReply1();
+                    pk3.mtuSize = (short) (((OpenConnectionRequest1) packet).mtuSize + 28); //IP header size (20 bytes) + UDP header size (8 bytes)
+                    pk3.serverID = this.sessionManager.getID();
+                    try {
+                        this.sessionManager.sendPacket(pk3, address, port);
+                    } catch (IOException e) {
+                        //ignore
+                    }
                 }
                 return true;
             case OpenConnectionRequest2.ID:
-                if (packet.serverPort == this.sessionManager.getPort() || !this.sessionManager.portChecking) {
-                    short mtuSize = Math.min(Math.abs(packet.mtuSize), this.sessionManager.getMaxMtuSize()); //Max size, do not allow creating large buffers to fill server memory
+                if (((OpenConnectionRequest2) packet).serverPort == this.sessionManager.getPort() || !this.sessionManager.portChecking) {
+                    short mtuSize = (short) Math.min(Math.abs(((OpenConnectionRequest2) packet).mtuSize), this.sessionManager.getMaxMtuSize()); //Max size, do not allow creating large buffers to fill server memory
                     OpenConnectionReply2 pk = new OpenConnectionReply2();
                     pk.mtuSize = mtuSize;
                     pk.serverID = this.sessionManager.getID();
                     pk.clientAddress = address;
                     pk.clientPort = port;
-                    this.sessionManager.sendPacket(pk, address, port);
-                    this.sessionManager.createSession(address, port, packet.clientID, mtuSize);
+                    try {
+                        this.sessionManager.sendPacket(pk, address, port);
+                    } catch (IOException e) {
+                        //ignore
+                    }
+                    this.sessionManager.createSession(address, port, ((OpenConnectionRequest2) packet).clientID, mtuSize);
                 } else {
-                    this.sessionManager.getLogger().debug("Not creating session for address due to mismatched port, expected " + this.sessionManager.getPort() + ", got " + packet.serverPort);
+                    this.sessionManager.getLogger().debug("Not creating session for address due to mismatched port, expected " + this.sessionManager.getPort() + ", got " + ((OpenConnectionRequest2) packet).serverPort);
                 }
                 return true;
         }
