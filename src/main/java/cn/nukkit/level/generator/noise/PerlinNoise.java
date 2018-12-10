@@ -27,7 +27,7 @@ public class PerlinNoise extends PerlinNoiseGenerator {
             perm[i] = i;
         }
         for (int i = 0; i < 256; i++) {
-            int pos = rand.nextRange(256 - i) + i;
+            int pos = rand.nextBoundedInt(256 - i) + i;
             int old = perm[i];
             perm[i] = perm[pos];
             perm[pos] = old;
