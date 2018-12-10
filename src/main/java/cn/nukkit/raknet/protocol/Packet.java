@@ -93,7 +93,8 @@ public abstract class Packet implements Cloneable {
             this.getInt(); //scope ID
             return new InetSocketAddress(addr, port);*/
         } else {
-            throw new RuntimeException("IP version " + version + " is not supported");
+            //throw new RuntimeException("IP version " + version + " is not supported");
+            return null;
         }
     }
 
@@ -152,15 +153,15 @@ public abstract class Packet implements Cloneable {
             for (String b : addr.split("\\.")) {
                 this.putByte((byte) ((~Integer.valueOf(b)) & 0xff));
             }
-            this.putShort(port);
+            this.putShort(port);/*
         } else if (version == 6) {
             this.put(Binary.writeLShort(10));
             this.putShort(port);
             this.putInt(0);
             this.put(IPv6Converter.toByte(addr));
-            this.putInt(0);
+            this.putInt(0);*/
         } else {
-            throw new RuntimeException("IP version " + version + " is not supported");
+            //throw new RuntimeException("IP version " + version + " is not supported");
         }
     }
 
