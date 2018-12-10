@@ -3,7 +3,6 @@ package cn.nukkit.raknet.server;
 import cn.nukkit.math.NukkitMath;
 import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.Datagram;
-import cn.nukkit.raknet.protocol.DataPacket;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
 import cn.nukkit.raknet.protocol.Packet;
 import cn.nukkit.raknet.protocol.PacketReliability;
@@ -57,20 +56,20 @@ public class Session {
 
     private boolean isTemporal = true;
 
-    private final List<DataPacket> packetToSend = new ArrayList<DataPacket>();
+    private final List<Datagram> packetToSend = new ArrayList<Datagram>();
 
     private boolean isActive = false;
 
     private Map<Integer, Integer> ACKQueue = new HashMap<Integer, Integer>();
     private Map<Integer, Integer> NACKQueue = new HashMap<Integer, Integer>();
 
-    private final Map<Integer, DataPacket> recoveryQueue = new TreeMap<Integer, DataPacket>();
+    private final Map<Integer, Datagram> recoveryQueue = new TreeMap<Integer, Datagram>();
 
     private final Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new HashMap<Integer, Map<Integer, EncapsulatedPacket>>();
 
     private final Map<Integer, Map<Integer, Integer>> needACK = new TreeMap<Integer, Map<Integer, Integer>>();
 
-    private DataPacket sendQueue;
+    private Datagram sendQueue;
 
     private int windowStart;
     private final Map<Integer, Integer> receivedWindow = new TreeMap<Integer, Integer>();
@@ -145,7 +144,7 @@ public class Session {
         if (!this.packetToSend.isEmpty()) {
             int limit = 16;
             for (int i = 0; i < this.packetToSend.size(); i++) {
-                DataPacket pk = this.packetToSend.get(i);
+                Datagram pk = this.packetToSend.get(i);
                 pk.sendTime = time;
                 pk.encode();
                 this.recoveryQueue.put(pk.seqNumber, pk);
@@ -173,7 +172,7 @@ public class Session {
         }
 
         for (int seq : new ArrayList<>(this.recoveryQueue.keySet())) {
-            DataPacket pk = this.recoveryQueue.get(seq);
+            Datagram pk = this.recoveryQueue.get(seq);
             if (pk.sendTime < System.currentTimeMillis() - 8000) {
                 this.packetToSend.add(pk);
                 this.recoveryQueue.remove(seq);
@@ -262,7 +261,7 @@ public class Session {
         }
 
         if (priority == RakNet.PRIORITY_IMMEDIATE) { //Skip queues
-            DataPacket packet = new DATA_PACKET_0();
+            Datagram packet = new DATA_PACKET_0();
             packet.seqNumber = this.sendSeqNumber++;
             if (pk.needACK) {
                 packet.packets.add(pk.clone());
@@ -520,8 +519,8 @@ public class Session {
         this.lastUpdate = System.currentTimeMillis();
 
         if (this.state == STATE_CONNECTED || this.state == STATE_DISCONNECTING) {
-            if (((packet.buffer[0] & 0xff) >= 0x80 || (packet.buffer[0] & 0xff) <= 0x8f) && packet instanceof DataPacket) {
-                DataPacket dp = (DataPacket) packet;
+            if (((packet.buffer[0] & 0xff) >= 0x80 || (packet.buffer[0] & 0xff) <= 0x8f) && packet instanceof Datagram) {
+                Datagram dp = (Datagram) packet;
                 dp.decode();
 
                 if (dp.seqNumber < this.windowStart || dp.seqNumber > this.windowEnd || this.receivedWindow.containsKey(dp.seqNumber)) {
@@ -572,7 +571,7 @@ public class Session {
                     packet.decode();
                     for (int seq : new ArrayList<>(((NACK) packet).packets.values())) {
                         if (this.recoveryQueue.containsKey(seq)) {
-                            DataPacket pk = this.recoveryQueue.get(seq);
+                            Datagram pk = this.recoveryQueue.get(seq);
                             pk.seqNumber = this.sendSeqNumber++;
                             this.packetToSend.add(pk);
                             this.recoveryQueue.remove(seq);
