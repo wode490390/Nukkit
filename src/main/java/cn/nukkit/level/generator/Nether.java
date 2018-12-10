@@ -303,7 +303,7 @@ public class Nether extends Generator {
         int surfaceHeight = (int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D);
         int deep = -1;
         for (int y = 127; y >= 0; y--) {
-            if (y <= random.nextRange(5) || y >= 127 - random.nextRange(5)) {
+            if (y <= random.nextBoundedInt(5) || y >= 127 - random.nextBoundedInt(5)) {
                 chunkData.setBlockAt(x, y, z, Block.BEDROCK);
                 continue;
             }
