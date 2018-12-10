@@ -10,6 +10,11 @@ public abstract class RakNet {
 
     public static final String VERSION = "1.1.0";
     public static final byte PROTOCOL = 9;
+    /**
+     * Default vanilla Raknet protocol version that this library implements. Things using RakNet can override this
+     * protocol version with something different.
+     */
+    public static final byte DEFAULT_PROTOCOL_VERSION = 6;
     public static final byte[] MAGIC = new byte[]{
             (byte) 0x00, (byte) 0xff, (byte) 0xff, (byte) 0x00,
             (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe,
@@ -21,6 +26,16 @@ public abstract class RakNet {
     public static final byte PRIORITY_IMMEDIATE = 1;
 
     public static final byte FLAG_NEED_ACK = 0b00001000;
+
+    /*
+     * These internal "packets" DO NOT exist in the RakNet protocol. They are used by the RakLib API to communicate
+     * messages between the RakLib thread and the implementation's thread.
+     *
+     * Internal Packet:
+     * int32 (length without this field)
+     * byte (packet ID)
+     * payload
+     */
 
     /*
      * ENCAPSULATED payload:
@@ -104,6 +119,14 @@ public abstract class RakNet {
     public static final byte PACKET_UNBLOCK_ADDRESS = 0x10;
 
     /*
+     * REPORT_PING payload:
+     * byte (identifier length)
+     * byte[] (identifier)
+     * int32 (measured latency in MS)
+     */
+    public static final byte PACKET_REPORT_PING = 0x11;
+
+    /*
      * No payload
      *
      * Sends the disconnect message, removes sessions correctly, closes sockets.
@@ -117,4 +140,8 @@ public abstract class RakNet {
      */
     public static final byte PACKET_EMERGENCY_SHUTDOWN = 0x7f;
 
+    /*
+     * Regular RakNet uses 10 by default. MCPE uses 20. Configure this value as appropriate.
+     */
+    public static final int SYSTEM_ADDRESS_COUNT = 20;
 }

@@ -13,12 +13,12 @@ public interface ProtocolInfo {
     /**
      * Actual Minecraft: PE protocol version
      */
-    int CURRENT_PROTOCOL = Integer.valueOf("282"); //plugins can change it
+    int CURRENT_PROTOCOL = Integer.valueOf("291"); //plugins can change it
 
     List<Integer> SUPPORTED_PROTOCOLS = Ints.asList(CURRENT_PROTOCOL);
 
-    String MINECRAFT_VERSION = "v1.6";
-    String MINECRAFT_VERSION_NETWORK = "1.6";
+    String MINECRAFT_VERSION = "v1.7.0";
+    String MINECRAFT_VERSION_NETWORK = "1.7.0";
 
     byte LOGIN_PACKET = 0x01;
     byte PLAY_STATUS_PACKET = 0x02;
@@ -84,7 +84,7 @@ public interface ProtocolInfo {
     byte SET_PLAYER_GAME_TYPE_PACKET = 0x3e;
     byte PLAYER_LIST_PACKET = 0x3f;
     byte SIMPLE_EVENT_PACKET = 0x40;
-    byte TELEMETRY_EVENT_PACKET = 0x41;
+    byte EVENT_PACKET = 0x41;
     byte SPAWN_EXPERIENCE_ORB_PACKET = 0x42;
     byte CLIENTBOUND_MAP_ITEM_DATA_PACKET = 0x43;
     byte MAP_INFO_REQUEST_PACKET = 0x44;
@@ -125,10 +125,16 @@ public interface ProtocolInfo {
     byte SERVER_SETTINGS_RESPONSE_PACKET = 0x67;
     byte SHOW_PROFILE_PACKET = 0x68;
     byte SET_DEFAULT_GAME_TYPE_PACKET = 0x69;
+    byte REMOVE_OBJECTIVE_PACKET = 0x6a;
+    byte SET_DISPLAY_OBJECTIVE_PACKET = 0x6b;
+    byte SET_SCORE_PACKET = 0x6c;
+    byte LAB_TABLE_PACKET = 0x6d;
+    byte UPDATE_BLOCK_SYNCED_PACKET = 0x6e;
     byte MOVE_ENTITY_DELTA_PACKET = 0x6f;
     byte SET_SCOREBOARD_IDENTITY_PACKET = 0x70;
     byte SET_LOCAL_PLAYER_AS_INITIALIZED_PACKET = 0x71;
     byte UPDATE_SOFT_ENUM_PACKET = 0x72;
     byte NETWORK_STACK_LATENCY_PACKET = 0x73;
+    byte SCRIPT_CUSTOM_EVENT_PACKET = 0x75;
     byte BATCH_PACKET = (byte) 0xff;
 }

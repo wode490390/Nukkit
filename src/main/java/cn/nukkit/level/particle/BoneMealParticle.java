@@ -19,9 +19,7 @@ public class BoneMealParticle extends Particle {
     public DataPacket[] encode() {
         LevelEventPacket pk = new LevelEventPacket();
         pk.evid = LevelEventPacket.EVENT_PARTICLE_BONEMEAL;
-        pk.x = (float) this.x;
-        pk.y = (float) this.y;
-        pk.z = (float) this.z;
+        pk.position = this.asVector3f();
         pk.data = 0;
 
         return new DataPacket[]{pk};

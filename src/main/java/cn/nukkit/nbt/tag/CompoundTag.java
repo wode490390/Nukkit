@@ -119,8 +119,10 @@ public class CompoundTag extends Tag implements Cloneable {
         return tags.containsKey(name);
     }
 
-    public CompoundTag remove(String name) {
-        tags.remove(name);
+    public CompoundTag remove(String... names) {
+        for (String name : names) {
+            tags.remove(name);
+        }
         return this;
     }
 
@@ -206,7 +208,7 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public String toString() {
-        return "CompoundTag " + this.getName() + " (" + tags.size() + " entries)";
+        return "CompoundTag " + this.getName() + " (" + this.size() + " entries)";
     }
 
     public void print(String prefix, PrintStream out) {
@@ -249,6 +251,10 @@ public class CompoundTag extends Tag implements Cloneable {
      */
     public boolean exist(String name) {
         return tags.containsKey(name);
+    }
+
+    public int size() {
+        return this.tags.size();
     }
 
     @Override
