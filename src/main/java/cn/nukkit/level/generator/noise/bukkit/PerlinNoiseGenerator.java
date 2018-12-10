@@ -1,7 +1,8 @@
 package cn.nukkit.level.generator.noise.bukkit;
 
+import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
-import java.util.Random;
+import cn.nukkit.math.NukkitRandom;
 
 public class PerlinNoiseGenerator extends NoiseGenerator {
 
@@ -16,14 +17,18 @@ public class PerlinNoiseGenerator extends NoiseGenerator {
     }
 
     public PerlinNoiseGenerator(Level world) {
-        this(new Random(world.getSeed()));
+        this(new NukkitRandom(world.getSeed()));
+    }
+
+    public PerlinNoiseGenerator(ChunkManager level) {
+        this(new NukkitRandom(level.getSeed()));
     }
 
     public PerlinNoiseGenerator(long seed) {
-        this(new Random(seed));
+        this(new NukkitRandom(seed));
     }
 
-    public PerlinNoiseGenerator(Random rand) {
+    public PerlinNoiseGenerator(NukkitRandom rand) {
         this.offsetX = rand.nextDouble() * 256.0d;
         this.offsetY = rand.nextDouble() * 256.0d;
         this.offsetZ = rand.nextDouble() * 256.0d;
