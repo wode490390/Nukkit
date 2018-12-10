@@ -2,6 +2,7 @@ package cn.nukkit.raknet.server;
 
 import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
+import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
 import cn.nukkit.raknet.protocol.packet.*;
 import cn.nukkit.utils.Binary;
@@ -85,7 +86,7 @@ public class SessionManager {
         return this.server.port;
     }
 
-    public int getMaxMtuSize() {
+    public short getMaxMtuSize() {
         return this.maxMtuSize;
     }
 
@@ -456,7 +457,11 @@ public class SessionManager {
     public Session getSession(String ip, int port) {
         String id = ip + ":" + port;
         if (!this.sessions.containsKey(id)) {
-            return null;
+            this.checkSessions();
+            Session session = new Session(this, ip, port, 0, this.getMaxMtuSize());
+            this.sessions.put(id, session);
+
+            return session;
         }
 
         return this.sessions.get(id);
@@ -528,7 +533,7 @@ public class SessionManager {
     }
 
     public long getID() {
-        return this.server.getServerId();
+        return this.serverId;
     }
 
     private void registerPacket(byte id, Packet.PacketFactory factory) {
@@ -543,7 +548,7 @@ public class SessionManager {
         // fill with dummy returning null
         Arrays.fill(this.packetPool, (Packet.PacketFactory) () -> null);
 
-        this.registerPacket(UnconnectedPing.ID, new UnconnectedPing.Factory());
+        //this.registerPacket(UnconnectedPing.ID, new UnconnectedPing.Factory());
         this.registerPacket(UnconnectedPingOpenConnections.ID, new UnconnectedPingOpenConnections.Factory());
         this.registerPacket(OpenConnectionRequest1.ID, new OpenConnectionRequest1.Factory());
         this.registerPacket(OpenConnectionReply1.ID, new OpenConnectionReply1.Factory());
