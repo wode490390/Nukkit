@@ -1,21 +1,26 @@
 package cn.nukkit.level.generator.noise.bukkit;
 
+import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
-import java.util.Random;
+import cn.nukkit.math.NukkitRandom;
 
 public class SimplexOctaveGenerator extends OctaveGenerator {
 
     private double wScale = 1.0d;
 
     public SimplexOctaveGenerator(Level world, int octaves) {
-        this(new Random(world.getSeed()), octaves);
+        this(new NukkitRandom(world.getSeed()), octaves);
+    }
+
+    public SimplexOctaveGenerator(ChunkManager level, int octaves) {
+        this(new NukkitRandom(level.getSeed()), octaves);
     }
 
     public SimplexOctaveGenerator(long seed, int octaves) {
-        this(new Random(seed), octaves);
+        this(new NukkitRandom(seed), octaves);
     }
 
-    public SimplexOctaveGenerator(Random rand, int octaves) {
+    public SimplexOctaveGenerator(NukkitRandom rand, int octaves) {
         super(createOctaves(rand, octaves));
     }
 
@@ -59,7 +64,7 @@ public class SimplexOctaveGenerator extends OctaveGenerator {
         return result;
     }
 
-    private static NoiseGenerator[] createOctaves(Random rand, int octaves) {
+    private static NoiseGenerator[] createOctaves(NukkitRandom rand, int octaves) {
         NoiseGenerator[] result = new NoiseGenerator[octaves];
         for (int i = 0; i < octaves; ++i) {
             result[i] = new SimplexNoiseGenerator(rand);
