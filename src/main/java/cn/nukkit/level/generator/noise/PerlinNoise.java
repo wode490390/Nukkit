@@ -1,7 +1,7 @@
 package cn.nukkit.level.generator.noise;
 
 import cn.nukkit.level.generator.noise.bukkit.PerlinNoiseGenerator;
-import java.util.Random;
+import cn.nukkit.math.NukkitRandom;
 
 public class PerlinNoise extends PerlinNoiseGenerator {
 
@@ -10,7 +10,7 @@ public class PerlinNoise extends PerlinNoiseGenerator {
      *
      * @param rand the PRNG used to generate the seed permutation
      */
-    public PerlinNoise(Random rand) {
+    public PerlinNoise(NukkitRandom rand) {
         offsetX = rand.nextDouble() * 256;
         offsetY = rand.nextDouble() * 256;
         offsetZ = rand.nextDouble() * 256;
