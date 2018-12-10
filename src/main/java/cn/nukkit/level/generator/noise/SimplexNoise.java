@@ -1,6 +1,6 @@
 package cn.nukkit.level.generator.noise;
 
-import java.util.Random;
+import cn.nukkit.math.NukkitRandom;
 
 /**
  * A speed-improved simplex noise algorithm.
@@ -34,7 +34,7 @@ public class SimplexNoise extends PerlinNoise {
      *
      * @param rand the PRNG to use
      */
-    public SimplexNoise(Random rand) {
+    public SimplexNoise(NukkitRandom rand) {
         super(rand);
         for (int i = 0; i < 512; i++) {
             permMod12[i] = perm[i] % 12;
