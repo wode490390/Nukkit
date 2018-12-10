@@ -33,10 +33,10 @@ public class PerlinNoiseGenerator extends NoiseGenerator {
         this.offsetY = rand.nextDouble() * 256.0d;
         this.offsetZ = rand.nextDouble() * 256.0d;
         for (int i = 0; i < 256; ++i) {
-            this.perm[i] = rand.nextRange(256);
+            this.perm[i] = rand.nextBoundedInt(256);
         }
         for (int i = 0; i < 256; ++i) {
-            int pos = rand.nextRange(256 - i) + i;
+            int pos = rand.nextBoundedInt(256 - i) + i;
             int old = this.perm[i];
             this.perm[i] = this.perm[pos];
             this.perm[pos] = old;
