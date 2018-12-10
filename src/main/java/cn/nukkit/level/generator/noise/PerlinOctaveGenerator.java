@@ -2,7 +2,7 @@ package cn.nukkit.level.generator.noise;
 
 import cn.nukkit.level.generator.noise.bukkit.NoiseGenerator;
 import cn.nukkit.level.generator.noise.bukkit.OctaveGenerator;
-import java.util.Random;
+import cn.nukkit.math.NukkitRandom;
 
 public class PerlinOctaveGenerator extends OctaveGenerator {
 
@@ -11,11 +11,11 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
     protected final int sizeZ;
     protected double[] noise;
 
-    public PerlinOctaveGenerator(Random rand, int octaves, int sizeX, int sizeZ) {
+    public PerlinOctaveGenerator(NukkitRandom rand, int octaves, int sizeX, int sizeZ) {
         this(rand, octaves, sizeX, 1, sizeZ);
     }
 
-    public PerlinOctaveGenerator(Random rand, int octaves, int sizeX, int sizeY, int sizeZ) {
+    public PerlinOctaveGenerator(NukkitRandom rand, int octaves, int sizeX, int sizeY, int sizeZ) {
         this(createOctaves(rand, octaves), rand, sizeX, sizeY, sizeZ);
     }
 
@@ -28,7 +28,7 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
      * @param sizeY the size on the Y axis
      * @param sizeZ the size on the Z axis
      */
-    public PerlinOctaveGenerator(NoiseGenerator[] octaves, Random rand, int sizeX, int sizeY, int sizeZ) {
+    public PerlinOctaveGenerator(NoiseGenerator[] octaves, NukkitRandom rand, int sizeX, int sizeY, int sizeZ) {
         super(octaves);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -36,7 +36,7 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         noise = new double[sizeX * sizeY * sizeZ];
     }
 
-    protected static NoiseGenerator[] createOctaves(Random rand, int octaves) {
+    protected static NoiseGenerator[] createOctaves(NukkitRandom rand, int octaves) {
         NoiseGenerator[] result = new NoiseGenerator[octaves];
 
         for (int i = 0; i < octaves; i++) {
