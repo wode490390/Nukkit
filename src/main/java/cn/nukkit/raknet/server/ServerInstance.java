@@ -20,5 +20,5 @@ public interface ServerInstance {
 
     void handleOption(String option, String value);
 
-    void updatePing(String identifier, int pingMS);
+    void updatePing(String identifier, long pingMS);
 }
