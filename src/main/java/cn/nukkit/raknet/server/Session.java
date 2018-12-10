@@ -426,7 +426,7 @@ public class Session {
         }
 
         if (packet.hasSplit) {
-            if (this.state == STATE_CONNECTED) {
+            if (this.state == STATE_DISCONNECTED) {
                 this.handleSplit(packet);
             }
             return;
@@ -456,7 +456,7 @@ public class Session {
                     dataPacket.decode();
 
                     if (dataPacket.port == this.sessionManager.getPort() || !this.sessionManager.portChecking) {
-                        this.state = STATE_CONNECTED; //FINALLY!
+                        this.state = STATE_DISCONNECTED; //FINALLY!
                         this.isTemporal = false;
                         this.sessionManager.openSession(this);
                     }
@@ -488,12 +488,12 @@ public class Session {
                 sendPacket.buffer = pingPacket.buffer;
                 this.addToQueue(sendPacket);
             } else if (id == ConnectedPong.ID) {
-                if (state == STATE_CONNECTED) {
+                if (state == STATE_DISCONNECTED) {
                     ConnectedPong dataPacket = new ConnectedPong();
                     dataPacket.buffer = packet.buffer;
                     dataPacket.decode();
 
-                    if (state == STATE_CONNECTED) {
+                    if (state == STATE_DISCONNECTED) {
                         ConnectedPing pingPacket = new ConnectedPing();
                         pingPacket.sendPingTime = (System.currentTimeMillis() - dataPacket.sendPingTime) / 10;
                         pingPacket.encode();
@@ -502,7 +502,7 @@ public class Session {
                     }
                 }
             }
-        } else if (state == STATE_CONNECTED) {
+        } else if (state == STATE_DISCONNECTED) {
             this.sessionManager.streamEncapsulated(this, packet);
         } else {
             //this.sessionManager.getLogger().notice("Received packet before connection: "+Binary.bytesToHexString(packet.buffer));
@@ -518,7 +518,7 @@ public class Session {
         this.isActive = true;
         this.lastUpdate = System.currentTimeMillis();
 
-        if (this.state == STATE_CONNECTED || this.state == STATE_DISCONNECTING) {
+        if (this.state == STATE_DISCONNECTED || this.state == STATE_DISCONNECTING) {
             if (((packet.buffer[0] & 0xff) >= 0x80 || (packet.buffer[0] & 0xff) <= 0x8f) && packet instanceof Datagram) {
                 Datagram dp = (Datagram) packet;
                 dp.decode();
