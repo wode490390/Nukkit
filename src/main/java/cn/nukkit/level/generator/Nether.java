@@ -22,7 +22,6 @@ public class Nether extends Generator {
 
     protected static final int WORLD_DEPTH = 128;
 
-    //private static final Set<Integer> noSpawnFloors = EnumSet.of(Block.FIRE, Block.CACTUS);
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
 
     private static double coordinateScale = 684.412d;
@@ -174,8 +173,7 @@ public class Nether extends Generator {
      */
     protected final Map<String, OctaveGenerator> getWorldOctaves(ChunkManager world) {
         if (this.octaveCache.get(this.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = new HashMap<String, OctaveGenerator>();
-            this.createWorldOctaves(world, octaves);
+            Map<String, OctaveGenerator> octaves = this.createWorldOctaves(world, new HashMap<String, OctaveGenerator>());
             this.octaveCache.put(this.getName(), octaves);
             return octaves;
         }
@@ -236,7 +234,7 @@ public class Nether extends Generator {
         }
     }
 
-    protected void createWorldOctaves(ChunkManager world, Map<String, OctaveGenerator> octaves) {
+    protected Map<String, OctaveGenerator> createWorldOctaves(ChunkManager world, Map<String, OctaveGenerator> octaves) {
         NukkitRandom seed = new NukkitRandom(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
@@ -275,6 +273,8 @@ public class Nether extends Generator {
         gen.setXScale(surfaceScale / 2.0);
         gen.setZScale(surfaceScale / 2.0);
         octaves.put("gravel", gen);
+
+        return octaves;
     }
 
     /**
