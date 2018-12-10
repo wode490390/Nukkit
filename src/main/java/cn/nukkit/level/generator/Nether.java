@@ -22,7 +22,7 @@ public class Nether extends Generator {
 
     protected static final int WORLD_DEPTH = 128;
 
-    private static final Set<Integer> noSpawnFloors = EnumSet.of(Block.FIRE, Block.CACTUS);
+    //private static final Set<Integer> noSpawnFloors = EnumSet.of(Block.FIRE, Block.CACTUS);
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
 
     private static double coordinateScale = 684.412d;
@@ -128,8 +128,8 @@ public class Nether extends Generator {
 
     @Override
     public void generateChunk(int chunkX, int chunkZ) {
-        int baseX = chunkX << 4;
-        int baseZ = chunkZ << 4;
+        int cx = chunkX << 4;
+        int cz = chunkZ << 4;
         this.nukkitRandom.setSeed(chunkX * localSeed1 ^ chunkZ * localSeed2 ^ this.level.getSeed());
 
         BaseFullChunk chunk = this.generateRawTerrain(this.level, chunkX, chunkZ);
@@ -303,7 +303,7 @@ public class Nether extends Generator {
         int surfaceHeight = (int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D);
         int deep = -1;
         for (int y = 127; y >= 0; y--) {
-            if (y <= random.nextInt(5) || y >= 127 - random.nextInt(5)) {
+            if (y <= random.nextRange(5) || y >= 127 - random.nextRange(5)) {
                 chunkData.setBlockAt(x, y, z, Block.BEDROCK);
                 continue;
             }
