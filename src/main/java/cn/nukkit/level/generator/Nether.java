@@ -208,9 +208,9 @@ public class Nether extends Generator {
                             for (int n = 0; n < 4; n++) {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air (or lava if under the lava level).
                                 if (dens > 0) {
-                                    chunk.setBlockAt(m + (i << 2), l + (k << 3), n + (j << 2), Block.NETHERRACK);
+                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Block.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
-                                    chunk.setBlockAt(m + (i << 2), l + (k << 3), n + (j << 2), Block.STILL_LAVA);
+                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Block.STILL_LAVA);
                                     chunk.setBlockLight(m + (i << 2), l + (k << 3) + 1, n + (j << 2), 15);
                                 }
                                 // interpolation along z
@@ -239,14 +239,11 @@ public class Nether extends Generator {
             for (int z = 0; z < 16; z++) {
                 chunk.setBiomeId(x, z, EnumBiome.HELL.biome.getId());
 
-                int columnX = cx + x;
-                int columnZ = cz + z;
+                int columnX = ((cx + x) & 0xF);
+                int columnZ = ((cz + z) & 0xF);
 
                 int topMat = Block.NETHERRACK;
                 int groundMat = Block.NETHERRACK;
-
-                columnX = columnX & 0xF;
-                columnZ = columnZ & 0xF;
 
                 boolean soulSand = soulsandNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
                 boolean gravel = gravelNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
