@@ -22,7 +22,6 @@ public class Nether extends Generator {
 
     protected static final int WORLD_DEPTH = 128;
 
-    //private static final Set<Integer> noSpawnFloors = EnumSet.of(Block.FIRE, Block.CACTUS);
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
 
     private static double coordinateScale = 684.412d;
@@ -132,62 +131,16 @@ public class Nether extends Generator {
         int cz = chunkZ << 4;
         this.nukkitRandom.setSeed(chunkX * localSeed1 ^ chunkZ * localSeed2 ^ this.level.getSeed());
 
-        BaseFullChunk chunk = this.generateRawTerrain(this.level, chunkX, chunkZ);
-
-        double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves(this.level).get("surface")).getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
-        double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves(this.level).get("soulsand")).getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
-        double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves(this.level).get("gravel")).getFractalBrownianMotion(cx, 0, cz, 0.5D, 2.0D);
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                chunk.setBiomeId(x, z, EnumBiome.HELL.biome.getId());
-                this.generateTerrainColumn(chunk, this.level, this.nukkitRandom, cx + x, cz + z, surfaceNoise[x | z << 4], soulsandNoise[x | z << 4], gravelNoise[x | z << 4]);
-            }
-        }
-
-        for (Populator populator : this.generationPopulators) {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
-        }
-    }
-
-    @Override
-    public void populateChunk(int chunkX, int chunkZ) {
         BaseFullChunk chunk = level.getChunk(chunkX, chunkZ);
-        this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
-        for (Populator populator : this.populators) {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
-        }
 
-        Biome biome = EnumBiome.getBiome(chunk.getBiomeId(7, 7));
-        biome.populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
-    }
+        int densityX = chunkX << 2;
+        int densityZ = chunkZ << 2;
 
-    public Vector3 getSpawn() {
-        return new Vector3(0, 64, 0);
-    }
-
-    /**
-     * Returns the {@link OctaveGenerator} instances for the world, which are either newly created
-     * or retrieved from the cache.
-     *
-     * @param world The world to look for in the cache
-     * @return A map of {@link OctaveGenerator}s created by {@link #createWorldOctaves(ChunkManager, Map)}
-     */
-    protected final Map<String, OctaveGenerator> getWorldOctaves(ChunkManager world) {
-        if (this.octaveCache.get(this.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = new HashMap<String, OctaveGenerator>();
-            this.createWorldOctaves(world, octaves);
-            this.octaveCache.put(this.getName(), octaves);
-            return octaves;
-        }
-        return this.octaveCache.get(this.getName());
-    }
-
-    private void generateTerrainDensity(ChunkManager world, int x, int z) {
-        Map<String, OctaveGenerator> octaves = this.getWorldOctaves(world);
-        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).getFractalBrownianMotion(x, z, 0.5D, 2.0D);
-        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
-        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
-        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        Map<String, OctaveGenerator> octaves = this.getWorldOctaves();
+        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).getFractalBrownianMotion(densityX, densityZ, 0.5D, 2.0D);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5D, 2.0D);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5D, 2.0D);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5D, 2.0D);
 
         double[] nv = new double[17];
         for (int i = 0; i < 17; i++) {
@@ -230,134 +183,22 @@ public class Nether extends Generator {
                         double lowering = (k - 13) / 3.0D;
                         dens = dens * (1.0D - lowering) + lowering * -10.0D;
                     }
-                    density[i][j][k] = dens;
+                    this.density[i][j][k] = dens;
                 }
             }
         }
-    }
-
-    protected void createWorldOctaves(ChunkManager world, Map<String, OctaveGenerator> octaves) {
-        NukkitRandom seed = new NukkitRandom(world.getSeed());
-
-        OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
-        gen.setXScale(heightNoiseScaleX);
-        gen.setZScale(heightNoiseScaleZ);
-        octaves.put("height", gen);
-
-        gen = new PerlinOctaveGenerator(seed, 16, 5, 17, 5);
-        gen.setXScale(coordinateScale);
-        gen.setYScale(heightScale);
-        gen.setZScale(coordinateScale);
-        octaves.put("roughness", gen);
-
-        gen = new PerlinOctaveGenerator(seed, 16, 5, 17, 5);
-        gen.setXScale(coordinateScale);
-        gen.setYScale(heightScale);
-        gen.setZScale(coordinateScale);
-        octaves.put("roughness2", gen);
-
-        gen = new PerlinOctaveGenerator(seed, 8, 5, 17, 5);
-        gen.setXScale(coordinateScale / detailNoiseScaleX);
-        gen.setYScale(heightScale / detailNoiseScaleY);
-        gen.setZScale(coordinateScale / detailNoiseScaleZ);
-        octaves.put("detail", gen);
-
-        gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
-        gen.setScale(surfaceScale);
-        octaves.put("surface", gen);
-
-        gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
-        gen.setXScale(surfaceScale / 2.0);
-        gen.setYScale(surfaceScale / 2.0);
-        octaves.put("soulsand", gen);
-
-        gen = new PerlinOctaveGenerator(seed, 4, 16, 1, 16);
-        gen.setXScale(surfaceScale / 2.0);
-        gen.setZScale(surfaceScale / 2.0);
-        octaves.put("gravel", gen);
-    }
-
-    /**
-     * Generates a terrain column.
-     *
-     * @param chunkData the chunk in which to generate
-     * @param world the world
-     * @param random the PRNG
-     * @param x the column x coordinate
-     * @param z the column z coordinate
-     * @param surfaceNoise amplitude of surface-height variation
-     * @param soulsandNoise determines the chance of a soul sand patch
-     * @param gravelNoise determines the chance of a gravel patch
-     */
-    public void generateTerrainColumn(BaseFullChunk chunkData, ChunkManager world, NukkitRandom random, int x, int z, double surfaceNoise, double soulsandNoise, double gravelNoise) {
-
-        int topMat = Block.NETHERRACK;
-        int groundMat = Block.NETHERRACK;
-
-        x = x & 0xF;
-        z = z & 0xF;
-
-        boolean soulSand = soulsandNoise + random.nextDouble() * 0.2D > 0;
-        boolean gravel = gravelNoise + random.nextDouble() * 0.2D > 0;
-
-        int surfaceHeight = (int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D);
-        int deep = -1;
-        for (int y = 127; y >= 0; y--) {
-            if (y <= random.nextBoundedInt(5) || y >= 127 - random.nextBoundedInt(5)) {
-                chunkData.setBlockAt(x, y, z, Block.BEDROCK);
-                continue;
-            }
-            int mat = chunkData.getBlockIdAt(x, y, z);
-            if (mat == Block.AIR) {
-                deep = -1;
-            } else if (mat == Block.NETHERRACK) {
-                if (deep == -1) {
-                    if (surfaceHeight <= 0) {
-                        topMat = Block.AIR;
-                        groundMat = Block.NETHERRACK;
-                    } else if (y >= 60 && y <= 65) {
-                        topMat = Block.NETHERRACK;
-                        groundMat = Block.NETHERRACK;
-                        if (gravel) {
-                            topMat = Block.GRAVEL;
-                            groundMat = Block.NETHERRACK;
-                        }
-                        if (soulSand) {
-                            topMat = Block.SOUL_SAND;
-                            groundMat = Block.SOUL_SAND;
-                        }
-                    }
-
-                    deep = surfaceHeight;
-                    if (y >= 63) {
-                        chunkData.setBlockAt(x, y, z, topMat);
-                    } else {
-                        chunkData.setBlockAt(x, y, z, groundMat);
-                    }
-                } else if (deep > 0) {
-                    deep--;
-                    chunkData.setBlockAt(x, y, z, groundMat);
-                }
-            }
-        }
-    }
-
-    private BaseFullChunk generateRawTerrain(ChunkManager world, int chunkX, int chunkZ) {
-        this.generateTerrainDensity(world, chunkX << 2, chunkZ << 2);
-
-        BaseFullChunk chunkData = level.getChunk(chunkX, chunkZ);
 
         for (int i = 0; i < 5 - 1; i++) {
             for (int j = 0; j < 5 - 1; j++) {
                 for (int k = 0; k < 17 - 1; k++) {
-                    double d1 = density[i][j][k];
-                    double d2 = density[i + 1][j][k];
-                    double d3 = density[i][j + 1][k];
-                    double d4 = density[i + 1][j + 1][k];
-                    double d5 = (density[i][j][k + 1] - d1) / 8;
-                    double d6 = (density[i + 1][j][k + 1] - d2) / 8;
-                    double d7 = (density[i][j + 1][k + 1] - d3) / 8;
-                    double d8 = (density[i + 1][j + 1][k + 1] - d4) / 8;
+                    double d1 = this.density[i][j][k];
+                    double d2 = this.density[i + 1][j][k];
+                    double d3 = this.density[i][j + 1][k];
+                    double d4 = this.density[i + 1][j + 1][k];
+                    double d5 = (this.density[i][j][k + 1] - d1) / 8;
+                    double d6 = (this.density[i + 1][j][k + 1] - d2) / 8;
+                    double d7 = (this.density[i][j + 1][k + 1] - d3) / 8;
+                    double d8 = (this.density[i + 1][j + 1][k + 1] - d4) / 8;
 
                     for (int l = 0; l < 8; l++) {
                         double d9 = d1;
@@ -367,10 +208,10 @@ public class Nether extends Generator {
                             for (int n = 0; n < 4; n++) {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air (or lava if under the lava level).
                                 if (dens > 0) {
-                                    chunkData.setBlockAt(m + (i << 2), l + (k << 3), n + (j << 2), Block.NETHERRACK);
+                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Block.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
-                                    chunkData.setBlockAt(m + (i << 2), l + (k << 3), n + (j << 2), Block.STILL_LAVA);
-                                    chunkData.setBlockLight(m + (i << 2), l + (k << 3) + 1, n + (j << 2), 15);
+                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Block.STILL_LAVA);
+                                    chunk.setBlockLight(m + (i << 2), l + (k << 3) + 1, n + (j << 2), 15);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;
@@ -390,6 +231,139 @@ public class Nether extends Generator {
             }
         }
 
-        return chunkData;
+        double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("surface")).getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
+        double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("soulsand")).getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
+        double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("gravel")).getFractalBrownianMotion(cx, 0, cz, 0.5D, 2.0D);
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                chunk.setBiomeId(x, z, EnumBiome.HELL.biome.getId());
+
+                int columnX = ((cx + x) & 0xF);
+                int columnZ = ((cz + z) & 0xF);
+
+                int topMat = Block.NETHERRACK;
+                int groundMat = Block.NETHERRACK;
+
+                boolean soulSand = soulsandNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
+                boolean gravel = gravelNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
+
+                int surfaceHeight = (int) (surfaceNoise[x | z << 4] / 3.0D + 3.0D + this.nukkitRandom.nextDouble() * 0.25D);
+                int deep = -1;
+                for (int y = 127; y >= 0; y--) {
+                    if (y <= this.nukkitRandom.nextBoundedInt(5) || y >= 127 - this.nukkitRandom.nextBoundedInt(5)) {
+                        chunk.setBlockAt(columnX, y, columnZ, Block.BEDROCK);
+                        continue;
+                    }
+                    int mat = chunk.getBlockIdAt(columnX, y, columnZ);
+                    if (mat == Block.AIR) {
+                        deep = -1;
+                    } else if (mat == Block.NETHERRACK) {
+                        if (deep == -1) {
+                            if (surfaceHeight <= 0) {
+                                topMat = Block.AIR;
+                                groundMat = Block.NETHERRACK;
+                            } else if (y >= 60 && y <= 65) {
+                                topMat = Block.NETHERRACK;
+                                groundMat = Block.NETHERRACK;
+                                if (gravel) {
+                                    topMat = Block.GRAVEL;
+                                    groundMat = Block.NETHERRACK;
+                                }
+                                if (soulSand) {
+                                    topMat = Block.SOUL_SAND;
+                                    groundMat = Block.SOUL_SAND;
+                                }
+                            }
+
+                            deep = surfaceHeight;
+                            if (y >= 63) {
+                                chunk.setBlockAt(columnX, y, columnZ, topMat);
+                            } else {
+                                chunk.setBlockAt(columnX, y, columnZ, groundMat);
+                            }
+                        } else if (deep > 0) {
+                            deep--;
+                            chunk.setBlockAt(columnX, y, columnZ, groundMat);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Populator populator : this.generationPopulators) {
+            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
+        }
+    }
+
+    @Override
+    public void populateChunk(int chunkX, int chunkZ) {
+        BaseFullChunk chunk = level.getChunk(chunkX, chunkZ);
+        this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
+        for (Populator populator : this.populators) {
+            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
+        }
+
+        Biome biome = EnumBiome.getBiome(chunk.getBiomeId(7, 7));
+        biome.populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
+    }
+
+    @Override
+    public Vector3 getSpawn() {
+        return new Vector3(0, 64, 0);
+    }
+
+    /**
+     * Returns the {@link OctaveGenerator} instances for the world, which are
+     * either newly created or retrieved from the cache.
+     *
+     * @return A map of {@link OctaveGenerator}s
+     */
+    protected final Map<String, OctaveGenerator> getWorldOctaves() {
+        if (this.octaveCache.get(this.getName()) == null) {
+            Map<String, OctaveGenerator> octaves = new HashMap<String, OctaveGenerator>();
+            NukkitRandom seed = new NukkitRandom(this.level.getSeed());
+
+            OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
+            gen.setXScale(heightNoiseScaleX);
+            gen.setZScale(heightNoiseScaleZ);
+            octaves.put("height", gen);
+
+            gen = new PerlinOctaveGenerator(seed, 16, 5, 17, 5);
+            gen.setXScale(coordinateScale);
+            gen.setYScale(heightScale);
+            gen.setZScale(coordinateScale);
+            octaves.put("roughness", gen);
+
+            gen = new PerlinOctaveGenerator(seed, 16, 5, 17, 5);
+            gen.setXScale(coordinateScale);
+            gen.setYScale(heightScale);
+            gen.setZScale(coordinateScale);
+            octaves.put("roughness2", gen);
+
+            gen = new PerlinOctaveGenerator(seed, 8, 5, 17, 5);
+            gen.setXScale(coordinateScale / detailNoiseScaleX);
+            gen.setYScale(heightScale / detailNoiseScaleY);
+            gen.setZScale(coordinateScale / detailNoiseScaleZ);
+            octaves.put("detail", gen);
+
+            gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
+            gen.setScale(surfaceScale);
+            octaves.put("surface", gen);
+
+            gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
+            gen.setXScale(surfaceScale / 2.0);
+            gen.setYScale(surfaceScale / 2.0);
+            octaves.put("soulsand", gen);
+
+            gen = new PerlinOctaveGenerator(seed, 4, 16, 1, 16);
+            gen.setXScale(surfaceScale / 2.0);
+            gen.setZScale(surfaceScale / 2.0);
+            octaves.put("gravel", gen);
+
+            this.octaveCache.put(this.getName(), octaves);
+            return octaves;
+        }
+        return this.octaveCache.get(this.getName());
     }
 }
