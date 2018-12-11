@@ -1411,7 +1411,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         boolean revert = false;
 
-        if ((distanceSquared / ((double) (tickDiff * tickDiff))) > 100/* && (newPos.y - this.y) > -5*/) {
+        if ((distanceSquared / ((double) (tickDiff * tickDiff))) > 100 && (newPos.y - this.y) > -5) {
             /* !!! BEWARE YE WHO ENTER HERE !!!
              *
              * This is NOT an anti-cheat check. It is a safety check.
