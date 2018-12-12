@@ -38,6 +38,7 @@ import cn.nukkit.level.particle.DestroyBlockParticle;
 import cn.nukkit.level.particle.Particle;
 import cn.nukkit.level.sound.BlockPlaceSound;
 import cn.nukkit.level.sound.Sound;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.*;
 import cn.nukkit.math.BlockFace.Plane;
 import cn.nukkit.metadata.BlockMetadataStore;
@@ -486,8 +487,40 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void addSound(Sound sound, Collection<Player> players) {
-        this.addSound(sound, players.stream().toArray(Player[]::new));
+        this.addSound(sound, players.toArray(new Player[0]));
     }
+
+    public void addSound(Vector3 pos, SoundEnum sound) {
+        this.addSound(pos, sound, 1, 1, (Player[]) null);
+    }
+
+    public void addSound(Vector3 pos, SoundEnum sound, float volume, float pitch) {
+        this.addSound(pos, sound, volume, pitch, (Player[]) null);
+    }
+
+    public void addSound(Vector3 pos, SoundEnum sound, float volume, float pitch, Collection<Player> players) {
+        this.addSound(pos, sound, volume, pitch, players.toArray(new Player[0]));
+    }
+
+    public void addSound(Vector3 pos, SoundEnum sound, float volume, float pitch, Player... players) {
+        Preconditions.checkArgument(volume >= 0 && volume <= 1, "Sound volume must be between 0 and 1");
+        Preconditions.checkArgument(pitch >= 0, "Sound pitch must be higher than 0");
+
+        PlaySoundPacket packet = new PlaySoundPacket();
+        packet.name = sound.getSound();
+        packet.volume = 1;
+        packet.pitch = 1;
+        packet.x = pos.getFloorX();
+        packet.y = pos.getFloorY();
+        packet.z = pos.getFloorZ();
+
+        if (players == null || players.length == 0) {
+            addChunkPacket(pos.getFloorX() >> 4, pos.getFloorZ() >> 4, packet);
+        } else {
+            Server.broadcastPacket(players, packet);
+        }
+    }
+
 
     public void addLevelSoundEvent(int type, int pitch, int data, Vector3 pos) {
         this.addLevelSoundEvent(type, pitch, data, pos, false);

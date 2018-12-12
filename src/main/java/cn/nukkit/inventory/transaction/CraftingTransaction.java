@@ -112,7 +112,7 @@ public class CraftingTransaction extends InventoryTransaction {
             }
         }
 
-        if (height == 0 || width == 0) {
+        if (height < 1 || width < 1) {
             return new Item[0][];
         }
 

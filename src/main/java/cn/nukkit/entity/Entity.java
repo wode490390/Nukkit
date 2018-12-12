@@ -26,10 +26,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.network.protocol.MobEffectPacket;
-import cn.nukkit.network.protocol.RemoveEntityPacket;
-import cn.nukkit.network.protocol.SetEntityDataPacket;
-import cn.nukkit.network.protocol.SetEntityMotionPacket;
+import cn.nukkit.network.protocol.*;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.ChunkException;
@@ -806,6 +803,32 @@ public abstract class Entity extends Location implements Metadatable {
         if (!this.hasSpawned.containsKey(player.getLoaderId()) && player.usedChunks.containsKey(Level.chunkHash(this.chunk.getX(), this.chunk.getZ()))) {
             this.hasSpawned.put(player.getLoaderId(), player);
         }
+        if (this.riding != null) {
+            SetEntityLinkPacket pkk = new SetEntityLinkPacket();
+            pkk.rider = this.riding.getId();
+            pkk.riding = this.getId();
+            pkk.type = 1;
+            pkk.unknownByte = 1;
+
+            player.dataPacket(pkk);
+        }
+    }
+
+    protected DataPacket createAddEntityPacket() {
+        AddEntityPacket addEntity = new AddEntityPacket();
+        addEntity.type = this.getNetworkId();
+        addEntity.entityUniqueId = this.getId();
+        addEntity.entityRuntimeId = this.getId();
+        addEntity.yaw = (float) this.yaw;
+        addEntity.pitch = (float) this.pitch;
+        addEntity.x = (float) this.x;
+        addEntity.y = (float) this.y;
+        addEntity.z = (float) this.z;
+        addEntity.speedX = (float) this.motionX;
+        addEntity.speedY = (float) this.motionY;
+        addEntity.speedZ = (float) this.motionZ;
+        addEntity.metadata = this.dataProperties;
+        return addEntity;
     }
 
     public Map<Integer, Player> getViewers() {

@@ -547,6 +547,8 @@ public class Item implements Cloneable {
 
     public static final int SHULKER_SHELL = 445;
 
+    public static final int TRIDENT = 455;
+
     public static final int BEETROOT = 457;
     public static final int BEETROOT_SEEDS = 458;
     public static final int BEETROOT_SEED = 458;
@@ -810,6 +812,8 @@ public class Item implements Cloneable {
             list[ELYTRA] = ItemElytra.class; //444
 
             //TODO: list[SHULKER_SHELL] = ItemShulkerShell.class; //445
+
+            list[TRIDENT] = ItemTrident.class; //455
 
             list[BEETROOT] = ItemBeetroot.class; //457
             list[BEETROOT_SEEDS] = ItemSeedsBeetroot.class; //458

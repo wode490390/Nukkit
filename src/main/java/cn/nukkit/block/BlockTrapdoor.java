@@ -8,6 +8,7 @@ import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.sound.DoorSound;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
@@ -125,10 +126,12 @@ public class BlockTrapdoor extends BlockTransparent {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_REDSTONE || type == Level.BLOCK_UPDATE_NORMAL) {
-            if ((!isOpen() && this.level.isBlockPowered(this)) || (isOpen() && !this.level.isBlockPowered(this))) {
+        if (type == Level.BLOCK_UPDATE_REDSTONE) {
+            if ((!isOpen() && this.level.isBlockPowered(this.getLocation())) || (isOpen() && !this.level.isBlockPowered(this.getLocation()))) {
                 this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, isOpen() ? 15 : 0, isOpen() ? 0 : 15));
-                this.toggle(null);
+                this.setDamage(this.getDamage() ^ 0x08);
+                this.level.setBlock(this, this, true);
+                this.level.addSound(this, isOpen() ? SoundEnum.RANDOM_DOOR_OPEN : SoundEnum.RANDOM_DOOR_CLOSE);
                 return type;
             }
         }
@@ -152,10 +155,10 @@ public class BlockTrapdoor extends BlockTransparent {
         int[] faces = {2, 1, 3, 0};
         int faceBit = faces[facing.getHorizontalIndex()];
 
-        this.meta |= faceBit;
+        this.setDamage(this.getDamage() | faceBit);
 
         if (top) {
-            this.meta |= 0x04;
+            this.setDamage(this.getDamage() | 0x04);
         }
 
         this.getLevel().setBlock(block, this, true, true);
@@ -169,12 +172,9 @@ public class BlockTrapdoor extends BlockTransparent {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        if (!this.toggle(player)) {
-            return false;
-        }
-
-        this.getLevel().setBlock(this, this, true);
-        this.level.addSound(new DoorSound(this));
+        this.setDamage(this.getDamage() ^ 0x08);
+        this.level.setBlock(this, this, true);
+        this.level.addSound(this, isOpen() ? SoundEnum.RANDOM_DOOR_OPEN : SoundEnum.RANDOM_DOOR_CLOSE);
         return true;
     }
 
