@@ -997,6 +997,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.unloadChunk(Level.getHashX(index), Level.getHashZ(index));
         }
 
+        if (!loadQueue.isEmpty()) {
+ 			NetworkChunkPublisherUpdatePacket pk = new NetworkChunkPublisherUpdatePacket();
+ 			pk.x = this.getFloorX();
+ 			pk.y = this.getFloorY();
+ 			pk.z = this.getFloorZ();
+ 			pk.radius = this.viewDistance << 4; //blocks, not chunks >.>
+ 			this.dataPacket(pk);
+        }
+
         Timings.playerChunkOrderTimer.stopTiming();
         return true;
     }
