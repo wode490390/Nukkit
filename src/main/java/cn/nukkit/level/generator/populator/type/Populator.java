@@ -1,4 +1,4 @@
-package cn.nukkit.level.generator.populator;
+package cn.nukkit.level.generator.populator.type;
 
 import cn.nukkit.block.BlockID;
 import cn.nukkit.level.ChunkManager;
