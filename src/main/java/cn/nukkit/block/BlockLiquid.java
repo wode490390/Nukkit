@@ -433,6 +433,7 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
             return false;
         }
         this.level.setBlock(this, result, true, true);
+        //TODO: recheck this (it doesn't work in MCPE 1.8)
         this.level.addSound(this.add(0.5, 0.5, 0.5), Sound.RANDOM_FIZZ);
         return true;
     }
