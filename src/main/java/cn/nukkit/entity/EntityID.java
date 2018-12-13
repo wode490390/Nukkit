@@ -101,5 +101,5 @@ public interface EntityID {
     int DROWNED = 110;
     int TROPICALFISH = 111;
     int COD = 112;
-
+    int PANDA = 113;
 }
