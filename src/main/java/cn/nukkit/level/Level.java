@@ -476,26 +476,30 @@ public class Level implements ChunkManager, Metadatable {
         }
     }
 
-    /**
-     * Broadcasts sound to players
-     *
-     * @param pos  position where sound should be played
-     * @param type ID of the sound from cn.nukkit.network.protocol.LevelSoundEventPacket
-     * @param pitch pitch of sound
-     * @param data generic data that can affect sound
-     */
-    public void addLevelSoundEvent(Vector3 pos, int type, int pitch, int data) {
-        this.addLevelSoundEvent(pos, type, pitch, data, false);
+    public void addLevelSoundEvent(Vector3 pos, int soundId) {
+        this.addLevelSoundEvent(pos, soundId, 1);
     }
 
-    public void addLevelSoundEvent(Vector3 pos, int type, int pitch, int data, boolean isGlobal) {
-        LevelSoundEventPacket pk = new LevelSoundEventPacket();
-        pk.sound = type;
-        pk.pitch = pitch;
-        pk.extraData = data;
-        pk.position = pos.asVector3f();
-        pk.disableRelativeVolume = isGlobal;
+    public void addLevelSoundEvent(Vector3 pos, int soundId, int extraData) {
+        this.addLevelSoundEvent(pos, soundId, extraData, -1);
+    }
 
+    public void addLevelSoundEvent(Vector3 pos, int soundId, int extraData, int entityTypeId) {
+        this.addLevelSoundEvent(pos, soundId, extraData, entityTypeId, false);
+    }
+
+    public void addLevelSoundEvent(Vector3 pos, int soundId, int extraData, int entityTypeId, boolean isBabyMob) {
+        this.addLevelSoundEvent(pos, soundId, extraData, entityTypeId, isBabyMob, false);
+    }
+
+    public void addLevelSoundEvent(Vector3 pos, int soundId, int extraData, int entityTypeId, boolean isBabyMob,  boolean disableRelativeVolume) {
+        LevelSoundEventPacket pk = new LevelSoundEventPacket();
+        pk.sound = soundId;
+        pk.extraData = extraData;
+        pk.entityType = entityTypeId;
+        pk.isBabyMob = isBabyMob;
+        pk.disableRelativeVolume = disableRelativeVolume;
+        pk.position = pos.asVector3f();
         this.addChunkPacket(pos.getFloorX() >> 4, pos.getFloorZ() >> 4, pk);
     }
 
