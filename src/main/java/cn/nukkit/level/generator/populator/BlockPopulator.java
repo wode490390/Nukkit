@@ -2,7 +2,7 @@ package cn.nukkit.level.generator.populator;
 
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.NukkitRandom;
+import cn.nukkit.math.NukkitRandom;
 
 public abstract class BlockPopulator extends Populator {
 
