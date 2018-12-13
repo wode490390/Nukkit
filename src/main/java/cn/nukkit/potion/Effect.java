@@ -40,11 +40,10 @@ public class Effect implements Cloneable {
     public static final int HEALTH_BOOST = 21;
     public static final int ABSORPTION = 22;
     public static final int SATURATION = 23;
-
-    public static final int LEVITATION = 25;
-
-    public static final int SLOW_FALLING = 28;
-    public static final int CONDUIT_POWER = 29;
+    public static final int LEVITATION = 24;
+    public static final int FATAL_POISON = 25;
+    public static final int CONDUIT_POWER = 26;
+    public static final int SLOW_FALLING = 27;
 
     protected static Effect[] effects;
 
@@ -74,11 +73,10 @@ public class Effect implements Cloneable {
         effects[Effect.HEALTH_BOOST] = new Effect(Effect.HEALTH_BOOST, "%potion.healthBoost", 248, 125, 35);
         effects[Effect.ABSORPTION] = new Effect(Effect.ABSORPTION, "%potion.absorption", 36, 107, 251);
         effects[Effect.SATURATION] = new Effect(Effect.SATURATION, "%potion.saturation", 255, 0, 255);
-
         effects[Effect.LEVITATION] = new Effect(Effect.LEVITATION, "%potion.levitation", 206, 255, 255);
-
-        effects[Effect.SLOW_FALLING] = new Effect(Effect.SLOW_FALLING, "%potion.slowFalling", 206, 255, 255);
+        effects[Effect.FATAL_POISON] = new Effect(Effect.FATAL_POISON, "%potion.fatalPoison", 78, 147, 49, true);
         effects[Effect.CONDUIT_POWER] = new Effect(Effect.CONDUIT_POWER, "%potion.conduitPower", 29, 194, 209);
+        effects[Effect.SLOW_FALLING] = new Effect(Effect.SLOW_FALLING, "%potion.slowFalling", 206, 255, 255);
     }
 
     public static Effect getEffect(int id) {
