@@ -496,7 +496,7 @@ public class Level implements ChunkManager, Metadatable {
         LevelSoundEventPacket pk = new LevelSoundEventPacket();
         pk.sound = soundId;
         pk.extraData = extraData;
-        pk.entityType = AddEntityPacket.LEGACY_ID_MAP_BC.containsKey(entityTypeId) ? AddEntityPacket.LEGACY_ID_MAP_BC.get(entityTypeId) : ":";
+        pk.entityType = AddEntityPacket.LEGACY_ID_MAP_BC.getOrDefault(entityTypeId, ":");
         pk.isBabyMob = isBabyMob;
         pk.disableRelativeVolume = disableRelativeVolume;
         pk.position = pos.asVector3f();
