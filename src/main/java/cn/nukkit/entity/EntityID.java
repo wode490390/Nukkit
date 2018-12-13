@@ -43,17 +43,17 @@ public interface EntityID {
     int WITHER_SKELETON = 48;
     int GUARDIAN = 49;
     int ELDER_GUARDIAN = 50;
-
+    int NPC = 51;
     int WITHER = 52;
     int ENDER_DRAGON = 53;
     int SHULKER = 54;
     int ENDERMITE = 55;
-
+    int AGENT = 56;
     int VINDICATOR = 57;
     int PHANTOM = 58;
 
     int ARMOR_STAND = 61;
-
+    int TRIPOD_CAMERA = 62;
     int PLAYER = 63;
     int ITEM = 64;
     int TNT = 65;
@@ -66,17 +66,17 @@ public interface EntityID {
     int FIREWORKS_ROCKET = 72;
     int THROWN_TRIDENT = 73;
     int TURTLE = 74;
-
+    int CAT = 75;
     int SHULKER_BULLET = 76;
     int FISHING_HOOK = 77;
-
+    int CHALKBOARD = 78;
     int DRAGON_FIREBALL = 79;
     int ARROW = 80;
     int SNOWBALL = 81;
     int EGG = 82;
     int PAINTING = 83;
     int MINECART = 84;
-    int LARGE_FIREBALL = 85;
+    int FIREBALL = 85;
     int SPLASH_POTION = 86;
     int ENDER_PEARL = 87;
     int LEASH_KNOT = 88;
@@ -89,13 +89,15 @@ public interface EntityID {
     int HOPPER_MINECART = 96;
     int TNT_MINECART = 97;
     int CHEST_MINECART = 98;
+
     int COMMAND_BLOCK_MINECART = 100;
     int LINGERING_POTION = 101;
     int LLAMA_SPIT = 102;
     int EVOCATION_FANG = 103;
     int EVOCATION_ILLAGER = 104;
     int VEX = 105;
-
+    int ICE_BOMB = 106;
+    int BALLOON = 107;
     int PUFFERFISH = 108;
     int SALMON = 109;
     int DROWNED = 110;
