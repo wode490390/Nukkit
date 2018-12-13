@@ -998,12 +998,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         if (!loadQueue.isEmpty()) {
- 			NetworkChunkPublisherUpdatePacket pk = new NetworkChunkPublisherUpdatePacket();
- 			pk.x = this.getFloorX();
- 			pk.y = this.getFloorY();
- 			pk.z = this.getFloorZ();
- 			pk.radius = this.viewDistance << 4; //blocks, not chunks >.>
- 			this.dataPacket(pk);
+            NetworkChunkPublisherUpdatePacket pk = new NetworkChunkPublisherUpdatePacket();
+            pk.x = this.getFloorX();
+            pk.y = this.getFloorY();
+            pk.z = this.getFloorZ();
+            pk.radius = this.viewDistance << 4; //blocks, not chunks >.>
+            this.dataPacket(pk);
         }
 
         Timings.playerChunkOrderTimer.stopTiming();
@@ -2037,6 +2037,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         startGamePacket.generator = 1; //0 old, 1 infinite, 2 flat
         this.dataPacket(startGamePacket);
 
+        this.dataPacket(new AvailableEntityIdentifiersPacket());
+
         this.loggedIn = true;
 
         this.level.sendTime(this);
@@ -2047,15 +2049,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.setNameTagAlwaysVisible(true);
         this.setCanClimb(true);
 
-        this.server.getLogger().info(this.getServer().getLanguage().translateString("nukkit.player.logIn",
-                TextFormat.AQUA + this.username + TextFormat.WHITE,
-                this.ip,
-                String.valueOf(this.port),
-                String.valueOf(this.id),
-                this.level.getName(),
-                String.valueOf(NukkitMath.round(this.x, 4)),
-                String.valueOf(NukkitMath.round(this.y, 4)),
-                String.valueOf(NukkitMath.round(this.z, 4))));
+        this.server.getLogger().info(this.getServer().getLanguage().translateString("nukkit.player.logIn", TextFormat.AQUA + this.username + TextFormat.WHITE, this.ip, String.valueOf(this.port), String.valueOf(this.id), this.level.getName(), String.valueOf(NukkitMath.round(this.x, 4)), String.valueOf(NukkitMath.round(this.y, 4)), String.valueOf(NukkitMath.round(this.z, 4))));
 
         if (this.isOp() || this.hasPermission("nukkit.textcolor")) {
             this.setRemoveFormat(false);
@@ -2262,7 +2256,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
                     PlayerInputPacket ipk = (PlayerInputPacket) packet;
                     if (riding instanceof EntityMinecartAbstract) {
-                        ((EntityMinecartEmpty) riding).setCurrentSpeed(ipk.motionY);
+                        ((EntityMinecartAbstract) riding).setCurrentSpeed(ipk.motionY);
                     }
                     break;
                 case ProtocolInfo.MOVE_PLAYER_PACKET:
@@ -2832,10 +2826,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     break;
+                case ProtocolInfo.LEVEL_SOUND_EVENT_PACKET_V1:
                 case ProtocolInfo.LEVEL_SOUND_EVENT_PACKET:
                     //LevelSoundEventPacket levelSoundEventPacket = (LevelSoundEventPacket) packet;
                     //We just need to broadcast this packet to all viewers.
-                    this.level.addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, packet);
+                    this.level.addChunkPacket(this.getChunkX(), this.getChunkZ(), packet);
                     break;
                 case ProtocolInfo.INVENTORY_TRANSACTION_PACKET:
                     if (this.isSpectator()) {
