@@ -221,7 +221,7 @@ public class LevelSoundEventPacket extends DataPacket {
 
     public int sound = -1;
     public Vector3f position = new Vector3f();
-    public int extraData = 0;
+    public int extraData = -1;
     public String entityType = ":"; //???
     public boolean isBabyMob = false; //...
     public boolean disableRelativeVolume = false;
