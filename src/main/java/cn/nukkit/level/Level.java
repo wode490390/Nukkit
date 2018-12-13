@@ -477,7 +477,7 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void addLevelSoundEvent(Vector3 pos, int soundId) {
-        this.addLevelSoundEvent(pos, soundId, 1);
+        this.addLevelSoundEvent(pos, soundId, -1);
     }
 
     public void addLevelSoundEvent(Vector3 pos, int soundId, int extraData) {
