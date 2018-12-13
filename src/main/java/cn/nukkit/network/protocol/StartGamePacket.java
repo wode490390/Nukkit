@@ -107,7 +107,7 @@ public class StartGamePacket extends DataPacket {
         this.putBoolean(this.hasXboxLiveBroadcast);
         this.putBoolean(this.commandsEnabled);
         this.putBoolean(this.isTexturePacksRequired);
-        this.putGameRules(gameRules);
+        this.putGameRules(this.gameRules);
         this.putBoolean(this.hasBonusChestEnabled);
         this.putBoolean(this.hasStartWithMapEnabled);
         this.putBoolean(this.hasTrustPlayersEnabled);
