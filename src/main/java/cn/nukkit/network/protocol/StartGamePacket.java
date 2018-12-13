@@ -61,6 +61,8 @@ public class StartGamePacket extends DataPacket {
     public boolean hasLockedResourcePack = false;
     public boolean isFromLockedWorldTemplate = false;
     public boolean useMsaGamertagsOnly = false;
+    public boolean isFromWorldTemplate = false;
+    public boolean isWorldTemplateOptionLocked = false;
 
     public String levelId = ""; //base64 string, usually the same as world folder name in vanilla
     public String worldName;
@@ -119,6 +121,8 @@ public class StartGamePacket extends DataPacket {
         this.putBoolean(this.hasLockedResourcePack);
         this.putBoolean(this.isFromLockedWorldTemplate);
         this.putBoolean(this.useMsaGamertagsOnly);
+        this.putBoolean(this.isFromWorldTemplate);
+        this.putBoolean(this.isWorldTemplateOptionLocked);
 
         this.putString(this.levelId);
         this.putString(this.worldName);
