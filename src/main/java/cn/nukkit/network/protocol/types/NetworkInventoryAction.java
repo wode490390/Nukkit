@@ -18,8 +18,8 @@ public class NetworkInventoryAction {
 
     public static final int SOURCE_WORLD = 2; //drop/pickup item entity
     public static final int SOURCE_CREATIVE = 3;
+    public static final int SOURCE_CRAFTING_GRID = 100;
     public static final int SOURCE_TODO = 99999;
-    public static final int SOURCE_CRAFT_SLOT = 100;
 
     /**
      * Fake window IDs for the SOURCE_TODO type (99999)
@@ -63,7 +63,7 @@ public class NetworkInventoryAction {
     public static final int ACTION_MAGIC_SLOT_PICKUP_ITEM = 1;
 
     public int sourceType;
-    public int windowId = ContainerIds.NONE;
+    public int windowId;
     public long sourceFlags = 0;
     public int inventorySlot;
     public Item oldItem;
@@ -81,7 +81,7 @@ public class NetworkInventoryAction {
                 break;
             case SOURCE_CREATIVE:
                 break;
-            case SOURCE_CRAFT_SLOT:
+            case SOURCE_CRAFTING_GRID:
             case SOURCE_TODO:
                 this.windowId = packet.getVarInt();
                 switch (this.windowId) {
@@ -112,7 +112,7 @@ public class NetworkInventoryAction {
                 break;
             case SOURCE_CREATIVE:
                 break;
-            case SOURCE_CRAFT_SLOT:
+            case SOURCE_CRAFTING_GRID:
             case SOURCE_TODO:
                 packet.putVarInt(this.windowId);
                 break;
@@ -162,7 +162,7 @@ public class NetworkInventoryAction {
                 }
 
                 return new CreativeInventoryAction(this.oldItem, this.newItem, type);
-            case SOURCE_CRAFT_SLOT:
+            case SOURCE_CRAFTING_GRID:
             case SOURCE_TODO:
                 //These types need special handling.
                 switch (this.windowId) {
@@ -249,7 +249,7 @@ public class NetworkInventoryAction {
                 player.getServer().getLogger().debug("Player " + player.getName() + " has no open container with window ID " + this.windowId);
                 return null;
             default:
-                player.getServer().getLogger().debug("Unknown inventory source type " + this.sourceType);
+                player.getServer().getLogger().debug("Unknown inventory action source type " + this.sourceType);
                 return null;
         }
     }
