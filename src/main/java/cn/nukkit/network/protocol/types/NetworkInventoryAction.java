@@ -91,6 +91,8 @@ public class NetworkInventoryAction {
                         break;
                 }
                 break;
+            default:
+                throw new RuntimeException("Unknown inventory action source type " + this.sourceType);
         }
 
         this.inventorySlot = (int) packet.getUnsignedVarInt();
@@ -116,6 +118,8 @@ public class NetworkInventoryAction {
             case SOURCE_TODO:
                 packet.putVarInt(this.windowId);
                 break;
+            default:
+                throw new RuntimeException("Unknown inventory action source type " + this.sourceType);
         }
 
         packet.putUnsignedVarInt(this.inventorySlot);
