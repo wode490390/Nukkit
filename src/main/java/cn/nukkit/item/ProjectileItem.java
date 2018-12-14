@@ -54,7 +54,7 @@ public abstract class ProjectileItem extends Item {
                     projectile.kill();
                 } else {
                     projectile.spawnToAll();
-                    player.getLevel().addSound(player, Sound.SOUND_THROW, 0, EntityID.PLAYER);
+                    player.getLevel().addSound(player, Sound.RANDOM_BOW, 0, EntityID.PLAYER);
                 }
             } else {
                 projectile.spawnToAll();
