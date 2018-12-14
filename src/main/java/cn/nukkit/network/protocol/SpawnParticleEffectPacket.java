@@ -26,7 +26,7 @@ public class SpawnParticleEffectPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putByte(this.dimensionId);
+        this.putByte((byte) this.dimensionId);
         this.putVector3(this.position);
         this.putString(this.particleName);
     }
