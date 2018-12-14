@@ -451,9 +451,9 @@ public abstract class BaseInventory implements Inventory {
     @Override
     public void sendContents(Player... players) {
         InventoryContentPacket pk = new InventoryContentPacket();
-        pk.slots = new Item[this.getSize()];
+        pk.items = new Item[this.getSize()];
         for (int i = 0; i < this.getSize(); ++i) {
-            pk.slots[i] = this.getItem(i);
+            pk.items[i] = this.getItem(i);
         }
 
         for (Player player : players) {
@@ -462,7 +462,7 @@ public abstract class BaseInventory implements Inventory {
                 this.close(player);
                 continue;
             }
-            pk.inventoryId = id;
+            pk.windowId = id;
             player.dataPacket(pk);
         }
     }
@@ -528,7 +528,7 @@ public abstract class BaseInventory implements Inventory {
     @Override
     public void sendSlot(int index, Player... players) {
         InventorySlotPacket pk = new InventorySlotPacket();
-        pk.slot = index;
+        pk.inventorySlot = index;
         pk.item = this.getItem(index).clone();
 
         for (Player player : players) {
@@ -537,7 +537,7 @@ public abstract class BaseInventory implements Inventory {
                 this.close(player);
                 continue;
             }
-            pk.inventoryId = id;
+            pk.windowId = id;
             player.dataPacket(pk);
         }
     }

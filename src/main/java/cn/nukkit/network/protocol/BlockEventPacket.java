@@ -5,6 +5,7 @@ package cn.nukkit.network.protocol;
  * Nukkit Project
  */
 public class BlockEventPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.BLOCK_EVENT_PACKET;
 
     @Override
@@ -15,8 +16,8 @@ public class BlockEventPacket extends DataPacket {
     public int x;
     public int y;
     public int z;
-    public int case1;
-    public int case2;
+    public int eventType;
+    public int eventData;
 
     @Override
     public void decode() {
@@ -26,8 +27,8 @@ public class BlockEventPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putBlockVector3(this.x, this.y, this.z);
-        this.putVarInt(this.case1);
-        this.putVarInt(this.case2);
+        this.putBlockPosition(this.x, this.y, this.z);
+        this.putVarInt(this.eventType);
+        this.putVarInt(this.eventData);
     }
 }

@@ -5,6 +5,7 @@ package cn.nukkit.network.protocol;
  * Nukkit Project
  */
 public class ShowProfilePacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.SHOW_PROFILE_PACKET;
 
     public String xuid;
@@ -24,5 +25,4 @@ public class ShowProfilePacket extends DataPacket {
         this.reset();
         this.putString(this.xuid);
     }
-
 }

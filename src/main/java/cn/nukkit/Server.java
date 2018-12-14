@@ -14,6 +14,7 @@ import cn.nukkit.entity.projectile.*;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.level.LevelInitEvent;
 import cn.nukkit.event.level.LevelLoadEvent;
+import cn.nukkit.event.server.BatchPacketsEvent;
 import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.inventory.CraftingManager;
 import cn.nukkit.inventory.Recipe;
@@ -53,6 +54,7 @@ import cn.nukkit.network.protocol.BatchPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.PlayerListPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
+import cn.nukkit.network.protocol.types.PlayerListEntry;
 import cn.nukkit.network.query.QueryHandler;
 import cn.nukkit.network.rcon.RCON;
 import cn.nukkit.permission.BanEntry;
@@ -612,6 +614,14 @@ public class Server {
         }
 
         Timings.playerNetworkSendTimer.startTiming();
+
+        BatchPacketsEvent ev = new BatchPacketsEvent(players, packets, forceSync);
+        getPluginManager().callEvent(ev);
+        if (ev.isCancelled()) {
+            Timings.playerNetworkSendTimer.stopTiming();
+            return;
+        }
+
         byte[][] payload = new byte[packets.length * 2][];
         int size = 0;
         for (int i = 0; i < packets.length; i++) {
@@ -913,7 +923,7 @@ public class Server {
 
             PlayerListPacket pk = new PlayerListPacket();
             pk.type = PlayerListPacket.TYPE_REMOVE;
-            pk.entries = new PlayerListPacket.Entry[]{new PlayerListPacket.Entry(player.getUniqueId())};
+            pk.entries = new PlayerListEntry[]{new PlayerListEntry(player.getUniqueId())};
 
             Server.broadcastPacket(this.playerList.values(), pk);
         }
@@ -934,7 +944,7 @@ public class Server {
     public void updatePlayerListData(UUID uuid, long entityId, String name, Skin skin, String xboxUserId, Player[] players) {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_ADD;
-        pk.entries = new PlayerListPacket.Entry[]{new PlayerListPacket.Entry(uuid, entityId, name, skin, xboxUserId)};
+        pk.entries = new PlayerListEntry[]{new PlayerListEntry(uuid, entityId, name, skin, xboxUserId)};
         Server.broadcastPacket(players, pk);
     }
 
@@ -952,7 +962,7 @@ public class Server {
     public void removePlayerListData(UUID uuid, Player[] players) {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_REMOVE;
-        pk.entries = new PlayerListPacket.Entry[]{new PlayerListPacket.Entry(uuid)};
+        pk.entries = new PlayerListEntry[]{new PlayerListEntry(uuid)};
         Server.broadcastPacket(players, pk);
     }
 
@@ -964,13 +974,13 @@ public class Server {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_ADD;
         pk.entries = this.playerList.values().stream()
-                .map(p -> new PlayerListPacket.Entry(
+                .map(p -> new PlayerListEntry(
                 p.getUniqueId(),
                 p.getId(),
                 p.getDisplayName(),
                 p.getSkin(),
                 p.getLoginChainData().getXUID()))
-                .toArray(PlayerListPacket.Entry[]::new);
+                .toArray(PlayerListEntry[]::new);
 
         player.dataPacket(pk);
     }
@@ -1727,9 +1737,7 @@ public class Server {
         }
 
         if (provider == null) {
-            if ((provider = LevelProviderManager.getProviderByName((String) this.getConfig("level-settings.default-format", "anvil"))) == null) {
-                provider = LevelProviderManager.getProviderByName("anvil");
-            }
+            provider = LevelProviderManager.getProviderByName(this.getConfig().get("level-settings.default-format", "anvil"));
         }
 
         String path;

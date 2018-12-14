@@ -11,6 +11,9 @@ import java.util.TreeMap;
  */
 public abstract class AcknowledgePacket extends Packet {
 
+    private static final byte RECORD_TYPE_RANGE = (byte) 0x00;
+    private static final byte RECORD_TYPE_SINGLE = (byte) 0x01;
+
     public TreeMap<Integer, Integer> packets;
 
     @Override
@@ -39,11 +42,11 @@ public abstract class AcknowledgePacket extends Packet {
                 } else if (diff > 1) {
 
                     if (start == last) {
-                        payload.putByte((byte) 0x01);
+                        payload.putByte(RECORD_TYPE_SINGLE);
                         payload.put(Binary.writeLTriad(start));
                         start = last = current;
                     } else {
-                        payload.putByte((byte) 0x00);
+                        payload.putByte(RECORD_TYPE_RANGE);
                         payload.put(Binary.writeLTriad(start));
                         payload.put(Binary.writeLTriad(last));
                         start = last = current;
@@ -53,10 +56,10 @@ public abstract class AcknowledgePacket extends Packet {
             }
 
             if (start == last) {
-                payload.putByte((byte) 0x01);
+                payload.putByte(RECORD_TYPE_SINGLE);
                 payload.put(Binary.writeLTriad(start));
             } else {
-                payload.putByte((byte) 0x00);
+                payload.putByte(RECORD_TYPE_RANGE);
                 payload.put(Binary.writeLTriad(start));
                 payload.put(Binary.writeLTriad(last));
             }

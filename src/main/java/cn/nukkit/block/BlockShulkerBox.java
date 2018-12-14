@@ -118,7 +118,7 @@ public class BlockShulkerBox extends BlockTransparentMeta {
             Block c = this.getSide(BlockFace.fromIndex(side));
             if (c instanceof BlockShulkerBox && c.getDamage() == this.getDamage()) {
                 BlockEntity blockEntity = this.getLevel().getBlockEntity(c);
-                if (blockEntity instanceof BlockEntityShulkerBox && !((BlockEntityShulkerBox) blockEntity).isPaired()) {
+                if (blockEntity instanceof BlockEntityShulkerBox) {
                     box = (BlockEntityShulkerBox) blockEntity;
                     break;
                 }
@@ -147,28 +147,12 @@ public class BlockShulkerBox extends BlockTransparentMeta {
 
         BlockEntity blockEntity = new BlockEntityShulkerBox(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
 
-        if (box != null) {
-            box.pairWith(((BlockEntityShulkerBox) blockEntity));
-            ((BlockEntityShulkerBox) blockEntity).pairWith(box);
-        }
-
         return true;
     }
 
     @Override
     public boolean canHarvestWithHand() {
         return false;
-    }
-
-    @Override
-    public boolean onBreak(Item item) {
-        BlockEntity t = this.getLevel().getBlockEntity(this);
-        if (t instanceof BlockEntityShulkerBox) {
-            ((BlockEntityShulkerBox) t).unpair();
-        }
-        this.getLevel().setBlock(this, new BlockAir(), true, true);
-
-        return true;
     }
 
     @Override
