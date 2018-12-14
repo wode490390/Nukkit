@@ -118,7 +118,6 @@ public class EntityFirework extends Entity {
 
                 LevelSoundEventPacketV1 pk2 = new LevelSoundEventPacketV1();
                 pk2.sound = LevelSoundEventPacket.SOUND_LARGE_BLAST;
-                pk2.pitch = -1;
                 pk2.position = new Vector3(this.x, this.y, this.z).asVector3f();
 
                 Server.broadcastPacket(getViewers().values(), pk);
