@@ -579,6 +579,9 @@ public abstract class Entity extends Location implements Metadatable {
     }
 
     public void setScale(float scale) {
+        if (scale <= 0) {
+            throw new IllegalArgumentException("Scale must be greater than 0");
+        }
         this.scale = scale;
         this.setDataProperty(new FloatEntityData(DATA_SCALE, this.scale));
 
