@@ -4574,9 +4574,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     //todo a lot on dimension
 
     private void setDimension(int dimension) {
+        this.setDimension(dimension, false);
+    }
+
+    private void setDimension(int dimension, boolean respawn) {
         ChangeDimensionPacket pk = new ChangeDimensionPacket();
         pk.dimension = dimension;
         pk.position = this.asVector3f();
+        pk.respawn = respawn;
         this.directDataPacket(pk);
     }
 
@@ -4591,6 +4596,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             spawnPosition.y = spawn.getFloorY();
             spawnPosition.z = spawn.getFloorZ();
             this.dataPacket(spawnPosition);
+
+            int dimensionId = level.getDimension();		
+            if (oldLevel.getDimension() != dimensionId) {		
+                this.setDimension(dimensionId);		
+            }
 
             // Remove old chunks
             for (long index : new ArrayList<>(this.usedChunks.keySet())) {
