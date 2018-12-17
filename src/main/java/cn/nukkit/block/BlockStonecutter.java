@@ -1,9 +1,7 @@
 package cn.nukkit.block;
 
-import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
-import cn.nukkit.math.BlockFace;
 
 public class BlockStonecutter extends BlockSolidMeta {
 
@@ -39,13 +37,6 @@ public class BlockStonecutter extends BlockSolidMeta {
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
-
-    /*@Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        //TODO: face
-
-        return true;
-    }*/
 
     @Override
     public Item[] getDrops(Item item) {
