@@ -93,12 +93,12 @@ public class Nether extends Generator {
                 new OreType(new BlockSoulSand(), 5, 64, 0, 128),
                 new OreType(new BlockGravel(), 5, 64, 0, 128),
                 new OreType(new BlockLava(), 1, 16, 0, (int) this.lavaHeight),
+                new OreType(new BlockSoulSand(), 1, 64, 30, 35, Block.NETHERRACK),
         });
         this.populators.add(ores);*/
 
         PopulatorOre ore = new PopulatorOre(Block.NETHERRACK);
         ore.setOreTypes(new OreType[]{
-                new OreType(new BlockSoulSand(), 1, 64, 30, 35, Block.NETHERRACK),
                 new OreType(new BlockLava(), 32, 1, 0, 32, Block.NETHERRACK),
         });
         this.populators.add(ore);
@@ -237,8 +237,8 @@ public class Nether extends Generator {
             for (int z = 0; z < 16; z++) {
                 chunk.setBiomeId(x, z, EnumBiome.HELL.biome.getId());
 
-                int columnX = ((cx + x) & 0xF);
-                int columnZ = ((cz + z) & 0xF);
+                int columnX = (cx + x) & 0xF;
+                int columnZ = (cz + z) & 0xF;
 
                 int topMat = Block.NETHERRACK;
                 int groundMat = Block.NETHERRACK;
@@ -250,10 +250,10 @@ public class Nether extends Generator {
                 int deep = -1;
                 for (int y = 127; y >= 0; y--) {
                     if (y <= this.nukkitRandom.nextBoundedInt(5) || y >= 127 - this.nukkitRandom.nextBoundedInt(5)) {
-                        chunk.setBlockAt(columnX, y, columnZ, Block.BEDROCK);
+                        chunk.setBlock(columnX, y, columnZ, Block.BEDROCK);
                         continue;
                     }
-                    int mat = chunk.getBlockIdAt(columnX, y, columnZ);
+                    int mat = chunk.getBlockId(columnX, y, columnZ);
                     if (mat == Block.AIR) {
                         deep = -1;
                     } else if (mat == Block.NETHERRACK) {
@@ -276,13 +276,13 @@ public class Nether extends Generator {
 
                             deep = surfaceHeight;
                             if (y >= 63) {
-                                chunk.setBlockAt(columnX, y, columnZ, topMat);
+                                chunk.setBlock(columnX, y, columnZ, topMat);
                             } else {
-                                chunk.setBlockAt(columnX, y, columnZ, groundMat);
+                                chunk.setBlock(columnX, y, columnZ, groundMat);
                             }
                         } else if (deep > 0) {
                             deep--;
-                            chunk.setBlockAt(columnX, y, columnZ, groundMat);
+                            chunk.setBlock(columnX, y, columnZ, groundMat);
                         }
                     }
                 }
