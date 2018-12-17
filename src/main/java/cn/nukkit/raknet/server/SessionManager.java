@@ -548,7 +548,7 @@ public class SessionManager {
         // fill with dummy returning null
         Arrays.fill(this.packetPool, (Packet.PacketFactory) () -> null);
 
-        this.registerPacket(UnconnectedPing.ID, new UnconnectedPing.Factory());
+        //this.registerPacket(UnconnectedPing.ID, new UnconnectedPing.Factory());
         this.registerPacket(UnconnectedPingOpenConnections.ID, new UnconnectedPingOpenConnections.Factory());
         this.registerPacket(OpenConnectionRequest1.ID, new OpenConnectionRequest1.Factory());
         this.registerPacket(OpenConnectionReply1.ID, new OpenConnectionReply1.Factory());
