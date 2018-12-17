@@ -4578,7 +4578,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     private void setDimension(int dimension, boolean respawn) {
-        ChangeDimensionPacket pk = new ChangeDimensionPacket();
+        ChangeDimensionPacket pk = new ChangeDimensionPacket(); //BUG: Unable to remove switching-screen
         pk.dimension = dimension;
         pk.position = this.asVector3f();
         pk.respawn = respawn;
@@ -4597,10 +4597,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             spawnPosition.z = spawn.getFloorZ();
             this.dataPacket(spawnPosition);
 
-            int dimensionId = level.getDimension();		
-            if (oldLevel.getDimension() != dimensionId) {		
-                this.setDimension(dimensionId);		
-            }
+            /*int dimensionId = level.getDimension();
+            if (oldLevel.getDimension() != dimensionId) {
+                this.setDimension(dimensionId); //BUG
+            }*/
 
             // Remove old chunks
             for (long index : new ArrayList<>(this.usedChunks.keySet())) {
