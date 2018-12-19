@@ -44,8 +44,6 @@ public class Nether extends Generator {
     private long localSeed1;
     private long localSeed2;
 
-    //private double lavaHeight = 32;
-
     public Nether() {
         this(new HashMap<String, Object>());
     }
@@ -88,21 +86,6 @@ public class Nether extends Generator {
         this.localSeed1 = this.random.nextLong();
         this.localSeed2 = this.random.nextLong();
 
-        /*PopulatorOre ores = new PopulatorOre(Block.NETHERRACK);
-        ores.setOreTypes(new OreType[]{
-                new OreType(new BlockSoulSand(), 5, 64, 0, 128),
-                new OreType(new BlockGravel(), 5, 64, 0, 128),
-                new OreType(new BlockLava(), 1, 16, 0, (int) this.lavaHeight),
-                new OreType(new BlockSoulSand(), 1, 64, 30, 35, Block.NETHERRACK),
-        });
-        this.populators.add(ores);*/
-
-        PopulatorOre ore = new PopulatorOre(Block.NETHERRACK);
-        ore.setOreTypes(new OreType[]{
-                new OreType(new BlockLava(), 32, 1, 0, 32, Block.NETHERRACK),
-        });
-        this.populators.add(ore);
-
         PopulatorLava lava = new PopulatorLava();
         lava.setBaseAmount(1);
         lava.setRandomAmount(2);
@@ -115,6 +98,7 @@ public class Nether extends Generator {
 
         PopulatorOre ores = new PopulatorOre(Block.NETHERRACK);
         ores.setOreTypes(new OreType[]{
+                new OreType(new BlockLava(), 32, 1, 0, 32, Block.NETHERRACK),
                 new OreType(new BlockOreQuartz(), 13, 16, 10, 118, Block.NETHERRACK),
                 new OreType(new BlockMagma(), 32, 16, 26, 37, Block.NETHERRACK),
         });
