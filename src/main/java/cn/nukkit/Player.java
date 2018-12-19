@@ -2430,7 +2430,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             this.setSprinting(false, true);
                             this.setSneaking(false);
 
-                            this.extinguish();
                             this.setDataProperty(new ShortEntityData(Player.DATA_AIR, 400), false);
                             this.deadTicks = 0;
                             this.noDamageTicks = 60;
@@ -3809,6 +3808,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.teleport(new Location(pos.x, -100, pos.z, pos.level), null);
             this.teleport(new Location(pos.x, pos.y, pos.z, pos.level), null);
         }
+
+        this.extinguish();
 
         this.dataPacket(pk);
     }
