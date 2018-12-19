@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 public class NPCRequestPacket extends DataPacket {
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.NPC_REQUEST_PACKET;
     }
 

@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 public class BookEditPacket extends DataPacket {
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.BOOK_EDIT_PACKET;
     }
 

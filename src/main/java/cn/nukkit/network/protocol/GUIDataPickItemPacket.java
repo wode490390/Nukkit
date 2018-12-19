@@ -5,7 +5,7 @@ public class GUIDataPickItemPacket extends DataPacket {
     public int hotbarSlot;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.GUI_DATA_PICK_ITEM_PACKET;
     }
 

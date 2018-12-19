@@ -7,7 +7,7 @@ import cn.nukkit.math.Vector3f;
  * Nukkit Project
  */
 public class MoveEntityPacket extends DataPacket {
-    public static final byte NETWORK_ID = ProtocolInfo.MOVE_ENTITY_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.MOVE_ENTITY_PACKET;
 
     public long eid;
     public double x;
@@ -20,7 +20,7 @@ public class MoveEntityPacket extends DataPacket {
     public boolean teleport;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

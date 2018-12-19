@@ -18,7 +18,7 @@ public class CommandBlockUpdatePacket extends DataPacket {
     public boolean shouldTrackOutput;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.COMMAND_BLOCK_UPDATE_PACKET;
     }
 

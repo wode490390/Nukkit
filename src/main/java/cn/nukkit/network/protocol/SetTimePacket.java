@@ -5,12 +5,12 @@ package cn.nukkit.network.protocol;
  * Nukkit Project
  */
 public class SetTimePacket extends DataPacket {
-    public static final byte NETWORK_ID = ProtocolInfo.SET_TIME_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.SET_TIME_PACKET;
 
     public int time;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

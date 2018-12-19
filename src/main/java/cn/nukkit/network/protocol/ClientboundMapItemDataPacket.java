@@ -38,7 +38,7 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
     public static final int ENTITIES_UPDATE = 8;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.CLIENTBOUND_MAP_ITEM_DATA_PACKET;
     }
 

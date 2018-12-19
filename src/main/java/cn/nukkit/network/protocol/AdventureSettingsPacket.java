@@ -7,7 +7,7 @@ import cn.nukkit.Player;
  */
 public class AdventureSettingsPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.ADVENTURE_SETTINGS_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.ADVENTURE_SETTINGS_PACKET;
 
     public static final int PERMISSION_NORMAL = 0;
     public static final int PERMISSION_OPERATOR = 1;
@@ -95,7 +95,7 @@ public class AdventureSettingsPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 }

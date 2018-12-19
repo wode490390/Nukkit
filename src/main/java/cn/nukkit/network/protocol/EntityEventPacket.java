@@ -34,7 +34,7 @@ public class EntityEventPacket extends DataPacket {
     public static final byte UNKNOWN1 = 66;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

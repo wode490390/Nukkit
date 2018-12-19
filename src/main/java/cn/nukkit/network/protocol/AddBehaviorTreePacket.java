@@ -5,7 +5,7 @@ public class AddBehaviorTreePacket extends DataPacket {
     public String unknown;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.ADD_BEHAVIOR_TREE_PACKET;
     }
 

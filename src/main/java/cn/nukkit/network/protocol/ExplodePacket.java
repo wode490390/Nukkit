@@ -8,7 +8,7 @@ import cn.nukkit.math.Vector3;
  */
 public class ExplodePacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.EXPLODE_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.EXPLODE_PACKET;
 
     public float x;
     public float y;
@@ -17,7 +17,7 @@ public class ExplodePacket extends DataPacket {
     public Vector3[] records = new Vector3[0];
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

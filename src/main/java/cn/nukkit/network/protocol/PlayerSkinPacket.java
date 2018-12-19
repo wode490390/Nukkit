@@ -13,7 +13,7 @@ public class PlayerSkinPacket extends DataPacket {
     public boolean premium;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.PLAYER_SKIN_PACKET;
     }
 

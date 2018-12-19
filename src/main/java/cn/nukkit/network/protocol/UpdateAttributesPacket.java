@@ -7,13 +7,13 @@ import cn.nukkit.entity.Attribute;
  */
 public class UpdateAttributesPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.UPDATE_ATTRIBUTES_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.UPDATE_ATTRIBUTES_PACKET;
 
     public Attribute[] entries;
     public long entityId;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

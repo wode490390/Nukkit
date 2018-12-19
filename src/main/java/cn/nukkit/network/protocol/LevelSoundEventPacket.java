@@ -4,7 +4,7 @@ package cn.nukkit.network.protocol;
 import cn.nukkit.math.Vector3f;
 
 public class LevelSoundEventPacket extends DataPacket {
-    public static final byte NETWORK_ID = ProtocolInfo.LEVEL_SOUND_EVENT_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.LEVEL_SOUND_EVENT_PACKET;
 
 	public static final int SOUND_ITEM_USE_ON = 0;
 	public static final int SOUND_HIT = 1;
@@ -207,7 +207,7 @@ public class LevelSoundEventPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 }

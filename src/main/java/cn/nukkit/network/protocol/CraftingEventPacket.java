@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public class CraftingEventPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.CRAFTING_EVENT_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.CRAFTING_EVENT_PACKET;
 
     public static final int TYPE_SHAPELESS = 0;
     public static final int TYPE_SHAPED = 1;
@@ -51,7 +51,7 @@ public class CraftingEventPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

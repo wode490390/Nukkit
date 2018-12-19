@@ -13,7 +13,7 @@ public class PlayerHotbarPacket extends DataPacket {
     public boolean selectHotbarSlot = true;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.PLAYER_HOTBAR_PACKET;
     }
 

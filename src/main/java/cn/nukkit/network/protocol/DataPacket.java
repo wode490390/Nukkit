@@ -20,7 +20,7 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
     public Integer orderIndex = null;
     public Integer orderChannel = null;
 
-    public abstract byte pid();
+    public abstract int pid();
 
     public abstract void decode();
 
@@ -29,7 +29,7 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
     @Override
     public void reset() {
         super.reset();
-        this.putByte(this.pid());
+        this.putByte((byte) this.pid());
         this.putShort(0);
     }
 

@@ -7,7 +7,7 @@ import cn.nukkit.math.BlockVector3;
  */
 public class PlayerActionPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.PLAYER_ACTION_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.PLAYER_ACTION_PACKET;
 
     public static final int ACTION_START_BREAK = 0;
     public static final int ACTION_ABORT_BREAK = 1;
@@ -58,7 +58,7 @@ public class PlayerActionPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

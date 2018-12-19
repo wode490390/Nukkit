@@ -4,13 +4,13 @@ package cn.nukkit.network.protocol;
  * Created by on 15-10-12.
  */
 public class DisconnectPacket extends DataPacket {
-    public static final byte NETWORK_ID = ProtocolInfo.DISCONNECT_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.DISCONNECT_PACKET;
 
     public boolean hideDisconnectionScreen = false;
     public String message;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

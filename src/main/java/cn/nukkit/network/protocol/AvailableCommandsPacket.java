@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class AvailableCommandsPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.AVAILABLE_COMMANDS_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.AVAILABLE_COMMANDS_PACKET;
     public Map<String, CommandDataVersions> commands;
     public final List<CommandEnum> softEnums = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class AvailableCommandsPacket extends DataPacket {
     public static final int ARG_FLAG_POSTFIX = 0x1000000;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

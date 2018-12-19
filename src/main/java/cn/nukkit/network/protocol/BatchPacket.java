@@ -7,12 +7,12 @@ import cn.nukkit.network.CacheEncapsulatedPacket;
  * Nukkit Project
  */
 public class BatchPacket extends DataPacket {
-    public static final byte NETWORK_ID = ProtocolInfo.BATCH_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.BATCH_PACKET;
 
     public byte[] payload;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

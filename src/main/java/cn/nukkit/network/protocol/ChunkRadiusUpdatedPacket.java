@@ -6,7 +6,7 @@ package cn.nukkit.network.protocol;
  */
 public class ChunkRadiusUpdatedPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.CHUNK_RADIUS_UPDATED_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.CHUNK_RADIUS_UPDATED_PACKET;
 
     public int radius;
 
@@ -22,7 +22,7 @@ public class ChunkRadiusUpdatedPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

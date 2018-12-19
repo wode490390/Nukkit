@@ -2,7 +2,7 @@ package cn.nukkit.network.protocol;
 
 public class UpdateTradePacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.UPDATE_TRADE_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.UPDATE_TRADE_PACKET;
 
     public byte windowId;
     public byte windowType = 15; //trading id
@@ -15,7 +15,7 @@ public class UpdateTradePacket extends DataPacket {
     public byte[] offers;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

@@ -7,7 +7,7 @@ public class TelemetryEventPacket extends DataPacket {
     public byte unknown2;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return ProtocolInfo.TELEMETRY_EVENT_PACKET;
     }
 

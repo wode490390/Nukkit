@@ -2,7 +2,7 @@ package cn.nukkit.network.protocol;
 
 public class ResourcePackDataInfoPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_DATA_INFO_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.RESOURCE_PACK_DATA_INFO_PACKET;
 
     public String packId;
     public int maxChunkSize;
@@ -30,7 +30,7 @@ public class ResourcePackDataInfoPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 }

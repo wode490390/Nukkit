@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class LoginPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.LOGIN_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.LOGIN_PACKET;
 
     public String username;
     public int protocol;
@@ -23,7 +23,7 @@ public class LoginPacket extends DataPacket {
     public Skin skin;
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 

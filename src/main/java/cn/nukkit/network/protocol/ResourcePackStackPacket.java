@@ -4,7 +4,7 @@ import cn.nukkit.resourcepacks.ResourcePack;
 
 public class ResourcePackStackPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_STACK_PACKET;
+    public static final int NETWORK_ID = ProtocolInfo.RESOURCE_PACK_STACK_PACKET;
 
     public boolean mustAccept = false;
     public ResourcePack[] behaviourPackStack = new ResourcePack[0];
@@ -34,7 +34,7 @@ public class ResourcePackStackPacket extends DataPacket {
     }
 
     @Override
-    public byte pid() {
+    public int pid() {
         return NETWORK_ID;
     }
 }
