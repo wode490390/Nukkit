@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ZippedResourcePack extends AbstractResourcePack {
+
     private File file;
     private byte[] sha256 = null;
 
@@ -39,7 +40,7 @@ public class ZippedResourcePack extends AbstractResourcePack {
             Server.getInstance().getLogger().logException(e);
         }
 
-        if (!this.verifyManifest()) {
+        if (this.manifest == null || !this.verifyManifest()) {
             throw new IllegalArgumentException(Server.getInstance().getLanguage()
                     .translateString("nukkit.resources.zip.invalid-manifest"));
         }
@@ -80,5 +81,9 @@ public class ZippedResourcePack extends AbstractResourcePack {
         }
 
         return chunk;
+    }
+
+    public File getFile() {
+        return this.file;
     }
 }

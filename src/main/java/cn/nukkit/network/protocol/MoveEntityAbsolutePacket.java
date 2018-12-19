@@ -7,17 +7,18 @@ import cn.nukkit.math.Vector3f;
  * Nukkit Project
  */
 public class MoveEntityAbsolutePacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.MOVE_ENTITY_ABSOLUTE_PACKET;
 
-    public long eid;
-    public double x;
-    public double y;
-    public double z;
-    public double yaw;
-    public double headYaw;
-    public double pitch;
-    public boolean onGround;
-    public boolean teleport;
+    public static final int FLAG_GROUND = 0x01;
+    public static final int FLAG_TELEPORT = 0x02;
+
+    public long entityRuntimeId = 0;
+    public int flags = 0;
+    public Vector3f position = new Vector3f();
+    public double xRot = 0.0d;
+    public double yRot = 0.0d;
+    public double zRot = 0.0d;
 
     @Override
     public byte pid() {
@@ -26,34 +27,22 @@ public class MoveEntityAbsolutePacket extends DataPacket {
 
     @Override
     public void decode() {
-        this.eid = this.getEntityRuntimeId();
-        int flags = this.getByte();
-        teleport = (flags & 0x01) != 0;
-        onGround = (flags & 0x02) != 0;
-        Vector3f v = this.getVector3f();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.pitch = this.getByte() * (360d / 256d);
-        this.headYaw = this.getByte() * (360d / 256d);
-        this.yaw = this.getByte() * (360d / 256d);
+        this.entityRuntimeId = this.getEntityRuntimeId();
+        this.flags = this.getByte();
+        this.position = this.getVector3();
+        this.xRot = this.getByteRotation();
+        this.yRot = this.getByteRotation();
+        this.zRot = this.getByteRotation();
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putEntityRuntimeId(this.eid);
-        byte flags = 0;
-        if (teleport) {
-            flags |= 0x01;
-        }
-        if (onGround) {
-            flags |= 0x02;
-        }
-        this.putByte(flags);
-        this.putVector3f((float) this.x, (float) this.y, (float) this.z);
-        this.putByte((byte) (this.pitch / (360d / 256d)));
-        this.putByte((byte) (this.headYaw / (360d / 256d)));
-        this.putByte((byte) (this.yaw / (360d / 256d)));
+        this.putEntityRuntimeId(this.entityRuntimeId);
+        this.putByte((byte) this.flags);
+        this.putVector3(this.position);
+        this.putByteRotation((float) this.xRot);
+        this.putByteRotation((float) this.yRot);
+        this.putByteRotation((float) this.zRot);
     }
 }

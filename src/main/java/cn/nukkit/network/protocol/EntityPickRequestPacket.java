@@ -4,6 +4,9 @@ public class EntityPickRequestPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ENTITY_PICK_REQUEST_PACKET;
 
+    public long entityUniqueId;
+    public int hotbarSlot;
+
     @Override
     public byte pid() {
         return NETWORK_ID;
@@ -16,6 +19,8 @@ public class EntityPickRequestPacket extends DataPacket {
 
     @Override
     public void encode() {
-        //TODO
+        this.reset();
+        this.putLLong(this.entityUniqueId);
+        this.putByte((byte) this.hotbarSlot);
     }
 }

@@ -8,8 +8,7 @@ import cn.nukkit.level.generator.Generator;
 public enum EnumLevel {
     OVERWORLD,
     NETHER,
-    //THE_END
-    ;
+    THE_END;
 
     Level level;
 

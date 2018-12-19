@@ -7,7 +7,7 @@ public class ResourcePackChunkDataPacket extends DataPacket {
     public String packId;
     public int chunkIndex;
     public long progress;
-    public byte[] data;
+    public byte[] data = new byte[0];
 
     @Override
     public void decode() {

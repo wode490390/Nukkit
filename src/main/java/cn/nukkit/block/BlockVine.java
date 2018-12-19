@@ -10,10 +10,18 @@ import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.SimpleAxisAlignedBB;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Pub4Game on 15.01.2016.
  */
 public class BlockVine extends BlockTransparentMeta {
+
+    private static final int FLAG_SOUTH = 0x01;
+    private static final int FLAG_WEST = 0x02;
+    private static final int FLAG_NORTH = 0x04;
+    private static final int FLAG_EAST = 0x08;
 
     public BlockVine(int meta) {
         super(meta);
@@ -128,22 +136,31 @@ public class BlockVine extends BlockTransparentMeta {
         );
     }
 
+    private static final Map<Integer, BlockFace> faces = new HashMap<Integer, BlockFace>(){{
+        put(FLAG_SOUTH, BlockFace.SOUTH);
+        put(FLAG_WEST, BlockFace.WEST);
+        put(FLAG_NORTH, BlockFace.NORTH);
+        put(FLAG_EAST, BlockFace.EAST);
+    }};
+
+    private static final Map<BlockFace, Integer> facesPlace = new HashMap<BlockFace, Integer>(){{
+        put(BlockFace.SOUTH, FLAG_SOUTH);
+        put(BlockFace.WEST, FLAG_WEST);
+        put(BlockFace.NORTH, FLAG_NORTH);
+        put(BlockFace.EAST, FLAG_EAST);
+    }};
+
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target.isSolid()) {
-            int[] faces = new int[]{
-                    0,
-                    0,
-                    1,
-                    4,
-                    8,
-                    2
-            };
-            this.setDamage(faces[face.getIndex()]);
-            this.getLevel().setBlock(block, this, true, true);
-            return true;
+        if(!target.isSolid() || face == BlockFace.UP || face == BlockFace.DOWN){
+            return false;
         }
-        return false;
+        this.setDamage(facesPlace.getOrDefault(face, 0));
+        if (block.getId() == this.getId()) {
+            this.setDamage(this.getDamage() | block.getDamage()) ;
+        }
+        this.getLevel().setBlock(block, this, true, true);
+        return true;
     }
 
     @Override
@@ -165,23 +182,22 @@ public class BlockVine extends BlockTransparentMeta {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            BlockFace[] faces = {
-                    BlockFace.DOWN,
-                    BlockFace.SOUTH,
-                    BlockFace.WEST,
-                    BlockFace.DOWN,
-                    BlockFace.NORTH,
-                    BlockFace.DOWN,
-                    BlockFace.DOWN,
-                    BlockFace.DOWN,
-                    BlockFace.EAST
-            };
-            if (!this.getSide(faces[this.getDamage()]).isSolid()) {
-                Block up = this.up();
-                if (up.getId() != this.getId() || up.getDamage() != this.getDamage()) {
-                    this.getLevel().useBreakOn(this);
-                    return Level.BLOCK_UPDATE_NORMAL;
+            int[] meta = new int[]{this.getDamage()};
+            faces.forEach((flag, side) -> {
+                if ((meta[0] & flag) != 0){
+                    if(!this.getSide(side).isSolid()){
+                        meta[0] &= ~flag;
+                    }
                 }
+            });
+            if (meta[0] != this.getDamage()) {
+                if (meta[0] == 0) {
+                    this.level.useBreakOn(this);
+                } else {
+                    this.setDamage(meta[0]);
+                    this.level.setBlock(this, this);
+                }
+                return Level.BLOCK_UPDATE_NORMAL;
             }
         }
         return 0;

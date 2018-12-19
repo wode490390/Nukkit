@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.block.BlockFromToEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.particle.SmokeParticle;
@@ -175,10 +176,12 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
 
     @Override
     public void addVelocityToEntity(Entity entity, Vector3 vector) {
-        Vector3 flow = this.getFlowVector();
-        vector.x += flow.x;
-        vector.y += flow.y;
-        vector.z += flow.z;
+        if (entity.canBeMovedByCurrents()) {
+            Vector3 flow = this.getFlowVector();
+            vector.x += flow.x;
+            vector.y += flow.y;
+            vector.z += flow.z;
+        }
     }
 
     public int getFlowDecayPerBlock() {
@@ -436,5 +439,10 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
 
     protected boolean canFlowInto(Block block) {
         return block.canBeFlowedInto() && !(block instanceof BlockLiquid && block.getDamage() == 0);
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockAir());
     }
 }

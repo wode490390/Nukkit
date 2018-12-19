@@ -108,6 +108,13 @@ public class MainLogger extends ThreadedLogger {
 
     public void logException(Exception e) {
         this.alert(Utils.getExceptionMessage(e));
+        if (exceptionLogHandler != null) exceptionLogHandler.log(e);
+    }
+
+    public ExceptionLogHandler exceptionLogHandler = null;
+
+    public interface ExceptionLogHandler {
+        void log(Exception e);
     }
 
     @Override

@@ -4,13 +4,16 @@ import cn.nukkit.utils.Utils;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by CreeperFace on 5.3.2017.
  */
 public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to 1.2
 
-    public int[] eids = new int[0];
+    public long[] eids = new long[0];
 
     public long mapId;
     public int update;
@@ -23,6 +26,9 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
     public byte dimensionId;
 
     public MapDecorator[] decorators = new MapDecorator[0];
+
+    public MapTrackedObject[] trackedEntities = new MapTrackedObject[0];
+
     public int[] colors = new int[0];
     public BufferedImage image = null;
 
@@ -38,7 +44,6 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
 
     @Override
     public void decode() {
-
     }
 
     @Override
@@ -50,7 +55,7 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
         if (eids.length > 0) {
             update |= 0x08;
         }
-        if (decorators.length > 0) {
+        if (decorators.length > 0 || trackedEntities.length > 0) {
             update |= DECORATIONS_UPDATE;
         }
 
@@ -63,7 +68,7 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
 
         if ((update & 0x08) != 0) { //TODO: find out what these are for
             this.putUnsignedVarInt(eids.length);
-            for (int eid : eids) {
+            for (long eid : eids) {
                 this.putEntityUniqueId(eid);
             }
         }
@@ -72,15 +77,29 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
         }
 
         if ((update & DECORATIONS_UPDATE) != 0) {
+            List<MapTrackedObject> objs = Arrays.stream(trackedEntities)
+                    .filter(o -> o.type == MapTrackedObject.TYPE_ENTITY)
+                    .collect(Collectors.toList());
+            this.putUnsignedVarInt(objs.size());
+            for (MapTrackedObject object : objs) {
+                this.putEntityUniqueId(object.entityUniqueId);
+            }
+
             this.putUnsignedVarInt(decorators.length);
 
             for (MapDecorator decorator : decorators) {
-                this.putByte(decorator.rotation);
-                this.putByte(decorator.icon);
+                this.putByte(decorator.img);
+                this.putByte(decorator.rot);
                 this.putByte(decorator.offsetX);
                 this.putByte(decorator.offsetZ);
-                this.putString(decorator.label);
-                this.putVarInt(decorator.color.getRGB());
+                this.putString(decorator.label == null ? "" : decorator.label);
+
+                byte red = (byte) decorator.color.getRed();
+                byte green = (byte) decorator.color.getGreen();
+                byte blue = (byte) decorator.color.getBlue();
+
+                this.putUnsignedVarInt(Utils.toRGB(red, green, blue, (byte) 0xff));
+                //this.putUnsignedVarInt(decorator.color.getRGB());
             }
         }
 
@@ -113,12 +132,24 @@ public class ClientboundMapItemDataPacket extends DataPacket { //TODO: update to
         }
     }
 
-    public class MapDecorator {
-        public byte rotation;
-        public byte icon;
+    public static class MapDecorator {
+        public byte img;
+        public byte rot;
         public byte offsetX;
         public byte offsetZ;
-        public String label;
+        public String label = "";
         public Color color;
     }
+
+    public static class MapTrackedObject {
+        public static final int TYPE_ENTITY = 0;
+        public static final int TYPE_BLOCK = 1;
+
+        public int type;
+        public long entityUniqueId;
+        public int x;
+        public int y;
+        public int z;
+    }
+
 }
