@@ -7,6 +7,11 @@ import cn.nukkit.item.enchantment.bow.EnchantmentBowFlame;
 import cn.nukkit.item.enchantment.bow.EnchantmentBowInfinity;
 import cn.nukkit.item.enchantment.bow.EnchantmentBowKnockback;
 import cn.nukkit.item.enchantment.bow.EnchantmentBowPower;
+import cn.nukkit.item.enchantment.crossbow.EnchantmentCrossbowMultishot;
+import cn.nukkit.item.enchantment.crossbow.EnchantmentCrossbowPiercing;
+import cn.nukkit.item.enchantment.crossbow.EnchantmentCrossbowQuickCharge;
+import cn.nukkit.item.enchantment.curse.EnchantmentCurseBinding;
+import cn.nukkit.item.enchantment.curse.EnchantmentCurseVanishing;
 import cn.nukkit.item.enchantment.damage.EnchantmentDamageAll;
 import cn.nukkit.item.enchantment.damage.EnchantmentDamageArthropods;
 import cn.nukkit.item.enchantment.damage.EnchantmentDamageSmite;
@@ -60,12 +65,15 @@ public abstract class Enchantment implements Cloneable {
     public static final int ID_LURE = 24;
     public static final int ID_FROST_WALKER = 25;
     public static final int ID_MENDING = 26;
-    public static final int ID_BINDING_CURSE = 27;
-    public static final int ID_VANISHING_CURSE = 28;
+    public static final int ID_CURSE_BINDING = 27;
+    public static final int ID_CURSE_VANISHING = 28;
     public static final int ID_TRIDENT_IMPALING = 29;
     public static final int ID_TRIDENT_RIPTIDE = 30;
     public static final int ID_TRIDENT_LOYALTY = 31;
     public static final int ID_TRIDENT_CHANNELING = 32;
+    public static final int ID_CROSSBOW_MULTISHOT = 33;
+    public static final int ID_CROSSBOW_PIERCING = 34;
+    public static final int ID_CROSSBOW_QUICK_CHARGE = 35;
 
     public static void init() {
         enchantments = new Enchantment[256];
@@ -97,12 +105,15 @@ public abstract class Enchantment implements Cloneable {
         enchantments[ID_LURE] = new EnchantmentLure();
         enchantments[ID_FROST_WALKER] = new EnchantmentFrostWalker();
         enchantments[ID_MENDING]  = new EnchantmentMending();
-        enchantments[ID_BINDING_CURSE]  = new EnchantmentBindingCurse();
-        enchantments[ID_VANISHING_CURSE]  = new EnchantmentVanishingCurse();
+        enchantments[ID_CURSE_BINDING]  = new EnchantmentCurseBinding();
+        enchantments[ID_CURSE_VANISHING]  = new EnchantmentCurseVanishing();
         enchantments[ID_TRIDENT_IMPALING]  = new EnchantmentTridentImpaling();
         enchantments[ID_TRIDENT_LOYALTY]  = new EnchantmentTridentLoyalty();
         enchantments[ID_TRIDENT_RIPTIDE]  = new EnchantmentTridentRiptide();
         enchantments[ID_TRIDENT_CHANNELING]  = new EnchantmentTridentChanneling();
+        enchantments[ID_CROSSBOW_MULTISHOT]  = new EnchantmentCrossbowMultishot();
+        enchantments[ID_CROSSBOW_PIERCING]  = new EnchantmentCrossbowPiercing();
+        enchantments[ID_CROSSBOW_QUICK_CHARGE]  = new EnchantmentCrossbowQuickCharge();
     }
 
     public static Enchantment get(int id) {
