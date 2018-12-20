@@ -1,9 +1,13 @@
 package cn.nukkit.block;
 
+import cn.nukkit.event.entity.EntityPortalEnterEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
+import cn.nukkit.level.EnumLevel;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
+import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.BlockColor;
 
 public class BlockEndPortal extends BlockFlowable {
