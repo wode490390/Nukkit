@@ -2,7 +2,7 @@ package cn.nukkit.item.enchantment;
 
 public class EnchantmentFrostWalker extends Enchantment {
     protected EnchantmentFrostWalker() {
-        super(ID_FROST_WALKER, "frostWalker", 2, EnchantmentType.ARMOR_FEET);
+        super(ID_FROST_WALKER, "frostwalker", 2, EnchantmentType.ARMOR_FEET);
     }
 
     @Override
