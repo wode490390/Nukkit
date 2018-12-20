@@ -2,6 +2,8 @@ package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 import cn.nukkit.utils.BlockColor;
 
 public class BlockEndPortal extends BlockFlowable {
@@ -72,5 +74,21 @@ public class BlockEndPortal extends BlockFlowable {
     @Override
     public Item toItem() {
         return new ItemBlock(new BlockAir());
+    }
+
+    public static void spawnPlatform(Position pos) {
+        Level lvl = pos.getLevel();
+        int x = pos.getFloorX();
+        int y = pos.getFloorY();
+        int z = pos.getFloorZ();
+
+        for (int xx = x - 2; xx < x + 3; xx++) {
+            for (int zz = z - 2; zz < z + 3; zz++)  {
+                lvl.setBlockAt(xx, y - 1, zz, OBSIDIAN);
+                for (int yy = y; yy < y + 4; yy++) {
+                    lvl.setBlockAt(xx, yy, zz, AIR);
+                }
+            }
+        }
     }
 }
