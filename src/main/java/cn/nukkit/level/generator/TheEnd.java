@@ -187,7 +187,7 @@ public class TheEnd extends Generator {
     }
 
     public Vector3 getSpawn() {
-        return new Vector3(100, 50, 0);
+        return new Vector3(100.5, 50, 0.5);
     }
 
     /**
