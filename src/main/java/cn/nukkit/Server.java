@@ -1625,6 +1625,15 @@ public class Server {
         }
     }
 
+    public long getDefaultLevelSeed() {
+        String seedString = String.valueOf(this.getProperty("level-seed", System.currentTimeMillis()));
+        try {
+            return Long.valueOf(seedString);
+        } catch (NumberFormatException e) {
+            return seedString.hashCode();
+        }
+    }
+
     public boolean isLevelLoaded(String name) {
         return this.getLevelByName(name) != null;
     }
