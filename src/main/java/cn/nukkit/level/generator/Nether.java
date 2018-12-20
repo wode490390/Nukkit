@@ -292,7 +292,7 @@ public class Nether extends Generator {
 
     @Override
     public Vector3 getSpawn() {
-        return new Vector3(0, 64, 0);
+        return new Vector3(0.5, 64, 0.5);
     }
 
     /**
