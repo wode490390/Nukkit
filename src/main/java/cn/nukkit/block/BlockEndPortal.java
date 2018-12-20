@@ -76,6 +76,40 @@ public class BlockEndPortal extends BlockFlowable {
         return new ItemBlock(new BlockAir());
     }
 
+    @Override
+    public void onEntityCollide(Entity entity) {
+        if (entity instanceof Player) {
+            Player p = (Player) entity;
+            EntityPortalEnterEvent ev = new EntityPortalEnterEvent(p, EntityPortalEnterEvent.PortalType.THE_END);
+            p.getServer().getPluginManager().callEvent(ev);
+
+            if (!ev.isCancelled()) {
+                Position newPos = EnumLevel.moveToTheEnd(p);
+                if (newPos != null) {
+                    for (int x = -2; x < 3; x++) {
+                        for (int z = -2; z < 3; z++) {
+                            int chunkX = (newPos.getFloorX() >> 4) + x;
+                            int chunkZ = (newPos.getFloorZ() >> 4) + z;
+                            FullChunk chunk = newPos.getLevel().getChunk(chunkX, chunkZ, false);
+                            if (chunk == null || !(chunk.isGenerated() || chunk.isPopulated())) {
+                                newPos.getLevel().generateChunk(chunkX, chunkZ, true);
+                            }
+                        }
+                    }
+                    p.teleport(newPos.add(1.5, 1, 0.5));
+                    p.getServer().getScheduler().scheduleDelayedTask(new Task() {
+                        @Override
+                        public void onRun(int currentTick) {
+                            // dirty hack to make sure chunks are loaded and generated before spawning player
+                            p.teleport(newPos.add(1.5, 1, 0.5));
+                            this.spawnPlatform(newPos);
+                        }
+                    }, 20);
+                }
+            }
+        }
+    }
+
     public static void spawnPlatform(Position pos) {
         Level lvl = pos.getLevel();
         int x = pos.getFloorX();
