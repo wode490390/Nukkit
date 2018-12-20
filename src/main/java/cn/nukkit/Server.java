@@ -436,11 +436,12 @@ public class Server {
         LevelProviderManager.addProvider(this, McRegion.class);
         LevelProviderManager.addProvider(this, LevelDB.class);
 
+        Generator.addGenerator(Old.class, "old", Generator.TYPE_OLD);
         Generator.addGenerator(Flat.class, "flat", Generator.TYPE_FLAT);
         Generator.addGenerator(Normal.class, "normal", Generator.TYPE_INFINITE);
         Generator.addGenerator(Normal.class, "default", Generator.TYPE_INFINITE);
         Generator.addGenerator(Nether.class, "nether", Generator.TYPE_NETHER);
-        //todo: add old generator and hell generator
+        Generator.addGenerator(TheEnd.class, "the_end", Generator.TYPE_THE_END);
 
         for (String name : ((Map<String, Object>) this.getConfig("worlds", new HashMap<>())).keySet()) {
             if (!this.loadLevel(name)) {
