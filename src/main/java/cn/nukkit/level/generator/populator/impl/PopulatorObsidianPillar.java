@@ -14,6 +14,9 @@ public class PopulatorObsidianPillar extends BlockPopulator {
             int x = (chunkX << 4) + random.nextBoundedInt(16);
             int z = (chunkZ << 4) + random.nextBoundedInt(16);
             int y = this.getHighestWorkableBlock(level, x, z, chunk);
+            if (y < 1) {
+                return;
+            }
 
             if (chunk.getBlockId(x, y, z) != 0 || chunk.getBlockId(x, y - 1, z) != END_STONE) {
                 return;
