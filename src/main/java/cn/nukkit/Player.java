@@ -19,6 +19,8 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageModifier;
+import cn.nukkit.event.entity.EntityPortalEnterEvent;
+import cn.nukkit.event.entity.EntityPortalEnterEvent.PortalType;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryPickupArrowEvent;
 import cn.nukkit.event.inventory.InventoryPickupItemEvent;
@@ -1378,7 +1380,38 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         boolean portal = false;
 
         for (Block block : this.getCollisionBlocks()) {
-            if (block.getId() == Block.NETHER_PORTAL) {
+            int blockId = block.getId();
+            if (blockId == Block.NETHER_PORTAL) {
+                EntityPortalEnterEvent ev = new EntityPortalEnterEvent(this, PortalType.THE_END);
+                getServer().getPluginManager().callEvent(ev);
+
+                if (!ev.isCancelled()) {
+                    Position newPos = EnumLevel.moveToTheEnd(this);
+                    if (newPos != null) {
+                        for (int x = -2; x < 3; x++) {
+                            for (int z = -2; z < 3; z++) {
+                                int chunkX = (newPos.getFloorX() >> 4) + x;
+                                int chunkZ = (newPos.getFloorZ() >> 4) + z;
+                                FullChunk chunk = newPos.getLevel().getChunk(chunkX, chunkZ, false);
+                                if (chunk == null || !(chunk.isGenerated() || chunk.isPopulated())) {
+                                    newPos.getLevel().generateChunk(chunkX, chunkZ, true);
+                                }
+                            }
+                        }
+                        this.teleport(newPos.add(1.5, 1, 0.5));
+                        server.getScheduler().scheduleDelayedTask(new Task() {
+                            @Override
+                            public void onRun(int currentTick) {
+                                // dirty hack to make sure chunks are loaded and generated before spawning player
+                                this.teleport(newPos.add(1.5, 1, 0.5));
+                                BlockEndPortal.spawnPlatform(newPos);
+                            }
+                        }, 20);
+                    }
+                }
+                continue;
+            }
+            if (blockId == Block.NETHER_PORTAL) {
                 portal = true;
                 continue;
             }
