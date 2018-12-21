@@ -308,6 +308,7 @@ public class Old extends Generator {
                     for (int y = 0; y < 256; ++y) {
                         chunk.setBlock(x, y, z, INVISIBLE_BEDROCK);
                     }
+                    chunk.setBiome(x, z, EnumBiome.OCEAN.biome.getId());
                 }
             }
         }
@@ -315,13 +316,14 @@ public class Old extends Generator {
 
     @Override
     public void populateChunk(int chunkX, int chunkZ) {
-        BaseFullChunk chunk = level.getChunk(chunkX, chunkZ);
-        this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
-        for (Populator populator : this.populators) {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
+        if (chunkX >= 0 && chunkX < (WORLD_SIZE >> 4) && chunkZ >= 0 && chunkZ < (WORLD_SIZE >> 4)) {
+            BaseFullChunk chunk = level.getChunk(chunkX, chunkZ);
+            this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
+            for (Populator populator : this.populators) {
+                populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
+            }
+            EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
         }
-
-        EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
     public Vector3 getSpawn() {
