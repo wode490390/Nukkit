@@ -9,6 +9,7 @@ import cn.nukkit.network.protocol.AddPlayerPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.PlayerListPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.network.protocol.types.PlayerListEntry;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -77,7 +78,7 @@ public class FloatingTextParticle extends Particle {
             this.entityId = 1095216660480L + ThreadLocalRandom.current().nextLong(0, 0x7fffffffL);
         } else {
             RemoveEntityPacket pk = new RemoveEntityPacket();
-            pk.eid = this.entityId;
+            pk.entityUniqueId = this.entityId;
 
             packets.add(pk);
         }
@@ -86,8 +87,8 @@ public class FloatingTextParticle extends Particle {
 
         if (!this.invisible) {
             PlayerListPacket playerAdd = new PlayerListPacket();
-            playerAdd.entries = new PlayerListPacket.Entry[] {
-                    new PlayerListPacket.Entry(uuid, this.entityId, this.title, EMPTY_SKIN)
+            playerAdd.entries = new PlayerListEntry[] {
+                    new PlayerListEntry(uuid, this.entityId, this.title, EMPTY_SKIN)
             };
             playerAdd.type = PlayerListPacket.TYPE_ADD;
             packets.add(playerAdd);
@@ -116,8 +117,8 @@ public class FloatingTextParticle extends Particle {
             packets.add(pk);
 
             PlayerListPacket playerRemove = new PlayerListPacket();
-            playerRemove.entries = new PlayerListPacket.Entry[] {
-                    new PlayerListPacket.Entry(uuid)
+            playerRemove.entries = new PlayerListEntry[] {
+                    new PlayerListEntry(uuid)
             };
             playerRemove.type = PlayerListPacket.TYPE_REMOVE;
             packets.add(playerRemove);

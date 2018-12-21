@@ -11,10 +11,12 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFirework;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.network.protocol.LevelSoundEventPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacketV1;
 import cn.nukkit.network.protocol.PlaySoundPacket;
 
 import java.util.Random;
@@ -35,7 +37,6 @@ public class EntityFirework extends Entity {
 
         this.fireworkAge = 0;
         Random rand = new Random();
-        this.lifetime = 30 + rand.nextInt(6) + rand.nextInt(7);
 
         this.motionX = rand.nextGaussian() * 0.001D;
         this.motionZ = rand.nextGaussian() * 0.001D;
@@ -47,9 +48,12 @@ public class EntityFirework extends Entity {
             firework = new ItemFirework();
         }
 
-        this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, firework));
-        this.setDataProperty(new IntEntityData(Entity.DATA_DISPLAY_OFFSET, 1));
-        this.setDataProperty(new ByteEntityData(Entity.DATA_HAS_DISPLAY, 1));
+        this.lifetime = firework instanceof ItemFirework ? ((ItemFirework) firework).getLifeTime() : 30;
+
+        this.setDataProperty(new SlotEntityData(Entity.DATA_MINECART_DISPLAY_BLOCK, firework));
+        this.setDataProperty(new IntEntityData(Entity.DATA_MINECART_DISPLAY_OFFSET, 1));
+        this.setDataProperty(new ByteEntityData(Entity.DATA_MINECART_HAS_DISPLAY, 1));
+
     }
 
     @Override
@@ -94,7 +98,7 @@ public class EntityFirework extends Entity {
 
             if (this.fireworkAge == 0) {
                 PlaySoundPacket pk = new PlaySoundPacket();
-                pk.name = Sound.FIREWORK_LAUNCH.getSound();
+                pk.soundName = Sound.FIREWORK_LAUNCH.getSound();
                 pk.volume = 1;
                 pk.pitch = 1;
                 pk.x = getFloorX();
@@ -109,17 +113,12 @@ public class EntityFirework extends Entity {
             hasUpdate = true;
             if (this.fireworkAge >= this.lifetime) {
                 EntityEventPacket pk = new EntityEventPacket();
-                pk.data = 0;
-                pk.event = EntityEventPacket.FIREWORK_EXPLOSION;
-                pk.eid = this.getId();
+                pk.event = EntityEventPacket.FIREWORK_PARTICLES;
+                pk.entityRuntimeId = this.getId();
 
-                LevelSoundEventPacket pk2 = new LevelSoundEventPacket();
+                LevelSoundEventPacketV1 pk2 = new LevelSoundEventPacketV1();
                 pk2.sound = LevelSoundEventPacket.SOUND_LARGE_BLAST;
-                pk2.extraData = -1;
-                pk2.pitch = -1;
-                pk2.x = (float) getX();
-                pk2.y = (float) getY();
-                pk2.z = (float) getZ();
+                pk2.position = new Vector3(this.x, this.y, this.z).asVector3f();
 
                 Server.broadcastPacket(getViewers().values(), pk);
                 this.level.addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk2);
@@ -145,7 +144,7 @@ public class EntityFirework extends Entity {
 
     public void setFirework(Item item) {
         this.firework = item;
-        this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, item));
+        this.setDataProperty(new SlotEntityData(Entity.DATA_MINECART_DISPLAY_BLOCK, item));
     }
 
     @Override

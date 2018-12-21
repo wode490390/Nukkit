@@ -2,16 +2,17 @@ package cn.nukkit.network.protocol;
 
 public class UpdateEquipmentPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.UPDATE_EQUIPMENT_PACKET;
+
     public int windowId;
     public int windowType;
-    public int unknown; //TODO: find out what this is (vanilla always sends 0)
-    public long eid;
+    public int unknownVarint; //TODO: find out what this is (vanilla always sends 0)
+    public long entityUniqueId;
     public byte[] namedtag;
-
 
     @Override
     public byte pid() {
-        return ProtocolInfo.UPDATE_EQUIPMENT_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -24,7 +25,8 @@ public class UpdateEquipmentPacket extends DataPacket {
         this.reset();
         this.putByte((byte) this.windowId);
         this.putByte((byte) this.windowType);
-        this.putEntityUniqueId(this.eid);
+        this.putVarInt(this.unknownVarint);
+        this.putEntityUniqueId(this.entityUniqueId);
         this.put(this.namedtag);
     }
 }

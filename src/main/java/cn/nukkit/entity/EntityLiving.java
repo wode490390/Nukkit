@@ -50,6 +50,18 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
     protected float movementSpeed = 0.1f;
 
+    //Optimization
+    protected boolean needLivingBaseTick = true;
+    protected boolean needCollidingWithRideable = true;
+
+    public boolean isNeedCollidingWithRideable() {
+        return needCollidingWithRideable;
+    }
+
+    public boolean isNeedLivingBaseTick() {
+        return needLivingBaseTick;
+    }
+
     @Override
     protected void initEntity() {
         super.initEntity();
@@ -72,8 +84,8 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         super.setHealth(health);
         if (this.isAlive() && !wasAlive) {
             EntityEventPacket pk = new EntityEventPacket();
-            pk.eid = this.getId();
-            pk.eid = EntityEventPacket.RESPAWN;
+            pk.entityRuntimeId = this.getId();
+            pk.event = EntityEventPacket.RESPAWN;
             Server.broadcastPacket(this.hasSpawned.values(), pk);
         }
     }
@@ -129,7 +141,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
             }
 
             EntityEventPacket pk = new EntityEventPacket();
-            pk.eid = this.getId();
+            pk.entityRuntimeId = this.getId();
             pk.event = this.getHealth() <= 0 ? EntityEventPacket.DEATH_ANIMATION : EntityEventPacket.HURT_ANIMATION;
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 

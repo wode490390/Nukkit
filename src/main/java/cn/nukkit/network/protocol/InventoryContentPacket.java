@@ -7,6 +7,7 @@ import cn.nukkit.item.Item;
  * Nukkit Project
  */
 public class InventoryContentPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.INVENTORY_CONTENT_PACKET;
 
     @Override
@@ -21,40 +22,39 @@ public class InventoryContentPacket extends DataPacket {
     public static final int SPECIAL_HOTBAR = 0x7a;
     public static final int SPECIAL_FIXED_INVENTORY = 0x7b;
 
-    public int inventoryId;
-    public Item[] slots = new Item[0];
+    public int windowId;
+    public Item[] items = new Item[0];
 
     @Override
     public DataPacket clean() {
-        this.slots = new Item[0];
+        this.items = new Item[0];
         return super.clean();
     }
 
     @Override
     public void decode() {
-        this.inventoryId = (int) this.getUnsignedVarInt();
+        this.windowId = (int) this.getUnsignedVarInt();
         int count = (int) this.getUnsignedVarInt();
-        this.slots = new Item[count];
-
-        for (int s = 0; s < count && !this.feof(); ++s) {
-            this.slots[s] = this.getSlot();
+        this.items = new Item[count];
+        for (int i = 0; i < count && !this.feof(); ++i) {
+            this.items[i] = this.getSlot();
         }
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putUnsignedVarInt(this.inventoryId);
-        this.putUnsignedVarInt(this.slots.length);
-        for (Item slot : this.slots) {
-            this.putSlot(slot);
+        this.putUnsignedVarInt(this.windowId);
+        this.putUnsignedVarInt(this.items.length);
+        for (Item item : this.items) {
+            this.putSlot(item);
         }
     }
 
     @Override
     public InventoryContentPacket clone() {
         InventoryContentPacket pk = (InventoryContentPacket) super.clone();
-        pk.slots = this.slots.clone();
+        pk.items = this.items.clone();
         return pk;
     }
 }
