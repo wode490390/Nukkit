@@ -1,5 +1,7 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityPortalEnterEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
@@ -127,7 +129,7 @@ public class BlockNetherPortal extends BlockFlowable {
                             public void onRun(int currentTick) {
                                 // dirty hack to make sure chunks are loaded and generated before spawning player
                                 p.teleport(newPos.add(1.5, 1, 0.5));
-                                this.spawnPortal(newPos);
+                                spawnPortal(newPos);
                             }
                         }, 20);
                     }
