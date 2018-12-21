@@ -207,7 +207,7 @@ public abstract class Entity extends Location implements Metadatable {
     public static final int DATA_FLAG_ENCHANTED = 51;
     public static final int DATA_FLAG_SHOW_TRIDENT_ROPE = 52; // tridents show an animated rope when enchanted with loyalty after they are thrown and return to their owner. To be combined with DATA_OWNER_EID
     public static final int DATA_FLAG_CONTAINER_PRIVATE = 53; //inventory is private, doesn't drop contents when killed if true
-    public static final int DATA_FLAG_TRANSFORMING 54;
+    public static final int DATA_FLAG_TRANSFORMING = 54;
     public static final int DATA_FLAG_SPIN_ATTACK = 55;
     public static final int DATA_FLAG_SWIMMING = 56;
     public static final int DATA_FLAG_BRIBED = 57; //dolphins have this set when they go to find treasure for the player
