@@ -18,7 +18,9 @@ public class PopulatorObsidianPillar extends BlockPopulator {
                 return;
             }
 
-            if (level.getBlockIdAt(x, y, z) != 0 || level.getBlockIdAt(x, y - 1, z) != END_STONE) {
+            int cx = x & 0xF;
+            int cz = z & 0xF;
+            if (chunk.getBlockId(cx, y, cz) != 0 || chunk.getBlockId(cx, y - 1, cz) != END_STONE) {
                 return;
             }
 
@@ -28,7 +30,7 @@ public class PopulatorObsidianPillar extends BlockPopulator {
             // check under the pillar that there's no gap
             for (int i = -radius; i <= radius; i++) {
                 for (int j = -radius; j <= radius; j++) {
-                    if (i * i + j * j <= radius * radius + 1 && level.getBlockIdAt(x + i, y - 1, z + j) != END_STONE) {
+                    if (i * i + j * j <= radius * radius + 1 && chunk.getBlockId(cx + i, y - 1, cz + j) != END_STONE) {
                         return;
                     }
                 }
@@ -39,14 +41,14 @@ public class PopulatorObsidianPillar extends BlockPopulator {
                 for (int i = -radius; i <= radius; i++) {
                     for (int j = -radius; j <= radius; j++) {
                         if (i * i + j * j <= radius * radius + 1) {
-                            level.setBlockAt(x + i, y + k, z + j, OBSIDIAN);
+                            chunk.setBlock(x + i, y + k, z + j, OBSIDIAN);
                         }
                     }
                 }
             }
 
             //TODO: level.spawnEntity(new EntityEndCrystal(), x + 0.5D, y + height + 1, z + 0.5D, random.nextFloat() * 360, 0);
-            level.setBlockAt(x, y + height, z, BEDROCK);
+            chunk.setBlock(x, y + height, z, BEDROCK);
         }
     }
 }
