@@ -96,11 +96,11 @@ public class Nether extends Generator {
         groundFire.setRandomAmount(1);
         this.populators.add(groundFire);
 
-        PopulatorOre ores = new PopulatorOre(Block.NETHERRACK);
+        PopulatorOre ores = new PopulatorOre(NETHERRACK);
         ores.setOreTypes(new OreType[]{
-                new OreType(new BlockLava(), 32, 1, 0, 32, Block.NETHERRACK),
-                new OreType(new BlockOreQuartz(), 13, 16, 10, 118, Block.NETHERRACK),
-                new OreType(new BlockMagma(), 32, 16, 26, 37, Block.NETHERRACK),
+                new OreType(new BlockLava(), 32, 1, 0, 32, NETHERRACK),
+                new OreType(new BlockOreQuartz(), 13, 16, 10, 118, NETHERRACK),
+                new OreType(new BlockMagma(), 32, 16, 26, 37, NETHERRACK),
         });
         this.populators.add(ores);
 
@@ -190,10 +190,10 @@ public class Nether extends Generator {
                             for (int n = 0; n < 4; n++) {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air (or lava if under the lava level).
                                 if (dens > 0) {
-                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Block.NETHERRACK);
+                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
-                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Block.STILL_LAVA);
-                                    chunk.setBlockLight(m + (i << 2), l + (k << 3) + 1, n + (j << 2), 15);
+                                    chunk.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), STILL_LAVA);
+                                    chunk.setBlockLight(m + (i << 2), l + (k << 3) + 1, n + (j << 2), Block.light[STILL_LAVA]);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;
@@ -224,8 +224,8 @@ public class Nether extends Generator {
                 int columnX = (cx + x) & 0xF;
                 int columnZ = (cz + z) & 0xF;
 
-                int topMat = Block.NETHERRACK;
-                int groundMat = Block.NETHERRACK;
+                int topMat = NETHERRACK;
+                int groundMat = NETHERRACK;
 
                 boolean soulSand = soulsandNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
                 boolean gravel = gravelNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
@@ -234,27 +234,27 @@ public class Nether extends Generator {
                 int deep = -1;
                 for (int y = 127; y >= 0; y--) {
                     if (y <= this.nukkitRandom.nextBoundedInt(5) || y >= 127 - this.nukkitRandom.nextBoundedInt(5)) {
-                        chunk.setBlock(columnX, y, columnZ, Block.BEDROCK);
+                        chunk.setBlock(columnX, y, columnZ, BEDROCK);
                         continue;
                     }
                     int mat = chunk.getBlockId(columnX, y, columnZ);
-                    if (mat == Block.AIR) {
+                    if (mat == AIR) {
                         deep = -1;
-                    } else if (mat == Block.NETHERRACK) {
+                    } else if (mat == NETHERRACK) {
                         if (deep == -1) {
                             if (surfaceHeight <= 0) {
-                                topMat = Block.AIR;
-                                groundMat = Block.NETHERRACK;
+                                topMat = AIR;
+                                groundMat = NETHERRACK;
                             } else if (y >= 60 && y <= 65) {
-                                topMat = Block.NETHERRACK;
-                                groundMat = Block.NETHERRACK;
+                                topMat = NETHERRACK;
+                                groundMat = NETHERRACK;
                                 if (gravel) {
-                                    topMat = Block.GRAVEL;
-                                    groundMat = Block.NETHERRACK;
+                                    topMat = GRAVEL;
+                                    groundMat = NETHERRACK;
                                 }
                                 if (soulSand) {
-                                    topMat = Block.SOUL_SAND;
-                                    groundMat = Block.SOUL_SAND;
+                                    topMat = SOUL_SAND;
+                                    groundMat = SOUL_SAND;
                                 }
                             }
 
