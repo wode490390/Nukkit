@@ -36,6 +36,11 @@ public class Skin {
         this.setSkinData(inputStream);
     }
 
+    public Skin(InputStream inputStream, String skinId) {
+        this(inputStream);
+        this.setSkinId(skinId);
+    }
+
     public boolean isValid() {
         return isValidSkin(skinData.length);
     }
