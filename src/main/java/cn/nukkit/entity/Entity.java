@@ -1243,7 +1243,7 @@ public abstract class Entity extends Location implements Metadatable {
                         @Override
                         public void onRun(int currentTick) {
                             // dirty hack to make sure chunks are loaded and generated before spawning player
-                            this.teleport(newPos.add(1.5, 1, 0.5));
+                            teleport(newPos.add(1.5, 1, 0.5));
                             BlockEndPortal.spawnPlatform(newPos);
                         }
                     }, 20);
