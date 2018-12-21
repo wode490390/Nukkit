@@ -50,9 +50,9 @@ public class EntityFirework extends Entity {
 
         this.lifetime = firework instanceof ItemFirework ? ((ItemFirework) firework).getLifeTime() : 30;
 
-        this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, firework));
-        this.setDataProperty(new IntEntityData(Entity.DATA_DISPLAY_OFFSET, 1));
-        this.setDataProperty(new ByteEntityData(Entity.DATA_HAS_DISPLAY, 1));
+        this.setDataProperty(new SlotEntityData(Entity.DATA_MINECART_DISPLAY_BLOCK, firework));
+        this.setDataProperty(new IntEntityData(Entity.DATA_MINECART_DISPLAY_OFFSET, 1));
+        this.setDataProperty(new ByteEntityData(Entity.DATA_MINECART_HAS_DISPLAY, 1));
 
     }
 
@@ -144,7 +144,7 @@ public class EntityFirework extends Entity {
 
     public void setFirework(Item item) {
         this.firework = item;
-        this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, item));
+        this.setDataProperty(new SlotEntityData(Entity.DATA_MINECART_DISPLAY_BLOCK, item));
     }
 
     @Override
