@@ -2213,6 +2213,14 @@ public abstract class Entity extends Location implements Metadatable {
         this.server.getEntityMetadata().removeMetadata(this, metadataKey, owningPlugin);
     }
 
+    public boolean isExperimental() {
+        return false;
+    }
+
+    public boolean isEducation() {
+        return false;
+    }
+
     public Server getServer() {
         return server;
     }
