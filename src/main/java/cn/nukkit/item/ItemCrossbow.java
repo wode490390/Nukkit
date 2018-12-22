@@ -105,4 +105,9 @@ public class ItemCrossbow extends ItemTool {
 
         return true;
     }
+
+    @Override
+    public boolean isExperimental() {
+        return true;
+    }
 }

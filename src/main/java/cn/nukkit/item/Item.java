@@ -266,11 +266,11 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[CHORUS_FRUIT] = ItemChorusFruit.class; //432
             list[POPPED_CHORUS_FRUIT] = ItemChorusFruitPopped.class; //433
 
-            TODO: list[DRAGON_BREATH] = ItemDragonBreath.class; //437
+            list[DRAGON_BREATH] = ItemDragonBreath.class; //437
             list[SPLASH_POTION] = ItemPotionSplash.class; //438
 
             list[LINGERING_POTION] = ItemPotionLingering.class; //441
-            list[SPARKLER] = ItemElytra.class; //442 edu
+            list[SPARKLER] = ItemSparkler.class; //442 edu
             list[COMMAND_BLOCK_MINECART] = ItemMinecartCommandBlock.class; //443
             list[ELYTRA] = ItemElytra.class; //444
             list[SHULKER_SHELL] = ItemShulkerShell.class; //445
@@ -282,7 +282,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[BLEACH] = ItemBleach.class; //451 edu
             list[IRON_NUGGET] = ItemIronNugget.class; //452
             list[ICE_BOMB] = ItemIceBomb.class; //453 edu
-            //list[CHALKBOARD] = ItemBanner.class; //454 Edu
+            //list[CHALKBOARD] = ItemChalkboard.class; //454 Edu
             list[TRIDENT] = ItemTrident.class; //455
             //list[PORTFOLIO] = ItemPortfolio.class; //456 Edu
             list[BEETROOT] = ItemBeetroot.class; //457
@@ -1012,6 +1012,14 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     public boolean isUnbreakable() {
+        return false;
+    }
+
+    public boolean isExperimental() {
+        return false;
+    }
+
+    public boolean isEducation() {
         return false;
     }
 
