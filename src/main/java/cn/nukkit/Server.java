@@ -187,6 +187,8 @@ public class Server {
 
     private Config properties;
     private Config config;
+    //NukkitV
+    private Config configV;
 
     private final Map<String, Player> players = new HashMap<>();
 
@@ -221,6 +223,10 @@ public class Server {
     private Level defaultLevel = null;
 
     private boolean allowNether;
+    private boolean allowTheEnd;
+
+    private boolean allowExperimental;
+    private boolean allowEducation;
 
     private final Thread currentThread;
 
@@ -294,6 +300,18 @@ public class Server {
         this.logger.info("Loading " + TextFormat.GREEN + "nukkit.yml" + TextFormat.WHITE + "...");
         this.config = new Config(this.dataPath + "nukkit.yml", Config.YAML);
 
+        //NukkitV
+        if (!new File(this.dataPath + "nukkitv.yml").exists()) {
+            try {
+                Utils.writeFile(this.dataPath + "nukkitv.yml", this.getClass().getClassLoader().getResourceAsStream("nukkitv.yml"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        this.logger.info("Loading " + TextFormat.GREEN + "nukkitv.yml" + TextFormat.WHITE + "...");
+        this.configV = new Config(this.dataPath + "nukkitv.yml", Config.YAML);
+
         this.logger.info("Loading " + TextFormat.GREEN + "server properties" + TextFormat.WHITE + "...");
         this.properties = new Config(this.dataPath + "server.properties", Config.PROPERTIES, new ConfigSection() {
             {
@@ -332,6 +350,11 @@ public class Server {
 
         // Allow Nether? (determines if we create a nether world if one doesn't exist on startup)
         this.allowNether = this.properties.getBoolean("allow-nether", true);
+        // Allow TheEnd? (determines if we create the end world if one doesn't exist on startup)
+        this.allowTheEnd = this.getVConfig("settings.the-end", true);
+
+        this.allowExperimental = this.getVConfig("settings.experimental", false);
+        this.allowEducation = this.getVConfig("settings.education", false);
 
         this.forceLanguage = (Boolean) this.getConfig("settings.force-language", false);
         this.baseLang = new BaseLang((String) this.getConfig("settings.language", BaseLang.FALLBACK_LANGUAGE));
@@ -1853,6 +1876,20 @@ public class Server {
         return value == null ? defaultValue : value;
     }
 
+    //NukkitV
+    public Config getVConfig() {
+        return this.configV;
+    }
+
+    public Object getVConfig(String variable) {
+        return this.getVConfig(variable, null);
+    }
+
+    public Object getVConfig(String variable, Object defaultValue) {
+        Object value = this.configV.get(variable);
+        return value == null ? defaultValue : value;
+    }
+
     public Config getProperties() {
         return this.properties;
     }
@@ -2138,8 +2175,19 @@ public class Server {
         return this.allowNether;
     }
 
+    public boolean isTheEndAllowed() {
+        return this.allowTheEnd;
+    }
+
+    public boolean isExperimentalAllowed() {
+        return this.allowExperimental;
+    }
+
+    public boolean isEducationAllowed() {
+        return this.allowEducation;
+    }
+
     public static Server getInstance() {
         return instance;
     }
-
 }
