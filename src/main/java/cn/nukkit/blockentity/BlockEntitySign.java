@@ -22,6 +22,11 @@ public class BlockEntitySign extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Sign";
+    }
+
+    @Override
     protected void initBlockEntity() {
         text = new String[4];
 
