@@ -7,6 +7,13 @@ import cn.nukkit.math.BlockFace;
 
 public class BlockStructureBlock extends BlockSolidMeta {
 
+    public static final int MODE_INVENTORY_MODEL = 0;
+    public static final int MODE_DATA = 1;
+    public static final int MODE_SAVE = 2;
+    public static final int MODE_LOAD = 3;
+    public static final int MODE_CORNER = 4;
+    public static final int MODE_EXPORT = 5;
+
     public BlockStructureBlock() {
         this(0);
     }
@@ -57,7 +64,7 @@ public class BlockStructureBlock extends BlockSolidMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        this.setDamage(5);
+        this.setDamage(MODE_EXPORT);
         this.level.setBlock(block, this, true, false);
 
         return true;
