@@ -26,13 +26,13 @@ public class BlockWallBanner extends BlockStandingBanner {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            if (this.getSide(BlockFace.fromIndex(this.getDamage()).getOpposite()) instanceof BlockAir) {
-                this.getLevel().useBreakOn(this);
-
+            if (this.getDamage() >= BlockFace.NORTH.getIndex() && this.getDamage() <= BlockFace.EAST.getIndex()) {
+                if (this.getSide(BlockFace.fromIndex(this.getDamage()).getOpposite()).getId() == AIR) {
+                    this.getLevel().useBreakOn(this);
+                }
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }
         return 0;
     }
-
 }
