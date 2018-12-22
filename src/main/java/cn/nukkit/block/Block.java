@@ -982,4 +982,12 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     public boolean canSilkTouch() {
         return false;
     }
+
+    public boolean isExperimental() {
+        return false;
+    }
+
+    public boolean isEducation() {
+        return false;
+    }
 }
