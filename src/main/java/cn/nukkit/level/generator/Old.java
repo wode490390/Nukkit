@@ -308,7 +308,7 @@ public class Old extends Generator {
                     for (int y = 0; y < 256; ++y) {
                         chunk.setBlock(x, y, z, INVISIBLE_BEDROCK);
                     }
-                    chunk.setBiome(x, z, EnumBiome.OCEAN.biome.getId());
+                    chunk.setBiome(x, z, EnumBiome.OCEAN.biome);
                 }
             }
         }
