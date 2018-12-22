@@ -22,6 +22,11 @@ public class BlockEntityComparator extends BlockEntity {
     }
 
     @Override
+    public String getName() {
+        return "Comparator";
+    }
+
+    @Override
     public boolean isBlockEntityValid() {
         return this.getLevelBlock() instanceof BlockRedstoneComparator;
     }
