@@ -107,22 +107,22 @@ public class BlockShulkerBox extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        BlockEntityShulkerBox box = null;
-
-        for (int side = 2; side <= 5; ++side) {
-            if ((this.getDamage() == 4 || this.getDamage() == 5) && (side == 4 || side == 5)) {
-                continue;
-            } else if ((this.getDamage() == 3 || this.getDamage() == 2) && (side == 2 || side == 3)) {
-                continue;
-            }
-            Block c = this.getSide(BlockFace.fromIndex(side));
-            if (c instanceof BlockShulkerBox && c.getDamage() == this.getDamage()) {
-                BlockEntity blockEntity = this.getLevel().getBlockEntity(c);
-                if (blockEntity instanceof BlockEntityShulkerBox) {
-                    box = (BlockEntityShulkerBox) blockEntity;
-                    break;
+        int faces[] = {2, 5, 3, 4};
+        if (player != null) {
+            if (Math.abs(player.x - this.x) < 2 && Math.abs(player.z - this.z) < 2) {
+                double y = player.y + player.getEyeHeight();
+                if (y - this.y > 2) {
+                    this.setDamage(BlockFace.UP.getIndex());
+                } else if (this.y - y > 0) {
+                    this.setDamage(BlockFace.DOWN.getIndex());
+                } else {
+                    this.setDamage(player.getHorizontalFacing().getIndex());
                 }
+            } else {
+                this.setDamage(player.getHorizontalFacing().getIndex());
             }
+        } else {
+            this.setDamage(0);
         }
 
         this.getLevel().setBlock(block, this, true, true);
