@@ -34,8 +34,8 @@ public class Nukkit {
 
     public final static Properties GIT_INFO = getGitInfo();
     public final static String VERSION = getVersion();
-    public final static String API_VERSION = "1.0.7";
-    public final static String CODENAME = "";
+    public final static String API_VERSION = "1.1.0";
+    public final static String CODENAME = getVersionName();
     @Deprecated
     public final static String MINECRAFT_VERSION = ProtocolInfo.MINECRAFT_VERSION;
     @Deprecated
@@ -167,5 +167,14 @@ public class Nukkit {
             return version.append("null").toString();
         }
         return version.append(commitId).toString();
+    }
+
+    private static String getVersionName() {
+        StringBuilder verName = new StringBuilder();
+        String branch;
+        if (GIT_INFO == null || (branch = GIT_INFO.getProperty("git.branch")) == null) {
+            return verName.append("null").toString();
+        }
+        return verName.append(branch).toString();
     }
 }
