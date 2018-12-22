@@ -9,6 +9,8 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 
+import java.util.Random;
+
 public class BlockChorusFlower extends BlockTransparentMeta {
 
     public BlockChorusFlower() {
@@ -70,7 +72,7 @@ public class BlockChorusFlower extends BlockTransparentMeta {
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (new Random().nextInt(3) == 1) {
                 if (this.getDamage() < 0x06) {
-                    BlockChorusFlower block = this.clone();
+                    BlockChorusFlower block = (BlockChorusFlower) this.clone();
                     block.setDamage(block.getDamage() + 1);
                     BlockGrowEvent ev = new BlockGrowEvent(this, block);
                     Server.getInstance().getPluginManager().callEvent(ev);
