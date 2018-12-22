@@ -6,7 +6,7 @@ import cn.nukkit.utils.BlockColor;
 /**
  * @author PikyCZ
  */
-public class BlockEndGateway extends BlockSolid {
+public class BlockEndGateway extends BlockTransparent {
 
     public BlockEndGateway() {
         this(0);
