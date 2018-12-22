@@ -2026,7 +2026,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         startGamePacket.seed = -1;
         startGamePacket.dimension = (byte) (this.level.getDimension() & 0xff);
         startGamePacket.worldGamemode = getClientFriendlyGamemode(this.gamemode);
-        startGamePacket.difficulty = this.server.getDifficulty();
+        startGamePacket.difficulty = this.getServer().getDifficulty();
         startGamePacket.spawnX = (int) this.x;
         startGamePacket.spawnY = (int) this.y;
         startGamePacket.spawnZ = (int) this.z;
@@ -2040,6 +2040,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         startGamePacket.levelId = "";
         startGamePacket.worldName = this.getServer().getNetwork().getName();
         startGamePacket.generator = 1; //0 old, 1 infinite, 2 flat
+        startGamePacket.isTrial = this.getServer().isExperimentalAllowed();
+        startGamePacket.hasEduFeaturesEnabled = this.getServer().isEducationAllowed();
         this.dataPacket(startGamePacket);
 
         this.dataPacket(new AvailableEntityIdentifiersPacket());
