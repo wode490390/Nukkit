@@ -60,9 +60,14 @@ public class BlockStandingBanner extends BlockTransparentMeta {
     }
 
     @Override
+    public boolean canPassThrough() {
+        return true;
+    }
+
+    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         if (face != BlockFace.DOWN) {
-            if (face == BlockFace.UP && player != null) {
+            if (face == BlockFace.UP) {
                 this.setDamage(NukkitMath.floorDouble(((player.yaw + 180) * 16 / 360) + 0.5) & 0x0f);
                 this.getLevel().setBlock(block, this, true);
             } else {
@@ -81,7 +86,7 @@ public class BlockStandingBanner extends BlockTransparentMeta {
                 nbt.put("Patterns", item.getNamedTag().get("Patterns"));
             }
 
-            BlockEntity.createBlockEntity(BlockEntity.BANNER, this.level.getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4), nbt);
+            new BlockEntityBanner(this.level.getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
             return true;
         }
         return false;
@@ -101,7 +106,7 @@ public class BlockStandingBanner extends BlockTransparentMeta {
 
     @Override
     public Item toItem() {
-        ItemBlock item = new ItemBlock(this, this.getDamage(), 1);
+        ItemBlock item = new ItemBlock(this, this.getDamage() & 0x0f, 1);
         BlockEntityBanner blockEntity = (BlockEntityBanner) this.getLevel().getBlockEntity(this);
         if (blockEntity != null) {
             item.setNamedTag(blockEntity.getCleanedNBT());
