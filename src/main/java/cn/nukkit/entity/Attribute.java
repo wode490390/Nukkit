@@ -135,7 +135,7 @@ public class Attribute implements Cloneable {
     }
 
     public void resetToDefault() {
-        this.setValue(this.getDefaultValue());
+        this.setValue(this.getDefaultValue(), true);
     }
 
     public float getValue() {
