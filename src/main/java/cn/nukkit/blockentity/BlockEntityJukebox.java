@@ -24,6 +24,11 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Jukebox";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (namedTag.contains("RecordItem")) {
             this.recordItem = NBTIO.getItemHelper(namedTag.getCompound("RecordItem"));
