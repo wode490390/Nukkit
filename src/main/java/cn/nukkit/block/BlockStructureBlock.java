@@ -1,7 +1,9 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
+import cn.nukkit.math.BlockFace;
 
 public class BlockStructureBlock extends BlockSolidMeta {
 
@@ -51,5 +53,13 @@ public class BlockStructureBlock extends BlockSolidMeta {
     @Override
     public boolean isBreakable(Item item) {
         return false;
+    }
+
+    @Override
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        this.setDamage(5);
+        this.level.setBlock(block, this, true, false);
+
+        return true;
     }
 }
