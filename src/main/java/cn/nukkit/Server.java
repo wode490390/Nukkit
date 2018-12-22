@@ -351,10 +351,10 @@ public class Server {
         // Allow Nether? (determines if we create a nether world if one doesn't exist on startup)
         this.allowNether = this.properties.getBoolean("allow-nether", true);
         // Allow TheEnd? (determines if we create the end world if one doesn't exist on startup)
-        this.allowTheEnd = this.getVConfig("settings.the-end", true);
+        this.allowTheEnd = (Boolean) this.getVConfig("settings.the-end", true);
 
-        this.allowExperimental = this.getVConfig("settings.experimental", false);
-        this.allowEducation = this.getVConfig("settings.education", false);
+        this.allowExperimental = (Boolean) this.getVConfig("settings.experimental", false);
+        this.allowEducation = (Boolean) this.getVConfig("settings.education", false);
 
         this.forceLanguage = (Boolean) this.getConfig("settings.force-language", false);
         this.baseLang = new BaseLang((String) this.getConfig("settings.language", BaseLang.FALLBACK_LANGUAGE));
