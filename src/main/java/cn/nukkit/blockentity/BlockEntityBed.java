@@ -61,7 +61,7 @@ public class BlockEntityBed extends BlockEntitySpawnable {
         return this.color;
     }
 
-    public int setColor(int color) {
+    public void setColor(int color) {
         this.color = color & 0xf;
         this.onChanged();
     }
