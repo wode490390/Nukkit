@@ -2131,6 +2131,7 @@ public class Server {
         BlockEntity.registerBlockEntity(BlockEntity.BED, BlockEntityBed.class);
         BlockEntity.registerBlockEntity(BlockEntity.JUKEBOX, BlockEntityJukebox.class);
         BlockEntity.registerBlockEntity(BlockEntity.SHULKER_BOX, BlockEntityShulkerBox.class);
+        BlockEntity.registerBlockEntity(BlockEntity.BANNER, BlockEntityBanner.class);
     }
 
     public boolean isNetherAllowed() {
