@@ -17,6 +17,11 @@ public class BlockEntityBed extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Bed";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (!this.namedTag.contains("color")) {
             this.namedTag.putByte("color", 0);
