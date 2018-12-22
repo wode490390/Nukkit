@@ -32,6 +32,11 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
     }
 
     @Override
+    public String getName() {
+        return "Beacon";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (!namedTag.contains("Lock")) {
             namedTag.putString("Lock", "");
