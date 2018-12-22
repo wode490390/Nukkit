@@ -1,5 +1,6 @@
 package cn.nukkit.level.generator;
 
+import cn.nukkit.Server;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
@@ -14,6 +15,8 @@ import java.util.Map;
  */
 public abstract class Generator implements BlockID {
 
+    protected static final int GENERAL_SEA_LEVEL = (int) getConfig("general.sea_level", 64);
+
     public static final int TYPE_OLD = 0;
     public static final int TYPE_INFINITE = 1;
     public static final int TYPE_FLAT = 2;
@@ -27,9 +30,9 @@ public abstract class Generator implements BlockID {
         return Level.DIMENSION_OVERWORLD;
     }
 
-    private static final Map<String, Class<? extends Generator>> nameList = new HashMap<>();
+    private static final Map<String, Class<? extends Generator>> nameList = new HashMap<String, Class<? extends Generator>>();
 
-    private static final Map<Integer, Class<? extends Generator>> typeList = new HashMap<>();
+    private static final Map<Integer, Class<? extends Generator>> typeList = new HashMap<Integer, Class<? extends Generator>>();
 
     public static boolean addGenerator(Class<? extends Generator> clazz, String name, int type) {
         name = name.toLowerCase();
@@ -79,6 +82,10 @@ public abstract class Generator implements BlockID {
             }
         }
         return Generator.TYPE_INFINITE;
+    }
+
+    protected static Object getConfig(String vari, Object def) {
+        return Server.getInstance().getVConfig("generator." + vari, def);
     }
 
     public abstract void init(ChunkManager level, NukkitRandom random);
