@@ -19,33 +19,33 @@ public class StartGamePacket extends DataPacket {
 
     private static String runtimeIdTable = null;
 
-    public long entityUniqueId;
-    public long entityRuntimeId;
-    public int playerGamemode;
+    public long entityUniqueId = 0;
+    public long entityRuntimeId = 0;
+    public int playerGamemode = 0;
 
-    public Vector3f playerPosition;
+    public Vector3f playerPosition = new Vector3f();
 
-    public float pitch;
-    public float yaw;
+    public float pitch = 0.0f;
+    public float yaw = 0.0f;
 
-    public int seed;
-    public byte dimension;
+    public int seed = 0;
+    public byte dimension = 0;
     public int generator = 1; //default infinite - 0 old, 1 infinite, 2 flat
-    public int worldGamemode;
-    public int difficulty;
-    public int spawnX;
-    public int spawnY;
-    public int spawnZ;
+    public int worldGamemode = 0;
+    public int difficulty = 1;
+    public int spawnX = 0;
+    public int spawnY = 0;
+    public int spawnZ = 0;
     public boolean hasAchievementsDisabled = true;
     public int time = -1; //-1 = not stopped, any positive value = stopped at that time
     public boolean eduMode = false;
     public boolean hasEduFeaturesEnabled = false;
-    public float rainLevel;
-    public float lightningLevel;
+    public float rainLevel = 0.0f;
+    public float lightningLevel = 0.0f;
     public boolean isMultiplayerGame = true;
     public boolean hasLANBroadcast = true;
     public boolean hasXboxLiveBroadcast = true;
-    public boolean commandsEnabled;
+    public boolean commandsEnabled = false;
     public boolean isTexturePacksRequired = false;
     public GameRules gameRules;
     public boolean hasBonusChestEnabled = false;
@@ -65,7 +65,7 @@ public class StartGamePacket extends DataPacket {
     public boolean isWorldTemplateOptionLocked = false;
 
     public String levelId = ""; //base64 string, usually the same as world folder name in vanilla
-    public String worldName;
+    public String worldName = "";
     public String premiumWorldTemplateId = "";
     public boolean isTrial = false;
     public long currentTick = 0; //only used if isTrial is true
