@@ -3,7 +3,6 @@ package cn.nukkit.level.generator.ground;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.level.ChunkManager;
-import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.BiomeClimate;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.math.NukkitRandom;
@@ -31,7 +30,7 @@ public class GroundGenerator implements BlockID {
      * @param biome the biome this column is in
      * @param surfaceNoise the amplitude of random variation in surface height
      */
-    public void generateTerrainColumn(ChunkManager world, BaseFullChunk chunkData, NukkitRandom random, int chunkX, int chunkZ, Biome biome, double surfaceNoise) {
+    public void generateTerrainColumn(ChunkManager world, BaseFullChunk chunkData, NukkitRandom random, int chunkX, int chunkZ, int biome, double surfaceNoise) {
 
         int seaLevel = 64;
 
@@ -41,8 +40,7 @@ public class GroundGenerator implements BlockID {
         int x = chunkX & 0xF;
         int z = chunkZ & 0xF;
 
-        int surfaceHeight = Math
-            .max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
+        int surfaceHeight = Math.max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
         int deep = -1;
         for (int y = 255; y >= 0; y--) {
             if (y <= random.nextBoundedInt(5)) {
