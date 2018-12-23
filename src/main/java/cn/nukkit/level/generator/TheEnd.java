@@ -15,16 +15,13 @@ import java.util.*;
 
 public class TheEnd extends Generator {
 
-    protected static final int WORLD_DEPTH = 128;
+    private static double coordinateScale = (double) getConfig("end.coordinate-scale", 684.412d);
+    private static double heightScale = (double) getConfig("end.height.scale", 1368.824d);
+    private static double detailNoiseScaleX = (double) getConfig("end.detail.noise-scale.x", 80.0d);  // mainNoiseScaleX
+    private static double detailNoiseScaleY = (double) getConfig("end.detail.noise-scale.y", 160.0d); // mainNoiseScaleY
+    private static double detailNoiseScaleZ = (double) getConfig("end.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
 
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
-
-    private static double coordinateScale = 684.412d;
-    private static double heightScale = 1368.824d;
-    private static double detailNoiseScaleX = 80.0d;  // mainNoiseScaleX
-    private static double detailNoiseScaleY = 160.0d; // mainNoiseScaleY
-    private static double detailNoiseScaleZ = 80.0d;  // mainNoiseScaleZ
-
     private final double[][][] density = new double[3][3][33];
 
     private ChunkManager level;
@@ -182,10 +179,10 @@ public class TheEnd extends Generator {
         for (Populator populator : this.populators) {
             populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
         }
-
         EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
+    @Override
     public Vector3 getSpawn() {
         return new Vector3(100.5, 49, 0.5);
     }
