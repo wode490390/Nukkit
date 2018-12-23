@@ -15,14 +15,15 @@ import java.util.Map;
  */
 public abstract class Generator implements BlockID {
 
-    protected static final int GENERAL_SEA_LEVEL = (int) getConfig("general.sea_level", 64);
-
     public static final int TYPE_OLD = 0;
     public static final int TYPE_INFINITE = 1;
     public static final int TYPE_FLAT = 2;
     public static final int TYPE_NETHER = 3;
     public static final int TYPE_THE_END = 4;
     public static final int TYPE_LARGE_BIOMES = 5;
+    public static final int TYPE_AMPLIFIED = 6;
+
+    protected static final int SEA_LEVEL = (int) getConfig("general.sea_level", 64);
 
     public abstract int getId();
 
