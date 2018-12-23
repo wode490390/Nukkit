@@ -43,34 +43,34 @@ public class BiomeClimate {
         noiseGen.setScale(1 / 8.0D);
     }
 
-    public static double getTemperature(Biome biome) {
-        return CLIMATE_MAP.get(biome.getId()).getTemperature();
+    public static double getTemperature(int biome) {
+        return CLIMATE_MAP.get(biome).getTemperature();
     }
 
-    public static double getHumidity(Biome biome) {
-        return CLIMATE_MAP.get(biome.getId()).getHumidity();
+    public static double getHumidity(int biome) {
+        return CLIMATE_MAP.get(biome).getHumidity();
     }
 
-    public static boolean isWet(Biome biome) {
+    public static boolean isWet(int biome) {
         return getHumidity(biome) > 0.85D;
     }
 
-    public static boolean isCold(Biome biome, int x, int y, int z) {
+    public static boolean isCold(int biome, int x, int y, int z) {
         return getVariatedTemperature(biome, x, y, z) < 0.15D;
     }
 
-    public static boolean isRainy(Biome biome, int x, int y, int z) {
-        boolean rainy = CLIMATE_MAP.get(biome.getId()).isRainy();
+    public static boolean isRainy(int biome, int x, int y, int z) {
+        boolean rainy = CLIMATE_MAP.get(biome).isRainy();
         return rainy && !isCold(biome, x, y, z);
     }
 
-    public static boolean isSnowy(Biome biome, int x, int y, int z) {
-        boolean rainy = CLIMATE_MAP.get(biome.getId()).isRainy();
+    public static boolean isSnowy(int biome, int x, int y, int z) {
+        boolean rainy = CLIMATE_MAP.get(biome).isRainy();
         return rainy && isCold(biome, x, y, z);
     }
 
-    private static double getVariatedTemperature(Biome biome, int x, int y, int z) {
-        double temp = CLIMATE_MAP.get(biome.getId()).getTemperature();
+    private static double getVariatedTemperature(int biome, int x, int y, int z) {
+        double temp = CLIMATE_MAP.get(biome).getTemperature();
         if (y > 64) {
             double variation = noiseGen.noise(x, z, 0.5D, 2.0D) * 4.0D;
             return temp - (variation + (y - 64)) * 0.05D / 30.0D;
