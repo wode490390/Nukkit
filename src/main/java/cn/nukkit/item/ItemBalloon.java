@@ -13,7 +13,7 @@ public class ItemBalloon extends Item {
     }
 
     public ItemBalloon(Integer meta, int count) {
-        super(BALLOON, meta, count, DyeColor.getByDyeData(meta).getName() + " Balloon");
+        super(BALLOON, meta, count, DyeColor.getByWoolData(meta).getName() + " Balloon");
     }
 
     public DyeColor getDyeColor() {
