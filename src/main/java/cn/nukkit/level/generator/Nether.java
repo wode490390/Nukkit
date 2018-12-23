@@ -20,19 +20,16 @@ import java.util.*;
 
 public class Nether extends Generator {
 
-    protected static final int WORLD_DEPTH = 128;
+    private static double coordinateScale = (double) getConfig("nether.coordinate-scale", 684.412d);
+    private static double heightScale = (double) getConfig("nether.height.scale", 2053.236d);
+    private static double heightNoiseScaleX = (double) getConfig("nether.height.noise-scale.x", 100.0d); // depthNoiseScaleX
+    private static double heightNoiseScaleZ = (double) getConfig("nether.height.noise-scale.x", 100.0d); // depthNoiseScaleZ
+    private static double detailNoiseScaleX = (double) getConfig("nether.detail.noise-scale.x", 80.0d);  // mainNoiseScaleX
+    private static double detailNoiseScaleY = (double) getConfig("nether.detail.noise-scale.y", 60.0d);  // mainNoiseScaleY
+    private static double detailNoiseScaleZ = (double) getConfig("nether.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
+    private static double surfaceScale = (double) getConfig("nether.surface-scale", 0.0625d);
 
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
-
-    private static double coordinateScale = 684.412d;
-    private static double heightScale = 2053.236d;
-    private static double heightNoiseScaleX = 100.0d; // depthNoiseScaleX
-    private static double heightNoiseScaleZ = 100.0d; // depthNoiseScaleZ
-    private static double detailNoiseScaleX = 80.0d;  // mainNoiseScaleX
-    private static double detailNoiseScaleY = 60.0d;  // mainNoiseScaleY
-    private static double detailNoiseScaleZ = 80.0d;  // mainNoiseScaleZ
-    private static double surfaceScale = 0.0625d;
-
     private final double[][][] density = new double[5][5][17];
 
     private ChunkManager level;
