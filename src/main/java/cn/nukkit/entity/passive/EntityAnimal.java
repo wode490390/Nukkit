@@ -38,4 +38,8 @@ public abstract class EntityAnimal extends EntityCreature implements EntityAgeab
         }
         return false;
     }
+
+    public int getXpDropAmount() {
+        return 0;
+    }
 }
