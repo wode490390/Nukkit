@@ -1554,8 +1554,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                 int lvl = 2 + frostWalker.getLevel();
                                 for (int coordX = this.getFloorX() - lvl; coordX < this.getFloorX() + lvl + 1; coordX++) {
                                     for (int coordZ = this.getFloorZ() - lvl; coordZ < this.getFloorZ() + lvl + 1; coordZ++) {
-                                        if (level.getBlockIdAt(coordX, this.getFloorY() - 1, coordZ) == Block.STILL_WATER && level.getBlockIdAt(coordX, this.getFloorY(), coordZ) == Block.AIR) {
-                                            level.setBlockAt(coordX, this.getFloorY() - 1, coordZ, Block.FROSTED_ICE);
+                                        Vector3 vec = new Vector3(coordX, this.getFloorY() - 1, coordZ);
+                                        if (level.getBlock(vec).getId() == Block.STILL_WATER && level.getBlock(vec.up()).getId() == Block.AIR) {
+                                            level.setBlock(vec, new BlockIceFrosted(), true);
+                                            level.scheduleUpdate(level.getBlock(vec), ThreadLocalRandom.current().nextInt(20, 40));
                                         }
                                     }
                                 }
