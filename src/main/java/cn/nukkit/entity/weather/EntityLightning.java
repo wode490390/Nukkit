@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EntityLightning extends Entity implements EntityLightningStrike {
 
-    public static final int NETWORK_ID = 93;
+    public static final int NETWORK_ID = LIGHTNING_BOLT;
 
     protected boolean isEffect = true;
 
