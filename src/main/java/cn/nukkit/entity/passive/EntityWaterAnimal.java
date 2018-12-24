@@ -19,4 +19,8 @@ public abstract class EntityWaterAnimal extends EntityCreature implements Entity
     public boolean isBaby() {
         return this.getDataFlag(DATA_FLAGS, Entity.DATA_FLAG_BABY);
     }
+
+    public int getXpDropAmount() {
+        return 0;
+    }
 }
