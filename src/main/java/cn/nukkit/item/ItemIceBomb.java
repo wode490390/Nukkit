@@ -15,6 +15,11 @@ public class ItemIceBomb extends Item {
     }
 
     @Override
+    public int getMaxStackSize() {
+        return 16;
+    }
+
+    @Override
     public boolean isEducation() {
         return true;
     }
