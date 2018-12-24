@@ -16,6 +16,11 @@ public class ItemBalloon extends Item {
         super(BALLOON, meta, count, DyeColor.getByWoolData(meta).getName() + " Balloon");
     }
 
+    @Override
+    public int getMaxStackSize() {
+        return 16;
+    }
+
     public DyeColor getDyeColor() {
         return DyeColor.getByDyeData(this.getDamage());
     }
