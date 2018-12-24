@@ -1,13 +1,16 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
+import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockIceFrosted extends BlockTransparentMeta {
 
@@ -50,25 +53,24 @@ public class BlockIceFrosted extends BlockTransparentMeta {
     }
 
     @Override
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
+        return super.place(item, block, target, face, fx, fy, fz, player);
+    }
+
+    @Override
     public boolean onBreak(Item item) {
         this.getLevel().setBlock(this, new BlockWaterStill(), true);
-        List<Block> nearFrosted = new ArrayList<Block>();
-        int coordX1 = (int) this.x - 1;
-        int coordX2 = (int) this.x + 1;
-        int coordZ1 = (int) this.z - 1;
-        int coordZ2 = (int) this.z + 1;
-        for (int coordX = coordX1; coordX < coordX2 + 1; coordX++) {
-            for (int coordZ = coordZ1; coordZ < coordZ2 + 1; coordZ++) {
-                Block nearBlock = this.getLevel().getBlock(coordX, (int) this.y, coordZ);
-                if (nearBlock instanceof BlockIceFrosted) {
-                    nearFrosted.add(nearBlock);
+        for (BlockFace face : BlockFace.VALUES) {
+            Block nearBlock = this.getSide(face);
+            if (nearBlock instanceof BlockIceFrosted) {
+                int age = nearBlock.getDamage();
+                if (age < 3) {
+                    nearBlock.setDamage(age + 1);
+                    this.getLevel().scheduleUpdate(nearBlock, ThreadLocalRandom.current().nextInt(20, 40));
+                } else {
+                    this.getLevel().setBlock(nearBlock, new BlockWaterStill(), true);
                 }
-
-            }
-        }
-        if (nearFrosted.size() < 2) {
-            for (Block iceBlock : nearFrosted) {
-                this.getLevel().setBlock(iceBlock, new BlockWaterStill(), true);
             }
         }
         return true;
@@ -76,13 +78,28 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 12) {
-                this.getLevel().setBlock(this, new BlockWater(), true);
-                return Level.BLOCK_UPDATE_NORMAL;
+        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
+            if (this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) > 11) {
+                List<Block> nearFrosted = new ArrayList<Block>();
+                for (BlockFace face : BlockFace.VALUES) {
+                    Block nearBlock = this.getSide(face);
+                    if (nearBlock instanceof BlockIceFrosted) {
+                        nearFrosted.add(nearBlock);
+                    }
+                }
+                if (ThreadLocalRandom.current().nextInt(3) == 0 || nearFrosted.size() < 4) {
+                    int age = this.getDamage();
+                    if (age < 4) {
+                        this.setDamage(age + 1);
+                        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
+                    } else {
+                        this.getLevel().useBreakOn(this);
+                    }
+                } else {
+                    this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
+                }
             }
         }
-        //TODO: melt
         return 0;
     }
 
