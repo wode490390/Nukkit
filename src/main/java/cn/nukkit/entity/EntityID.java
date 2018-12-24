@@ -43,17 +43,17 @@ public interface EntityID {
     int WITHER_SKELETON = 48;
     int GUARDIAN = 49;
     int ELDER_GUARDIAN = 50;
-    int NPC = 51;
+    int NPC = 51; //Edu
     int WITHER = 52;
     int ENDER_DRAGON = 53;
     int SHULKER = 54;
     int ENDERMITE = 55;
-    int AGENT = 56;
+    int AGENT = 56; //Edu
     int VINDICATOR = 57;
     int PHANTOM = 58;
 
     int ARMOR_STAND = 61;
-    int TRIPOD_CAMERA = 62;
+    int TRIPOD_CAMERA = 62; //Edu
     int PLAYER = 63;
     int ITEM = 64;
     int TNT = 65;
@@ -69,7 +69,7 @@ public interface EntityID {
     int CAT = 75;
     int SHULKER_BULLET = 76;
     int FISHING_HOOK = 77;
-    int CHALKBOARD = 78;
+    int CHALKBOARD = 78; //Edu
     int DRAGON_FIREBALL = 79;
     int ARROW = 80;
     int SNOWBALL = 81;
@@ -96,8 +96,8 @@ public interface EntityID {
     int EVOCATION_FANG = 103;
     int EVOCATION_ILLAGER = 104;
     int VEX = 105;
-    int ICE_BOMB = 106;
-    int BALLOON = 107;
+    int ICE_BOMB = 106; //Edu
+    int BALLOON = 107; //Edu
     int PUFFERFISH = 108;
     int SALMON = 109;
     int DROWNED = 110;
