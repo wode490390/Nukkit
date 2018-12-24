@@ -28,4 +28,8 @@ public abstract class EntityMob extends EntityCreature {
         }
         return false;
     }
+
+    public int getXpDropAmount() {
+        return 0;
+    }
 }
