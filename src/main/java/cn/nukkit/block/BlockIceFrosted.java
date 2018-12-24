@@ -109,11 +109,6 @@ public class BlockIceFrosted extends BlockTransparentMeta {
     }
 
     @Override
-    public Item[] getDrops(Item item) {
-        return new Item[0];
-    }
-
-    @Override
     public BlockColor getColor() {
         return BlockColor.ICE_BLOCK_COLOR;
     }
