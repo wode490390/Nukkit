@@ -66,7 +66,9 @@ public abstract class Fuel {
         duration.put(Item.JUNGLE_DOOR, (short) 200);
         duration.put(Item.ACACIA_DOOR, (short) 200);
         duration.put(Item.DARK_OAK_DOOR, (short) 200);
-        //TODO: duration.put(Item.BANNER, (short) 300);
+        duration.put(Item.BANNER, (short) 300);
         //TODO: duration.put(Item.DRIED_KELP_BLOCK, (short) 4000);
+        //TODO: duration.put(Item.BAMBOO, (short) 50);
+        //TODO: duration.put(Item.SCAFFOLDING, (short) 50);
     }
 }
