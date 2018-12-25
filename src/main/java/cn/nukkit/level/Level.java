@@ -255,6 +255,8 @@ public class Level implements ChunkManager, Metadatable {
 
     private int dimension;
 
+    private int difficulty;
+
     public GameRules gameRules;
 
     public Level(Server server, String name, String path, Class<? extends LevelProvider> provider) {
@@ -280,8 +282,7 @@ public class Level implements ChunkManager, Metadatable {
         this.timings = new LevelTimings(this);
 
         if (convert) {
-            this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.updating",
-                    TextFormat.GREEN + this.provider.getName() + TextFormat.WHITE));
+            this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.updating", TextFormat.GREEN + this.provider.getName() + TextFormat.WHITE));
             LevelProvider old = this.provider;
             try {
                 this.provider = new LevelProviderConverter(this, path)
@@ -296,8 +297,7 @@ public class Level implements ChunkManager, Metadatable {
 
         this.provider.updateLevelName(name);
 
-        this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.preparing",
-                TextFormat.GREEN + this.provider.getName() + TextFormat.WHITE));
+        this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.preparing", TextFormat.GREEN + this.provider.getName() + TextFormat.WHITE));
 
         this.generatorClass = Generator.getGenerator(this.provider.getGenerator());
 
@@ -325,8 +325,7 @@ public class Level implements ChunkManager, Metadatable {
         this.levelCurrentTick = this.provider.getCurrentTick();
         this.updateQueue = new BlockUpdateScheduler(this, levelCurrentTick);
 
-        this.chunkTickRadius = Math.min(this.server.getViewDistance(),
-                Math.max(1, (Integer) this.server.getConfig("chunk-ticking.tick-radius", 4)));
+        this.chunkTickRadius = Math.min(this.server.getViewDistance(), Math.max(1, (Integer) this.server.getConfig("chunk-ticking.tick-radius", 4)));
         this.chunksPerTicks = (int) this.server.getConfig("chunk-ticking.per-tick", 40);
         this.chunkGenerationQueueSize = (int) this.server.getConfig("chunk-generation.queue-size", 8);
         this.chunkPopulationQueueSize = (int) this.server.getConfig("chunk-generation.population-queue-size", 2);
@@ -406,10 +405,26 @@ public class Level implements ChunkManager, Metadatable {
         this.tickRate = tickRate;
     }
 
+    public int getDifficulty() {
+        return this.difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+        if (this == this.getServer().getDefaultLevel()) {
+            this.getServer().setPropertyInt("difficulty", difficulty);
+        }
+    }
+
     public void initLevel() {
         Generator generator = generators.get();
         this.dimension = generator.getDimension();
         this.gameRules = this.provider.getGamerules();
+        if (this == this.getServer().getDefaultLevel()) {
+            this.difficulty = this.getServer().getDifficulty();
+        } else {
+            this.difficulty = this.provider.getDifficulty();
+        }
     }
 
     public Generator getGenerator() {
@@ -1133,6 +1148,7 @@ public class Level implements ChunkManager, Metadatable {
         this.provider.setThundering(this.thundering);
         this.provider.setThunderTime(this.thunderTime);
         this.provider.setCurrentTick(this.levelCurrentTick);
+        this.provider.setDifficulty(this.difficulty);
         this.provider.setGameRules(this.gameRules);
         this.saveChunks();
         if (this.provider instanceof BaseLevelProvider) {
