@@ -232,6 +232,16 @@ public abstract class BaseLevelProvider implements LevelProvider {
     }
 
     @Override
+    public int getDifficulty() {
+        return this.levelData.getInt("difficulty");
+    }
+
+    @Override
+    public void setDifficulty(int difficulty) {
+        this.levelData.putInt("difficulty", difficulty);
+    }
+
+    @Override
     public Vector3 getSpawn() {
         return spawn;
     }
