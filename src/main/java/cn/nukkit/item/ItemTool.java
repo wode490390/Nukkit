@@ -36,6 +36,8 @@ public abstract class ItemTool extends Item {
     public static final int DURABILITY_BOW = 385;
     public static final int DURABILITY_TRIDENT = 251;
     public static final int DURABILITY_CROSSBOW = 326;
+    public static final int DURABILITY_CARROT_ON_A_STICK = 26;
+    public static final int DURABILITY_FISHING_ROD = 65;
 
     public ItemTool(int id) {
         this(id, 0, 1, UNKNOWN_STR);
