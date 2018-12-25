@@ -147,7 +147,7 @@ public abstract class ItemTool extends Item {
 
     @Override
     public boolean isTool() {
-        return (this.id == FLINT_STEEL || this.id == SHEARS || this.id == BOW || this.id == CROSSBOW || this.isPickaxe() || this.isAxe() || this.isShovel() || this.isSword() || this.isHoe());
+        return (this.id == FISHING_ROD || this.id == CARROT_ON_A_STICK || this.id == FLINT_STEEL || this.id == SHEARS || this.id == BOW || this.id == CROSSBOW || this.isPickaxe() || this.isAxe() || this.isShovel() || this.isSword() || this.isHoe());
     }
 
     @Override
