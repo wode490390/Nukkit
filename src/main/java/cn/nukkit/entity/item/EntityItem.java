@@ -17,7 +17,8 @@ import cn.nukkit.network.protocol.DataPacket;
  * @author MagicDroidX
  */
 public class EntityItem extends Entity {
-    public static final int NETWORK_ID = 64;
+
+    public static final int NETWORK_ID = ITEM;
 
     public static final int DATA_SOURCE_ID = 17;
 

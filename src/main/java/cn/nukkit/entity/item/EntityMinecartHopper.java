@@ -8,7 +8,7 @@ import cn.nukkit.utils.MinecartType;
 
 public class EntityMinecartHopper extends EntityMinecartAbstract {
 
-    public static final int NETWORK_ID = 96;
+    public static final int NETWORK_ID = HOPPER_MINECART;
 
     public EntityMinecartHopper(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

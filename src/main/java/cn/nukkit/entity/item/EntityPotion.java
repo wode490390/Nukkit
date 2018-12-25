@@ -18,7 +18,7 @@ import cn.nukkit.potion.Potion;
  */
 public class EntityPotion extends EntityProjectile {
 
-    public static final int NETWORK_ID = 86;
+    public static final int NETWORK_ID = SPLASH_POTION;
 
     public static final int DATA_POTION_ID = 37;
 

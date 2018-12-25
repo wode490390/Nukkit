@@ -22,7 +22,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityBoat extends EntityVehicle {
 
-    public static final int NETWORK_ID = 90;
+    public static final int NETWORK_ID = BOAT;
 
     public static final int DATA_WOOD_ID = 20;
 

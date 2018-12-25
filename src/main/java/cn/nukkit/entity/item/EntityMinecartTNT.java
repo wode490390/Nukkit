@@ -21,7 +21,8 @@ import java.util.Random;
  */
 public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityExplosive {
 
-    public static final int NETWORK_ID = 97; //wtf?
+    public static final int NETWORK_ID = TNT_MINECART;
+
     private int fuse;
     private boolean activated = false;
 

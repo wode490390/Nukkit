@@ -19,7 +19,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityFallingBlock extends Entity {
 
-    public static final int NETWORK_ID = 66;
+    public static final int NETWORK_ID = FALLING_BLOCK;
 
     @Override
     public float getWidth() {

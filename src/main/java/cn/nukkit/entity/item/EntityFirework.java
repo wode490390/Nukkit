@@ -26,7 +26,7 @@ import java.util.Random;
  */
 public class EntityFirework extends Entity {
 
-    public static final int NETWORK_ID = 72;
+    public static final int NETWORK_ID = FIREWORKS_ROCKET;
 
     private int fireworkAge;
     private int lifetime;
