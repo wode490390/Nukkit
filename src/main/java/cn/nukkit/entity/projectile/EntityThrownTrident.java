@@ -24,7 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EntityThrownTrident extends EntityProjectile {
 
-    public static final int NETWORK_ID = 73;
+    public static final int NETWORK_ID = THROWN_TRIDENT;
 
     public static final int DATA_SOURCE_ID = 17;
 

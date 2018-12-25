@@ -4,13 +4,9 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-/**
- * author: MagicDroidX
- * Nukkit Project
- */
-public class EntitySnowball extends EntityProjectile {
+public class EntityIceBomb extends EntityProjectile {
 
-    public static final int NETWORK_ID = SNOWBALL;
+    public static final int NETWORK_ID = ICE_BOMB;
 
     @Override
     public int getNetworkId() {
@@ -42,11 +38,11 @@ public class EntitySnowball extends EntityProjectile {
         return 0.01f;
     }
 
-    public EntitySnowball(FullChunk chunk, CompoundTag nbt) {
+    public EntityIceBomb(FullChunk chunk, CompoundTag nbt) {
         this(chunk, nbt, null);
     }
 
-    public EntitySnowball(FullChunk chunk, CompoundTag nbt, Entity shootingEntity) {
+    public EntityIceBomb(FullChunk chunk, CompoundTag nbt, Entity shootingEntity) {
         super(chunk, nbt, shootingEntity);
     }
 
@@ -68,5 +64,10 @@ public class EntitySnowball extends EntityProjectile {
         this.timing.stopTiming();
 
         return hasUpdate;
+    }
+
+    @Override
+    public boolean isEducation() {
+        return true;
     }
 }
