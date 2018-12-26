@@ -1,6 +1,7 @@
 package cn.nukkit.entity.mob;
 
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityCreature;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -37,5 +38,5 @@ public interface EntityJockey {
             .put(Entity.CAVE_SPIDER, false)
             .build();
 
-    boolean canRideTo(Entity entity);
+    boolean canRideTo(EntityCreature creature);
 }
