@@ -29,6 +29,15 @@ public abstract class EntityMob extends EntityCreature {
         return false;
     }
 
+    @Override
+    protected void initEntity() {
+        super.initEntity();
+
+        if (this.hasBaby()) {
+            this.setDataFlag(DATA_FLAGS, DATA_FLAG_BABY, false)
+        }
+    }
+
     public void setBaby(boolean baby) {
         if (this.hasBaby()) {
             this.setDataFlag(DATA_FLAGS, DATA_FLAG_BABY, baby);
