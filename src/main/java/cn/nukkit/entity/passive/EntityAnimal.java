@@ -18,6 +18,15 @@ public abstract class EntityAnimal extends EntityCreature {
         super(chunk, nbt);
     }
 
+    @Override
+    protected void initEntity() {
+        super.initEntity();
+
+        if (this.hasBaby()) {
+            this.setDataFlag(DATA_FLAGS, DATA_FLAG_BABY, false)
+        }
+    }
+
     public boolean isBaby() {
         return this.hasBaby() && this.getDataFlag(DATA_FLAGS, Entity.DATA_FLAG_BABY);
     }
