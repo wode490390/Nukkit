@@ -193,7 +193,7 @@ public class BinaryStream {
     }
 
     public boolean getBoolean() {
-        return this.getByte() == 0x01;
+        return this.getByte() != 0x00;
     }
 
     public void putBoolean(boolean bool) {
