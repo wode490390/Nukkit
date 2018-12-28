@@ -15,11 +15,11 @@ import java.util.*;
 
 public class TheEnd extends Generator {
 
-    private static double coordinateScale = (double) getConfig("end.coordinate-scale", 684.412d);
-    private static double heightScale = (double) getConfig("end.height.scale", 1368.824d);
-    private static double detailNoiseScaleX = (double) getConfig("end.detail.noise-scale.x", 80.0d);  // mainNoiseScaleX
-    private static double detailNoiseScaleY = (double) getConfig("end.detail.noise-scale.y", 160.0d); // mainNoiseScaleY
-    private static double detailNoiseScaleZ = (double) getConfig("end.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
+    private static double coordinateScale = getConfig("end.coordinate-scale", 684.412d);
+    private static double heightScale = getConfig("end.height.scale", 1368.824d);
+    private static double detailNoiseScaleX = getConfig("end.detail.noise-scale.x", 80.0d);  // mainNoiseScaleX
+    private static double detailNoiseScaleY = getConfig("end.detail.noise-scale.y", 160.0d); // mainNoiseScaleY
+    private static double detailNoiseScaleZ = getConfig("end.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
 
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
     private final double[][][] density = new double[3][3][33];
