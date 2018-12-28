@@ -23,7 +23,7 @@ public abstract class Generator implements BlockID {
     public static final int TYPE_LARGE_BIOMES = 5;
     public static final int TYPE_AMPLIFIED = 6;
 
-    protected static final int SEA_LEVEL = (int) getConfig("general.sea_level", 64);
+    protected static final int SEA_LEVEL = getConfig("general.sea_level", 64);
 
     public abstract int getId();
 
@@ -85,7 +85,8 @@ public abstract class Generator implements BlockID {
         return Generator.TYPE_INFINITE;
     }
 
-    protected static Object getConfig(String vari, Object def) {
+    @SuppressWarnings("unchecked")
+    protected static <T> T getConfig(String vari, T def) {
         return Server.getInstance().getVConfig("generator." + vari, def);
     }
 
