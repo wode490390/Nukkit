@@ -1,5 +1,11 @@
 package cn.nukkit.block;
 
+import static cn.nukkit.math.BlockFace.EAST;
+import static cn.nukkit.math.BlockFace.NORTH;
+import static cn.nukkit.math.BlockFace.SOUTH;
+import static cn.nukkit.math.BlockFace.WEST;
+import static cn.nukkit.utils.Rail.Orientation.*;
+
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
@@ -10,22 +16,16 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.Rail;
 import cn.nukkit.utils.Rail.Orientation;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-
-import static cn.nukkit.math.BlockFace.EAST;
-import static cn.nukkit.math.BlockFace.NORTH;
-import static cn.nukkit.math.BlockFace.SOUTH;
-import static cn.nukkit.math.BlockFace.WEST;
-import static cn.nukkit.utils.Rail.Orientation.*;
 
 /**
  * Created by Snake1999 on 2016/1/11.
  * Package cn.nukkit.block in project nukkit
  */
-public class BlockRail extends BlockFlowable {
+public class BlockRail extends BlockFlowableMeta {
 
     // 0x8: Set the block active
     // 0x7: Reset the block to normal
@@ -58,11 +58,6 @@ public class BlockRail extends BlockFlowable {
     @Override
     public double getResistance() {
         return 3.5;
-    }
-
-    @Override
-    public boolean canPassThrough() {
-        return true;
     }
 
     @Override
