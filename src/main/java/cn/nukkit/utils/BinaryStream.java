@@ -201,7 +201,7 @@ public class BinaryStream {
     }
 
     public int getByte() {
-        return this.buffer[this.offset++] & 0xff;
+        return this.get(1)[0] & 0xff;
     }
 
     public void putByte(byte b) {
