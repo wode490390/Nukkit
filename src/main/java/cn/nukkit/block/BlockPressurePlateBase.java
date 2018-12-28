@@ -19,7 +19,7 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  * Created by Snake1999 on 2016/1/11.
  * Package cn.nukkit.block in project nukkit
  */
-public abstract class BlockPressurePlateBase extends BlockFlowable {
+public abstract class BlockPressurePlateBase extends BlockFlowableMeta {
 
     protected float onPitch;
     protected float offPitch;
