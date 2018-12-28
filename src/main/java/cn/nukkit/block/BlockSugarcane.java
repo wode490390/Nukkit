@@ -14,7 +14,7 @@ import cn.nukkit.utils.BlockColor;
 /**
  * Created by Pub4Game on 09.01.2016.
  */
-public class BlockSugarcane extends BlockFlowable {
+public class BlockSugarcane extends BlockFlowableMeta {
 
     public BlockSugarcane() {
         this(0);
