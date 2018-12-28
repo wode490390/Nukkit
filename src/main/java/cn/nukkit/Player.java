@@ -3316,12 +3316,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public void setViewDistance(int distance) {
-        this.chunkRadius = distance;
+        if (this.chunkRadius != distance) {
+            this.chunkRadius = distance;
 
-        ChunkRadiusUpdatedPacket pk = new ChunkRadiusUpdatedPacket();
-        pk.radius = distance;
+            ChunkRadiusUpdatedPacket pk = new ChunkRadiusUpdatedPacket();
+            pk.radius = distance;
 
-        this.dataPacket(pk);
+            this.dataPacket(pk);
+        }
     }
 
     public int getViewDistance() {
