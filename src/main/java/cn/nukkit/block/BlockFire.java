@@ -19,14 +19,13 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockFire extends BlockFlowable {
+public class BlockFire extends BlockFlowableMeta {
 
     public BlockFire() {
         this(0);
@@ -98,8 +97,6 @@ public class BlockFire extends BlockFlowable {
         } else if (type == Level.BLOCK_UPDATE_SCHEDULED && this.level.gameRules.getBoolean(GameRule.DO_FIRE_TICK)) {
             boolean forever = this.down().getId() == Block.NETHERRACK || this.down().getId() == Block.MAGMA;
 
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-
             //TODO: END
 
             if (!this.isBlockTopFacingSurfaceSolid(this.down()) && !this.canNeighborBurn()) {
@@ -118,18 +115,18 @@ public class BlockFire extends BlockFlowable {
                 int meta = this.getDamage();
 
                 if (meta < 15) {
-                    int newMeta = meta + random.nextInt(3);
+                    int newMeta = meta + ThreadLocalRandom.current().nextInt(3);
                     this.setDamage(newMeta > 15 ? 15 : newMeta);
                     this.getLevel().setBlock(this, this, true);
                 }
 
-                this.getLevel().scheduleUpdate(this, this.tickRate() + random.nextInt(10));
+                this.getLevel().scheduleUpdate(this, this.tickRate() + ThreadLocalRandom.current().nextInt(10));
 
                 if (!forever && !this.canNeighborBurn()) {
                     if (!this.isBlockTopFacingSurfaceSolid(this.down()) || meta > 3) {
                         this.getLevel().setBlock(this, new BlockAir(), true);
                     }
-                } else if (!forever && !(this.down().getBurnAbility() > 0) && meta == 15 && random.nextInt(4) == 0) {
+                } else if (!forever && !(this.down().getBurnAbility() > 0) && meta == 15 && ThreadLocalRandom.current().nextInt(4) == 0) {
                     this.getLevel().setBlock(this, new BlockAir(), true);
                 } else {
                     int o = 0;
@@ -161,8 +158,8 @@ public class BlockFire extends BlockFlowable {
 
                                         //TODO: decrease the t if the rainfall values are high
 
-                                        if (t > 0 && random.nextInt(k) <= t) {
-                                            int damage = meta + random.nextInt(5) / 4;
+                                        if (t > 0 && ThreadLocalRandom.current().nextInt(k) <= t) {
+                                            int damage = meta + ThreadLocalRandom.current().nextInt(5) / 4;
 
                                             if (damage > 15) {
                                                 damage = 15;
@@ -191,12 +188,10 @@ public class BlockFire extends BlockFlowable {
     private void tryToCatchBlockOnFire(Block block, int bound, int damage) {
         int burnAbility = block.getBurnAbility();
 
-        Random random = ThreadLocalRandom.current();
+        if (ThreadLocalRandom.current().nextInt(bound) < burnAbility) {
 
-        if (random.nextInt(bound) < burnAbility) {
-
-            if (random.nextInt(damage + 10) < 5) {
-                int meta = damage + random.nextInt(5) / 4;
+            if (ThreadLocalRandom.current().nextInt(damage + 10) < 5) {
+                int meta = damage + ThreadLocalRandom.current().nextInt(5) / 4;
 
                 if (meta > 15) {
                     meta = 15;
