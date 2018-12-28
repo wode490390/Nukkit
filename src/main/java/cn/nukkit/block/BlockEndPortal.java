@@ -15,11 +15,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockEndPortal extends BlockFlowable {
 
     public BlockEndPortal() {
-        this(0);
-    }
 
-    public BlockEndPortal(int meta) {
-        super(0);
     }
 
     @Override
