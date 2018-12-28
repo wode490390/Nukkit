@@ -6,9 +6,9 @@ import cn.nukkit.math.AxisAlignedBB;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class BlockFlowable extends BlockTransparentMeta {
+public abstract class BlockFlowableMeta extends BlockTransparentMeta {
 
-    protected BlockFlowable(int meta) {
+    protected BlockFlowableMeta(int meta) {
         super(meta);
     }
 
