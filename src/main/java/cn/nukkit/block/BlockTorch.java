@@ -11,7 +11,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/2 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockTorch extends BlockFlowable {
+public class BlockTorch extends BlockFlowableMeta {
 
     public BlockTorch() {
         this(0);
