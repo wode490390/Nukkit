@@ -1,10 +1,13 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
+import cn.nukkit.item.Item;
 import cn.nukkit.utils.BlockColor;
 
 public class BlockDragonEgg extends BlockFallable {
 
     public BlockDragonEgg() {
+
     }
 
     @Override
@@ -37,8 +40,14 @@ public class BlockDragonEgg extends BlockFallable {
         return BlockColor.OBSIDIAN_BLOCK_COLOR;
     }
 
-    @Override
-    public boolean isTransparent() {
+    /*@Override
+    public boolean canBeActivated() {
         return true;
     }
+
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        //TODO: Random move
+        return true;
+    }*/
 }
