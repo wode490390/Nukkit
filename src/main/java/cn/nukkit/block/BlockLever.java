@@ -11,7 +11,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * @author Nukkit Project Team
  */
-public class BlockLever extends BlockFlowable {
+public class BlockLever extends BlockFlowableMeta {
 
     public BlockLever() {
         this(0);
@@ -49,11 +49,6 @@ public class BlockLever extends BlockFlowable {
     @Override
     public Item toItem() {
         return new ItemBlock(this, 0);
-    }
-
-    @Override
-    public Item[] getDrops(Item item) {
-        return new Item[]{toItem()};
     }
 
     public boolean isPowerOn() {
