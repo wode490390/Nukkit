@@ -11,6 +11,7 @@ import cn.nukkit.entity.item.*;
 import cn.nukkit.entity.mob.*;
 import cn.nukkit.entity.passive.*;
 import cn.nukkit.entity.projectile.*;
+import cn.nukkit.entity.weather.*;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.level.LevelInitEvent;
 import cn.nukkit.event.level.LevelLoadEvent;
@@ -82,6 +83,7 @@ import com.google.common.base.Preconditions;
 import java.io.*;
 import java.nio.ByteOrder;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author MagicDroidX
@@ -92,25 +94,25 @@ public class Server {
     public static final String BROADCAST_CHANNEL_ADMINISTRATIVE = "nukkit.broadcast.admin";
     public static final String BROADCAST_CHANNEL_USERS = "nukkit.broadcast.user";
 
-    private static Server instance = null;
+    private static Server instance;
 
-    private BanList banByName = null;
+    private BanList banByName;
 
-    private BanList banByIP = null;
+    private BanList banByIP;
 
-    private Config operators = null;
+    private Config operators;
 
-    private Config whitelist = null;
+    private Config whitelist;
 
-    private boolean isRunning = true;
+    private AtomicBoolean isRunning = new AtomicBoolean(true);
 
     private boolean hasStopped = false;
 
-    private PluginManager pluginManager = null;
+    private PluginManager pluginManager;
 
     private int profilingTickrate = 20;
 
-    private ServerScheduler scheduler = null;
+    private ServerScheduler scheduler;
 
     private int tickCounter;
 
@@ -179,7 +181,7 @@ public class Server {
     private final String dataPath;
     private final String pluginPath;
 
-    private final Set<UUID> uniquePlayers = new HashSet<>();
+    private final Set<UUID> uniquePlayers = new HashSet<UUID>();
 
     private QueryHandler queryHandler;
 
@@ -190,28 +192,28 @@ public class Server {
     //NukkitV
     private Config configV;
 
-    private final Map<String, Player> players = new HashMap<>();
+    private final Map<String, Player> players = new HashMap<String, Player>();
 
-    private final Map<UUID, Player> playerList = new HashMap<>();
+    private final Map<UUID, Player> playerList = new HashMap<UUID, Player>();
 
-    private final Map<Integer, String> identifier = new HashMap<>();
+    private final Map<Integer, String> identifier = new HashMap<Integer, String>();
 
     private final Map<Integer, Level> levels = new HashMap<Integer, Level>() {
         public Level put(Integer key, Level value) {
             Level result = super.put(key, value);
-            levelArray = levels.values().toArray(new Level[levels.size()]);
+            levelArray = levels.values().toArray(new Level[0]);
             return result;
         }
 
         public boolean remove(Object key, Object value) {
             boolean result = super.remove(key, value);
-            levelArray = levels.values().toArray(new Level[levels.size()]);
+            levelArray = levels.values().toArray(new Level[0]);
             return result;
         }
 
         public Level remove(Object key) {
             Level result = super.remove(key);
-            levelArray = levels.values().toArray(new Level[levels.size()]);
+            levelArray = levels.values().toArray(new Level[0]);
             return result;
         }
     };
@@ -220,7 +222,7 @@ public class Server {
 
     private final ServiceManager serviceManager = new NKServiceManager();
 
-    private Level defaultLevel = null;
+    private Level defaultLevel;
 
     private boolean allowNether;
     private boolean allowTheEnd;
@@ -351,17 +353,17 @@ public class Server {
         // Allow Nether? (determines if we create a nether world if one doesn't exist on startup)
         this.allowNether = this.properties.getBoolean("allow-nether", true);
         // Allow TheEnd? (determines if we create the end world if one doesn't exist on startup)
-        this.allowTheEnd = (Boolean) this.getVConfig("settings.the-end", true);
+        this.allowTheEnd = this.getVConfig("settings.the-end", true);
 
-        this.allowExperimental = (Boolean) this.getVConfig("settings.experimental", false);
-        this.allowEducation = (Boolean) this.getVConfig("settings.education", false);
+        this.allowExperimental = this.getVConfig("settings.experimental", false);
+        this.allowEducation = this.getVConfig("settings.education", false);
 
-        this.forceLanguage = (Boolean) this.getConfig("settings.force-language", false);
-        this.baseLang = new BaseLang((String) this.getConfig("settings.language", BaseLang.FALLBACK_LANGUAGE));
+        this.forceLanguage = this.getConfig("settings.force-language", false);
+        this.baseLang = new BaseLang(this.getConfig("settings.language", BaseLang.FALLBACK_LANGUAGE));
         this.logger.info(this.getLanguage().translateString("language.selected", new String[]{getLanguage().getName(), getLanguage().getLang()}));
         this.logger.info(getLanguage().translateString("nukkit.server.start", TextFormat.AQUA + this.getVersion() + TextFormat.WHITE));
 
-        Object poolSize = this.getConfig("settings.async-workers", "auto");
+        Object poolSize = this.getConfig("settings.async-workers", (Object) "auto");
         if (!(poolSize instanceof Integer)) {
             try {
                 poolSize = Integer.valueOf((String) poolSize);
@@ -372,16 +374,16 @@ public class Server {
 
         ServerScheduler.WORKERS = (int) poolSize;
 
-        this.networkZlibProvider = (int) this.getConfig("network.zlib-provider", 2);
+        this.networkZlibProvider = this.getConfig("network.zlib-provider", 2);
         Zlib.setProvider(this.networkZlibProvider);
 
-        this.networkCompressionLevel = (int) this.getConfig("network.compression-level", 7);
-        this.networkCompressionAsync = (boolean) this.getConfig("network.async-compression", true);
+        this.networkCompressionLevel = this.getConfig("network.compression-level", 7);
+        this.networkCompressionAsync = this.getConfig("network.async-compression", true);
 
-        this.autoTickRate = (boolean) this.getConfig("level-settings.auto-tick-rate", true);
-        this.autoTickRateLimit = (int) this.getConfig("level-settings.auto-tick-rate-limit", 20);
-        this.alwaysTickPlayers = (boolean) this.getConfig("level-settings.always-tick-players", false);
-        this.baseTickRate = (int) this.getConfig("level-settings.base-tick-rate", 1);
+        this.autoTickRate = this.getConfig("level-settings.auto-tick-rate", true);
+        this.autoTickRateLimit = this.getConfig("level-settings.auto-tick-rate-limit", 20);
+        this.alwaysTickPlayers = this.getConfig("level-settings.always-tick-players", false);
+        this.baseTickRate = this.getConfig("level-settings.base-tick-rate", 1);
 
         this.scheduler = new ServerScheduler();
 
@@ -407,7 +409,7 @@ public class Server {
             this.setPropertyInt("difficulty", 3);
         }
 
-        Nukkit.DEBUG = (int) this.getConfig("debug.level", 1);
+        Nukkit.DEBUG = this.getConfig("debug.level", 1);
         if (this.logger instanceof MainLogger) {
             this.logger.setLogDebug(Nukkit.DEBUG > 1);
         }
@@ -468,7 +470,7 @@ public class Server {
         Generator.addGenerator(Nether.class, "nether", Generator.TYPE_NETHER);
         Generator.addGenerator(TheEnd.class, "the_end", Generator.TYPE_THE_END);
 
-        for (String name : ((Map<String, Object>) this.getConfig("worlds", new HashMap<>())).keySet()) {
+        for (String name : this.getConfig("worlds", new HashMap<String, Object>()).keySet()) {
             if (!this.loadLevel(name)) {
                 long seed;
                 try {
@@ -478,7 +480,7 @@ public class Server {
                 }
 
                 Map<String, Object> options = new HashMap<>();
-                String[] opts = ((String) this.getConfig("worlds." + name + ".generator", Generator.getGenerator("default").getSimpleName())).split(":");
+                String[] opts = this.getConfig("worlds." + name + ".generator", Generator.getGenerator("default").getSimpleName()).split(":");
                 Class<? extends Generator> generator = Generator.getGenerator(opts[0]);
                 if (opts.length > 1) {
                     String preset = "";
@@ -527,8 +529,8 @@ public class Server {
 
         EnumLevel.initLevels();
 
-        if ((int) this.getConfig("ticks-per.autosave", 6000) > 0) {
-            this.autoSaveTicks = (int) this.getConfig("ticks-per.autosave", 6000);
+        if (this.getConfig("ticks-per.autosave", 6000) > 0) {
+            this.autoSaveTicks = this.getConfig("ticks-per.autosave", 6000);
         }
 
         this.enablePlugins(PluginLoadOrder.POSTWORLD);
@@ -610,7 +612,7 @@ public class Server {
     }
 
     public static void broadcastPacket(Collection<Player> players, DataPacket packet) {
-        broadcastPacket(players.stream().toArray(Player[]::new), packet);
+        broadcastPacket(players.toArray(new Player[0]), packet);
     }
 
     public static void broadcastPacket(Player[] players, DataPacket packet) {
@@ -778,14 +780,9 @@ public class Server {
     }
 
     public void shutdown() {
-        if (this.watchdog != null) {
-            this.watchdog.kill();
+        if (!isRunning.compareAndSet(true, false)) {
+            throw new IllegalStateException("Server has already shutdown");
         }
-        if (this.isRunning) {
-            ServerKiller killer = new ServerKiller(90);
-            killer.start();
-        }
-        this.isRunning = false;
     }
 
     public void forceShutdown() {
@@ -794,16 +791,12 @@ public class Server {
         }
 
         try {
-            if (!this.isRunning) {
-                //todo sendUsage
-            }
+            isRunning.compareAndSet(true, false);
 
             // clean shutdown of console thread asap
             this.console.shutdown();
 
             this.hasStopped = true;
-
-            this.shutdown();
 
             if (this.rcon != null) {
                 this.rcon.close();
@@ -813,7 +806,7 @@ public class Server {
             this.pluginManager.disablePlugins();
 
             for (Player player : new ArrayList<>(this.players.values())) {
-                player.close(player.getLeaveMessage(), (String) this.getConfig("settings.shutdown-message", "Server closed"));
+                player.close(player.getLeaveMessage(), this.getConfig("settings.shutdown-message", "Server closed"));
             }
 
             this.getLogger().debug("Removing event handlers");
@@ -839,6 +832,9 @@ public class Server {
 
             this.getLogger().debug("Disabling timings");
             Timings.stopServer();
+            if (this.watchdog != null) {
+                this.watchdog.kill();
+            }
             //todo other things
         } catch (Exception e) {
             this.logger.logException(e); //todo remove this?
@@ -884,7 +880,7 @@ public class Server {
     public void tickProcessor() {
         this.nextTick = System.currentTimeMillis();
         try {
-            while (this.isRunning) {
+            while (this.isRunning.get()) {
                 try {
                     this.tick();
 
@@ -993,20 +989,13 @@ public class Server {
     }
 
     public void removePlayerListData(UUID uuid, Collection<Player> players) {
-        this.removePlayerListData(uuid, players.stream().toArray(Player[]::new));
+        this.removePlayerListData(uuid, players.toArray(new Player[0]));
     }
 
     public void sendFullPlayerListData(Player player) {
         PlayerListPacket pk = new PlayerListPacket();
         pk.type = PlayerListPacket.TYPE_ADD;
-        pk.entries = this.playerList.values().stream()
-                .map(p -> new PlayerListEntry(
-                p.getUniqueId(),
-                p.getId(),
-                p.getDisplayName(),
-                p.getSkin(),
-                p.getLoginChainData().getXUID()))
-                .toArray(PlayerListEntry[]::new);
+        pk.entries = this.playerList.values().stream().map(p -> new PlayerListEntry(p.getUniqueId(), p.getId(), p.getDisplayName(), p.getSkin(), p.getLoginChainData().getXUID())).toArray(PlayerListEntry[]::new);
 
         player.dataPacket(pk);
     }
@@ -1051,7 +1040,7 @@ public class Server {
                         this.getLogger().debug("Raising level \"" + level.getName() + "\" tick rate to " + level.getTickRate() + " ticks");
                     } else if (tickMs >= 50) {
                         if (level.getTickRate() == this.baseTickRate) {
-                            level.setTickRate((int) Math.max(this.baseTickRate + 1, Math.min(this.autoTickRateLimit, Math.floor(tickMs / 50))));
+                            level.setTickRate(Math.max(this.baseTickRate + 1, Math.min(this.autoTickRateLimit, tickMs / 50)));
                             this.getLogger().debug("Level \"" + level.getName() + "\" took " + NukkitMath.round(tickMs, 2) + "ms, setting tick rate to " + level.getTickRate() + " ticks");
                         } else if ((tickMs / level.getTickRate()) >= 50 && level.getTickRate() < this.autoTickRateLimit) {
                             level.setTickRate(level.getTickRate() + 1);
@@ -1090,10 +1079,10 @@ public class Server {
         long tickTime = System.currentTimeMillis();
 
         // TODO
-        long sleepTime = tickTime - this.nextTick;
-        if (sleepTime < -25) {
+        long time = tickTime - this.nextTick;
+        if (time < -25) {
             try {
-                Thread.sleep(Math.max(5, -sleepTime - 25));
+                Thread.sleep(Math.max(5, -time - 25));
             } catch (InterruptedException e) {
                 Server.getInstance().getLogger().logException(e);
             }
@@ -1231,7 +1220,7 @@ public class Server {
     }
 
     public boolean isRunning() {
-        return isRunning;
+        return isRunning.get();
     }
 
     public String getNukkitVersion() {
@@ -1607,7 +1596,7 @@ public class Server {
 
     public Player[] matchPlayer(String partialName) {
         partialName = partialName.toLowerCase();
-        List<Player> matchedPlayer = new ArrayList<>();
+        List<Player> matchedPlayer = new ArrayList<Player>();
         for (Player player : this.getOnlinePlayers().values()) {
             if (player.getName().toLowerCase().equals(partialName)) {
                 return new Player[]{player};
@@ -1616,7 +1605,7 @@ public class Server {
             }
         }
 
-        return matchedPlayer.toArray(new Player[matchedPlayer.size()]);
+        return matchedPlayer.toArray(new Player[0]);
     }
 
     public void removePlayer(Player player) {
@@ -1627,7 +1616,7 @@ public class Server {
             return;
         }
 
-        for (String identifier : new ArrayList<>(this.players.keySet())) {
+        for (String identifier : new ArrayList<String>(this.players.keySet())) {
             Player p = this.players.get(identifier);
             if (player == p) {
                 this.players.remove(identifier);
@@ -1841,10 +1830,7 @@ public class Server {
 
         String path = this.getDataPath() + "worlds/" + name + "/";
         if (this.getLevelByName(name) == null) {
-
-            if (LevelProviderManager.getProvider(path) == null) {
-                return false;
-            }
+            return LevelProviderManager.getProvider(path) != null;
         }
 
         return true;
@@ -1867,13 +1853,14 @@ public class Server {
         return this.config;
     }
 
-    public Object getConfig(String variable) {
+    public <T> T getConfig(String variable) {
         return this.getConfig(variable, null);
     }
 
-    public Object getConfig(String variable, Object defaultValue) {
+    @SuppressWarnings("unchecked")
+    public <T> T getConfig(String variable, T defaultValue) {
         Object value = this.config.get(variable);
-        return value == null ? defaultValue : value;
+        return value == null ? defaultValue : (T) value;
     }
 
     //NukkitV
@@ -1881,13 +1868,14 @@ public class Server {
         return this.configV;
     }
 
-    public Object getVConfig(String variable) {
+    public <T> T getVConfig(String variable) {
         return this.getVConfig(variable, null);
     }
 
-    public Object getVConfig(String variable, Object defaultValue) {
+    @SuppressWarnings("unchecked")
+    public <T> T getVConfig(String variable, T defaultValue) {
         Object value = this.configV.get(variable);
-        return value == null ? defaultValue : value;
+        return value == null ? defaultValue : (T) value;
     }
 
     public Config getProperties() {
@@ -2046,7 +2034,7 @@ public class Server {
     }
 
     public boolean shouldSavePlayerData() {
-        return (Boolean) this.getConfig("player.save-player-data", true);
+        return this.getConfig("player.save-player-data", true);
     }
 
     /**
@@ -2070,25 +2058,31 @@ public class Server {
     }
 
     private void registerEntities() {
-        Entity.registerEntity("Arrow", EntityArrow.class);
-        Entity.registerEntity("Item", EntityItem.class);
+        //Item
+        Entity.registerEntity("Boat", EntityBoat.class);
+        Entity.registerEntity("EndCrystal", EntityEndCrystal.class);
         Entity.registerEntity("FallingSand", EntityFallingBlock.class);
-        Entity.registerEntity("PrimedTnt", EntityPrimedTNT.class);
-        Entity.registerEntity("Snowball", EntitySnowball.class);
-        Entity.registerEntity("EnderPearl", EntityEnderPearl.class);
+        Entity.registerEntity("Firework", EntityFirework.class);
+        Entity.registerEntity("Item", EntityItem.class);
+        Entity.registerEntity("MinecartChest", EntityMinecartChest.class);
+        Entity.registerEntity("MinecartHopper", EntityMinecartHopper.class);
+        Entity.registerEntity("MinecartRideable", EntityMinecartEmpty.class);
+        Entity.registerEntity("MinecartTNT", EntityMinecartTNT.class);
         Entity.registerEntity("Painting", EntityPainting.class);
-        //Monsters
-        Entity.registerEntity("Creeper", EntityCreeper.class);
+        Entity.registerEntity("PrimedTnt", EntityPrimedTNT.class);
+        Entity.registerEntity("ThrownExpBottle", EntityExpBottle.class);
+        Entity.registerEntity("ThrownPotion", EntityPotion.class);
+        Entity.registerEntity("XpOrb", EntityXPOrb.class);
+        //Monster
         Entity.registerEntity("Blaze", EntityBlaze.class);
         Entity.registerEntity("CaveSpider", EntityCaveSpider.class);
-        Entity.registerEntity("Cod", EntityCod.class);
+        Entity.registerEntity("Creeper", EntityCreeper.class);
         Entity.registerEntity("Drowned", EntityDrowned.class);
         Entity.registerEntity("ElderGuardian", EntityElderGuardian.class);
         Entity.registerEntity("EnderDragon", EntityEnderDragon.class);
         Entity.registerEntity("Enderman", EntityEnderman.class);
         Entity.registerEntity("Endermite", EntityEndermite.class);
         Entity.registerEntity("Evoker", EntityEvoker.class);
-        Entity.registerEntity("Firework", EntityFirework.class);
         Entity.registerEntity("Ghast", EntityGhast.class);
         Entity.registerEntity("Guardian", EntityGuardian.class);
         Entity.registerEntity("Husk", EntityHusk.class);
@@ -2097,23 +2091,22 @@ public class Server {
         Entity.registerEntity("Shulker", EntityShulker.class);
         Entity.registerEntity("Silverfish", EntitySilverfish.class);
         Entity.registerEntity("Skeleton", EntitySkeleton.class);
-        Entity.registerEntity("SkeletonHorse", EntitySkeletonHorse.class);
         Entity.registerEntity("Slime", EntitySlime.class);
         Entity.registerEntity("Spider", EntitySpider.class);
         Entity.registerEntity("Stray", EntityStray.class);
-        Entity.registerEntity("Vindicator", EntityVindicator.class);
         Entity.registerEntity("Vex", EntityVex.class);
-        Entity.registerEntity("WitherSkeleton", EntityWitherSkeleton.class);
-        Entity.registerEntity("Wither", EntityWither.class);
+        Entity.registerEntity("Vindicator", EntityVindicator.class);
         Entity.registerEntity("Witch", EntityWitch.class);
+        Entity.registerEntity("Wither", EntityWither.class);
+        Entity.registerEntity("WitherSkeleton", EntityWitherSkeleton.class);
+        Entity.registerEntity("Zombie", EntityZombie.class);
         Entity.registerEntity("ZombiePigman", EntityZombiePigman.class);
         Entity.registerEntity("ZombieVillager", EntityZombieVillager.class);
-        Entity.registerEntity("Zombie", EntityZombie.class);
-
         //Passive
         Entity.registerEntity("Bat", EntityBat.class);
         Entity.registerEntity("Cat", EntityCat.class);
         Entity.registerEntity("Chicken", EntityChicken.class);
+        Entity.registerEntity("Cod", EntityCod.class);
         Entity.registerEntity("Cow", EntityCow.class);
         Entity.registerEntity("Dolphin", EntityDolphin.class);
         Entity.registerEntity("Donkey", EntityDonkey.class);
@@ -2121,33 +2114,42 @@ public class Server {
         Entity.registerEntity("Llama", EntityLlama.class);
         Entity.registerEntity("Mooshroom", EntityMooshroom.class);
         Entity.registerEntity("Mule", EntityMule.class);
-        Entity.registerEntity("Panda", EntityPanda.class);
-        Entity.registerEntity("PolarBear", EntityPolarBear.class);
-        Entity.registerEntity("Pig", EntityPig.class);
-        Entity.registerEntity("Rabbit", EntityRabbit.class);
-        Entity.registerEntity("Sheep", EntitySheep.class);
-        Entity.registerEntity("Squid", EntitySquid.class);
-        Entity.registerEntity("Wolf", EntityWolf.class);
         Entity.registerEntity("Ocelot", EntityOcelot.class);
+        Entity.registerEntity("Panda", EntityPanda.class);
+        Entity.registerEntity("Parrot", EntityParrot.class);
+        Entity.registerEntity("Pig", EntityPig.class);
+        Entity.registerEntity("PolarBear", EntityPolarBear.class);
         Entity.registerEntity("Pufferfish", EntityPufferfish.class);
+        Entity.registerEntity("Rabbit", EntityRabbit.class);
         Entity.registerEntity("Salmon", EntitySalmon.class);
+        Entity.registerEntity("Sheep", EntitySheep.class);
+        Entity.registerEntity("SkeletonHorse", EntitySkeletonHorse.class);
+        Entity.registerEntity("Squid", EntitySquid.class);
         Entity.registerEntity("TropicalFish", EntityTropicalFish.class);
         Entity.registerEntity("Turtle", EntityTurtle.class);
         Entity.registerEntity("Villager", EntityVillager.class);
-
-        Entity.registerEntity("ThrownExpBottle", EntityExpBottle.class);
-        Entity.registerEntity("XpOrb", EntityXPOrb.class);
-        Entity.registerEntity("ThrownPotion", EntityPotion.class);
+        Entity.registerEntity("Wolf", EntityWolf.class);
+        Entity.registerEntity("ZombieHorse", EntityZombieHorse.class);
+        //Projectile
+        Entity.registerEntity("Arrow", EntityArrow.class);
         Entity.registerEntity("Egg", EntityEgg.class);
+        Entity.registerEntity("EnderPearl", EntityEnderPearl.class);
+        Entity.registerEntity("Snowball", EntitySnowball.class);
         Entity.registerEntity("ThrownTrident", EntityThrownTrident.class);
-
+        //Other
+        Entity.registerEntity("LightningBolt", EntityLightning.class);
         Entity.registerEntity("Human", EntityHuman.class, true);
-
-        Entity.registerEntity("MinecartRideable", EntityMinecartEmpty.class);
-        // TODO: 2016/1/30 all finds of minecart
-        Entity.registerEntity("Boat", EntityBoat.class);
-
-        Entity.registerEntity("EndCrystal", EntityEndCrystal.class);
+        //Experimental
+        if (this.allowExperimental) {
+            // nothing
+        }
+        /*//Education
+        if (this.allowEducation) {
+            Entity.registerEntity("Agent", EntityAgent.class, true);
+            Entity.registerEntity("IceBomb", EntityIceBomb.class, true);
+            Entity.registerEntity("NPC", EntityNPC.class, true);
+            Entity.registerEntity("TripodCamera", EntityCamera.class, true);
+        }*/
     }
 
     private void registerBlockEntities() {
@@ -2169,6 +2171,12 @@ public class Server {
         BlockEntity.registerBlockEntity(BlockEntity.JUKEBOX, BlockEntityJukebox.class);
         BlockEntity.registerBlockEntity(BlockEntity.SHULKER_BOX, BlockEntityShulkerBox.class);
         BlockEntity.registerBlockEntity(BlockEntity.BANNER, BlockEntityBanner.class);
+        if (this.allowExperimental) {
+            // nothing
+        }
+        /*if (this.allowEducation) {
+            BlockEntity.registerBlockEntity(BlockEntity.CHALKBOARD, BlockEntityChalkboard.class);
+        }*/
     }
 
     public boolean isNetherAllowed() {
