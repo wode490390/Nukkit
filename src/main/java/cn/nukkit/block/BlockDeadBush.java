@@ -14,12 +14,9 @@ import java.util.Random;
  * Package cn.nukkit.block in project Nukkit .
  */
 public class BlockDeadBush extends BlockFlowable {
-    public BlockDeadBush() {
-        this(0);
-    }
 
-    public BlockDeadBush(int meta) {
-        super(meta);
+    public BlockDeadBush() {
+
     }
 
     @Override
@@ -73,6 +70,7 @@ public class BlockDeadBush extends BlockFlowable {
         }
     }
 
+    @Override
     public BlockColor getColor() {
         return BlockColor.FOLIAGE_BLOCK_COLOR;
     }
