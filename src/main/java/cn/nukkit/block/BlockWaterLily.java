@@ -15,11 +15,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockWaterLily extends BlockFlowable {
 
     public BlockWaterLily() {
-        this(0);
-    }
 
-    public BlockWaterLily(int meta) {
-        super(meta);
     }
 
     @Override
@@ -83,11 +79,6 @@ public class BlockWaterLily extends BlockFlowable {
             }
         }
         return 0;
-    }
-
-    @Override
-    public Item toItem() {
-        return new ItemBlock(this, 0);
     }
 
     @Override
