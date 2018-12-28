@@ -19,7 +19,7 @@ import cn.nukkit.utils.BlockColor;
  * Package cn.nukkit.block in project nukkit .
  * The name NetherPortalBlock comes from minecraft wiki.
  */
-public class BlockNetherPortal extends BlockFlowable {
+public class BlockNetherPortal extends BlockFlowableMeta {
 
     public BlockNetherPortal() {
         this(0);
