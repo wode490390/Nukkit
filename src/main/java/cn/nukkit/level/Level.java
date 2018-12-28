@@ -449,7 +449,7 @@ public class Level implements ChunkManager, Metadatable {
 
     public void close() {
         if (this.getAutoSave()) {
-            this.save();
+            this.save(true);
         }
 
         this.provider.close();
