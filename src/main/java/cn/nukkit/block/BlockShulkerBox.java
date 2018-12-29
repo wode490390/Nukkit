@@ -12,6 +12,8 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
+import cn.nukkit.utils.DyeColor;
+
 import java.util.Map;
 
 /**
@@ -39,7 +41,7 @@ public class BlockShulkerBox extends BlockTransparentMeta {
 
     @Override
     public String getName() {
-        return "Shulker Box";
+        return this.getDyeColor().getName() + " Shulker Box";
     }
 
     @Override
@@ -56,13 +58,13 @@ public class BlockShulkerBox extends BlockTransparentMeta {
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
-    
+
     @Override
     public Item toItem() {
         ItemBlock item = new ItemBlock(this, this.getDamage(), 1);
-                        
+
         BlockEntityShulkerBox t = (BlockEntityShulkerBox)this.getLevel().getBlockEntity(this);
-        
+
         if (t != null) {
             ShulkerBoxInventory i = t.getRealInventory();
 
@@ -85,12 +87,12 @@ public class BlockShulkerBox extends BlockTransparentMeta {
 
                 item.setCompoundTag(nbt);
             }
-            
+
             if (t.hasName()) {
                 item.setCustomName(t.getName());
             }
         }
-        
+
         return item;
     }
 
@@ -107,24 +109,6 @@ public class BlockShulkerBox extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
-        if (player != null) {
-            if (Math.abs(player.x - this.x) < 2 && Math.abs(player.z - this.z) < 2) {
-                double y = player.y + player.getEyeHeight();
-                if (y - this.y > 2) {
-                    this.setDamage(BlockFace.UP.getIndex());
-                } else if (this.y - y > 0) {
-                    this.setDamage(BlockFace.DOWN.getIndex());
-                } else {
-                    this.setDamage(player.getHorizontalFacing().getIndex());
-                }
-            } else {
-                this.setDamage(player.getHorizontalFacing().getIndex());
-            }
-        } else {
-            this.setDamage(0);
-        }
-
         this.getLevel().setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag("")
                 .putList(new ListTag<>("Items"))
@@ -181,5 +165,9 @@ public class BlockShulkerBox extends BlockTransparentMeta {
         }
 
         return true;
+    }
+
+    public DyeColor getDyeColor() {
+        return DyeColor.getByWoolData(this.getDamage());
     }
 }
