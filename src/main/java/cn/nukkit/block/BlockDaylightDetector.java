@@ -10,9 +10,14 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/11/22 by CreeperFace.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockDaylightDetector extends BlockTransparent {
+public class BlockDaylightDetector extends BlockTransparentMeta {
 
     public BlockDaylightDetector() {
+        this(0);
+    }
+
+    public BlockDaylightDetector(int meta) {
+        super(meta);
     }
 
     @Override
@@ -62,5 +67,4 @@ public class BlockDaylightDetector extends BlockTransparent {
     }
 
     //todo redstone
-
 }
