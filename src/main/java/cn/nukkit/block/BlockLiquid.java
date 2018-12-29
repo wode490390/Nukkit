@@ -36,12 +36,9 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
         return true;
     }
 
-    protected AxisAlignedBB recalculateBoundingBox() {
+    @Override
+    public AxisAlignedBB recalculateBoundingBox() {
         return null;
-    }
-
-    public Item[] getDrops(Item item) {
-        return new Item[0];
     }
 
     @Override
