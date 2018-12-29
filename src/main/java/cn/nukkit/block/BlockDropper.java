@@ -87,7 +87,6 @@ public class BlockDropper extends BlockSolidMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
         if (player != null) {
             if (Math.abs(player.x - this.x) < 2 && Math.abs(player.z - this.z) < 2) {
                 double y = player.y + player.getEyeHeight();
@@ -96,10 +95,10 @@ public class BlockDropper extends BlockSolidMeta {
                 } else if (this.y - y > 0) {
                     this.setDamage(BlockFace.DOWN.getIndex());
                 } else {
-                    this.setDamage(player.getHorizontalFacing().getIndex());
+                    this.setDamage(player.getHorizontalFacing().getOpposite().getIndex());
                 }
             } else {
-                this.setDamage(player.getHorizontalFacing().getIndex());
+                this.setDamage(player.getHorizontalFacing().getOpposite().getIndex());
             }
         } else {
             this.setDamage(0);
