@@ -26,7 +26,7 @@ public class BlockNetherPortal extends BlockFlowableMeta {
     }
 
     public BlockNetherPortal(int meta) {
-        super(0);
+        super(meta);
     }
 
     @Override
