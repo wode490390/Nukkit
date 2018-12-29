@@ -78,7 +78,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
+        if (type == Level.BLOCK_UPDATE_SCHEDULED || type == Level.BLOCK_UPDATE_RANDOM || type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) > 11) {
                 List<Block> nearFrosted = new ArrayList<Block>();
                 for (BlockFace face : BlockFace.values()) {
@@ -98,6 +98,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                 } else {
                     this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
                 }
+                return Level.BLOCK_UPDATE_NORMAL;
             }
         }
         return 0;
