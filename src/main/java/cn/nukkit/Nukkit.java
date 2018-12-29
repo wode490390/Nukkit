@@ -6,11 +6,14 @@ import cn.nukkit.utils.LogLevel;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.ServerKiller;
 
+import com.bugsnag.Bugsnag;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +54,8 @@ public class Nukkit {
     public static int DEBUG = 1;
     
     private static Thread mainThread;
+    
+    private static Bugsnag bugsnag;
 
     public static void main(String[] args) {
         mainThread = Thread.currentThread();
@@ -65,6 +70,15 @@ public class Nukkit {
                 shortTitle = true;
             }
         }
+
+        //NukkitV reporting unhandled exceptions
+        bugsnag = new Bugsnag("d44e2b1cd60a24020699b6e2662d3814");
+        bugsnag.addCallback((report) -> {
+            report.setAppInfo("NukkitV", CODENAME).setUserName(VERSION).setUserId(UUID.randomUUID().toString()).setDeviceInfo("runtime.processors", Runtime.getRuntime().availableProcessors()).setDeviceInfo("runtime.memory.total", Runtime.getRuntime().totalMemory()).setDeviceInfo("runtime.memory.max", Runtime.getRuntime().maxMemory()).setDeviceInfo("runtime.memory.free", Runtime.getRuntime().freeMemory());
+            for (String info : System.getProperties().stringPropertyNames()) {
+                report.setDeviceInfo(info, System.getProperties().getProperty(info));
+            }
+        });
 
         LogLevel logLevel = LogLevel.DEFAULT_LEVEL;
         int index = -1;
@@ -143,6 +157,10 @@ public class Nukkit {
 
     public static Thread getMainThread() {
         return mainThread;
+    }
+
+    public static Bugsnag getBugsnag() {
+        return bugsnag;
     }
 
     private static Properties getGitInfo() {
