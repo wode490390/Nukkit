@@ -5,6 +5,7 @@ import cn.nukkit.blockentity.BlockEntityBanner.Pattern;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.IntTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.utils.DyeColor;
 
 public class ItemBanner extends Item {
 
@@ -17,7 +18,7 @@ public class ItemBanner extends Item {
     }
 
     public ItemBanner(Integer meta, int count) {
-        super(BANNER, meta, count, "Banner");
+        super(BANNER, meta, count, DyeColor.getByWoolData(meta).getName() + " Banner");
         this.block = Block.get(Block.STANDING_BANNER);
     }
 
@@ -197,5 +198,9 @@ public class ItemBanner extends Item {
         }
 
         this.setNamedTag(tag);
+    }
+
+    public DyeColor getDyeColor() {
+        return DyeColor.getByDyeData(this.getDamage());
     }
 }
