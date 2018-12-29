@@ -1,38 +1,22 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDiamond;
-import cn.nukkit.item.ItemIngotIron;
 import cn.nukkit.item.ItemTool;
 
-public class BlockNetherReactorCore extends BlockSolidMeta {
-
-    public static final int STATE_INACTIVE = 0;
-    public static final int STATE_ACTIVE = 1;
-    public static final int STATE_USED = 2;
+public class BlockNetherReactorCore extends BlockSolid {
 
     public BlockNetherReactorCore() {
-        this(0);
-    }
 
-    public BlockNetherReactorCore(int meta) {
-        super(meta);
     }
 
     @Override
     public String getName() {
-        String[] names = new String[]{
-                "Nether Reactor Core",
-                "Initialized Nether Reactor Core",
-                "Finished Nether Reactor Core"
-        };
-
-        return names[this.getDamage() > 2 ? 0 : this.getDamage()];
+        return "Nether Reactor Core";
     }
 
     @Override
     public int getId() {
-        return NETHER_REACTOR_CORE;
+        return NETHERREACTOR;
     }
 
     @Override
@@ -53,8 +37,12 @@ public class BlockNetherReactorCore extends BlockSolidMeta {
     @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
-            return new Item[]{new ItemDiamond(0, 3), new ItemIngotIron(0, 6)};
-        } else return new Item[]{};
+            return new Item[]{
+                    Item.get(Item.DIAMOND, 0, 3),
+                    Item.get(Item.IRON_INGOT, 0, 6)
+            };
+        }
+        return new Item[0];
     }
 
     @Override
