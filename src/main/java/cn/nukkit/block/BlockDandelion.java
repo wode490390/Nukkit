@@ -17,7 +17,7 @@ public class BlockDandelion extends BlockFlowableMeta {
     }
 
     public BlockDandelion(int meta) {
-        super(0);
+        super(meta);
     }
 
     @Override
