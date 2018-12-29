@@ -9,22 +9,15 @@ import cn.nukkit.utils.DyeColor;
  * Created on 2015/11/24 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockTerracotta extends BlockSolidMeta {
+public class BlockTerracotta extends BlockSolid {
+
     public BlockTerracotta() {
-        this(0);
-    }
 
-    public BlockTerracotta(int meta) {
-        super(0);
-    }
-
-    public BlockTerracotta(DyeColor dyeColor) {
-        this(dyeColor.getWoolData());
     }
 
     @Override
     public int getId() {
-        return TERRACOTTA;
+        return HARDENED_CLAY;
     }
 
     @Override
