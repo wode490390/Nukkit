@@ -53,6 +53,10 @@ public class BlockChorusFlower extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        for (BlockFace fc : BlockFace.values()) {
+            if (fc == face.getOpposite()) continue;
+            if (this.getSide(fc).getId() != AIR) return false;
+        }
         Block below = this.down();
         if (below instanceof BlockEndStone || below instanceof BlockChorusPlant) {
             this.getLevel().setBlock(block, this, true, true);
