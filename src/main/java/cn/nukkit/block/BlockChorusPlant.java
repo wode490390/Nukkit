@@ -44,8 +44,8 @@ public class BlockChorusPlant extends BlockTransparent {
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block below = this.down();
-        if (below instanceof BlockEndStone || below instanceof BlockChorusPlant) {
-            this.getLevel().setBlock(block, this, true, true);
+        if (below instanceof BlockEndStone || below instanceof BlockChorusPlant || (target instanceof BlockChorusPlant && target.down() instanceof BlockChorusPlant)) {
+            this.getLevel().setBlock(block, this, true);
             return true;
         }
         return false;
