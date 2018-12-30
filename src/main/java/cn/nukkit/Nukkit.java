@@ -6,11 +6,14 @@ import cn.nukkit.utils.LogLevel;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.ServerKiller;
 
+import com.bugsnag.Bugsnag;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -34,8 +37,8 @@ public class Nukkit {
 
     public final static Properties GIT_INFO = getGitInfo();
     public final static String VERSION = getVersion();
-    public final static String API_VERSION = "1.0.7";
-    public final static String CODENAME = "";
+    public final static String API_VERSION = "1.1.0";
+    public final static String CODENAME = getVersionName();
     @Deprecated
     public final static String MINECRAFT_VERSION = ProtocolInfo.MINECRAFT_VERSION;
     @Deprecated
@@ -49,8 +52,13 @@ public class Nukkit {
     public static boolean TITLE = false;
     public static boolean shortTitle = false;
     public static int DEBUG = 1;
+    
+    private static Thread mainThread;
+    
+    private static Bugsnag bugsnag;
 
     public static void main(String[] args) {
+        mainThread = Thread.currentThread();
 
         // Force IPv4 since Nukkit is not compatible with IPv6
         System.setProperty("java.net.preferIPv4Stack" , "true");
@@ -62,6 +70,15 @@ public class Nukkit {
                 shortTitle = true;
             }
         }
+
+        //NukkitV reporting unhandled exceptions
+        bugsnag = new Bugsnag("d44e2b1cd60a24020699b6e2662d3814");
+        bugsnag.addCallback((report) -> {
+            report.setAppInfo("NukkitV", CODENAME).setUserName(VERSION).setUserId(UUID.randomUUID().toString()).setDeviceInfo("runtime.processors", Runtime.getRuntime().availableProcessors()).setDeviceInfo("runtime.memory.total", Runtime.getRuntime().totalMemory()).setDeviceInfo("runtime.memory.max", Runtime.getRuntime().maxMemory()).setDeviceInfo("runtime.memory.free", Runtime.getRuntime().freeMemory());
+            for (String info : System.getProperties().stringPropertyNames()) {
+                report.setDeviceInfo(info, System.getProperties().getProperty(info));
+            }
+        });
 
         LogLevel logLevel = LogLevel.DEFAULT_LEVEL;
         int index = -1;
@@ -138,6 +155,14 @@ public class Nukkit {
         System.exit(0);
     }
 
+    public static Thread getMainThread() {
+        return mainThread;
+    }
+
+    public static Bugsnag getBugsnag() {
+        return bugsnag;
+    }
+
     private static Properties getGitInfo() {
         InputStream gitFileStream = Nukkit.class.getClassLoader().getResourceAsStream("git.properties");
         if (gitFileStream == null) {
@@ -160,5 +185,14 @@ public class Nukkit {
             return version.append("null").toString();
         }
         return version.append(commitId).toString();
+    }
+
+    private static String getVersionName() {
+        StringBuilder verName = new StringBuilder();
+        String branch;
+        if (GIT_INFO == null || (branch = GIT_INFO.getProperty("git.branch")) == null) {
+            return verName.append("null").toString();
+        }
+        return verName.append(branch).toString();
     }
 }

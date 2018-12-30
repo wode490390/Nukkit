@@ -13,18 +13,18 @@ public class PlayerFormRespondedEvent extends PlayerEvent {
         return handlers;
     }
 
-    protected int formID;
+    protected long formID;
     protected FormWindow window;
 
     protected boolean closed = false;
 
-    public PlayerFormRespondedEvent(Player player, int formID, FormWindow window) {
+    public PlayerFormRespondedEvent(Player player, long formID, FormWindow window) {
         this.player = player;
         this.formID = formID;
         this.window = window;
     }
 
-    public int getFormID() {
+    public long getFormID() {
         return this.formID;
     }
 

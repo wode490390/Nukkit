@@ -10,7 +10,7 @@ import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
-import cn.nukkit.raknet.protocol.packet.PING_DataPacket;
+import cn.nukkit.raknet.protocol.packet.ConnectedPing;
 import cn.nukkit.raknet.server.RakNetServer;
 import cn.nukkit.raknet.server.ServerHandler;
 import cn.nukkit.raknet.server.ServerInstance;
@@ -30,19 +30,25 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RakNetInterface implements ServerInstance, AdvancedSourceInterface {
 
+    /**
+     * Sometimes this gets changed when the MCPE-layer protocol gets broken to the point where old and new can't
+     * communicate. It's important that we check this to avoid catastrophes.
+     */
+    public static final int MCPE_RAKNET_PROTOCOL_VERSION = 9;
+
     private final Server server;
 
     private Network network;
 
     private final RakNetServer raknet;
 
-    private final Map<String, Player> players = new ConcurrentHashMap<>();
+    private final Map<String, Player> players = new ConcurrentHashMap<String, Player>();
 
-    private final Map<String, Integer> networkLatency = new ConcurrentHashMap<>();
+    private final Map<String, Integer> networkLatency = new ConcurrentHashMap<String, Integer>();
 
-    private final Map<Integer, String> identifiers = new ConcurrentHashMap<>();
+    private final Map<Integer, String> identifiers = new ConcurrentHashMap<Integer, String>();
 
-    private final Map<String, Integer> identifiersACK = new ConcurrentHashMap<>();
+    private final Map<String, Integer> identifiersACK = new ConcurrentHashMap<String, Integer>();
 
     private final ServerHandler handler;
 
@@ -142,12 +148,12 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
             DataPacket pk = null;
             try {
                 if (packet.buffer.length > 0) {
-                    if (packet.buffer[0] == PING_DataPacket.ID) {
-                        PING_DataPacket pingPacket = new PING_DataPacket();
+                    if (packet.buffer[0] == ConnectedPing.ID) {
+                        ConnectedPing pingPacket = new ConnectedPing();
                         pingPacket.buffer = packet.buffer;
                         pingPacket.decode();
 
-                        this.networkLatency.put(identifier, (int) pingPacket.pingID);
+                        this.networkLatency.put(identifier, (int) pingPacket.sendPingTime);
                         return;
                     }
 
@@ -310,6 +316,13 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
         }
 
         return null;
+    }
+
+    @Override
+    public void updatePing(String identifier, long pingMS) {
+        if (this.players.containsKey(identifier)) {
+            //TODO: this.players.get(identifier).updatePing(pingMS);
+        }
     }
 
     private DataPacket getPacket(byte[] buffer) {

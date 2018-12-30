@@ -438,7 +438,7 @@ public class Chunk extends BaseFullChunk {
 
             if (saveExtra && provider instanceof LevelDB) {
 
-                List<CompoundTag> entities = new ArrayList<>();
+                List<CompoundTag> entities = new ArrayList<CompoundTag>();
 
                 for (Entity entity : this.getEntities().values()) {
                     if (!(entity instanceof Player) && !entity.closed) {
@@ -454,12 +454,12 @@ public class Chunk extends BaseFullChunk {
                     ((LevelDB) provider).getDatabase().delete(entitiesKey.toArray());
                 }
 
-                List<CompoundTag> tiles = new ArrayList<>();
+                List<CompoundTag> tiles = new ArrayList<CompoundTag>();
 
                 for (BlockEntity blockEntity : this.getBlockEntities().values()) {
                     if (!blockEntity.closed) {
                         blockEntity.saveNBT();
-                        entities.add(blockEntity.namedTag);
+                        tiles.add(blockEntity.namedTag);
                     }
                 }
 

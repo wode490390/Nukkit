@@ -17,7 +17,7 @@ import java.util.Map;
  * author: CreeperFace
  * Nukkit Project
  */
-public class BlockCauldron extends BlockSolidMeta {
+public class BlockCauldron extends BlockTransparentMeta {
 
     public BlockCauldron() {
         super(0);
@@ -127,13 +127,15 @@ public class BlockCauldron extends BlockSolidMeta {
                     }
                 }
                 break;
-            case Item.DYE: //TODO
-                break;
+            case Item.DYE:
+                break; //TODO
             case Item.LEATHER_CAP:
             case Item.LEATHER_TUNIC:
             case Item.LEATHER_PANTS:
             case Item.LEATHER_BOOTS:
-                break;
+                break; //TODO
+            case Item.ARROW:
+                break; //TODO
             case Item.POTION:
                 if (isFull()) {
                     break;

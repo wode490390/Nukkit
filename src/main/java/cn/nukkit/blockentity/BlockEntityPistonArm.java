@@ -31,6 +31,11 @@ public class BlockEntityPistonArm extends BlockEntity {
     }
 
     @Override
+    public String getName() {
+        return "Piston Head";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (namedTag.contains("Progress")) {
             this.progress = namedTag.getFloat("Progress");

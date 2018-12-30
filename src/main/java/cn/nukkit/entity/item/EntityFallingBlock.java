@@ -19,7 +19,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityFallingBlock extends Entity {
 
-    public static final int NETWORK_ID = 66;
+    public static final int NETWORK_ID = FALLING_BLOCK;
 
     @Override
     public float getWidth() {
@@ -129,7 +129,7 @@ public class EntityFallingBlock extends Entity {
             Vector3 pos = (new Vector3(x - 0.5, y, z - 0.5)).round();
 
             if (onGround) {
-                kill();
+                close();
                 Block block = level.getBlock(pos);
                 if (block.getId() > 0 && block.isTransparent() && !block.canBeReplaced()) {
                     if (this.level.getGameRules().getBoolean(GameRule.DO_ENTITY_DROPS)) {

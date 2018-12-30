@@ -149,9 +149,9 @@ public class PlayerInventory extends BaseInventory {
         pk.inventorySlot = pk.hotbarSlot = this.getHeldItemIndex();
 
         for (Player player : players) {
-            pk.eid = this.getHolder().getId();
+            pk.entityRuntimeId = this.getHolder().getId();
             if (player.equals(this.getHolder())) {
-                pk.eid = player.getId();
+                pk.entityRuntimeId = player.getId();
                 this.sendSlot(this.getHeldItemIndex(), player);
             }
 
@@ -330,7 +330,7 @@ public class PlayerInventory extends BaseInventory {
         Item[] armor = this.getArmorContents();
 
         MobArmorEquipmentPacket pk = new MobArmorEquipmentPacket();
-        pk.eid = this.getHolder().getId();
+        pk.entityRuntimeId = this.getHolder().getId();
         pk.slots = armor;
         pk.encode();
         pk.isEncoded = true;
@@ -338,8 +338,8 @@ public class PlayerInventory extends BaseInventory {
         for (Player player : players) {
             if (player.equals(this.getHolder())) {
                 InventoryContentPacket pk2 = new InventoryContentPacket();
-                pk2.inventoryId = InventoryContentPacket.SPECIAL_ARMOR;
-                pk2.slots = armor;
+                pk2.windowId = InventoryContentPacket.SPECIAL_ARMOR;
+                pk2.items = armor;
                 player.dataPacket(pk2);
             } else {
                 player.dataPacket(pk);
@@ -379,7 +379,7 @@ public class PlayerInventory extends BaseInventory {
         Item[] armor = this.getArmorContents();
 
         MobArmorEquipmentPacket pk = new MobArmorEquipmentPacket();
-        pk.eid = this.getHolder().getId();
+        pk.entityRuntimeId = this.getHolder().getId();
         pk.slots = armor;
         pk.encode();
         pk.isEncoded = true;
@@ -387,8 +387,8 @@ public class PlayerInventory extends BaseInventory {
         for (Player player : players) {
             if (player.equals(this.getHolder())) {
                 InventorySlotPacket pk2 = new InventorySlotPacket();
-                pk2.inventoryId = InventoryContentPacket.SPECIAL_ARMOR;
-                pk2.slot = index - this.getSize();
+                pk2.windowId = InventoryContentPacket.SPECIAL_ARMOR;
+                pk2.inventorySlot = index - this.getSize();
                 pk2.item = this.getItem(index);
                 player.dataPacket(pk2);
             } else {
@@ -414,9 +414,9 @@ public class PlayerInventory extends BaseInventory {
     @Override
     public void sendContents(Player[] players) {
         InventoryContentPacket pk = new InventoryContentPacket();
-        pk.slots = new Item[this.getSize()];
+        pk.items = new Item[this.getSize()];
         for (int i = 0; i < this.getSize(); ++i) {
-            pk.slots[i] = this.getItem(i);
+            pk.items[i] = this.getItem(i);
         }
 
         /*//Because PE is stupid and shows 9 less slots than you send it, give it 9 dummy slots so it shows all the REAL slots.
@@ -432,7 +432,7 @@ public class PlayerInventory extends BaseInventory {
                 this.close(player);
                 continue;
             }
-            pk.inventoryId = id;
+            pk.windowId = id;
             player.dataPacket(pk.clone());
 
         }
@@ -451,12 +451,12 @@ public class PlayerInventory extends BaseInventory {
     @Override
     public void sendSlot(int index, Player... players) {
         InventorySlotPacket pk = new InventorySlotPacket();
-        pk.slot = index;
+        pk.inventorySlot = index;
         pk.item = this.getItem(index).clone();
 
         for (Player player : players) {
             if (player.equals(this.getHolder())) {
-                pk.inventoryId = ContainerIds.INVENTORY;
+                pk.windowId = ContainerIds.INVENTORY;
                 player.dataPacket(pk);
             } else {
                 int id = player.getWindowId(this);
@@ -464,7 +464,7 @@ public class PlayerInventory extends BaseInventory {
                     this.close(player);
                     continue;
                 }
-                pk.inventoryId = id;
+                pk.windowId = id;
                 player.dataPacket(pk.clone());
             }
         }
@@ -477,10 +477,10 @@ public class PlayerInventory extends BaseInventory {
         Player p = (Player) this.getHolder();
 
         InventoryContentPacket pk = new InventoryContentPacket();
-        pk.inventoryId = ContainerIds.CREATIVE;
+        pk.windowId = ContainerIds.CREATIVE;
 
         if (!p.isSpectator()) { //fill it for all gamemodes except spectator
-            pk.slots = Item.getCreativeItems().stream().toArray(Item[]::new);
+            pk.items = Item.getCreativeItems().stream().toArray(Item[]::new);
         }
 
         p.dataPacket(pk);

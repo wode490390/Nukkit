@@ -182,7 +182,7 @@ public class Binary {
                     value = new LongEntityData(key, stream.getVarLong());
                     break;
                 case Entity.DATA_TYPE_VECTOR3F:
-                    value = new Vector3fEntityData(key, stream.getVector3f());
+                    value = new Vector3fEntityData(key, stream.getVector3());
                     break;
             }
             if (value != null) m.put(value);

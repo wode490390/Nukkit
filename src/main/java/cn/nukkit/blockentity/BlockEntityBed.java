@@ -10,10 +10,15 @@ import cn.nukkit.utils.DyeColor;
  */
 public class BlockEntityBed extends BlockEntitySpawnable {
 
-    public int color;
+    private int color = 14; //default to old red
 
     public BlockEntityBed(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    public String getName() {
+        return "Bed";
     }
 
     @Override
@@ -50,5 +55,14 @@ public class BlockEntityBed extends BlockEntitySpawnable {
 
     public DyeColor getDyeColor() {
         return DyeColor.getByWoolData(color);
+    }
+
+    public int getColor() {
+        return this.color;
+    }
+
+    public void setColor(int color) {
+        this.color = color & 0xf;
+        this.onChanged();
     }
 }

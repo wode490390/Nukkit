@@ -130,7 +130,7 @@ public class BlockVine extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target.isSolid()) {
+        if (target.isSolid() && face != BlockFace.DOWN && face != BlockFace.UP) {
             int[] faces = new int[]{
                     0,
                     0,

@@ -3,7 +3,7 @@ package cn.nukkit.item;
 /**
  * Created by lion on 21.03.17.
  */
-public class ItemCarrotOnAStick extends Item {
+public class ItemCarrotOnAStick extends ItemTool {
 
     public ItemCarrotOnAStick() {
         this(0, 1);
@@ -21,5 +21,9 @@ public class ItemCarrotOnAStick extends Item {
     public int getMaxStackSize() {
         return 1;
     }
-}
 
+    @Override
+    public int getMaxDurability() {
+        return ItemTool.DURABILITY_CARROT_ON_A_STICK;
+    }
+}
