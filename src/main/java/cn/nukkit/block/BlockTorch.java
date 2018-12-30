@@ -52,7 +52,7 @@ public class BlockTorch extends BlockFlowableMeta {
             };
             Block face = this.getSide(BlockFace.fromIndex(faces[side]));
 
-            if (face.isTransparent() && !(face instanceof BlockGlass || face instanceof BlockIce || face instanceof BlockIceFrosted) && !(side == 0 && (below instanceof BlockHopper || below instanceof BlockFence || below instanceof BlockWall))) {
+            if (face.isTransparent() && !(face instanceof BlockGlass || face instanceof BlockGlassStained || face instanceof BlockIce || face instanceof BlockIceFrosted) && !(side == 0 && (below instanceof BlockHopper || below instanceof BlockFence || below instanceof BlockWall))) {
                 this.getLevel().useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
@@ -66,7 +66,7 @@ public class BlockTorch extends BlockFlowableMeta {
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block below = this.down();
 
-        if (face != BlockFace.DOWN && (!target.isTransparent() || target instanceof BlockGlass || target instanceof BlockIce || target instanceof BlockIceFrosted)) {
+        if (face != BlockFace.DOWN && (!target.isTransparent() || target instanceof BlockGlass || face instanceof BlockGlassStained || target instanceof BlockIce || target instanceof BlockIceFrosted)) {
             int[] faces = new int[]{
                     0, //0, nerver used
                     5, //1
@@ -79,7 +79,7 @@ public class BlockTorch extends BlockFlowableMeta {
             this.getLevel().setBlock(block, this, true, true);
 
             return true;
-        } else if (!below.isTransparent() || below instanceof BlockGlass || below instanceof BlockIce || below instanceof BlockIceFrosted || below instanceof BlockHopper || below instanceof BlockFence || below instanceof BlockWall) {
+        } else if (!below.isTransparent() || below instanceof BlockGlass || face instanceof BlockGlassStained || below instanceof BlockIce || below instanceof BlockIceFrosted || below instanceof BlockHopper || below instanceof BlockFence || below instanceof BlockWall) {
             this.setDamage(0);
             this.getLevel().setBlock(block, this, true, true);
 
