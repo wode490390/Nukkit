@@ -33,11 +33,7 @@ public class ItemBanner extends Item {
      * @return int
      */
     public int getBaseColor() {
-        if (this.getNamedTag().contains("Base")) {
-            return this.getNamedTag().getInt("Base");
-        } else {
-            return 0;
-        }
+        return this.getNamedTag().getInt("Base");
     }
 
     /**
@@ -100,7 +96,6 @@ public class ItemBanner extends Item {
         }
 
         CompoundTag data = this.getNamedTag().getList("Patterns", CompoundTag.class).get(patternId);
-
 
         return new Pattern(data.getInt("Color"), data.getString("Pattern"));
     }
