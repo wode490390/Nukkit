@@ -3,21 +3,14 @@ package cn.nukkit.blockentity;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
-import cn.nukkit.event.block.SignChangeEvent;
 import cn.nukkit.inventory.BeaconInventory;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
-import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.potion.Effect;
-import cn.nukkit.scheduler.NukkitRunnable;
-import cn.nukkit.utils.TextFormat;
-
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * author: Rover656
@@ -209,7 +202,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         int currentLevel = getPowerLevel();
         if (level != currentLevel) {
             namedTag.putInt("Level", level);
-            chunk.setChanged();
+            this.setDirty();
             this.spawnToAll();
         }
     }
@@ -222,7 +215,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         int currentPower = getPrimaryPower();
         if (power != currentPower) {
             namedTag.putInt("Primary", power);
-            chunk.setChanged();
+            this.setDirty();
             this.spawnToAll();
         }
     }
@@ -235,7 +228,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         int currentPower = getSecondaryPower();
         if (power != currentPower) {
             namedTag.putInt("Secondary", power);
-            chunk.setChanged();
+            this.setDirty();
             this.spawnToAll();
         }
     }

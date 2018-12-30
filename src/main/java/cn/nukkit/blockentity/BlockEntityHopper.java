@@ -16,7 +16,6 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.inventory.Fuel;
-
 import java.util.HashSet;
 
 /**
@@ -163,7 +162,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
 
             if (transfer || pickup) {
                 //this.setTransferCooldown(8); TODO: maybe we should update hopper every tick if nothing happens?
-                this.chunk.setChanged(true);
+                this.setDirty();
             }
 
             this.setTransferCooldown(8);
