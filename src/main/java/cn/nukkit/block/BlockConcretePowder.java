@@ -7,30 +7,14 @@ import cn.nukkit.math.BlockFace;
 /**
  * Created by CreeperFace on 2.6.2017.
  */
-public class BlockConcretePowder extends BlockFallable {
-    private int meta;
+public class BlockConcretePowder extends BlockFallableMeta {
 
     public BlockConcretePowder() {
         this(0);
     }
 
     public BlockConcretePowder(int meta) {
-        this.meta = meta;
-    }
-
-    @Override
-    public int getFullId() {
-        return (getId() << 4) + getDamage();
-    }
-
-    @Override
-    public final int getDamage() {
-        return this.meta;
-    }
-
-    @Override
-    public final void setDamage(int meta) {
-        this.meta = meta;
+        super(meta);
     }
 
     @Override
