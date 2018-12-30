@@ -218,7 +218,7 @@ public class BlockNoteblock extends BlockSolid {
     }
 
     public void emitSound() {
-        if (this.up().getId() == AIR) return;
+        if (this.up().getId() != AIR) return;
 
         Instrument instrument = getInstrument();
 
