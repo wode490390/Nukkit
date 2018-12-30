@@ -89,7 +89,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                 }
                 if (ThreadLocalRandom.current().nextInt(3) == 0 || nearFrosted.size() < 4) {
                     int age = this.getDamage();
-                    if (age < 4) {
+                    if (age < 3) {
                         this.setDamage(age + 1);
                         this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
                     } else {
