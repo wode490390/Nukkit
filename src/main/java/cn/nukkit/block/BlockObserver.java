@@ -34,14 +34,14 @@ public class BlockObserver extends BlockSolidMeta {
             if (Math.abs(player.x - this.x) < 2 && Math.abs(player.z - this.z) < 2) {
                 double y = player.y + player.getEyeHeight();
                 if (y - this.y > 2) {
-                    this.setDamage(BlockFace.UP.getIndex());
-                } else if (this.y - y > 0) {
                     this.setDamage(BlockFace.DOWN.getIndex());
+                } else if (this.y - y > 0) {
+                    this.setDamage(BlockFace.UP.getIndex());
                 } else {
-                    this.setDamage(player.getHorizontalFacing().getOpposite().getIndex());
+                    this.setDamage(player.getHorizontalFacing().getIndex());
                 }
             } else {
-                this.setDamage(player.getHorizontalFacing().getOpposite().getIndex());
+                this.setDamage(player.getHorizontalFacing().getIndex());
             }
         } else {
             this.setDamage(0);
