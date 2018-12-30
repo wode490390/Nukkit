@@ -49,7 +49,7 @@ public class BlockConcretePowder extends BlockFallableMeta {
             for(int side = 1; side <= 5; side++){
                 Block block = this.getSide(BlockFace.fromIndex(side));
                 if(block.getId() == Block.WATER || block.getId() == Block.STILL_WATER){
-                    this.level.setBlock(this, Block.get(Block.CONCRETE, this.meta));
+                    this.level.setBlock(this, Block.get(Block.CONCRETE, this.getDamage()));
                 }
             }
             return Level.BLOCK_UPDATE_NORMAL;

@@ -70,7 +70,7 @@ public class BlockNoteblock extends BlockSolid {
     public void increaseStrength() {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
         if (blockEntity instanceof BlockEntityNoteBlock) {
-            blockEntity.changePitch();
+            ((BlockEntityNoteBlock) blockEntity).changePitch();
         }
     }
 
