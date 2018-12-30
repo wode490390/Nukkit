@@ -1,10 +1,15 @@
 package cn.nukkit.block;
 
 import cn.nukkit.Player;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntityNoteBlock;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
+import cn.nukkit.level.particle.NoteParticle;
+import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.BlockEventPacket;
 
 /**
@@ -12,8 +17,6 @@ import cn.nukkit.network.protocol.BlockEventPacket;
  * Package cn.nukkit.block in project nukkit.
  */
 public class BlockNoteblock extends BlockSolid {
-
-    private int strength = 0;
 
     public BlockNoteblock() {
 
@@ -36,12 +39,12 @@ public class BlockNoteblock extends BlockSolid {
 
     @Override
     public double getHardness() {
-        return 0.8D;
+        return 0.8d;
     }
 
     @Override
     public double getResistance() {
-        return 4D;
+        return 4d;
     }
 
     @Override
@@ -49,25 +52,26 @@ public class BlockNoteblock extends BlockSolid {
         return true;
     }
 
-    public int getStrength() {
-        return this.strength;
+    @Override
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        this.getLevel().setBlock(block, this, true);
+        new BlockEntityNoteBlock(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
+        return true;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
+    public int getStrength() {
+        return Math.abs(this.getLevel().getBlockEntity(this).namedTag.getByte("note")) % 25;
     }
 
     public void increaseStrength() {
-        if (this.getStrength() < 24) {
-            this.setStrength(this.getStrength() + 1);
-        } else {
-            this.setStrength(0);
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityNoteBlock) {
+            blockEntity.changePitch();
         }
     }
 
     public Instrument getInstrument() {
-        Block below = this.down();
-        switch (below.getId()) {
+        switch (this.down().getId()) {
             case LOG:
             case LOG2:
             //case STRIPPED_SPRUCE_LOG:
@@ -210,6 +214,8 @@ public class BlockNoteblock extends BlockSolid {
     }
 
     public void emitSound() {
+        if (this.up().getId() == AIR) return;
+
         Instrument instrument = getInstrument();
 
         BlockEventPacket pk = new BlockEventPacket();
@@ -220,103 +226,21 @@ public class BlockNoteblock extends BlockSolid {
         pk.eventData = this.getStrength();
         this.getLevel().addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
 
-        float pitch = 0.5f;
-        switch (this.getStrength()) {
-            case 1:
-                pitch = (float) Math.pow(2, -11.0 / 12.0);
-                break;
-            case 2:
-                pitch = (float) Math.pow(2, -10.0 / 12.0);
-                break;
-            case 3:
-                pitch = (float) Math.pow(2, -9.0 / 12.0);
-                break;
-            case 4:
-                pitch = (float) Math.pow(2, -8.0 / 12.0);
-                break;
-            case 5:
-                pitch = (float) Math.pow(2, -7.0 / 12.0);
-                break;
-            case 6:
-                pitch = (float) Math.pow(2, -6.0 / 12.0);
-                break;
-            case 7:
-                pitch = (float) Math.pow(2, -5.0 / 12.0);
-                break;
-            case 8:
-                pitch = (float) Math.pow(2, -4.0 / 12.0);
-                break;
-            case 9:
-                pitch = (float) Math.pow(2, -3.0 / 12.0);
-                break;
-            case 10:
-                pitch = (float) Math.pow(2, -2.0 / 12.0);
-                break;
-            case 11:
-                pitch = (float) Math.pow(2, -1.0 / 12.0);
-                break;
-            case 12:
-                pitch = 1;
-                break;
-            case 13:
-                pitch = (float) Math.pow(2, 1.0 / 12.0);
-                break;
-            case 14:
-                pitch = (float) Math.pow(2, 2.0 / 12.0);
-                break;
-            case 15:
-                pitch = (float) Math.pow(2, 3.0 / 12.0);
-                break;
-            case 16:
-                pitch = (float) Math.pow(2, 4.0 / 12.0);
-                break;
-            case 17:
-                pitch = (float) Math.pow(2, 5.0 / 12.0);
-                break;
-            case 18:
-                pitch = (float) Math.pow(2, 6.0 / 12.0);
-                break;
-            case 19:
-                pitch = (float) Math.pow(2, 7.0 / 12.0);
-                break;
-            case 20:
-                pitch = (float) Math.pow(2, 8.0 / 12.0);
-                break;
-            case 21:
-                pitch = (float) Math.pow(2, 9.0 / 12.0);
-                break;
-            case 22:
-                pitch = (float) Math.pow(2, 10.0 / 12.0);
-                break;
-            case 23:
-                pitch = (float) Math.pow(2, 11.0 / 12.0);
-                break;
-            case 24:
-                pitch = 2;
-                break;
-        }
-        this.getLevel().addSound(this, instrument.getSound(), 1, pitch);
+        this.getLevel().addSound(this, instrument.getSound(), 3, (float) Math.pow(2.0d, (double) (this.getStrength() - 12) / 12.0d));
+        this.getLevel().addParticle(new NoteParticle(new Vector3(this.getFloorX() + 0.5d, this.getFloorY() + 1.2d, this.getFloorZ() + 0.5d)));
     }
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        Block up = this.up();
-        if (up.getId() == Block.AIR) {
-            this.increaseStrength();
-            this.emitSound();
-            return true;
-        } else {
-            return false;
-        }
+        this.increaseStrength();
+        this.emitSound();
+        return true;
     }
 
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_REDSTONE) {
-            this.increaseStrength();
-            if (this.up().getId() == Block.AIR) {
-                this.emitSound();
-            }
+            if (this.getLevel().isBlockPowered(this)) this.emitSound();
         }
         return 0;
     }
