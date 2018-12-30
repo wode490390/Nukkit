@@ -230,8 +230,8 @@ public class BlockNoteblock extends BlockSolid {
         pk.eventData = this.getStrength();
         this.getLevel().addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
 
-        this.getLevel().addSound(this, instrument.getSound(), 3, (float) Math.pow(2.0d, (double) (this.getStrength() - 12) / 12.0d));
-        this.getLevel().addParticle(new NoteParticle(new Vector3(this.getFloorX() + 0.5d, this.getFloorY() + 1.2d, this.getFloorZ() + 0.5d)));
+        this.getLevel().addSound(this, instrument.getSound(), 1, (float) Math.pow(2.0d, (double) (this.getStrength() - 12) / 12.0d));
+        //this.getLevel().addParticle(new NoteParticle(new Vector3(this.getFloorX() + 0.5d, this.getFloorY() + 1.2d, this.getFloorZ() + 0.5d)));
     }
 
     @Override
