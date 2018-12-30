@@ -106,11 +106,10 @@ public class BlockStandingBanner extends BlockTransparentMeta {
 
     @Override
     public Item toItem() {
-        ItemBlock item = new ItemBlock(this, this.getDamage() & 0x0f, 1);
         BlockEntityBanner blockEntity = (BlockEntityBanner) this.getLevel().getBlockEntity(this);
         if (blockEntity != null) {
-            item.setNamedTag(blockEntity.getCleanedNBT());
+            return Item.get(Item.BANNER, blockEntity.getBaseColor() & 0xf).setNamedTag(blockEntity.getCleanedNBT());
         }
-        return item;
+        return Item.get(Item.BANNER);
     }
 }
