@@ -55,7 +55,7 @@ public class BlockSnowLayer extends BlockFlowableMeta {
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         if (target instanceof BlockSnowLayer) {
-            BlockSnowLayer old = (BlockSnowLayer) target.clone()
+            BlockSnowLayer old = (BlockSnowLayer) target.clone();
             int layer = old.getDamage();
             if (layer < 7) {
                 old.setDamage(layer + 1);

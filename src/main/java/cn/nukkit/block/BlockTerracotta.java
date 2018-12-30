@@ -15,7 +15,7 @@ public class BlockTerracotta extends BlockSolid {
 
     @Override
     public int getId() {
-        return HARDENED_CLAY;
+        return TERRACOTTA;
     }
 
     @Override

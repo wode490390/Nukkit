@@ -16,7 +16,7 @@ public class BlockNetherReactorCore extends BlockSolid {
 
     @Override
     public int getId() {
-        return NETHERREACTOR;
+        return NETHER_REACTOR_CORE;
     }
 
     @Override

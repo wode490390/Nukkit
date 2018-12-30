@@ -2,7 +2,6 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
@@ -45,6 +44,7 @@ public class BlockNoteblock extends BlockSolid {
         return 4D;
     }
 
+    @Override
     public boolean canBeActivated() {
         return true;
     }
@@ -79,7 +79,7 @@ public class BlockNoteblock extends BlockSolid {
             case PLANKS:
             case DOUBLE_WOODEN_SLAB:
             case WOODEN_SLAB:
-            case OAK_STAIRS:
+            case WOOD_STAIRS:
             case SPRUCE_WOOD_STAIRS:
             case BIRCH_WOOD_STAIRS:
             case JUNGLE_WOOD_STAIRS:
@@ -105,11 +105,11 @@ public class BlockNoteblock extends BlockSolid {
             //case JUNGLE_PRESSURE_PLATE:
             //case SPRUCE_PRESSURE_PLATE:
             case TRAPDOOR:
-            case ACACIA_TRAPDOOR:
-            case BIRCH_TRAPDOOR:
-            case DARK_OAK_TRAPDOOR:
-            case JUNGLE_TRAPDOOR:
-            case SPRUCE_TRAPDOOR:
+            //case ACACIA_TRAPDOOR:
+            //case BIRCH_TRAPDOOR:
+            //case DARK_OAK_TRAPDOOR:
+            //case JUNGLE_TRAPDOOR:
+            //case SPRUCE_TRAPDOOR:
             case SIGN_POST:
             case WALL_SIGN:
             case NOTEBLOCK:
