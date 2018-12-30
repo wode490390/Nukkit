@@ -77,13 +77,13 @@ public class BlockStandingBanner extends BlockTransparentMeta {
 
             CompoundTag nbt = new CompoundTag()
                     .putString("id", BlockEntity.BANNER)
-                    .putInt("x", block.getFloorX())
-                    .putInt("y", block.getFloorY())
-                    .putInt("z", block.getFloorZ())
-                    .put("Base", item.getNamedTag().contains("Base") ? item.getNamedTag().get("Base") : new IntTag("Base", item.getDamage() & 0x0f));
+                    .putInt("x", this.getFloorX())
+                    .putInt("y", this.getFloorY())
+                    .putInt("z", this.getFloorZ())
+                    .putInt("Base", item.getDamage() & 0x0f);
 
             if (item.getNamedTag().contains("Patterns") && item.getNamedTag().get("Patterns") instanceof ListTag) {
-                nbt.put("Patterns", item.getNamedTag().get("Patterns"));
+                nbt.putList(item.getNamedTag().getList("Patterns"));
             }
 
             new BlockEntityBanner(this.level.getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
@@ -106,9 +106,9 @@ public class BlockStandingBanner extends BlockTransparentMeta {
 
     @Override
     public Item toItem() {
-        BlockEntityBanner blockEntity = (BlockEntityBanner) this.getLevel().getBlockEntity(this);
-        if (blockEntity != null) {
-            return Item.get(Item.BANNER, blockEntity.getBaseColor() & 0xf).setNamedTag(blockEntity.getCleanedNBT());
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityBanner) {
+            return Item.get(Item.BANNER, ((BlockEntityBanner) blockEntity).getBaseColor() & 0xf).setNamedTag(blockEntity.getCleanedNBT());
         }
         return Item.get(Item.BANNER);
     }
