@@ -60,7 +60,11 @@ public class BlockNoteblock extends BlockSolid {
     }
 
     public int getStrength() {
-        return Math.abs(this.getLevel().getBlockEntity(this).namedTag.getByte("note")) % 25;
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityNoteBlock) {
+            return Math.abs(blockEntity.namedTag.getByte("note")) % 25;
+        }
+        return 0;
     }
 
     public void increaseStrength() {
