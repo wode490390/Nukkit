@@ -12,7 +12,7 @@ import cn.nukkit.utils.MinecartType;
  */
 public class EntityMinecartChest extends EntityMinecartAbstract {
 
-    public static final int NETWORK_ID = 98;
+    public static final int NETWORK_ID = CHEST_MINECART;
 
     public EntityMinecartChest(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

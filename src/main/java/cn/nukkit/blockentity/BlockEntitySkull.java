@@ -9,8 +9,14 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * Package cn.nukkit.blockentity in project Nukkit.
  */
 public class BlockEntitySkull extends BlockEntitySpawnable {
+
     public BlockEntitySkull(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    public String getName() {
+        return "Skull";
     }
 
     @Override

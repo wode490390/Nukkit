@@ -18,7 +18,7 @@ import cn.nukkit.network.protocol.DataPacket;
  */
 public class EntityPainting extends EntityHanging {
 
-    public static final int NETWORK_ID = 83;
+    public static final int NETWORK_ID = PAINTING;
 
     public final static Motive[] motives = new Motive[]{
             new Motive("Kebab", 1, 1),

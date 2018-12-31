@@ -14,12 +14,9 @@ import java.util.Random;
  * Package cn.nukkit.block in project Nukkit .
  */
 public class BlockDeadBush extends BlockFlowable {
-    public BlockDeadBush() {
-        this(0);
-    }
 
-    public BlockDeadBush(int meta) {
-        super(meta);
+    public BlockDeadBush() {
+
     }
 
     @Override
@@ -40,7 +37,7 @@ public class BlockDeadBush extends BlockFlowable {
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
-        if (down.getId() == SAND || down.getId() == TERRACOTTA || down.getId() == STAINED_TERRACOTTA || down.getId() == PODZOL) {
+        if (down.getId() == SAND || down.getId() == TERRACOTTA || down.getId() == STAINED_TERRACOTTA || down.getId() == PODZOL || down.getId() == DIRT) {
             this.getLevel().setBlock(block, this, true, true);
             return true;
         }
@@ -73,6 +70,7 @@ public class BlockDeadBush extends BlockFlowable {
         }
     }
 
+    @Override
     public BlockColor getColor() {
         return BlockColor.FOLIAGE_BLOCK_COLOR;
     }

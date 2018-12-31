@@ -1,13 +1,11 @@
 package cn.nukkit.blockentity;
 
+import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.item.EntityItem;
-import cn.nukkit.inventory.FurnaceInventory;
-import cn.nukkit.inventory.HopperInventory;
-import cn.nukkit.inventory.Inventory;
-import cn.nukkit.inventory.InventoryHolder;
+import cn.nukkit.inventory.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.format.FullChunk;
@@ -18,6 +16,7 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.inventory.Fuel;
+import java.util.HashSet;
 
 /**
  * Created by CreeperFace on 8.5.2017.
@@ -163,7 +162,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
 
             if (transfer || pickup) {
                 //this.setTransferCooldown(8); TODO: maybe we should update hopper every tick if nothing happens?
-                this.chunk.setChanged(true);
+                this.setDirty();
             }
 
             this.setTransferCooldown(8);
@@ -256,6 +255,24 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
 
         //TODO: check for minecart
         return update;
+    }
+
+    @Override
+    public void close() {
+        if (!closed) {
+            for (Player player : new HashSet<>(this.getInventory().getViewers())) {
+                player.removeWindow(this.getInventory());
+            }
+            super.close();
+        }
+    }
+
+    @Override
+    public void onBreak() {
+
+        for (Item content : inventory.getContents().values()) {
+            level.dropItem(this, content);
+        }
     }
 
     public boolean transferItemsOut() {

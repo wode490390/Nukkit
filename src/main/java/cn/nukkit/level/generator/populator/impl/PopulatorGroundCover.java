@@ -38,7 +38,7 @@ public class PopulatorGroundCover extends Populator {
                             if (chunk.getFullBlock(x, y, z) == STONE) {
                                 COVER:
                                 if (!hasCovered) {
-                                    if (y >= Normal.seaHeight) {
+                                    if (y >= 64) {
                                         chunk.setFullBlockId(x, y + 1, z, coverBlock);
                                         int surfaceDepth = biome.getSurfaceDepth(y);
                                         for (int i = 0; i < surfaceDepth; i++) {

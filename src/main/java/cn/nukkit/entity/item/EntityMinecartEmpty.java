@@ -10,7 +10,7 @@ import cn.nukkit.utils.MinecartType;
  */
 public class EntityMinecartEmpty extends EntityMinecartAbstract {
 
-    public static final int NETWORK_ID = 84;
+    public static final int NETWORK_ID = MINECART;
 
     @Override
     public int getNetworkId() {

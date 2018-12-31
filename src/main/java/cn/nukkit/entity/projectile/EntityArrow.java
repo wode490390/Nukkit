@@ -11,7 +11,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * Nukkit Project
  */
 public class EntityArrow extends EntityProjectile {
-    public static final int NETWORK_ID = 80;
+
+    public static final int NETWORK_ID = ARROW;
 
     public static final int DATA_SOURCE_ID = 17;
 
@@ -108,6 +109,9 @@ public class EntityArrow extends EntityProjectile {
 
         if (this.onGround || this.hadCollision) {
             this.setCritical(false);
+            this.namedTag.putBoolean("inGround", true);
+        } else {
+            this.namedTag.putBoolean("inGround", false);
         }
 
         if (this.age > 1200) {

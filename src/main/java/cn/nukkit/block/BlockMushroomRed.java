@@ -18,11 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BlockMushroomRed extends BlockFlowable {
 
     public BlockMushroomRed() {
-        this(0);
-    }
 
-    public BlockMushroomRed(int meta) {
-        super(0);
     }
 
     @Override

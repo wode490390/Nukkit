@@ -17,7 +17,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityPrimedTNT extends Entity implements EntityExplosive {
 
-    public static final int NETWORK_ID = 65;
+    public static final int NETWORK_ID = TNT;
 
     @Override
     public float getWidth() {

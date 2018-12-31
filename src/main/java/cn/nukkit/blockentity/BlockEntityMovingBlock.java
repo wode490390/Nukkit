@@ -20,6 +20,11 @@ public class BlockEntityMovingBlock extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Moving Block";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (namedTag.contains("movingBlockData") && namedTag.contains("movingBlockId")) {
             this.block = Block.get(namedTag.getInt("movingBlockId"), namedTag.getInt("movingBlockData"));

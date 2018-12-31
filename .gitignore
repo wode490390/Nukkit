@@ -1,3 +1,19 @@
+# Windows
+desktop.ini
+*/desktop.ini
+Thumbs.db
+*/Thumbs.db
+ehthumbs.db
+*/ehthumbs.db
+
+# Mac
+.DS_Store
+*/.DS_Store
+__MACOSX
+__MACOSX/*
+*/__MACOSX
+*/__MACOSX/*
+
 # Compile outputs
 *.class
 target

@@ -22,6 +22,11 @@ public class BlockEntitySign extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Sign";
+    }
+
+    @Override
     protected void initBlockEntity() {
         text = new String[4];
 
@@ -76,7 +81,7 @@ public class BlockEntitySign extends BlockEntitySpawnable {
         this.spawnToAll();
 
         if (this.chunk != null) {
-            this.chunk.setChanged();
+            this.setDirty();
         }
 
         return true;

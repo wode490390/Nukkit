@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ResourcePackManager {
     private ResourcePack[] resourcePacks;
-    private Map<String, ResourcePack> resourcePacksById = new HashMap<>();
+    private Map<String, ResourcePack> resourcePacksById = new HashMap<String, ResourcePack>();
 
     public ResourcePackManager(File path) {
         if (!path.exists()) {
@@ -41,7 +41,7 @@ public class ResourcePackManager {
 
                 if (resourcePack != null) {
                     loadedResourcePacks.add(resourcePack);
-                    this.resourcePacksById.put(resourcePack.getPackId(), resourcePack);
+                    this.resourcePacksById.put(resourcePack.getPackId().toLowerCase(), resourcePack);
                 }
             } catch (IllegalArgumentException e) {
                 Server.getInstance().getLogger().warning(Server.getInstance().getLanguage()
@@ -59,6 +59,6 @@ public class ResourcePackManager {
     }
 
     public ResourcePack getPackById(String id) {
-        return this.resourcePacksById.get(id);
+        return this.resourcePacksById.get(id.toLowerCase());
     }
 }

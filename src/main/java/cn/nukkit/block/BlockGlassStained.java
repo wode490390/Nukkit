@@ -1,26 +1,20 @@
 package cn.nukkit.block;
 
+import cn.nukkit.item.Item;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DyeColor;
 
 /**
  * Created by CreeperFace on 7.8.2017.
  */
-public class BlockGlassStained extends BlockGlass {
-
-    private int meta;
+public class BlockGlassStained extends BlockTransparentMeta {
 
     public BlockGlassStained() {
         this(0);
     }
 
     public BlockGlassStained(int meta) {
-        this.meta = meta;
-    }
-
-    @Override
-    public int getFullId() {
-        return (getId() << 4) + getDamage();
+        super(meta);
     }
 
     @Override
@@ -43,13 +37,18 @@ public class BlockGlassStained extends BlockGlass {
     }
 
     @Override
-    public final int getDamage() {
-        return this.meta;
+    public double getResistance() {
+        return 1.5;
     }
 
     @Override
-    public final void setDamage(int meta) {
-        this.meta = meta;
+    public double getHardness() {
+        return 0.3;
+    }
+
+    @Override
+    public Item[] getDrops(Item item) {
+        return new Item[0];
     }
 
     @Override
