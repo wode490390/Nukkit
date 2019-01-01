@@ -20,7 +20,7 @@ import java.util.*;
 public class BinaryStream {
 
     public int offset;
-    private byte[] buffer;
+    public byte[] buffer;
     private int count;
 
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
