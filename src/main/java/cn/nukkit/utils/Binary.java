@@ -18,6 +18,9 @@ import java.util.UUID;
  */
 public class Binary {
 
+    public static int BIG_ENDIAN = 0x00;
+    public static int LITTLE_ENDIAN = 0x01;
+
     public static int signByte(int value) {
         return value << 56 >> 56;
     }
