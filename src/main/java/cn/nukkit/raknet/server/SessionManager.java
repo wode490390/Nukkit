@@ -8,11 +8,11 @@ import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.ThreadedLogger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.socket.DatagramPacket;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * author: MagicDroidX
@@ -42,6 +42,7 @@ public class SessionManager {
 
     protected final Map<String, Long> block = new HashMap<String, Long>();
     protected final Map<String, Integer> ipSec = new HashMap<String, Integer>();
+    protected Pattern rawPacketFilters;
 
     public boolean portChecking = true;
 
@@ -408,6 +409,10 @@ public class SessionManager {
                     len = packet[offset++];
                     address = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     this.unblockAddress(address);
+                    break;
+                case ITCProtocol.PACKET_RAW_FILTER:
+                    String pattern = new String(Binary.subBytes(packet, offset), StandardCharsets.UTF_8);
+                    this.rawPacketFilters = Pattern.compile(pattern);
                     break;
                 case ITCProtocol.PACKET_SHUTDOWN:
                     for (Session session : new ArrayList<>(this.sessions.values())) {
