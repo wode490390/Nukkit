@@ -1,13 +1,21 @@
 package cn.nukkit.raknet.protocol;
 
-import cn.nukkit.raknet.RakNet;
-
 public abstract class OfflineMessage extends Packet {
+
+    /**
+     * Magic bytes used to distinguish offline messages from loose garbage.
+     */
+    private byte[] MAGIC = new byte[]{
+            (byte) 0x00, (byte) 0xff, (byte) 0xff, (byte) 0x00,
+            (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe,
+            (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd,
+            (byte) 0x12, (byte) 0x34, (byte) 0x56, (byte) 0x78
+    };
 
     public byte[] magic = new byte[16];
 
     public void writeMagic() {
-        this.put(RakNet.MAGIC);
+        this.put(MAGIC);
     }
 
     public void readMagic() {
@@ -15,7 +23,7 @@ public abstract class OfflineMessage extends Packet {
     }
 
     public boolean isValid() {
-        return this.magic == RakNet.MAGIC;
+        return this.magic == MAGIC;
     }
 
     @Override
