@@ -2,13 +2,6 @@ package cn.nukkit.raknet.server;
 
 public interface ITCProtocol {
 
-    byte[] MAGIC = new byte[]{
-            (byte) 0x00, (byte) 0xff, (byte) 0xff, (byte) 0x00,
-            (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe,
-            (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd,
-            (byte) 0x12, (byte) 0x34, (byte) 0x56, (byte) 0x78
-    };
-
     /*
      * These internal "packets" DO NOT exist in the RakNet protocol. They are used by the RakLib API to communicate
      * messages between the RakLib thread and the implementation's thread.
