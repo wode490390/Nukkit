@@ -1,6 +1,5 @@
 package cn.nukkit.raknet.server;
 
-import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
 import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
@@ -247,13 +246,13 @@ public class SessionManager {
     }
 
     public void streamEncapsulated(Session session, EncapsulatedPacket packet) {
-        this.streamEncapsulated(session, packet, RakNet.PRIORITY_NORMAL);
+        this.streamEncapsulated(session, packet, ITCProtocol.PRIORITY_NORMAL);
     }
 
     public void streamEncapsulated(Session session, EncapsulatedPacket packet, int flags) {
         String id = session.getAddress() + ":" + session.getPort();
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_ENCAPSULATED,
+                ITCProtocol.PACKET_ENCAPSULATED,
                 new byte[]{(byte) (id.length() & 0xff)},
                 id.getBytes(StandardCharsets.UTF_8),
                 new byte[]{(byte) (flags & 0xff)},
@@ -264,7 +263,7 @@ public class SessionManager {
 
     public void streamRaw(String address, int port, byte[] payload) {
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_RAW,
+                ITCProtocol.PACKET_RAW,
                 new byte[]{(byte) (address.length() & 0xff)},
                 address.getBytes(StandardCharsets.UTF_8),
                 Binary.writeShort(port),
@@ -275,7 +274,7 @@ public class SessionManager {
 
     protected void streamClose(String identifier, String reason) {
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_CLOSE_SESSION,
+                ITCProtocol.PACKET_CLOSE_SESSION,
                 new byte[]{(byte) (identifier.length() & 0xff)},
                 identifier.getBytes(StandardCharsets.UTF_8),
                 new byte[]{(byte) (reason.length() & 0xff)},
@@ -286,7 +285,7 @@ public class SessionManager {
 
     protected void streamInvalid(String identifier) {
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_INVALID_SESSION,
+                ITCProtocol.PACKET_INVALID_SESSION,
                 new byte[]{(byte) (identifier.length() & 0xff)},
                 identifier.getBytes(StandardCharsets.UTF_8)
         );
@@ -296,7 +295,7 @@ public class SessionManager {
     protected void streamOpen(Session session) {
         String identifier = session.getAddress() + ":" + session.getPort();
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_OPEN_SESSION,
+                ITCProtocol.PACKET_OPEN_SESSION,
                 new byte[]{(byte) (identifier.length() & 0xff)},
                 identifier.getBytes(StandardCharsets.UTF_8),
                 new byte[]{(byte) (session.getAddress().length() & 0xff)},
@@ -309,7 +308,7 @@ public class SessionManager {
 
     protected void streamACK(String identifier, int identifierACK) {
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_ACK_NOTIFICATION,
+                ITCProtocol.PACKET_ACK_NOTIFICATION,
                 new byte[]{(byte) (identifier.length() & 0xff)},
                 identifier.getBytes(StandardCharsets.UTF_8),
                 Binary.writeInt(identifierACK)
@@ -319,7 +318,7 @@ public class SessionManager {
 
     protected void streamOption(String name, String value) {
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_SET_OPTION,
+                ITCProtocol.PACKET_SET_OPTION,
                 new byte[]{(byte) (name.length() & 0xff)},
                 name.getBytes(StandardCharsets.UTF_8),
                 value.getBytes(StandardCharsets.UTF_8)
@@ -330,7 +329,7 @@ public class SessionManager {
     protected void streamPingMeasure(Session session, long pingMS) {
         String identifier = session.getAddress() + ":" + session.getPort();
         byte[] buffer = Binary.appendBytes(
-                RakNet.PACKET_REPORT_PING,
+                ITCProtocol.PACKET_REPORT_PING,
                 new byte[]{(byte) (identifier.length() & 0xff)},
                 identifier.getBytes(StandardCharsets.UTF_8),
                 Binary.writeInt((int) pingMS)
@@ -344,7 +343,7 @@ public class SessionManager {
             byte id = packet[0];
             int offset = 1;
             switch (id) {
-                case RakNet.PACKET_ENCAPSULATED:
+                case ITCProtocol.PACKET_ENCAPSULATED:
                     int len = packet[offset++];
                     String identifier = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     offset += len;
@@ -356,7 +355,7 @@ public class SessionManager {
                         this.streamInvalid(identifier);
                     }
                     break;
-                case RakNet.PACKET_RAW:
+                case ITCProtocol.PACKET_RAW:
                     len = packet[offset++];
                     String address = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     offset += len;
@@ -365,7 +364,7 @@ public class SessionManager {
                     byte[] payload = Binary.subBytes(packet, offset);
                     this.socket.writePacket(payload, address, port);
                     break;
-                case RakNet.PACKET_CLOSE_SESSION:
+                case ITCProtocol.PACKET_CLOSE_SESSION:
                     len = packet[offset++];
                     identifier = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     if (this.sessions.containsKey(identifier)) {
@@ -374,14 +373,14 @@ public class SessionManager {
                         this.streamInvalid(identifier);
                     }
                     break;
-                case RakNet.PACKET_INVALID_SESSION:
+                case ITCProtocol.PACKET_INVALID_SESSION:
                     len = packet[offset++];
                     identifier = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     if (this.sessions.containsKey(identifier)) {
                         this.removeSession(this.sessions.get(identifier));
                     }
                     break;
-                case RakNet.PACKET_SET_OPTION:
+                case ITCProtocol.PACKET_SET_OPTION:
                     len = packet[offset++];
                     String name = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     offset += len;
@@ -398,19 +397,19 @@ public class SessionManager {
                             break;
                     }
                     break;
-                case RakNet.PACKET_BLOCK_ADDRESS:
+                case ITCProtocol.PACKET_BLOCK_ADDRESS:
                     len = packet[offset++];
                     address = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     offset += len;
                     int timeout = Binary.readInt(Binary.subBytes(packet, offset, 4));
                     this.blockAddress(address, timeout);
                     break;
-                case RakNet.PACKET_UNBLOCK_ADDRESS:
+                case ITCProtocol.PACKET_UNBLOCK_ADDRESS:
                     len = packet[offset++];
                     address = new String(Binary.subBytes(packet, offset, len), StandardCharsets.UTF_8);
                     this.unblockAddress(address);
                     break;
-                case RakNet.PACKET_SHUTDOWN:
+                case ITCProtocol.PACKET_SHUTDOWN:
                     for (Session session : new ArrayList<>(this.sessions.values())) {
                         this.removeSession(session);
                     }
@@ -418,7 +417,7 @@ public class SessionManager {
                     this.socket.close();
                     this.shutdown = true;
                     break;
-                case RakNet.PACKET_EMERGENCY_SHUTDOWN:
+                case ITCProtocol.PACKET_EMERGENCY_SHUTDOWN:
                     this.shutdown = true;
                     break;
                 default:
