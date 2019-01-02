@@ -1,8 +1,8 @@
 package cn.nukkit.raknet.server;
 
+import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
 import cn.nukkit.utils.Binary;
-
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -21,7 +21,7 @@ public class ServerHandler {
     }
 
     public void sendEncapsulated(String identifier, EncapsulatedPacket packet) {
-        this.sendEncapsulated(identifier, packet, ITCProtocol.PRIORITY_NORMAL);
+        this.sendEncapsulated(identifier, packet, RakNet.PRIORITY_NORMAL);
     }
 
     public void sendEncapsulated(String identifier, EncapsulatedPacket packet, int flags) {

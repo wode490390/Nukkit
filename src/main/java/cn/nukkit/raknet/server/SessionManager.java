@@ -1,7 +1,8 @@
 package cn.nukkit.raknet.server;
 
+import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
-import cn.nukkit.raknet.protocol.OfflineMessage;
+//import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
 import cn.nukkit.raknet.protocol.packet.*;
 import cn.nukkit.utils.Binary;
@@ -11,7 +12,12 @@ import io.netty.channel.socket.DatagramPacket;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +73,7 @@ public class SessionManager {
 
         this.reusableAddress = this.socket.getBindAddress();
 
-        this.serverId = new Random().nextLong();
+        this.serverId = ThreadLocalRandom.current().nextLong();
 
         this.registerPackets();
 
@@ -247,7 +253,7 @@ public class SessionManager {
     }
 
     public void streamEncapsulated(Session session, EncapsulatedPacket packet) {
-        this.streamEncapsulated(session, packet, ITCProtocol.PRIORITY_NORMAL);
+        this.streamEncapsulated(session, packet, RakNet.PRIORITY_NORMAL);
     }
 
     public void streamEncapsulated(Session session, EncapsulatedPacket packet, int flags) {
