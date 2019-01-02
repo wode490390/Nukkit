@@ -1,6 +1,6 @@
 package cn.nukkit.blockentity;
 
-import cn.nukkit.item.Item;
+import cn.nukkit.block.Block;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.DyeColor;
@@ -9,8 +9,6 @@ import cn.nukkit.utils.DyeColor;
  * Created by CreeperFace on 2.6.2017.
  */
 public class BlockEntityBed extends BlockEntitySpawnable {
-
-    private int color = 14; //default to old red
 
     public BlockEntityBed(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -24,45 +22,32 @@ public class BlockEntityBed extends BlockEntitySpawnable {
     @Override
     protected void initBlockEntity() {
         if (!this.namedTag.contains("color")) {
-            this.namedTag.putByte("color", 0);
+            this.namedTag.putByte("color", 14);
         }
-
-        this.color = this.namedTag.getByte("color");
 
         super.initBlockEntity();
     }
 
     @Override
     public boolean isBlockEntityValid() {
-        return this.level.getBlockIdAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) == Item.BED_BLOCK;
-    }
-
-    @Override
-    public void saveNBT() {
-        super.saveNBT();
-        this.namedTag.putByte("color", this.color);
+        return this.level.getBlockIdAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) == Block.BED_BLOCK;
     }
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return new CompoundTag()
-                .putString("id", BlockEntity.BED)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
-                .putByte("color", this.color);
+        return getDefaultCompound(this, BED).putByte("color", this.getColor());
     }
 
     public DyeColor getDyeColor() {
-        return DyeColor.getByWoolData(color);
+        return DyeColor.getByWoolData(this.getColor());
     }
 
     public int getColor() {
-        return this.color;
+        return this.namedTag.getByte("color", 14);
     }
 
     public void setColor(int color) {
-        this.color = color & 0xf;
-        this.onChanged();
+        this.namedTag.putByte("color", color & 0xf);
+        this.setDirty();
     }
 }
