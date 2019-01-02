@@ -2,7 +2,6 @@ package cn.nukkit.raknet.protocol;
 
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.BinaryStream;
-
 import java.util.TreeMap;
 
 /**
@@ -76,7 +75,7 @@ public abstract class AcknowledgePacket extends Packet {
     @Override
     public void decode() {
         super.decode();
-        short count = this.getSignedShort();
+        short count = (short) this.getShort();
         this.packets = new TreeMap<>();
         int cnt = 0;
         for (int i = 0; i < count && !this.feof() && cnt < 4096; ++i) {

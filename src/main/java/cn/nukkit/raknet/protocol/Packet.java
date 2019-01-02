@@ -1,7 +1,7 @@
 package cn.nukkit.raknet.protocol;
 
 import cn.nukkit.utils.BinaryStream;
-import cn.nukkit.utils.IPv6Converter;
+//import cn.nukkit.utils.IPv6Converter;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
@@ -23,7 +23,7 @@ public abstract class Packet extends BinaryStream implements Cloneable {
     }
 
     protected InetSocketAddress getAddress() {
-        byte version = this.getByte();
+        byte version = (byte) this.getByte();
         if (version == 4) {
             String addr = ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff);
             int port = this.getShort();

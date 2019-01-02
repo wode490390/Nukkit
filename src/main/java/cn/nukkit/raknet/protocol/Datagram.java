@@ -1,7 +1,6 @@
 package cn.nukkit.raknet.protocol;
 
 import cn.nukkit.utils.Binary;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -48,7 +47,7 @@ public abstract class Datagram extends Packet {
 
     @Override
     public void decode() {
-        this.headerFlags = this.getByte();
+        this.headerFlags = (byte) this.getByte();
         this.seqNumber = this.getLTriad();
 
         while (!this.feof()) {
