@@ -1,25 +1,80 @@
 package cn.nukkit.raknet.protocol;
 
-import cn.nukkit.utils.BinaryStream;
+import cn.nukkit.utils.Binary;
 //import cn.nukkit.utils.IPv6Converter;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class Packet extends BinaryStream implements Cloneable {
+public abstract class Packet implements Cloneable {
 
     public static final byte ID = -1;
 
+    protected int offset = 0;
+    public byte[] buffer;
     public Long sendTime;
 
     public abstract byte getID();
 
-    @Override
-    public String getString() {        
-        return new String(this.get(this.getShort()), StandardCharsets.UTF_8);        
+    protected byte[] get(int len) {
+        if (len < 0) {
+            this.offset = this.buffer.length - 1;
+            return new byte[0];
+        }
+
+        byte[] buffer = new byte[len];
+        for (int i = 0; i < len; i++) {
+            buffer[i] = this.buffer[this.offset++];
+        }
+        return buffer;
+    }
+
+    protected byte[] getAll() {
+        return this.get();
+    }
+
+    protected byte[] get() {
+        try {
+            return Arrays.copyOfRange(this.buffer, this.offset, this.buffer.length - 1);
+        } catch (Exception e) {
+            return new byte[0];
+        }
+    }
+
+    protected long getLong() {
+        return Binary.readLong(this.get(8));
+    }
+
+    protected int getInt() {
+        return Binary.readInt(this.get(4));
+    }
+
+    protected short getSignedShort() {
+        return (short) this.getShort();
+    }
+
+    protected int getShort() {
+        return Binary.readShort(this.get(2));
+    }
+
+    protected int getTriad() {
+        return Binary.readTriad(this.get(3));
+    }
+
+    protected int getLTriad() {
+        return Binary.readLTriad(this.get(3));
+    }
+
+    protected byte getByte() {
+        return this.buffer[this.offset++];
+    }
+
+    protected String getString() {
+        return new String(this.get(this.getSignedShort()), StandardCharsets.UTF_8);
     }
 
     protected InetSocketAddress getAddress() {
@@ -30,7 +85,7 @@ public abstract class Packet extends BinaryStream implements Cloneable {
             return new InetSocketAddress(addr, port);/*
         } else if (version == 6) {
             //http://man7.org/linux/man-pages/man7/ipv6.7.html
-            this.getLShort(); //Family, AF_INET6
+            Binary.readLShort(this.get(2)); //Family, AF_INET6
             int port = this.getShort();
             this.getInt(); //flow info
             String addr = IPv6Converter.splitKey(this.get(16));
@@ -42,11 +97,49 @@ public abstract class Packet extends BinaryStream implements Cloneable {
         }
     }
 
-    @Override
-    public void putString(String str) {        
-        byte[] b = str.getBytes(StandardCharsets.UTF_8);        
-        this.putShort(b.length);        
-        this.put(b);        
+    protected boolean feof() {
+        return !(this.offset >= 0 && this.offset + 1 <= this.buffer.length);
+    }
+
+    protected void put(byte[] b) {
+        this.buffer = Binary.appendBytes(this.buffer, b);
+    }
+
+    protected void putLong(long v) {
+        this.put(Binary.writeLong(v));
+    }
+
+    protected void putInt(int v) {
+        this.put(Binary.writeInt(v));
+    }
+
+    protected void putShort(int v) {
+        this.put(Binary.writeShort(v));
+    }
+
+    protected void putSignedShort(short v) {
+        this.put(Binary.writeShort(v & 0xffff));
+    }
+
+    protected void putTriad(int v) {
+        this.put(Binary.writeTriad(v));
+    }
+
+    protected void putLTriad(int v) {
+        this.put(Binary.writeLTriad(v));
+    }
+
+    protected void putByte(byte b) {
+        byte[] newBytes = new byte[this.buffer.length + 1];
+        System.arraycopy(this.buffer, 0, newBytes, 0, this.buffer.length);
+        newBytes[this.buffer.length] = b;
+        this.buffer = newBytes;
+    }
+
+    protected void putString(String str) {
+        byte[] b = str.getBytes(StandardCharsets.UTF_8);
+        this.putShort(b.length);
+        this.put(b);
     }
 
     protected void putAddress(String addr, int port) {
@@ -76,7 +169,7 @@ public abstract class Packet extends BinaryStream implements Cloneable {
     }
 
     public void encode() {
-        this.buffer = new byte[]{ID};
+        this.buffer = new byte[]{getID()};
     }
 
     public void decode() {
