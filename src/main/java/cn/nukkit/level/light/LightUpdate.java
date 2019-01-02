@@ -2,12 +2,14 @@ package cn.nukkit.level.light;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.SubChunkIteratorManager;
 import cn.nukkit.math.BlockVector3;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * author: dktapps
@@ -41,7 +43,7 @@ public abstract class LightUpdate {
     abstract protected void setLight(int x, int y, int z, int level);
 
     public void setAndUpdateLight(int x, int y, int z, int newLevel) {
-        this.updateNodes.put(Level.blockHash(x, y, z), newLevel);
+        this.updateNodes.put(new BlockVector3(x, y, z), newLevel);
     }
 
     private void prepareNodes() {
@@ -132,14 +134,14 @@ public abstract class LightUpdate {
         if (current != 0 && current < oldAdjacentLevel) {
             this.setLight(x, y, z, 0);
 
-            if (!removalVisited.contains(index = Level.blockHash(x, y, z))) {
+            if (!removalVisited.contains(index = new BlockVector3(x, y, z))) {
                 removalVisited.add(index);
                 if (current > 1) {
                     this.removalQueue.add(new Entry(new BlockVector3(x, y, z), current));
                 }
             }
         } else if (current >= oldAdjacentLevel) {
-            if (!spreadVisited.contains(index = Level.blockHash(x, y, z))) {
+            if (!spreadVisited.contains(index = new BlockVector3(x, y, z))) {
                 spreadVisited.add(index);
                 spreadQueue.add(new BlockVector3(x, y, z));
             }
@@ -154,7 +156,7 @@ public abstract class LightUpdate {
             this.setLight(x, y, z, potentialLight);
 
             BlockVector3 index;
-            if (!spreadVisited.contains(index = Level.blockHash(x, y, z))) {
+            if (!spreadVisited.contains(index = new BlockVector3(x, y, z))) {
                 spreadVisited.add(index);
                 spreadQueue.add(new BlockVector3(x, y, z));
             }
