@@ -132,7 +132,7 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public int getByte(String name) {
-        this.getByte(name, 0);
+        return this.getByte(name, (byte) 0);
     }
 
     public int getByte(String name, byte defaultValue) {
@@ -141,7 +141,7 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public int getShort(String name) {
-        this.getShort(name, 0);
+        return this.getShort(name, (short) 0);
     }
 
     public int getShort(String name, short defaultValue) {
@@ -150,7 +150,7 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public int getInt(String name) {
-        this.getInt(name, 0);
+        return this.getInt(name, 0);
     }
 
     public int getInt(String name, int defaultValue) {
@@ -158,8 +158,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((NumberTag) tags.get(name)).getData().intValue();
     }
 
-    public int getLong(String name) {
-        this.getLong(name, 0);
+    public long getLong(String name) {
+        return this.getLong(name, 0);
     }
 
     public long getLong(String name, long defaultValue) {
@@ -167,8 +167,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((NumberTag) tags.get(name)).getData().longValue();
     }
 
-    public int getFloat(String name) {
-        this.getFloat(name, 0);
+    public float getFloat(String name) {
+        return this.getFloat(name, 0);
     }
 
     public float getFloat(String name, float defaultValue) {
@@ -176,8 +176,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((NumberTag) tags.get(name)).getData().floatValue();
     }
 
-    public int getDouble(String name) {
-        this.getDouble(name, 0);
+    public double getDouble(String name) {
+        return this.getDouble(name, 0);
     }
 
     public double getDouble(String name, double defaultValue) {
@@ -185,8 +185,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((NumberTag) tags.get(name)).getData().doubleValue();
     }
 
-    public int getString(String name) {
-        this.getString(name, "");
+    public String getString(String name) {
+        return this.getString(name, "");
     }
 
     public String getString(String name, String defaultValue) {
@@ -198,8 +198,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((StringTag) tag).data;
     }
 
-    public int getByteArray(String name) {
-        this.getByteArray(name, new byte[0]);
+    public byte[] getByteArray(String name) {
+        return this.getByteArray(name, new byte[0]);
     }
 
     public byte[] getByteArray(String name, byte[] defaultValue) {
@@ -207,8 +207,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((ByteArrayTag) tags.get(name)).data;
     }
 
-    public int getIntArray(String name) {
-        this.getIntArray(name, new int[0]);
+    public int[] getIntArray(String name) {
+        return this.getIntArray(name, new int[0]);
     }
 
     public int[] getIntArray(String name, int[] defaultValue) {
@@ -216,8 +216,8 @@ public class CompoundTag extends Tag implements Cloneable {
         return ((IntArrayTag) tags.get(name)).data;
     }
 
-    public int getCompound(String name) {
-        this.getCompound(name, new CompoundTag(name));
+    public CompoundTag getCompound(String name) {
+        return this.getCompound(name, new CompoundTag(name));
     }
 
     public CompoundTag getCompound(String name, CompoundTag defaultValue) {
@@ -244,7 +244,7 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public boolean getBoolean(String name) {
-        this.getBoolean(name, false);
+        return this.getBoolean(name, false);
     }
 
     public boolean getBoolean(String name, boolean defaultValue) {
