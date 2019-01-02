@@ -19,28 +19,30 @@ import java.lang.reflect.Constructor;
  */
 public abstract class BlockEntity extends Position {
     //WARNING: DO NOT CHANGE ANY NAME HERE, OR THE CLIENT WILL CRASH
-    public static final String CHEST = "Chest";
-    public static final String ENDER_CHEST = "EnderChest";
-    public static final String FURNACE = "Furnace";
-    public static final String SIGN = "Sign";
-    public static final String MOB_SPAWNER = "MobSpawner";
-    public static final String ENCHANT_TABLE = "EnchantTable";
-    public static final String SKULL = "Skull";
-    public static final String FLOWER_POT = "FlowerPot";
-    public static final String BREWING_STAND = "BrewingStand";
-    public static final String DAYLIGHT_DETECTOR = "DaylightDetector";
-    public static final String MUSIC = "Music";
-    public static final String ITEM_FRAME = "ItemFrame";
-    public static final String CAULDRON = "Cauldron";
-    public static final String BEACON = "Beacon";
-    public static final String PISTON_ARM = "PistonArm";
-    public static final String MOVING_BLOCK = "MovingBlock";
-    public static final String COMPARATOR = "Comparator";
-    public static final String HOPPER = "Hopper";
-    public static final String BED = "Bed";
-    public static final String JUKEBOX = "Jukebox";
-    public static final String SHULKER_BOX = "ShulkerBox";
     public static final String BANNER = "Banner";
+    public static final String BEACON = "Beacon";
+    public static final String BED = "Bed";
+    public static final String BREWING_STAND = "BrewingStand";
+    public static final String CAULDRON = "Cauldron";
+    public static final String CHEST = "Chest";
+    public static final String COMPARATOR = "Comparator";
+    public static final String DAYLIGHT_DETECTOR = "DaylightDetector";
+    public static final String DISPENSER = "Dispenser";
+    public static final String DROPPER = "Dropper";
+    public static final String ENCHANT_TABLE = "EnchantTable";
+    public static final String ENDER_CHEST = "EnderChest";
+    public static final String FLOWER_POT = "FlowerPot";
+    public static final String FURNACE = "Furnace";
+    public static final String HOPPER = "Hopper";
+    public static final String ITEM_FRAME = "ItemFrame";
+    public static final String JUKEBOX = "Jukebox";
+    public static final String MOB_SPAWNER = "MobSpawner";
+    public static final String MOVING_BLOCK = "MovingBlock";
+    public static final String MUSIC = "Music";
+    public static final String PISTON_ARM = "PistonArm";
+    public static final String SHULKER_BOX = "ShulkerBox";
+    public static final String SIGN = "Sign";
+    public static final String SKULL = "Skull";
 
     public static long count = 1;
 
