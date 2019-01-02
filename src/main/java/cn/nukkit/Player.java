@@ -75,7 +75,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteOrder;
@@ -3980,7 +3979,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                 add = true;
             }
-            if (add) source.setDamage((float) (source.getDamage() * 1.5));
+            if (add) source.setDamage(source.getDamage() * 1.5f);
         }
 
         if (super.attack(source)) { //!source.isCancelled()
