@@ -336,22 +336,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
                     light[id] = block.getLightLevel();
                     diffusesSkyLight[id] = block.diffusesSkyLight();
                     lightFilter[id] = block.getLightFilter() + 1;
-
-                    if (block.isSolid()) {
-                        if (block.isTransparent()) {
-                            if (block instanceof BlockLiquid || block instanceof BlockIce) {
-                                lightFilter[id] = 2;
-                            } else {
-                                lightFilter[id] = 1;
-                            }
-                        } else {
-                            lightFilter[id] = 15;
-                        }
-                    } else {
-                        lightFilter[id] = 1;
-                    }
                 } else {
-                    lightFilter[id] = 1;
                     for (int data = 0; data < 16; ++data) {
                         fullList[(id << 4) | data] = new BlockUnknown(id, data);
                     }
@@ -567,8 +552,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         }
     }
 
-    private static double toolBreakTimeBonus0(
-            int toolType, int toolTier, boolean isWoolBlock, boolean isCobweb) {
+    private static double toolBreakTimeBonus0(int toolType, int toolTier, boolean isWoolBlock, boolean isCobweb) {
         if (toolType == ItemTool.TYPE_SWORD) return isCobweb ? 15.0 : 1.0;
         if (toolType == ItemTool.TYPE_SHEARS) return isWoolBlock ? 5.0 : 15.0;
         if (toolType == ItemTool.TYPE_NONE) return 1.0;
@@ -616,9 +600,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     //http://minecraft.gamepedia.com/Breaking
-    private static double breakTime0(double blockHardness, boolean correctTool, boolean canHarvestWithHand,
-                                     int blockId, int toolType, int toolTier, int efficiencyLoreLevel, int hasteEffectLevel,
-                                     boolean insideOfWaterWithoutAquaAffinity, boolean outOfWaterButNotOnGround) {
+    private static double breakTime0(double blockHardness, boolean correctTool, boolean canHarvestWithHand, int blockId, int toolType, int toolTier, int efficiencyLoreLevel, int hasteEffectLevel, boolean insideOfWaterWithoutAquaAffinity, boolean outOfWaterButNotOnGround) {
         double baseTime = ((correctTool || canHarvestWithHand) ? 1.5 : 5.0) * blockHardness;
         double speed = 1.0 / baseTime;
         boolean isWoolBlock = blockId == Block.WOOL, isCobweb = blockId == Block.COBWEB;
@@ -639,16 +621,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         int blockId = getId();
         int itemToolType = toolType0(item);
         int itemTier = item.getTier();
-        int efficiencyLoreLevel = Optional.ofNullable(item.getEnchantment(Enchantment.ID_EFFICIENCY))
-                .map(Enchantment::getLevel).orElse(0);
-        int hasteEffectLevel = Optional.ofNullable(player.getEffect(Effect.HASTE))
-                .map(Effect::getAmplifier).orElse(0);
-        boolean insideOfWaterWithoutAquaAffinity = player.isInsideOfWater() &&
-                Optional.ofNullable(player.getInventory().getHelmet().getEnchantment(Enchantment.ID_WATER_WORKER))
-                        .map(Enchantment::getLevel).map(l -> l >= 1).orElse(false);
+        int efficiencyLoreLevel = Optional.ofNullable(item.getEnchantment(Enchantment.ID_EFFICIENCY)).map(Enchantment::getLevel).orElse(0);
+        int hasteEffectLevel = Optional.ofNullable(player.getEffect(Effect.HASTE)).map(Effect::getAmplifier).orElse(0);
+        boolean insideOfWaterWithoutAquaAffinity = player.isInsideOfWater() && Optional.ofNullable(player.getInventory().getHelmet().getEnchantment(Enchantment.ID_WATER_WORKER)).map(Enchantment::getLevel).map(l -> l >= 1).orElse(false);
         boolean outOfWaterButNotOnGround = (!player.isInsideOfWater()) && (!player.isOnGround());
-        return breakTime0(blockHardness, correctTool, canHarvestWithHand, blockId, itemToolType, itemTier,
-                efficiencyLoreLevel, hasteEffectLevel, insideOfWaterWithoutAquaAffinity, outOfWaterButNotOnGround);
+        return breakTime0(blockHardness, correctTool, canHarvestWithHand, blockId, itemToolType, itemTier, efficiencyLoreLevel, hasteEffectLevel, insideOfWaterWithoutAquaAffinity, outOfWaterButNotOnGround);
     }
 
     /**
