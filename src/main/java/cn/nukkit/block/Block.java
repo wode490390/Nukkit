@@ -35,6 +35,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     public static boolean[] solid = null;
     public static double[] hardness = null;
     public static boolean[] transparent = null;
+    public static boolean[] diffusesSkyLight = null;
     /**
      * if a block has can have variants
      */
@@ -52,6 +53,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             solid = new boolean[256];
             hardness = new double[256];
             transparent = new boolean[256];
+            diffusesSkyLight = new boolean[256];
             hasMeta = new boolean[256];
 
             list[AIR] = BlockAir.class; //0
@@ -332,6 +334,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
                     transparent[id] = block.isTransparent();
                     hardness[id] = block.getHardness();
                     light[id] = block.getLightLevel();
+                    diffusesSkyLight[id] = block.diffusesSkyLight();
+                    lightFilter[id] = block.getLightFilter() + 1;
 
                     if (block.isSolid()) {
                         if (block.isTransparent()) {
