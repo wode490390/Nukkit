@@ -33,7 +33,7 @@ public class OpenConnectionRequest1 extends OfflineMessage {
     public void decode() {
         super.decode();
         this.readMagic();
-        this.protocol = this.getByte();
+        this.protocol = (byte) this.getByte();
         this.mtuSize = (short) this.buffer.length;
     }
 
@@ -43,6 +43,5 @@ public class OpenConnectionRequest1 extends OfflineMessage {
         public Packet create() {
             return new OpenConnectionRequest1();
         }
-
     }
 }
