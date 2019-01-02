@@ -18,7 +18,6 @@ import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Objects;
@@ -457,6 +456,14 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
     public int getLightLevel() {
         return 0;
+    }
+
+    public int getLightFilter() {
+        return 15;
+    }
+
+    public boolean diffusesSkyLight() {
+        return false;
     }
 
     public boolean canBePlaced() {
