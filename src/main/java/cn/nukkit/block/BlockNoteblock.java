@@ -63,6 +63,8 @@ public class BlockNoteblock extends BlockSolid {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
         if (blockEntity instanceof BlockEntityNoteBlock) {
             return Math.abs(blockEntity.namedTag.getByte("note")) % 25;
+        } else {
+            new BlockEntityNoteBlock(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
         }
         return 0;
     }
@@ -71,6 +73,8 @@ public class BlockNoteblock extends BlockSolid {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
         if (blockEntity instanceof BlockEntityNoteBlock) {
             ((BlockEntityNoteBlock) blockEntity).changePitch();
+        } else {
+            new BlockEntityNoteBlock(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
         }
     }
 
@@ -220,7 +224,7 @@ public class BlockNoteblock extends BlockSolid {
     public void emitSound() {
         if (this.up().getId() != AIR) return;
 
-        Instrument instrument = getInstrument();
+        Instrument instrument = this.getInstrument();
 
         BlockEventPacket pk = new BlockEventPacket();
         pk.x = this.getFloorX();
@@ -230,7 +234,7 @@ public class BlockNoteblock extends BlockSolid {
         pk.eventData = this.getStrength();
         this.getLevel().addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
 
-        this.getLevel().addSound(this, instrument.getSound(), 1, (float) Math.pow(2.0d, (double) (this.getStrength() - 12) / 12.0d));
+        this.getLevel().addSound(this, instrument.getSound(), 1, (float) Math.pow(2d, (double) (this.getStrength() - 12d) / 12d));
         //this.getLevel().addParticle(new NoteParticle(new Vector3(this.getFloorX() + 0.5d, this.getFloorY() + 1.2d, this.getFloorZ() + 0.5d)));
     }
 
