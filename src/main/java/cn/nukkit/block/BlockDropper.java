@@ -1,12 +1,19 @@
 package cn.nukkit.block;
 
 import cn.nukkit.Player;
-//import cn.nukkit.blockentity.BlockEntity;
-//import cn.nukkit.blockentity.BlockEntityDropper;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntityDropper;
+import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
+import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.StringTag;
+import cn.nukkit.nbt.tag.Tag;
+import java.util.Map;
 
 public class BlockDropper extends BlockSolidMeta {
 
@@ -34,16 +41,31 @@ public class BlockDropper extends BlockSolidMeta {
     }
 
     @Override
+    public double getHardness() {
+        return 3.5;
+    }
+
+    @Override
+    public double getResistance() {
+        return 17.5;
+    }
+
+    @Override
+    public int getToolType() {
+        return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
     public Item toItem() {
         return new ItemBlock(this, 0);
     }
 
     @Override
     public int getComparatorInputOverride() {
-        /*BlockEntity blockEntity = this.level.getBlockEntity(this);
-        if(blockEntity instanceof BlockEntityDropper) {
-            //return ContainerInventory.calculateRedstone(((BlockEntityDropper) blockEntity).getInventory()); TODO: dropper
-        }*/
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityDropper) {
+            return ContainerInventory.calculateRedstone(((BlockEntityDropper) blockEntity).getInventory());
+        }
 
         return super.getComparatorInputOverride();
     }
@@ -105,10 +127,30 @@ public class BlockDropper extends BlockSolidMeta {
         }
         this.level.setBlock(block, this, true, false);
 
+        CompoundTag nbt = new CompoundTag()
+                .putList(new ListTag<>("Items"))
+                .putString("id", BlockEntity.DROPPER)
+                .putInt("x", this.getFloorX())
+                .putInt("y", this.getFloorY())
+                .putInt("z", this.getFloorZ());
+
+        if (item.hasCustomName()) {
+            nbt.putString("CustomName", item.getCustomName());
+        }
+
+        if (item.hasCustomBlockData()) {
+            Map<String, Tag> customData = item.getCustomBlockData().getTags();
+            for (Map.Entry<String, Tag> tag : customData.entrySet()) {
+                nbt.put(tag.getKey(), tag.getValue());
+            }
+        }
+
+        new BlockEntityDropper(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
+
         return true;
     }
 
-    /*@Override
+    @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null) {
             BlockEntity t = this.getLevel().getBlockEntity(this);
@@ -119,15 +161,38 @@ public class BlockDropper extends BlockSolidMeta {
                 CompoundTag nbt = new CompoundTag("")
                         .putList(new ListTag<>("Items"))
                         .putString("id", BlockEntity.DROPPER)
-                        .putInt("x", (int) this.x)
-                        .putInt("y", (int) this.y)
-                        .putInt("z", (int) this.z);
-                container = new BlockEntityDropper(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                        .putInt("x", this.getFloorX())
+                        .putInt("y", this.getFloorY())
+                        .putInt("z", this.getFloorZ());
+                container = new BlockEntityDropper(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
+            }
+
+            if (container.namedTag.contains("Lock") && container.namedTag.get("Lock") instanceof StringTag) {
+                if (!container.namedTag.getString("Lock").equals(item.getCustomName())) {
+                    return true;
+                }
             }
 
             player.addWindow(container.getInventory());
         }
 
         return true;
-    }*/
+    }
+
+    @Override
+    public boolean onBreak(Item item) {
+        this.getLevel().setBlock(this, new BlockAir(), true);
+        return true;
+    }
+
+    @Override
+    public Item[] getDrops(Item item) {
+        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+            return new Item[]{
+                    this.toItem()
+            };
+        } else {
+            return new Item[0];
+        }
+    }
 }
