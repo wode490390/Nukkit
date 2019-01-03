@@ -13,7 +13,7 @@ import cn.nukkit.nbt.tag.ListTag;
 /**
  * @author CreeperFace
  */
-public class BlockEntityPistonArm extends BlockEntity {
+public class BlockEntityPistonArm extends BlockEntitySpawnable {
 
     public float progress = 1F;
     public float lastProgress = 0;
