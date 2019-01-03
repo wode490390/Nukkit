@@ -195,7 +195,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                 InventoryMoveItemEvent ev = new InventoryMoveItemEvent(inv, this.inventory, this, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
                 this.server.getPluginManager().callEvent(ev);
                 if (ev.isCancelled()) {
-                    continue;
+                    return false;
                 }
 
                 Item[] items = this.inventory.addItem(itemToAdd);
