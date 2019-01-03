@@ -854,6 +854,8 @@ public class Level implements ChunkManager, Metadatable {
         this.tickChunks();
         this.timings.tickChunks.stopTiming();
 
+        this.executeQueuedLightUpdates();
+
         synchronized (changedBlocks) {
             if (!this.changedBlocks.isEmpty()) {
                 if (!this.players.isEmpty()) {
@@ -1529,6 +1531,22 @@ public class Level implements ChunkManager, Metadatable {
 
     public int getMoonPhase(long worldTime) {
         return (int) (worldTime / 24000 % 8 + 8) % 8;
+    }
+
+    public void executeQueuedLightUpdates() {
+        if (this.blockLightUpdate != null) {
+            timings.doBlockLightUpdates.startTiming();
+            this.blockLightUpdate.execute();
+            this.blockLightUpdate = null;
+            timings.doBlockLightUpdates.stopTiming();
+        }
+
+        if (this.skyLightUpdate != null) {
+            timings.doBlockSkyLightUpdates.startTiming();
+            this.skyLightUpdate.execute();
+            this.skyLightUpdate = null;
+            timings.doBlockSkyLightUpdates.stopTiming();
+        }
     }
 
     public int getFullBlock(int x, int y, int z) {
@@ -2770,9 +2788,8 @@ public class Level implements ChunkManager, Metadatable {
 
         chunk.initChunk();
 
-        if (!chunk.isLightPopulated() && chunk.isPopulated()
-                && (boolean) this.getServer().getConfig("chunk-ticking.light-updates", false)) {
-            this.getServer().getScheduler().scheduleAsyncTask(new LightPopulationTask(this, chunk));
+        if (chunk instanceof BaseChunk && !chunk.isLightPopulated() && chunk.isPopulated() && (boolean) this.getServer().getConfig("chunk-ticking.light-updates", false)) {
+            this.getServer().getScheduler().scheduleAsyncTask(new LightPopulationTask(this, (BaseChunk) chunk));
         }
 
         if (this.isChunkInUse(index)) {
