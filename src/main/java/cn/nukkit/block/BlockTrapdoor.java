@@ -219,7 +219,7 @@ public class BlockTrapdoor extends BlockTransparentMeta {
     }
 
     public BlockFace getFacing() {
-        switch (meta & 0x03) {
+        switch (this.getDamage() & 0x03) {
             case 0:
                 return BlockFace.NORTH;
             case 1:
