@@ -31,6 +31,7 @@ public class NetworkInventoryAction {
      * Expect these to change in the future.
      */
     public static final int SOURCE_TYPE_CRAFTING_ADD_INGREDIENT = -2;
+    public static final int SOURCE_TYPE_CRAFTING_EDIT_INGREDIENT = -2; //since 1.8
     public static final int SOURCE_TYPE_CRAFTING_REMOVE_INGREDIENT = -3;
     public static final int SOURCE_TYPE_CRAFTING_RESULT = -4;
     public static final int SOURCE_TYPE_CRAFTING_USE_INGREDIENT = -5;
@@ -82,6 +83,8 @@ public class NetworkInventoryAction {
             case SOURCE_CREATIVE:
                 break;
             case SOURCE_CRAFTING_GRID:
+//                this.windowId = packet.getVarInt();
+//                break;
             case SOURCE_TODO:
                 this.windowId = packet.getVarInt();
                 switch (this.windowId) {
@@ -115,6 +118,8 @@ public class NetworkInventoryAction {
             case SOURCE_CREATIVE:
                 break;
             case SOURCE_CRAFTING_GRID:
+//                packet.putVarInt(SOURCE_TYPE_CRAFTING_EDIT_INGREDIENT);
+//                break;
             case SOURCE_TODO:
                 packet.putVarInt(this.windowId);
                 break;
@@ -167,6 +172,19 @@ public class NetworkInventoryAction {
 
                 return new CreativeInventoryAction(this.oldItem, this.newItem, type);
             case SOURCE_CRAFTING_GRID:
+//                switch (this.windowId) {
+//                    case SOURCE_TYPE_CRAFTING_EDIT_INGREDIENT:
+//                        return new SlotChangeAction(player.getCraftingGrid(), this.inventorySlot, this.oldItem, this.newItem);
+//                    case SOURCE_TYPE_CONTAINER_DROP_CONTENTS:
+//                        window = player.getCraftingGrid();
+//                        inventorySlot = window.first(this.oldItem, true);
+//
+//                        if (inventorySlot == -1) {
+//                            return null;
+//                        }
+//
+//                        return new SlotChangeAction(window, inventorySlot, this.oldItem, this.newItem);
+//                }
             case SOURCE_TODO:
                 //These types need special handling.
                 switch (this.windowId) {
