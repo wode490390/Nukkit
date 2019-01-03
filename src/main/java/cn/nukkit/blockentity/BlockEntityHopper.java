@@ -5,6 +5,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.item.EntityItem;
+import cn.nukkit.event.inventory.InventoryMoveItemEvent;
 import cn.nukkit.inventory.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
@@ -187,6 +188,12 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                 continue;
             }
 
+            InventoryMoveItemEvent ev = new InventoryMoveItemEvent(null, this.inventory, this, item, InventoryMoveItemEvent.Action.PICKUP);
+            this.server.getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
+                continue;
+            }
+
             int originalCount = item.getCount();
             Item[] items = this.inventory.addItem(item);
 
@@ -210,6 +217,13 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
             if (item.getId() != 0 && item.getCount() > 0) {
                 Item itemToAdd = item.clone();
                 itemToAdd.count = 1;
+
+                InventoryMoveItemEvent ev = new InventoryMoveItemEvent(inv, this.inventory, this, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                this.server.getPluginManager().callEvent(ev);
+                if (ev.isCancelled()) {
+                    continue;
+                }
+
                 Item[] items = this.inventory.addItem(itemToAdd);
                 if (items.length < 1) {
                     item.count--;
@@ -229,6 +243,12 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                 if (item.getId() != 0 && item.getCount() > 0) {
                     Item itemToAdd = item.clone();
                     itemToAdd.count = 1;
+
+                    InventoryMoveItemEvent ev = new InventoryMoveItemEvent(inv, this.inventory, this, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                    this.server.getPluginManager().callEvent(ev);
+                    if (ev.isCancelled()) {
+                        continue;
+                    }
 
                     Item[] items = this.inventory.addItem(itemToAdd);
 
@@ -296,6 +316,13 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                     //Check direction of hopper
                     if (this.getBlock().getDamage() == 0) {
                         if (inventory.getSmelting().getId() == Item.AIR) {
+
+                            InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, furnace, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                            this.server.getPluginManager().callEvent(ev);
+                            if (ev.isCancelled()) {
+                                continue;
+                            }
+
                             inventory.setSmelting(itemToAdd);
                             item.count--;
                             return true;
@@ -303,6 +330,13 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                             Item smelting = inventory.getSmelting();
                             if (smelting.count < smelting.getMaxStackSize()) {
                                 smelting.count++;
+
+                                InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, furnace, smelting, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                                this.server.getPluginManager().callEvent(ev);
+                                if (ev.isCancelled()) {
+                                    continue;
+                                }
+
                                 inventory.setSmelting(smelting);
                                 item.count--;
                                 return true;
@@ -310,6 +344,13 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                         }
                     } else if (Fuel.duration.containsKey(item.getId())) {
                         if (inventory.getFuel().getId() == Item.AIR){
+
+                            InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, furnace, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                            this.server.getPluginManager().callEvent(ev);
+                            if (ev.isCancelled()) {
+                                continue;
+                            }
+
                             inventory.setFuel(itemToAdd);
                             item.count--;
                             return true;
@@ -317,6 +358,13 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                             Item fuel = inventory.getFuel();
                             if (fuel.count < fuel.getMaxStackSize()) {
                                 fuel.count++;
+                                
+                                InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, furnace, fuel, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                                this.server.getPluginManager().callEvent(ev);
+                                if (ev.isCancelled()) {
+                                    continue;
+                                }
+
                                 inventory.setFuel(fuel);
                                 item.count--;
                                 return true;
@@ -329,7 +377,8 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
             }
 
         } else if (be instanceof InventoryHolder) {
-            Inventory inventory = ((InventoryHolder) be).getInventory();
+            InventoryHolder holder = (InventoryHolder) be;
+            Inventory inventory = holder.getInventory();
 
             if (inventory.isFull()) {
                 return false;
@@ -341,6 +390,12 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                 if (item.getId() != 0 && item.getCount() > 0) {
                     Item itemToAdd = item.clone();
                     itemToAdd.setCount(1);
+
+                    InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, holder, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
+                    this.server.getPluginManager().callEvent(ev);
+                    if (ev.isCancelled()) {
+                        continue;
+                    }
 
                     Item[] items = inventory.addItem(itemToAdd);
 
