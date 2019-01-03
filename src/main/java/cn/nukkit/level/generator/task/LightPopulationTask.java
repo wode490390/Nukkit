@@ -2,7 +2,7 @@ package cn.nukkit.level.generator.task;
 
 import cn.nukkit.Server;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.format.generic.BaseFullChunk;
+import cn.nukkit.level.format.generic.BaseChunk;
 import cn.nukkit.scheduler.AsyncTask;
 
 /**
@@ -11,38 +11,25 @@ import cn.nukkit.scheduler.AsyncTask;
  */
 public class LightPopulationTask extends AsyncTask {
 
-    public final int levelId;
-    public BaseFullChunk chunk;
+    protected Level level;
 
-    public LightPopulationTask(Level level, BaseFullChunk chunk) {
-        this.levelId = level.getId();
-        this.chunk = chunk;
-    }
+    protected BaseChunk chunk;
 
-    @Override
-    public void onRun() {
-        BaseFullChunk chunk = this.chunk.clone();
-        if (chunk == null) {
-            return;
-        }
-
-        chunk.recalculateHeightMap();
-        chunk.populateSkyLight();
-        chunk.setLightPopulated();
-
+    public LightPopulationTask(Level level, BaseChunk chunk) {
+        this.level = level;
         this.chunk = chunk.clone();
     }
 
     @Override
+    public void onRun() {
+        chunk.recalculateHeightMap();
+        chunk.populateSkyLight();
+        chunk.setLightPopulated();
+    }
+
+    @Override
     public void onCompletion(Server server) {
-        Level level = server.getLevel(this.levelId);
-
-        BaseFullChunk chunk = this.chunk.clone();
-        if (level != null) {
-            if (chunk == null) {
-                return;
-            }
-
+        if (!level.isClosed()) {
             level.generateChunkCallback(chunk.getX(), chunk.getZ(), chunk);
         }
     }
