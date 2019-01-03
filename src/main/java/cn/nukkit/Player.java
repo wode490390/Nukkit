@@ -1276,7 +1276,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
             InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();
             inventoryContentPacket.windowId = InventoryContentPacket.SPECIAL_CREATIVE;
-            inventoryContentPacket.items = Item.getCreativeItems().stream().toArray(Item[]::new);
+            inventoryContentPacket.items = Item.getCreativeItems().toArray(new Item[0]);
             this.dataPacket(inventoryContentPacket);
         }
 
@@ -4158,10 +4158,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             //DummyBossBar
             this.getDummyBossBars().values().forEach(DummyBossBar::reshow);
-            //Weather
-            this.getLevel().sendWeather(this);
-            //Update time
-            this.getLevel().sendTime(this);
             return true;
         }
 
@@ -4617,13 +4613,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
             this.usedChunks.clear();
 
-            SetTimePacket setTime = new SetTimePacket();
-            setTime.time = level.getTime();
-            this.dataPacket(setTime);
+            this.level.sendTime(this);
+            this.level.sendWeather(this);
 
             GameRulesChangedPacket gameRulesChanged = new GameRulesChangedPacket();
             gameRulesChanged.gameRules = level.getGameRules();
             this.dataPacket(gameRulesChanged);
+
+            // TODO: Remove this hack
+            int distance = this.viewDistance * 2 * 16 * 2;
+            this.sendPosition(this.add(distance, 0, distance), this.yaw, this.pitch, MovePlayerPacket.MODE_RESET);
             return true;
         }
 
