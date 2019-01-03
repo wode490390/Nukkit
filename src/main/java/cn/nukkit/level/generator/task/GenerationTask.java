@@ -59,6 +59,7 @@ public class GenerationTask extends AsyncTask {
                 state = true;
             } finally {
                 manager.cleanChunks(level.getSeed());
+                manager.close();
             }
         }
 
