@@ -132,21 +132,21 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public int getByte(String name) {
-        return this.getByte(name, (byte) 0);
+        return this.getByte(name, 0);
     }
 
-    public int getByte(String name, byte defaultValue) {
-        if (!tags.containsKey(name)) return defaultValue;
-        return ((NumberTag) tags.get(name)).getData().intValue();
+    public int getByte(String name, int defaultValue) {
+        if (!tags.containsKey(name)) return (byte) defaultValue;
+        return (byte) ((NumberTag) tags.get(name)).getData().intValue();
     }
 
     public int getShort(String name) {
-        return this.getShort(name, (short) 0);
+        return this.getShort(name, 0);
     }
 
-    public int getShort(String name, short defaultValue) {
-        if (!tags.containsKey(name)) return defaultValue;
-        return ((NumberTag) tags.get(name)).getData().intValue();
+    public int getShort(String name, int defaultValue) {
+        if (!tags.containsKey(name)) return (short) defaultValue;
+        return (short) ((NumberTag) tags.get(name)).getData().intValue();
     }
 
     public int getInt(String name) {
