@@ -11,6 +11,8 @@ public abstract class SimpleChunkManager implements ChunkManager {
 
     protected long seed;
 
+    private boolean closed = false;
+
     public SimpleChunkManager(long seed) {
         this.seed = seed;
     }
@@ -67,8 +69,60 @@ public abstract class SimpleChunkManager implements ChunkManager {
     }
 
     @Override
+    public void setBlockLightAt(int x, int y, int z, int level) {
+        FullChunk chunk = this.getChunk(x >> 4, z >> 4);
+        if (chunk != null) {
+            chunk.setBlockLight(x & 0xf, y & 0xff, z & 0xf, level);
+        }
+    }
+
+    @Override
+    public int getBlockLightAt(int x, int y, int z) {
+        FullChunk chunk = this.getChunk(x >> 4, z >> 4);
+        if (chunk != null) {
+            return chunk.getBlockLight(x & 0xf, y & 0xff, z & 0xf);
+        }
+
+        return 0;
+    }
+
+    @Override
+    public void setBlockSkyLightAt(int x, int y, int z, int level) {
+        FullChunk chunk = this.getChunk(x >> 4, z >> 4);
+        if (chunk != null) {
+            chunk.setBlockSkyLight(x & 0xf, y & 0xff, z & 0xf, level);
+        }
+    }
+
+    @Override
+    public int getBlockSkyLightAt(int x, int y, int z) {
+        FullChunk chunk = this.getChunk(x >> 4, z >> 4);
+        if (chunk != null) {
+            return chunk.getBlockSkyLight(x & 0xf, y & 0xff, z & 0xf);
+        }
+        return 0;
+    }
+
+    @Override
     public void setChunk(int chunkX, int chunkZ) {
         this.setChunk(chunkX, chunkZ, null);
+    }
+
+    @Override
+    public int getHeightMap(int x, int z) {
+        FullChunk chunk = this.getChunk(x >> 4, z >> 4);
+        if (chunk != null) {
+            return chunk.getHeightMap(x & 0x0f, z & 0x0f);
+        }
+        return 0;
+    }
+
+    @Override
+    public void setHeightMap(int x, int z, int value) {
+        FullChunk chunk = this.getChunk(x >> 4, z >> 4);
+        if (chunk != null) {
+            chunk.setHeightMap(x & 0x0f, z & 0x0f, value);
+        }
     }
 
     @Override
@@ -82,5 +136,14 @@ public abstract class SimpleChunkManager implements ChunkManager {
 
     public void cleanChunks(long seed) {
         this.seed = seed;
+    }
+
+    @Override
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void close() {
+        this.closed = true;
     }
 }
