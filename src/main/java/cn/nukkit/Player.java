@@ -168,7 +168,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected int startAction = -1;
 
     protected Vector3 sleeping = null;
-    protected Long clientID = null;
+    protected long clientID = null;
 
     private int loaderId;
 
@@ -290,7 +290,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * @return random client id
      */
     @Deprecated
-    public Long getClientId() {
+    public long getClientId() {
         return randomClientId;
     }
 
@@ -329,12 +329,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     @Override
-    public Long getFirstPlayed() {
+    public long getFirstPlayed() {
         return this.namedTag != null ? this.namedTag.getLong("firstPlayed") : null;
     }
 
     @Override
-    public Long getLastPlayed() {
+    public long getLastPlayed() {
         return this.namedTag != null ? this.namedTag.getLong("lastPlayed") : null;
     }
 
@@ -515,7 +515,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, Boolean value) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
         return this.perm.addAttachment(plugin, name, value);
     }
 
@@ -580,7 +580,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             Server.getInstance().getScheduler().scheduleDelayedTask(new Task() {
                 @Override
                 public void onRun(int currentTick) {
-                    Boolean status = needACK.get(identifier);
+                    boolean status = needACK.get(identifier);
                     if ((status == null || !status) && isOnline()) {
                         sendCommandData();
                     }
@@ -594,7 +594,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return this.perm.getEffectivePermissions();
     }
 
-    public Player(SourceInterface interfaz, Long clientID, String ip, int port) {
+    public Player(SourceInterface interfaz, long clientID, String ip, int port) {
         super(null, new CompoundTag());
         this.interfaz = interfaz;
         this.windows = new HashMap<>();
@@ -739,7 +739,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        this.usedChunks.put(Level.chunkHash(x, z), Boolean.TRUE);
+        this.usedChunks.put(Level.chunkHash(x, z), true);
         this.chunkLoadCount++;
 
         this.dataPacket(packet);
@@ -942,8 +942,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         int radius = spawned ? this.chunkRadius : (int) Math.ceil(Math.sqrt(spawnThreshold));
         int radiusSqr = radius * radius;
 
-
-
         long index;
         for (int x = 0; x <= radius; x++) {
             int xx = x * x;
@@ -952,44 +950,44 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 if (distanceSqr > radiusSqr) continue;
 
                 /* Top right quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ + z)) != Boolean.TRUE) {
-                    this.loadQueue.put(index, Boolean.TRUE);
+                if (!this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ + z))) {
+                    this.loadQueue.put(index, true);
                 }
                 lastChunk.remove(index);
                 /* Top left quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ + z)) != Boolean.TRUE) {
-                    this.loadQueue.put(index, Boolean.TRUE);
+                if (!this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ + z))) {
+                    this.loadQueue.put(index, true);
                 }
                 lastChunk.remove(index);
                 /* Bottom right quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ - z - 1)) != Boolean.TRUE) {
-                    this.loadQueue.put(index, Boolean.TRUE);
+                if (!this.usedChunks.get(index = Level.chunkHash(centerX + x, centerZ - z - 1))) {
+                    this.loadQueue.put(index, true);
                 }
                 lastChunk.remove(index);
                 /* Bottom left quadrant */
-                if(this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ - z - 1)) != Boolean.TRUE) {
-                    this.loadQueue.put(index, Boolean.TRUE);
+                if (!this.usedChunks.get(index = Level.chunkHash(centerX - x - 1, centerZ - z - 1))) {
+                    this.loadQueue.put(index, true);
                 }
                 lastChunk.remove(index);
-                if(x != z){
+                if (x != z) {
                     /* Top right quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ + x)) != Boolean.TRUE) {
-                        this.loadQueue.put(index, Boolean.TRUE);
+                    if (!this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ + x))) {
+                        this.loadQueue.put(index, true);
                     }
                     lastChunk.remove(index);
                     /* Top left quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ + x)) != Boolean.TRUE) {
-                        this.loadQueue.put(index, Boolean.TRUE);
+                    if (!this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ + x))) {
+                        this.loadQueue.put(index, true);
                     }
                     lastChunk.remove(index);
                     /* Bottom right quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ - x - 1)) != Boolean.TRUE) {
-                        this.loadQueue.put(index, Boolean.TRUE);
+                    if (!this.usedChunks.get(index = Level.chunkHash(centerX + z, centerZ - x - 1))) {
+                        this.loadQueue.put(index, true);
                     }
                     lastChunk.remove(index);
                     /* Bottom left quadrant mirror */
-                    if(this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ - x - 1)) != Boolean.TRUE) {
-                        this.loadQueue.put(index, Boolean.TRUE);
+                    if (!this.usedChunks.get(index = Level.chunkHash(centerX - z - 1, centerZ - x - 1))) {
+                        this.loadQueue.put(index, true);
                     }
                     lastChunk.remove(index);
                 }
@@ -1059,10 +1057,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 return -1;
             }
 
-            Integer identifier = this.interfaz.putPacket(this, packet, needACK, false);
+            int identifier = this.interfaz.putPacket(this, packet, needACK, false);
 
             if (needACK && identifier != null) {
-                this.needACK.put(identifier, Boolean.FALSE);
+                this.needACK.put(identifier, false);
                 return identifier;
             }
         }
@@ -1092,10 +1090,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 return -1;
             }
 
-            Integer identifier = this.interfaz.putPacket(this, packet, needACK, true);
+            int identifier = this.interfaz.putPacket(this, packet, needACK, true);
 
             if (needACK && identifier != null) {
-                this.needACK.put(identifier, Boolean.FALSE);
+                this.needACK.put(identifier, false);
                 return identifier;
             }
         }
@@ -3802,7 +3800,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 int add = 1;
                 for (int ii = 1; ii < exp; ii += add) {
                     this.getLevel().dropExpOrb(this, add);
-                    add = new NukkitRandom().nextRange(1, 3);
+                    add = ThreadLocalRandom.current().nextInt(1, 3);
                 }
             }
             this.setExperience(0, 0);
@@ -3983,9 +3981,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             //Critical hit
             boolean add = false;
             if (!damager.onGround) {
-                NukkitRandom random = new NukkitRandom();
                 for (int i = 0; i < 5; i++) {
-                    CriticalParticle par = new CriticalParticle(new Vector3(this.x + random.nextRange(-15, 15) / 10, this.y + random.nextRange(0, 20) / 10, this.z + random.nextRange(-15, 15) / 10));
+                    CriticalParticle par = new CriticalParticle(new Vector3(this.x + ThreadLocalRandom.current().nextInt(-15, 15) / 10d, this.y + ThreadLocalRandom.current().nextInt(0, 20) / 10d, this.z + ThreadLocalRandom.current().nextInt(-15, 15) / 10d));
                     this.getLevel().addParticle(par);
                 }
 
@@ -4371,11 +4368,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return this.addWindow(inventory, null);
     }
 
-    public int addWindow(Inventory inventory, Integer forceId) {
+    public int addWindow(Inventory inventory, int forceId) {
         return addWindow(inventory, forceId, false);
     }
 
-    public int addWindow(Inventory inventory, Integer forceId, boolean isPermanent) {
+    public int addWindow(Inventory inventory, int forceId, boolean isPermanent) {
         if (this.windows.containsKey(inventory)) {
             return this.windows.get(inventory);
         }
@@ -4796,8 +4793,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     itemsWithMending.add(inventory.getHeldItemIndex());
                 }
                 if (itemsWithMending.size() > 0) {
-                    Random rand = new Random();
-                    Integer itemToRepair = itemsWithMending.get(rand.nextInt(itemsWithMending.size()));
+                    int itemToRepair = itemsWithMending.get(ThreadLocalRandom.current().nextInt(itemsWithMending.size()));
                     Item toRepair = inventory.getItem(itemToRepair);
                     if (toRepair instanceof ItemTool || toRepair instanceof ItemArmor) {
                         if (toRepair.getDamage() > 0) {
@@ -4843,7 +4839,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * @param identification packet identity
      */
     public void notifyACK(int identification) {
-        needACK.put(identification, Boolean.TRUE);
+        needACK.put(identification, true);
     }
 
     public boolean isBreakingBlock() {
