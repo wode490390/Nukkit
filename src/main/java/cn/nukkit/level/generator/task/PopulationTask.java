@@ -12,6 +12,7 @@
  * Nukkit Project
  */
 public class PopulationTask extends AsyncTask {
+
     private final long seed;
     private final Level level;
     private boolean state;
@@ -103,7 +104,7 @@ public class PopulationTask extends AsyncTask {
                     centerChunk = manager.getChunk(centerChunk.getX(), centerChunk.getZ());
                     centerChunk.setPopulated();
                     centerChunk.recalculateHeightMap();
-                    centerChunk.populateSkyLight(manager);
+                    centerChunk.populateSkyLight();
                     centerChunk.setLightPopulated();
                     this.centerChunk = centerChunk;
                 }
@@ -126,6 +127,7 @@ public class PopulationTask extends AsyncTask {
                 this.state = true;
             } finally {
                 manager.cleanChunks(this.seed);
+                manager.close();
             }
         }
     }
