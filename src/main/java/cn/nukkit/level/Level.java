@@ -321,8 +321,6 @@ public class Level implements ChunkManager, Metadatable {
     private BlockLightUpdate blockLightUpdate;
     private SkyLightUpdate skyLightUpdate;
 
-    private boolean closed = false;
-
     public Level(Server server, String name, String path, Class<? extends LevelProvider> provider) {
         this.levelId = levelIdCounter++;
         this.blockMetadata = new BlockMetadataStore(this);
@@ -522,11 +520,6 @@ public class Level implements ChunkManager, Metadatable {
         this.temporalPosition = null;
         this.server.getLevels().remove(this.levelId);
         this.generators.clean();
-        this.closed = true;
-    }
-
-    public boolean isClosed() {
-        return closed;
     }
 
     public void addSound(Vector3 pos, Sound sound) {
