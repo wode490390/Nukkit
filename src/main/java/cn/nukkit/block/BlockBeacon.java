@@ -8,6 +8,10 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.StringTag;
+import cn.nukkit.nbt.tag.Tag;
+import java.util.Map;
 
 /**
  * author: Angelic47 Nukkit Project
@@ -15,6 +19,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 public class BlockBeacon extends BlockTransparent {
 
     public BlockBeacon() {
+
     }
 
     @Override
@@ -61,12 +66,13 @@ public class BlockBeacon extends BlockTransparent {
             if (t instanceof BlockEntityBeacon) {
                 beacon = (BlockEntityBeacon) t;
             } else {
-                CompoundTag nbt = new CompoundTag("")
-                        .putString("id", BlockEntity.BEACON)
-                        .putInt("x", (int) this.x)
-                        .putInt("y", (int) this.y)
-                        .putInt("z", (int) this.z);
-                beacon = new BlockEntityBeacon(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                beacon = new BlockEntityBeacon(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.BEACON));
+            }
+
+            if (beacon.namedTag.contains("Lock") && beacon.namedTag.get("Lock") instanceof StringTag) {
+                if (!beacon.namedTag.getString("Lock").equals(item.getCustomName())) {
+                    return true;
+                }
             }
 
             player.addWindow(new BeaconInventory(this), Player.BEACON_WINDOW_ID);
@@ -79,11 +85,19 @@ public class BlockBeacon extends BlockTransparent {
         boolean blockSuccess = super.place(item, block, target, face, fx, fy, fz, player);
 
         if (blockSuccess) {
-            CompoundTag nbt = new CompoundTag("")
-                    .putString("id", BlockEntity.BEACON)
-                    .putInt("x", (int) this.x)
-                    .putInt("y", (int) this.y)
-                    .putInt("z", (int) this.z);
+            CompoundTag nbt = BlockEntity.getDefaultCompound(this, BlockEntity.BEACON);
+
+            if (item.hasCustomName()) {
+                nbt.putString("CustomName", item.getCustomName());
+            }
+
+            if (item.hasCustomBlockData()) {
+                Map<String, Tag> customData = item.getCustomBlockData().getTags();
+                for (Map.Entry<String, Tag> tag : customData.entrySet()) {
+                    nbt.put(tag.getKey(), tag.getValue());
+                }
+            }
+
             new BlockEntityBeacon(this.level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
         }
 
