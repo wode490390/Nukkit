@@ -583,6 +583,36 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     }
 
     @Override
+    public void setBlockLightAt(int x, int y, int z, int level) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            setBlockLight(x & 0xf, y & 0xff, z & 0xf, level);
+        }
+    }
+
+    @Override
+    public int getBlockLightAt(int x, int y, int z) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            return getBlockLight(x & 0xf, y & 0xff, z & 0xf);
+        }
+        return 0;
+    }
+
+    @Override
+    public void setBlockSkyLightAt(int x, int y, int z, int level) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            setBlockSkyLight(x & 0xf, y & 0xff, z & 0xf, level);
+        }
+    }
+
+    @Override
+    public int getBlockSkyLightAt(int x, int y, int z) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            return getBlockSkyLight(x & 0xf, y & 0xff, z & 0xf);
+        }
+        return 0;
+    }
+
+    @Override
     public BaseFullChunk getChunk(int chunkX, int chunkZ) {
         if (chunkX == getX() && chunkZ == getZ()) return this;
         return null;
