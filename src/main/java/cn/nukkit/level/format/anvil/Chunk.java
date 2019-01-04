@@ -521,7 +521,7 @@ public class Chunk extends BaseChunk {
 
                 int light = 15;
                 for (; y >= 0; --y) {
-                    light -= Block.lightFilter[this.getFullBlock(x, y, z)];
+                    light -= Block.lightFilter[this.getBlockId(x, y, z)];
                     if (light <= 0) {
                         break;
                     }
