@@ -322,7 +322,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                 return false;
             }
 
-            boolean pulledItem = false;
+            boolean pushedItem = false;
 
             for (int i = 0; i < this.inventory.getSize(); i++) {
                 Item item = this.inventory.getItem(i);
@@ -342,7 +342,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
 
                             inventory.setSmelting(itemToAdd);
                             item.count--;
-                            pulledItem = true;
+                            pushedItem = true;
                         } else if (inventory.getSmelting().getId() == itemToAdd.getId() && smelting.count < smelting.getMaxStackSize()) {
                             InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, furnace, smelting, InventoryMoveItemEvent.Action.SLOT_CHANGE);
                             this.server.getPluginManager().callEvent(ev);
@@ -353,7 +353,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                             smelting.count++;
                             inventory.setSmelting(smelting);
                             item.count--;
-                            pulledItem = true;
+                            pushedItem = true;
                         }
                     } else if (Fuel.duration.containsKey(itemToAdd.getId())) {
                         Item fuel = inventory.getFuel();
@@ -366,7 +366,7 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
 
                             inventory.setFuel(itemToAdd);
                             item.count--;
-                            pulledItem = true;
+                            pushedItem = true;
                         } else if (fuel.getId() == itemToAdd.getId() && fuel.count < fuel.getMaxStackSize()) {
                             InventoryMoveItemEvent ev = new InventoryMoveItemEvent(this.inventory, inventory, furnace, fuel, InventoryMoveItemEvent.Action.SLOT_CHANGE);
                             this.server.getPluginManager().callEvent(ev);
@@ -377,13 +377,13 @@ public class BlockEntityHopper extends BlockEntitySpawnable implements Inventory
                             fuel.count++;
                             inventory.setFuel(fuel);
                             item.count--;
-                            pulledItem = true;
+                            pushedItem = true;
                         }
                     }
                     this.inventory.setItem(i, item);
                 }
             }
-            return pulledItem;
+            return pushedItem;
         } else if (be instanceof InventoryHolder) {
             InventoryHolder holder = (InventoryHolder) be;
             Inventory inventory = holder.getInventory();
