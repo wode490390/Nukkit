@@ -51,9 +51,9 @@ public class Anvil extends BaseLevelProvider {
     }
 
     public static boolean isValid(String path) {
-        boolean isValid = (new File(path + "/level.dat").exists()) && new File(path + "/region/").isDirectory();
+        boolean isValid = (new File(path, "level.dat").exists()) && new File(path, "region").isDirectory();
         if (isValid) {
-            for (File file : new File(path + "/region/").listFiles((dir, name) -> Pattern.matches("^.+\\.mc[r|a]$", name))) {
+            for (File file : new File(path, "region").listFiles((dir, name) -> Pattern.matches("^.+\\.mc[r|a]$", name))) {
                 if (!file.getName().endsWith(".mca")) {
                     isValid = false;
                     break;
@@ -96,7 +96,7 @@ public class Anvil extends BaseLevelProvider {
                 .putLong("Time", 0)
                 .putLong("SizeOnDisk", 0);
 
-        NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", levelData), new FileOutputStream(path + "level.dat"), ByteOrder.BIG_ENDIAN);
+        NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", levelData), new FileOutputStream(new File(path, "level.dat")), ByteOrder.BIG_ENDIAN);
     }
 
     public Chunk getEmptyChunk(int chunkX, int chunkZ) {

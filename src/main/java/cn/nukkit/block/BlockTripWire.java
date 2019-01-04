@@ -3,7 +3,6 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemString;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
@@ -11,7 +10,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * @author CreeperFace
  */
-public class BlockTripWire extends BlockFlowable {
+public class BlockTripWire extends BlockFlowableMeta {
 
     public BlockTripWire(int meta) {
         super(meta);
@@ -32,11 +31,6 @@ public class BlockTripWire extends BlockFlowable {
     }
 
     @Override
-    public boolean canPassThrough() {
-        return true;
-    }
-
-    @Override
     public double getResistance() {
         return 0;
     }
@@ -53,7 +47,7 @@ public class BlockTripWire extends BlockFlowable {
 
     @Override
     public Item toItem() {
-        return new ItemString();
+        return Item.get(Item.STRING);
     }
 
     public boolean isPowered() {

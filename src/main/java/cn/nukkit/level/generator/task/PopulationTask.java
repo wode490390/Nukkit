@@ -1,23 +1,24 @@
-    package cn.nukkit.level.generator.task;
+package cn.nukkit.level.generator.task;
 
-    import cn.nukkit.Server;
-    import cn.nukkit.level.Level;
-    import cn.nukkit.level.format.generic.BaseFullChunk;
-    import cn.nukkit.level.generator.Generator;
-    import cn.nukkit.level.generator.SimpleChunkManager;
-    import cn.nukkit.scheduler.AsyncTask;
+import cn.nukkit.Server;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.format.generic.BaseFullChunk;
+import cn.nukkit.level.generator.Generator;
+import cn.nukkit.level.generator.SimpleChunkManager;
+import cn.nukkit.scheduler.AsyncTask;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class PopulationTask extends AsyncTask {
+
     private final long seed;
     private final Level level;
     private boolean state;
     private BaseFullChunk centerChunk;
 
-    public final BaseFullChunk[] chunks = new BaseFullChunk[9];
+    public final BaseFullChunk[] chunks;
 
     public PopulationTask(Level level, BaseFullChunk chunk) {
         this.state = true;
@@ -25,16 +26,7 @@ public class PopulationTask extends AsyncTask {
         this.centerChunk = chunk;
         this.seed = level.getSeed();
 
-        chunks[4] = chunk;
-
-        int i = 0;
-        for (int z = -1; z <= 1; z++) {
-            for (int x = -1; x <= 1; x++, i++) {
-                if (i == 4) continue;
-                BaseFullChunk ck = level.getChunk(chunk.getX() + x, chunk.getZ() + z, true);
-                this.chunks[i] = ck;
-            }
-        }
+        this.chunks = level.getAdjacentChunks(chunk.getX(), chunk.getZ());
     }
 
 

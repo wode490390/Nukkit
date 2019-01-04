@@ -3,7 +3,6 @@ package cn.nukkit;
 import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.Plugin;
-
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +17,7 @@ import java.util.UUID;
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 public class OfflinePlayer implements IPlayer {
+
     private final String name;
     private final Server server;
     private final CompoundTag namedTag;
@@ -66,6 +66,7 @@ public class OfflinePlayer implements IPlayer {
         return null;
     }
 
+    @Override
     public Server getServer() {
         return server;
     }
@@ -122,12 +123,12 @@ public class OfflinePlayer implements IPlayer {
     }
 
     @Override
-    public Long getFirstPlayed() {
+    public long getFirstPlayed() {
         return this.namedTag != null ? this.namedTag.getLong("firstPlayed") : null;
     }
 
     @Override
-    public Long getLastPlayed() {
+    public long getLastPlayed() {
         return this.namedTag != null ? this.namedTag.getLong("lastPlayed") : null;
     }
 
@@ -136,20 +137,23 @@ public class OfflinePlayer implements IPlayer {
         return this.namedTag != null;
     }
 
+    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         this.server.getPlayerMetadata().setMetadata(this, metadataKey, newMetadataValue);
     }
 
+    @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
         return this.server.getPlayerMetadata().getMetadata(this, metadataKey);
     }
 
+    @Override
     public boolean hasMetadata(String metadataKey) {
         return this.server.getPlayerMetadata().hasMetadata(this, metadataKey);
     }
 
+    @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         this.server.getPlayerMetadata().removeMetadata(this, metadataKey, owningPlugin);
     }
-
 }

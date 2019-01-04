@@ -10,7 +10,8 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/11/23 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockFlower extends BlockFlowable {
+public class BlockFlower extends BlockFlowableMeta {
+
     public static final int TYPE_POPPY = 0;
     public static final int TYPE_BLUE_ORCHID = 1;
     public static final int TYPE_ALLIUM = 2;
@@ -79,13 +80,6 @@ public class BlockFlower extends BlockFlowable {
         }
 
         return 0;
-    }
-
-    @Override
-    public Item[] getDrops(Item item) {
-        return new Item[]{
-                toItem()
-        };
     }
 
     @Override

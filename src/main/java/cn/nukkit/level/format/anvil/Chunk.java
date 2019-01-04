@@ -10,15 +10,28 @@ import cn.nukkit.level.format.anvil.palette.BiomePalette;
 import cn.nukkit.level.format.generic.BaseChunk;
 import cn.nukkit.level.format.generic.EmptyChunkSection;
 import cn.nukkit.nbt.NBTIO;
-import cn.nukkit.nbt.tag.*;
-import cn.nukkit.utils.*;
-
+import cn.nukkit.nbt.tag.ByteTag;
+import cn.nukkit.nbt.tag.ByteArrayTag;
+import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.LongTag;
+import cn.nukkit.nbt.tag.StringTag;
+import cn.nukkit.nbt.tag.Tag;
+import cn.nukkit.utils.BinaryStream;
+import cn.nukkit.utils.BlockUpdateEntry;
+import cn.nukkit.utils.ChunkException;
+import cn.nukkit.utils.Zlib;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.nio.ByteOrder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * author: MagicDroidX
@@ -80,10 +93,10 @@ public class Chunk extends BaseChunk {
             }
         }
 
-        Map<Integer, Integer> extraData = new HashMap<>();
+        Int2IntMap extraData = new Int2IntOpenHashMap();
 
         Tag extra = nbt.get("ExtraData");
-        if (extra != null && extra instanceof ByteArrayTag) {
+        if (extra instanceof ByteArrayTag) {
             BinaryStream stream = new BinaryStream(((ByteArrayTag) extra).data);
             for (int i = 0; i < stream.getInt(); i++) {
                 int key = stream.getInt();
@@ -130,7 +143,7 @@ public class Chunk extends BaseChunk {
 
         ListTag<CompoundTag> updateEntries = nbt.getList("TileTicks", CompoundTag.class);
 
-        if (updateEntries != null && updateEntries.size() > 0) {
+        if (updateEntries != null && updateEntries.size() > 0 && updateEntries.size() < 10000) {
             for (CompoundTag entryNBT : updateEntries.getAll()) {
                 Block block = null;
 
@@ -474,6 +487,67 @@ public class Chunk extends BaseChunk {
         } else {
             return section.getBlockLight(x, y & 0x0f, z);
         }
+    }
+
+    public void setAllBlockSkyLight(int level) {
+        byte[] data = new byte[2048];
+        Arrays.fill(data, (byte) ((level & 0x0f) | (level << 4)));
+
+        for (cn.nukkit.level.format.ChunkSection section : this.sections) {
+            if (section.isEmpty()) {
+                continue;
+            }
+            byte[] copy = new byte[2048];
+            System.arraycopy(data, 0, copy, 0, 2048);
+
+            section.setSkyLightArray(copy);
+        }
+    }
+
+    @Override
+    public void populateSkyLight() {
+        int maxY = getMaxY();
+
+        this.setAllBlockSkyLight(0);
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int heightMap = getHeightMap(x, z);
+
+                int y;
+                for (y = maxY; y >= heightMap; --y) {
+                    this.setBlockSkyLight(x, y, z, 15);
+                }
+
+                int light = 15;
+                for (; y >= 0; --y) {
+                    light -= Block.lightFilter[this.getFullBlock(x, y, z)];
+                    if (light <= 0) {
+                        break;
+                    }
+
+                    this.setBlockSkyLight(x, y, z, light);
+                }
+            }
+        }
+    }
+
+    public int getMaxY() {
+        return (this.getHighestSubChunkIndex() << 4) | 0x0f;
+    }
+
+    public int getHighestSubChunkIndex() {
+        int y;
+
+        for (y = this.sections.length - 1; y >= 0; --y) {
+            if (this.sections[y] == null || sections[y] instanceof EmptyChunkSection) {
+                //No need to thoroughly prune empties at runtime, this will just reduce performance.
+                continue;
+            }
+            break;
+        }
+
+        return y;
     }
 
     public static Chunk getEmptyChunk(int chunkX, int chunkZ) {

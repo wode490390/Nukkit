@@ -18,7 +18,11 @@ public enum DyeColor {
     LIGHT_BLUE(12, 3, "Light Blue", BlockColor.LIGHT_BLUE_BLOCK_COLOR),
     MAGENTA(13, 2, "Magenta", BlockColor.MAGENTA_BLOCK_COLOR),
     ORANGE(14, 1, "Orange", BlockColor.ORANGE_BLOCK_COLOR),
-    WHITE(15, 0, "White", "Bone Meal", BlockColor.WHITE_BLOCK_COLOR);
+    WHITE(15, 0, "White", "Bone Meal", BlockColor.WHITE_BLOCK_COLOR),
+    BLACK2(16, 15, "Black", BlockColor.BLACK_BLOCK_COLOR),
+    BROWN2(17, 12, "Brown", BlockColor.BROWN_BLOCK_COLOR),
+    BLUE2(18, 11, "Blue", BlockColor.BLUE_BLOCK_COLOR),
+    WHITE2(19, 0, "White", BlockColor.WHITE_BLOCK_COLOR);
 
 
     private int dyeColorMeta;
@@ -69,12 +73,12 @@ public enum DyeColor {
 
         for (DyeColor color : values()) {
             BY_WOOL_DATA[color.woolColorMeta & 0x0f] = color;
-            BY_DYE_DATA[color.dyeColorMeta & 0x0f] = color;
+            BY_DYE_DATA[color.dyeColorMeta & 0x13] = color;
         }
     }
 
     public static DyeColor getByDyeData(int dyeColorMeta) {
-        return BY_DYE_DATA[dyeColorMeta & 0x0f];
+        return BY_DYE_DATA[dyeColorMeta & 0x13];
     }
 
     public static DyeColor getByWoolData(int woolColorMeta) {

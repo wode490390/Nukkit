@@ -11,12 +11,9 @@ import cn.nukkit.utils.BlockColor;
  * Package cn.nukkit.block in project Nukkit .
  */
 public class BlockCobweb extends BlockFlowable {
-    public BlockCobweb() {
-        this(0);
-    }
 
-    public BlockCobweb(int meta) {
-        super(0);
+    public BlockCobweb() {
+
     }
 
     @Override

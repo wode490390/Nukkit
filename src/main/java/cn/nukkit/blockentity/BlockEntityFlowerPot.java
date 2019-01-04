@@ -9,8 +9,14 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * Package cn.nukkit.blockentity in project Nukkit.
  */
 public class BlockEntityFlowerPot extends BlockEntitySpawnable {
+
     public BlockEntityFlowerPot(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    public String getName() {
+        return "Flower Pot";
     }
 
     @Override

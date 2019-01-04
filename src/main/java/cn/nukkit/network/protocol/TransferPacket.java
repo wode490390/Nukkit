@@ -2,6 +2,7 @@ package cn.nukkit.network.protocol;
 
 // A wild TransferPacket appeared!
 public class TransferPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.TRANSFER_PACKET;
 
     public String address; // Server address
@@ -22,6 +23,6 @@ public class TransferPacket extends DataPacket {
 
     @Override
     public byte pid() {
-        return ProtocolInfo.TRANSFER_PACKET;
+        return NETWORK_ID;
     }
 }

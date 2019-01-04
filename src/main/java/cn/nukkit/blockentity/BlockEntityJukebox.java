@@ -24,6 +24,11 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Jukebox";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (namedTag.contains("RecordItem")) {
             this.recordItem = NBTIO.getItemHelper(namedTag.getCompound("RecordItem"));
@@ -51,12 +56,12 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
     public void play() {
         if (this.recordItem instanceof ItemRecord) {
             PlaySoundPacket pk = new PlaySoundPacket();
-            pk.name = ((ItemRecord) this.recordItem).getSoundId();
-            pk.pitch = 1;
-            pk.volume = 1;
+            pk.soundName = ((ItemRecord) this.recordItem).getSoundId();
             pk.x = getFloorX();
             pk.y = getFloorY();
             pk.z = getFloorZ();
+            pk.volume = 1;
+            pk.pitch = 1;
 
             Server.broadcastPacket(this.level.getPlayers().values(), pk);
         }
@@ -65,7 +70,7 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
     public void stop() {
         if (this.recordItem instanceof ItemRecord) {
             StopSoundPacket pk = new StopSoundPacket();
-            pk.name = ((ItemRecord) this.recordItem).getSoundId();
+            pk.soundName = ((ItemRecord) this.recordItem).getSoundId();
 
             Server.broadcastPacket(this.level.getPlayers().values(), pk);
         }

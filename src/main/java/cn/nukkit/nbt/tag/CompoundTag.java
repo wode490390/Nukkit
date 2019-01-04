@@ -2,18 +2,19 @@ package cn.nukkit.nbt.tag;
 
 import cn.nukkit.nbt.stream.NBTInputStream;
 import cn.nukkit.nbt.stream.NBTOutputStream;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 public class CompoundTag extends Tag implements Cloneable {
+
     private final Map<String, Tag> tags = new HashMap<>();
 
     public CompoundTag() {
-        super("");
+        this("");
     }
 
     public CompoundTag(String name) {
@@ -119,8 +120,10 @@ public class CompoundTag extends Tag implements Cloneable {
         return tags.containsKey(name);
     }
 
-    public CompoundTag remove(String name) {
-        tags.remove(name);
+    public CompoundTag remove(String... names) {
+        for (String name : names) {
+            tags.remove(name);
+        }
         return this;
     }
 
@@ -128,39 +131,66 @@ public class CompoundTag extends Tag implements Cloneable {
         return (T) tags.remove(name);
     }
 
-
     public int getByte(String name) {
-        if (!tags.containsKey(name)) return (byte) 0;
-        return ((NumberTag) tags.get(name)).getData().intValue();
+        return this.getByte(name, 0);
+    }
+
+    public int getByte(String name, int defaultValue) {
+        if (!tags.containsKey(name)) return (byte) defaultValue;
+        return (byte) ((NumberTag) tags.get(name)).getData().intValue();
     }
 
     public int getShort(String name) {
-        if (!tags.containsKey(name)) return 0;
-        return ((NumberTag) tags.get(name)).getData().intValue();
+        return this.getShort(name, 0);
+    }
+
+    public int getShort(String name, int defaultValue) {
+        if (!tags.containsKey(name)) return (short) defaultValue;
+        return (short) ((NumberTag) tags.get(name)).getData().intValue();
     }
 
     public int getInt(String name) {
-        if (!tags.containsKey(name)) return 0;
+        return this.getInt(name, 0);
+    }
+
+    public int getInt(String name, int defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return ((NumberTag) tags.get(name)).getData().intValue();
     }
 
     public long getLong(String name) {
-        if (!tags.containsKey(name)) return (long) 0;
+        return this.getLong(name, 0);
+    }
+
+    public long getLong(String name, long defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return ((NumberTag) tags.get(name)).getData().longValue();
     }
 
     public float getFloat(String name) {
-        if (!tags.containsKey(name)) return (float) 0;
+        return this.getFloat(name, 0);
+    }
+
+    public float getFloat(String name, float defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return ((NumberTag) tags.get(name)).getData().floatValue();
     }
 
     public double getDouble(String name) {
-        if (!tags.containsKey(name)) return (double) 0;
+        return this.getDouble(name, 0);
+    }
+
+    public double getDouble(String name, double defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return ((NumberTag) tags.get(name)).getData().doubleValue();
     }
 
     public String getString(String name) {
-        if (!tags.containsKey(name)) return "";
+        return this.getString(name, "");
+    }
+
+    public String getString(String name, String defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         Tag tag = tags.get(name);
         if (tag instanceof NumberTag) {
             return String.valueOf(((NumberTag) tag).getData());
@@ -169,17 +199,29 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public byte[] getByteArray(String name) {
-        if (!tags.containsKey(name)) return new byte[0];
+        return this.getByteArray(name, new byte[0]);
+    }
+
+    public byte[] getByteArray(String name, byte[] defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return ((ByteArrayTag) tags.get(name)).data;
     }
 
     public int[] getIntArray(String name) {
-        if (!tags.containsKey(name)) return new int[0];
+        return this.getIntArray(name, new int[0]);
+    }
+
+    public int[] getIntArray(String name, int[] defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return ((IntArrayTag) tags.get(name)).data;
     }
 
     public CompoundTag getCompound(String name) {
-        if (!tags.containsKey(name)) return new CompoundTag(name);
+        return this.getCompound(name, new CompoundTag(name));
+    }
+
+    public CompoundTag getCompound(String name, CompoundTag defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return (CompoundTag) tags.get(name);
     }
 
@@ -202,11 +244,18 @@ public class CompoundTag extends Tag implements Cloneable {
     }
 
     public boolean getBoolean(String name) {
+        return this.getBoolean(name, false);
+    }
+
+    public boolean getBoolean(String name, boolean defaultValue) {
+        if (!tags.containsKey(name)) return defaultValue;
         return getByte(name) != 0;
     }
 
     public String toString() {
-        return "CompoundTag " + this.getName() + " (" + tags.size() + " entries)";
+        StringJoiner joiner = new StringJoiner(",\n\t");
+        tags.forEach((key, tag) -> joiner.add(key + " : " + tag.toString()));
+        return "CompoundTag '" + this.getName() + "' (" + tags.size() + " entries) {\n\t" + joiner.toString() + "\n}";
     }
 
     public void print(String prefix, PrintStream out) {
@@ -249,6 +298,10 @@ public class CompoundTag extends Tag implements Cloneable {
      */
     public boolean exist(String name) {
         return tags.containsKey(name);
+    }
+
+    public int size() {
+        return this.tags.size();
     }
 
     @Override

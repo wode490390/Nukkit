@@ -6,6 +6,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockNetherWartBlock extends BlockSolid {
 
     public BlockNetherWartBlock() {
+
     }
 
     @Override
@@ -26,13 +27,6 @@ public class BlockNetherWartBlock extends BlockSolid {
     @Override
     public double getHardness() {
         return 1;
-    }
-
-    @Override
-    public Item[] getDrops(Item item) {
-        return new Item[]{
-                toItem()
-        };
     }
 
     @Override

@@ -12,9 +12,12 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.NumberTag;
 import cn.nukkit.network.protocol.BatchPacket;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,11 +29,14 @@ import java.util.Map;
  * Nukkit Project
  */
 public abstract class BaseFullChunk implements FullChunk, ChunkManager {
-    protected Map<Long, Entity> entities;
 
-    protected Map<Long, BlockEntity> tiles;
+    protected final Long2ObjectMap<Entity> entities = new Long2ObjectOpenHashMap<>();
 
-    protected Map<Integer, BlockEntity> tileList;
+//    protected final Long2ObjectMap<Entity> updateEntities = new Long2ObjectOpenHashMap<>();
+
+    protected final Long2ObjectMap<BlockEntity> tiles = new Long2ObjectOpenHashMap<>();
+
+    protected final Int2ObjectMap<BlockEntity> tileList = new Int2ObjectOpenHashMap<>();
 
     /**
      * encoded as:
@@ -53,7 +59,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
 
     protected List<CompoundTag> NBTentities;
 
-    protected Map<Integer, Integer> extraData;
+    protected Int2IntMap extraData = new Int2IntOpenHashMap();
 
     protected LevelProvider provider;
     protected Class<? extends LevelProvider> providerClass;
@@ -232,13 +238,35 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         this.heightMap[(z << 4) | x] = (byte) value;
     }
 
+    /**
+     * Recalculates the heightmap for the whole chunk.
+     */
     @Override
     public void recalculateHeightMap() {
         for (int z = 0; z < 16; ++z) {
             for (int x = 0; x < 16; ++x) {
-                this.setHeightMap(x, z, this.getHighestBlockAt(x, z, false));
+                this.recalculateHeightMapColumn(x, z);
             }
         }
+    }
+
+    /**
+     * @return int New calculated heightmap value (0-256 inclusive)
+     */
+    public int recalculateHeightMapColumn(int x, int z) {
+        int max = this.getHighestBlockAt(x, z);
+
+        int y;
+        for (y = max; y >= 0; --y) {
+            int id;
+
+            if (Block.lightFilter[id = this.getBlockId(x, y, z)] > 1 || Block.diffusesSkyLight[id]) {
+                break;
+            }
+        }
+
+        this.setHeightMap(x, z, y + 1);
+        return y + 1;
     }
 
     @Override
@@ -258,7 +286,6 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
                 this.extraData.remove(Level.chunkBlockHash(x, y, z));
             }
         } else {
-            if (this.extraData == null) this.extraData = new Int2ObjectOpenHashMap<>();
             this.extraData.put(Level.chunkBlockHash(x, y, z), data);
         }
 
@@ -308,9 +335,6 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
 
     @Override
     public void addEntity(Entity entity) {
-        if (this.entities == null) {
-            this.entities = new Long2ObjectOpenHashMap<>();
-        }
         this.entities.put(entity.getId(), entity);
         if (!(entity instanceof Player) && this.isInit) {
             this.setChanged();
@@ -327,12 +351,18 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         }
     }
 
+//    @Override
+//    public void updateEntity(Entity entity) {
+//        this.updateEntities.put(entity.getId(), entity);
+//    }
+//
+//    @Override
+//    public Long2ObjectMap<Entity> getUpdateEntities() {
+//        return updateEntities;
+//    }
+
     @Override
     public void addBlockEntity(BlockEntity blockEntity) {
-        if (this.tiles == null) {
-            this.tiles = new Long2ObjectOpenHashMap<>();
-            this.tileList = new Int2ObjectOpenHashMap<>();
-        }
         this.tiles.put(blockEntity.getId(), blockEntity);
         int index = ((blockEntity.getFloorZ() & 0x0f) << 12) | ((blockEntity.getFloorX() & 0x0f) << 8) | (blockEntity.getFloorY() & 0xff);
         if (this.tileList.containsKey(index) && !this.tileList.get(index).equals(blockEntity)) {
@@ -405,12 +435,12 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
 
     @Override
     public boolean unload(boolean save, boolean safe) {
-        LevelProvider level = this.getProvider();
-        if (level == null) {
+        LevelProvider provider = this.getProvider();
+        if (provider == null) {
             return true;
         }
         if (save && this.changes != 0) {
-            level.saveChunk(this.getX(), this.getZ());
+            provider.saveChunk(this.getX(), this.getZ());
         }
         if (safe) {
             for (Entity entity : this.getEntities().values()) {
@@ -550,6 +580,36 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         if (x >> 4 == getX() && z >> 4 == getZ()) {
             setBlockData(x & 15, y, z & 15, data);
         }
+    }
+
+    @Override
+    public void setBlockLightAt(int x, int y, int z, int level) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            setBlockLight(x & 0xf, y & 0xff, z & 0xf, level);
+        }
+    }
+
+    @Override
+    public int getBlockLightAt(int x, int y, int z) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            return getBlockLight(x & 0xf, y & 0xff, z & 0xf);
+        }
+        return 0;
+    }
+
+    @Override
+    public void setBlockSkyLightAt(int x, int y, int z, int level) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            setBlockSkyLight(x & 0xf, y & 0xff, z & 0xf, level);
+        }
+    }
+
+    @Override
+    public int getBlockSkyLightAt(int x, int y, int z) {
+        if (x >> 4 == getX() && z >> 4 == getZ()) {
+            return getBlockSkyLight(x & 0xf, y & 0xff, z & 0xf);
+        }
+        return 0;
     }
 
     @Override

@@ -5,6 +5,7 @@ package cn.nukkit.network.protocol;
  * Nukkit Project
  */
 public class SetPlayerGameTypePacket extends DataPacket {
+
     public final static byte NETWORK_ID = ProtocolInfo.SET_PLAYER_GAME_TYPE_PACKET;
 
     @Override

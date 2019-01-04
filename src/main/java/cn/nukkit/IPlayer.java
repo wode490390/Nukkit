@@ -2,7 +2,6 @@ package cn.nukkit;
 
 import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.permission.ServerOperator;
-
 import java.util.UUID;
 
 /**
@@ -114,7 +113,7 @@ public interface IPlayer extends ServerOperator, Metadatable {
      * @return 这个玩家第一次游戏的时间。<br>The time this player first played in this server.
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
-    Long getFirstPlayed();
+    long getFirstPlayed();
 
     /**
      * 得到这个玩家上次加入游戏的时间。<br>
@@ -123,7 +122,7 @@ public interface IPlayer extends ServerOperator, Metadatable {
      * @return 这个玩家上次游戏的时间。<br>The time this player last joined in this server.
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
-    Long getLastPlayed();
+    long getLastPlayed();
 
     /**
      * 返回这个玩家以前是否来过服务器。<br>

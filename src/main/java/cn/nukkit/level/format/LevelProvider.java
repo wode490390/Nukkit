@@ -88,6 +88,10 @@ public interface LevelProvider {
 
     void setSeed(long value);
 
+    int getDifficulty();
+
+    void setDifficulty(int difficulty);
+
     Vector3 getSpawn();
 
     void setSpawn(Vector3 pos);

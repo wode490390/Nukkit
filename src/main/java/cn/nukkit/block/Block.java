@@ -18,7 +18,6 @@ import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +35,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     public static boolean[] solid = null;
     public static double[] hardness = null;
     public static boolean[] transparent = null;
+    public static boolean[] diffusesSkyLight = null;
     /**
      * if a block has can have variants
      */
@@ -53,6 +53,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             solid = new boolean[256];
             hardness = new double[256];
             transparent = new boolean[256];
+            diffusesSkyLight = new boolean[256];
             hasMeta = new boolean[256];
 
             list[AIR] = BlockAir.class; //0
@@ -91,6 +92,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[PISTON] = BlockPiston.class; //33
             list[PISTON_HEAD] = BlockPistonHead.class; //34
             list[WOOL] = BlockWool.class; //35
+
             list[DANDELION] = BlockDandelion.class; //37
             list[FLOWER] = BlockFlower.class; //38
             list[BROWN_MUSHROOM] = BlockMushroomBrown.class; //39
@@ -129,7 +131,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[WOODEN_PRESSURE_PLATE] = BlockPressurePlateWood.class; //72
             list[REDSTONE_ORE] = BlockOreRedstone.class; //73
             list[GLOWING_REDSTONE_ORE] = BlockOreRedstoneGlowing.class; //74
-            list[UNLIT_REDSTONE_TORCH] = BlockRedstoneTorchUnlit.class;
+            list[UNLIT_REDSTONE_TORCH] = BlockRedstoneTorchUnlit.class; //75
             list[REDSTONE_TORCH] = BlockRedstoneTorch.class; //76
             list[STONE_BUTTON] = BlockButtonStone.class; //77
             list[SNOW_LAYER] = BlockSnowLayer.class; //78
@@ -179,19 +181,19 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[DRAGON_EGG] = BlockDragonEgg.class; //122
             list[REDSTONE_LAMP] = BlockRedstoneLamp.class; //123
             list[LIT_REDSTONE_LAMP] = BlockRedstoneLampLit.class; //124
-            //TODO: list[DROPPER] = BlockDropper.class; //125
+            list[DROPPER] = BlockDropper.class; //125
             list[ACTIVATOR_RAIL] = BlockRailActivator.class; //126
             list[COCOA] = BlockCocoa.class; //127
             list[SANDSTONE_STAIRS] = BlockStairsSandstone.class; //128
             list[EMERALD_ORE] = BlockOreEmerald.class; //129
             list[ENDER_CHEST] = BlockEnderChest.class; //130
-            list[TRIPWIRE_HOOK] = BlockTripWireHook.class;
+            list[TRIPWIRE_HOOK] = BlockTripWireHook.class; //131
             list[TRIPWIRE] = BlockTripWire.class; //132
             list[EMERALD_BLOCK] = BlockEmerald.class; //133
             list[SPRUCE_WOOD_STAIRS] = BlockStairsSpruce.class; //134
             list[BIRCH_WOOD_STAIRS] = BlockStairsBirch.class; //135
             list[JUNGLE_WOOD_STAIRS] = BlockStairsJungle.class; //136
-
+            list[COMMAND_BLOCK] = BlockCommandBlock.class; //137
             list[BEACON] = BlockBeacon.class; //138
             list[STONE_WALL] = BlockWall.class; //139
             list[FLOWER_POT_BLOCK] = BlockFlowerPot.class; //140
@@ -204,7 +206,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[LIGHT_WEIGHTED_PRESSURE_PLATE] = BlockWeightedPressurePlateLight.class; //147
             list[HEAVY_WEIGHTED_PRESSURE_PLATE] = BlockWeightedPressurePlateHeavy.class; //148
             list[UNPOWERED_COMPARATOR] = BlockRedstoneComparatorUnpowered.class; //149
-            list[POWERED_COMPARATOR] = BlockRedstoneComparatorPowered.class; //149
+            list[POWERED_COMPARATOR] = BlockRedstoneComparatorPowered.class; //150
             list[DAYLIGHT_DETECTOR] = BlockDaylightDetector.class; //151
             list[REDSTONE_BLOCK] = BlockRedstone.class; //152
             list[QUARTZ_ORE] = BlockOreQuartz.class; //153
@@ -215,7 +217,6 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[WOOD_SLAB] = BlockSlabWood.class; //158
             list[STAINED_TERRACOTTA] = BlockTerracottaStained.class; //159
             list[STAINED_GLASS_PANE] = BlockGlassPaneStained.class; //160
-
             list[LEAVES2] = BlockLeaves2.class; //161
             list[WOOD2] = BlockWood2.class; //162
             list[ACACIA_WOOD_STAIRS] = BlockStairsAcacia.class; //163
@@ -231,7 +232,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[COAL_BLOCK] = BlockCoal.class; //173
             list[PACKED_ICE] = BlockIcePacked.class; //174
             list[DOUBLE_PLANT] = BlockDoublePlant.class; //175
-
+            list[STANDING_BANNER] = BlockStandingBanner.class; //176
+            list[WALL_BANNER] = BlockWallBanner.class; //177
             list[DAYLIGHT_DETECTOR_INVERTED] = BlockDaylightDetectorInverted.class; //178
             list[RED_SANDSTONE] = BlockRedSandstone.class; //179
             list[RED_SANDSTONE_STAIRS] = BlockStairsRedSandstone.class; //180
@@ -242,6 +244,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[FENCE_GATE_JUNGLE] = BlockFenceGateJungle.class; //185
             list[FENCE_GATE_DARK_OAK] = BlockFenceGateDarkOak.class; //186
             list[FENCE_GATE_ACACIA] = BlockFenceGateAcacia.class; //187
+            list[REPEATING_COMMAND_BLOCK] = BlockCommandBlockRepeating.class; //188
+            list[CHAIN_COMMAND_BLOCK] = BlockCommandBlockChain.class; //189
 
             list[SPRUCE_DOOR_BLOCK] = BlockDoorSpruce.class; //193
             list[BIRCH_DOOR_BLOCK] = BlockDoorBirch.class; //194
@@ -257,7 +261,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             
             list[UNDYED_SHULKER_BOX] = BlockUndyedShulkerBox.class; //205
             list[END_BRICKS] = BlockBricksEndStone.class; //206
-
+            list[FROSTED_ICE] = BlockIceFrosted.class; //207
             list[END_ROD] = BlockEndRod.class; //208
             list[END_GATEWAY] = BlockEndGateway.class; //209
 
@@ -289,14 +293,16 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
             list[CHORUS_PLANT] = BlockChorusPlant.class; //240
             list[STAINED_GLASS] = BlockGlassStained.class; //241
+
             list[PODZOL] = BlockPodzol.class; //243
             list[BEETROOT_BLOCK] = BlockBeetroot.class; //244
+            list[STONECUTTER] = BlockStonecutter.class; //245
             list[GLOWING_OBSIDIAN] = BlockObsidianGlowing.class; //246
-            //list[NETHER_REACTOR] = BlockNetherReactor.class; //247 Should not be removed
+            list[NETHER_REACTOR_CORE] = BlockNetherReactorCore.class; //247
 
-            //TODO: list[PISTON_EXTENSION] = BlockPistonExtension.class; //250
-
+            list[MOVING_BLOCK] = BlockMovingBlock.class; //250
             list[OBSERVER] = BlockObserver.class; //251
+            list[STRUCTURE_BLOCK] = BlockStructureBlock.class; //252
 
             for (int id = 0; id < 256; id++) {
                 Class c = list[id];
@@ -328,22 +334,9 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
                     transparent[id] = block.isTransparent();
                     hardness[id] = block.getHardness();
                     light[id] = block.getLightLevel();
-
-                    if (block.isSolid()) {
-                        if (block.isTransparent()) {
-                            if (block instanceof BlockLiquid || block instanceof BlockIce) {
-                                lightFilter[id] = 2;
-                            } else {
-                                lightFilter[id] = 1;
-                            }
-                        } else {
-                            lightFilter[id] = 15;
-                        }
-                    } else {
-                        lightFilter[id] = 1;
-                    }
+                    diffusesSkyLight[id] = block.diffusesSkyLight();
+                    lightFilter[id] = block.getLightFilter() + 1;
                 } else {
-                    lightFilter[id] = 1;
                     for (int data = 0; data < 16; ++data) {
                         fullList[(id << 4) | data] = new BlockUnknown(id, data);
                     }
@@ -454,6 +447,14 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         return 0;
     }
 
+    public int getLightFilter() {
+        return 15;
+    }
+
+    public boolean diffusesSkyLight() {
+        return false;
+    }
+
     public boolean canBePlaced() {
         return true;
     }
@@ -551,8 +552,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         }
     }
 
-    private static double toolBreakTimeBonus0(
-            int toolType, int toolTier, boolean isWoolBlock, boolean isCobweb) {
+    private static double toolBreakTimeBonus0(int toolType, int toolTier, boolean isWoolBlock, boolean isCobweb) {
         if (toolType == ItemTool.TYPE_SWORD) return isCobweb ? 15.0 : 1.0;
         if (toolType == ItemTool.TYPE_SHEARS) return isWoolBlock ? 5.0 : 15.0;
         if (toolType == ItemTool.TYPE_NONE) return 1.0;
@@ -600,9 +600,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     //http://minecraft.gamepedia.com/Breaking
-    private static double breakTime0(double blockHardness, boolean correctTool, boolean canHarvestWithHand,
-                                     int blockId, int toolType, int toolTier, int efficiencyLoreLevel, int hasteEffectLevel,
-                                     boolean insideOfWaterWithoutAquaAffinity, boolean outOfWaterButNotOnGround) {
+    private static double breakTime0(double blockHardness, boolean correctTool, boolean canHarvestWithHand, int blockId, int toolType, int toolTier, int efficiencyLoreLevel, int hasteEffectLevel, boolean insideOfWaterWithoutAquaAffinity, boolean outOfWaterButNotOnGround) {
         double baseTime = ((correctTool || canHarvestWithHand) ? 1.5 : 5.0) * blockHardness;
         double speed = 1.0 / baseTime;
         boolean isWoolBlock = blockId == Block.WOOL, isCobweb = blockId == Block.COBWEB;
@@ -623,16 +621,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         int blockId = getId();
         int itemToolType = toolType0(item);
         int itemTier = item.getTier();
-        int efficiencyLoreLevel = Optional.ofNullable(item.getEnchantment(Enchantment.ID_EFFICIENCY))
-                .map(Enchantment::getLevel).orElse(0);
-        int hasteEffectLevel = Optional.ofNullable(player.getEffect(Effect.HASTE))
-                .map(Effect::getAmplifier).orElse(0);
-        boolean insideOfWaterWithoutAquaAffinity = player.isInsideOfWater() &&
-                Optional.ofNullable(player.getInventory().getHelmet().getEnchantment(Enchantment.ID_WATER_WORKER))
-                        .map(Enchantment::getLevel).map(l -> l >= 1).orElse(false);
+        int efficiencyLoreLevel = Optional.ofNullable(item.getEnchantment(Enchantment.ID_EFFICIENCY)).map(Enchantment::getLevel).orElse(0);
+        int hasteEffectLevel = Optional.ofNullable(player.getEffect(Effect.HASTE)).map(Effect::getAmplifier).orElse(0);
+        boolean insideOfWaterWithoutAquaAffinity = player.isInsideOfWater() && Optional.ofNullable(player.getInventory().getHelmet().getEnchantment(Enchantment.ID_WATER_WORKER)).map(Enchantment::getLevel).map(l -> l >= 1).orElse(false);
         boolean outOfWaterButNotOnGround = (!player.isInsideOfWater()) && (!player.isOnGround());
-        return breakTime0(blockHardness, correctTool, canHarvestWithHand, blockId, itemToolType, itemTier,
-                efficiencyLoreLevel, hasteEffectLevel, insideOfWaterWithoutAquaAffinity, outOfWaterButNotOnGround);
+        return breakTime0(blockHardness, correctTool, canHarvestWithHand, blockId, itemToolType, itemTier, efficiencyLoreLevel, hasteEffectLevel, insideOfWaterWithoutAquaAffinity, outOfWaterButNotOnGround);
     }
 
     /**
@@ -975,6 +968,14 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     public boolean canSilkTouch() {
+        return false;
+    }
+
+    public boolean isExperimental() {
+        return false;
+    }
+
+    public boolean isEducation() {
         return false;
     }
 }
