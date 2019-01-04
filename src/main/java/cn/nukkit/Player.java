@@ -168,7 +168,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected int startAction = -1;
 
     protected Vector3 sleeping;
-    protected long clientID;
+    protected Long clientID;
 
     private int loaderId;
 
@@ -290,7 +290,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * @return random client id
      */
     @Deprecated
-    public long getClientId() {
+    public Long getClientId() {
         return randomClientId;
     }
 
