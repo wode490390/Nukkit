@@ -54,8 +54,11 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
-        return super.place(item, block, target, face, fx, fy, fz, player);
+        boolean t = super.place(item, block, target, face, fx, fy, fz, player);
+        if (t) {
+            this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
+        }
+        return t;
     }
 
     @Override
@@ -78,9 +81,9 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_SCHEDULED || type == Level.BLOCK_UPDATE_RANDOM || type == Level.BLOCK_UPDATE_NORMAL) {
+        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
             if (this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) > 11) {
-                List<Block> nearFrosted = new ArrayList<Block>();
+                List<Block> nearFrosted = new ArrayList<>();
                 for (BlockFace face : BlockFace.values()) {
                     Block nearBlock = this.getSide(face);
                     if (nearBlock instanceof BlockIceFrosted) {
@@ -91,17 +94,15 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                     int age = this.getDamage();
                     if (age < 3) {
                         this.setDamage(age + 1);
-                        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
                     } else {
                         this.getLevel().useBreakOn(this);
+                        return Level.BLOCK_UPDATE_NORMAL;
                     }
-                } else {
-                    this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
                 }
-                return Level.BLOCK_UPDATE_NORMAL;
             }
         }
-        return 0;
+        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
+        return type;
     }
 
     @Override
