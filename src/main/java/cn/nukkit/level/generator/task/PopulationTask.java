@@ -18,7 +18,7 @@ public class PopulationTask extends AsyncTask {
     private boolean state;
     private BaseFullChunk centerChunk;
 
-    public final BaseFullChunk[] chunks;
+    public final BaseFullChunk[] chunks = new BaseFullChunk[9];
 
     public PopulationTask(Level level, BaseFullChunk chunk) {
         this.state = true;
@@ -26,7 +26,16 @@ public class PopulationTask extends AsyncTask {
         this.centerChunk = chunk;
         this.seed = level.getSeed();
 
-        this.chunks = level.getAdjacentChunks(chunk.getX(), chunk.getZ());
+        chunks[4] = chunk;
+
+        int i = 0;
+        for (int z = -1; z <= 1; z++) {
+            for (int x = -1; x <= 1; x++, i++) {
+                if (i == 4) continue;
+                BaseFullChunk ck = level.getChunk(chunk.getX() + x, chunk.getZ() + z, true);
+                this.chunks[i] = ck;
+            }
+        }
     }
 
 
