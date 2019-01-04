@@ -11,8 +11,6 @@ public abstract class SimpleChunkManager implements ChunkManager {
 
     protected long seed;
 
-    private boolean closed = false;
-
     public SimpleChunkManager(long seed) {
         this.seed = seed;
     }
@@ -136,14 +134,5 @@ public abstract class SimpleChunkManager implements ChunkManager {
 
     public void cleanChunks(long seed) {
         this.seed = seed;
-    }
-
-    @Override
-    public boolean isClosed() {
-        return closed;
-    }
-
-    public void close() {
-        this.closed = true;
     }
 }
