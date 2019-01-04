@@ -12,6 +12,7 @@ import cn.nukkit.scheduler.AsyncTask;
  * Nukkit Project
  */
 public class GenerationTask extends AsyncTask {
+
     private final Level level;
     public boolean state;
     private BaseFullChunk chunk;
@@ -59,7 +60,6 @@ public class GenerationTask extends AsyncTask {
                 state = true;
             } finally {
                 manager.cleanChunks(level.getSeed());
-                manager.close();
             }
         }
 
