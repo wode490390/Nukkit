@@ -102,8 +102,8 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                     }
                 }
             }
+            this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
         }
-        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
         return 0;
     }
 
