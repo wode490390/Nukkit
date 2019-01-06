@@ -90,9 +90,11 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                     }
                 }
                 if (ThreadLocalRandom.current().nextInt(3) == 0 || nearFrosted.size() < 4) {
-                    int age = this.getDamage();System.out.println("Age: "+age);
+                    BlockIceFrosted block = (BlockIceFrosted) this.clone();
+                    int age = block.getDamage();System.out.println("Age: "+age);
                     if (age < 3) {
-                        this.setDamage(age + 1);
+                        block.setDamage(age + 1);
+                        this.getLevel().setBlock(this, block);
                     } else {
                         this.getLevel().useBreakOn(this);
                         return Level.BLOCK_UPDATE_NORMAL;
