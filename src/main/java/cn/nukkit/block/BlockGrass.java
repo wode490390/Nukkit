@@ -75,7 +75,7 @@ public class BlockGrass extends BlockDirt {
             Block above = this.up();
             int light = this.getLevel().getFullLight(above);
 
-            if (light < 4 && Block.lightFilter[above.getId()] >= 3) {
+            if (light < 4 && Block.lightFilter[above.getId()] >= 3 || above instanceof BlockLiquid || above instanceof BlockIce) {
                 BlockSpreadEvent ev = new BlockSpreadEvent(this, this, new BlockDirt());
                 Server.getInstance().getPluginManager().callEvent(ev);
 
