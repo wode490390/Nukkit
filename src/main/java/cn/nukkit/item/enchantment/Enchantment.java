@@ -7,6 +7,11 @@ import cn.nukkit.item.enchantment.bow.EnchantmentBowFlame;
 import cn.nukkit.item.enchantment.bow.EnchantmentBowInfinity;
 import cn.nukkit.item.enchantment.bow.EnchantmentBowKnockback;
 import cn.nukkit.item.enchantment.bow.EnchantmentBowPower;
+import cn.nukkit.item.enchantment.crossbow.EnchantmentCrossbowMultishot;
+import cn.nukkit.item.enchantment.crossbow.EnchantmentCrossbowPiercing;
+import cn.nukkit.item.enchantment.crossbow.EnchantmentCrossbowQuickCharge;
+import cn.nukkit.item.enchantment.curse.EnchantmentCurseBinding;
+import cn.nukkit.item.enchantment.curse.EnchantmentCurseVanishing;
 import cn.nukkit.item.enchantment.damage.EnchantmentDamageAll;
 import cn.nukkit.item.enchantment.damage.EnchantmentDamageArthropods;
 import cn.nukkit.item.enchantment.damage.EnchantmentDamageSmite;
@@ -14,6 +19,10 @@ import cn.nukkit.item.enchantment.loot.EnchantmentLootDigging;
 import cn.nukkit.item.enchantment.loot.EnchantmentLootFishing;
 import cn.nukkit.item.enchantment.loot.EnchantmentLootWeapon;
 import cn.nukkit.item.enchantment.protection.*;
+import cn.nukkit.item.enchantment.trident.EnchantmentTridentChanneling;
+import cn.nukkit.item.enchantment.trident.EnchantmentTridentImpaling;
+import cn.nukkit.item.enchantment.trident.EnchantmentTridentLoyalty;
+import cn.nukkit.item.enchantment.trident.EnchantmentTridentRiptide;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,7 +63,17 @@ public abstract class Enchantment implements Cloneable {
     public static final int ID_BOW_INFINITY = 22;
     public static final int ID_FORTUNE_FISHING = 23;
     public static final int ID_LURE = 24;
+    public static final int ID_FROST_WALKER = 25;
     public static final int ID_MENDING = 26;
+    public static final int ID_CURSE_BINDING = 27;
+    public static final int ID_CURSE_VANISHING = 28;
+    public static final int ID_TRIDENT_IMPALING = 29;
+    public static final int ID_TRIDENT_RIPTIDE = 30;
+    public static final int ID_TRIDENT_LOYALTY = 31;
+    public static final int ID_TRIDENT_CHANNELING = 32;
+    public static final int ID_CROSSBOW_MULTISHOT = 33;
+    public static final int ID_CROSSBOW_PIERCING = 34;
+    public static final int ID_CROSSBOW_QUICK_CHARGE = 35;
 
     public static void init() {
         enchantments = new Enchantment[256];
@@ -84,7 +103,17 @@ public abstract class Enchantment implements Cloneable {
         enchantments[ID_BOW_INFINITY] = new EnchantmentBowInfinity();
         enchantments[ID_FORTUNE_FISHING] = new EnchantmentLootFishing();
         enchantments[ID_LURE] = new EnchantmentLure();
+        enchantments[ID_FROST_WALKER] = new EnchantmentFrostWalker();
         enchantments[ID_MENDING]  = new EnchantmentMending();
+        enchantments[ID_CURSE_BINDING]  = new EnchantmentCurseBinding();
+        enchantments[ID_CURSE_VANISHING]  = new EnchantmentCurseVanishing();
+        enchantments[ID_TRIDENT_IMPALING]  = new EnchantmentTridentImpaling();
+        enchantments[ID_TRIDENT_LOYALTY]  = new EnchantmentTridentLoyalty();
+        enchantments[ID_TRIDENT_RIPTIDE]  = new EnchantmentTridentRiptide();
+        enchantments[ID_TRIDENT_CHANNELING]  = new EnchantmentTridentChanneling();
+        enchantments[ID_CROSSBOW_MULTISHOT]  = new EnchantmentCrossbowMultishot();
+        enchantments[ID_CROSSBOW_PIERCING]  = new EnchantmentCrossbowPiercing();
+        enchantments[ID_CROSSBOW_QUICK_CHARGE]  = new EnchantmentCrossbowQuickCharge();
     }
 
     public static Enchantment get(int id) {
@@ -206,6 +235,10 @@ public abstract class Enchantment implements Cloneable {
     }
 
     public boolean isMajor() {
+        return false;
+    }
+
+    public boolean isTreasure() {
         return false;
     }
 

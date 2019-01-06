@@ -4,7 +4,7 @@ package cn.nukkit.item;
  * Created by Snake1999 on 2016/1/14.
  * Package cn.nukkit.item in project nukkit.
  */
-public class ItemFishingRod extends Item {
+public class ItemFishingRod extends ItemTool {
 
     public ItemFishingRod() {
         this(0, 1);
@@ -27,5 +27,9 @@ public class ItemFishingRod extends Item {
     public int getMaxStackSize() {
         return 1;
     }
-}
 
+    @Override
+    public int getMaxDurability() {
+        return ItemTool.DURABILITY_FISHING_ROD;
+    }
+}

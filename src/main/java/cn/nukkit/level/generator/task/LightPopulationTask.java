@@ -11,11 +11,11 @@ import cn.nukkit.scheduler.AsyncTask;
  */
 public class LightPopulationTask extends AsyncTask {
 
-    public final int levelId;
+    private final Level level;
     public BaseFullChunk chunk;
 
     public LightPopulationTask(Level level, BaseFullChunk chunk) {
-        this.levelId = level.getId();
+        this.level = level;
         this.chunk = chunk;
     }
 
@@ -35,15 +35,13 @@ public class LightPopulationTask extends AsyncTask {
 
     @Override
     public void onCompletion(Server server) {
-        Level level = server.getLevel(this.levelId);
-
         BaseFullChunk chunk = this.chunk.clone();
-        if (level != null) {
+        if (this.level != null) {
             if (chunk == null) {
                 return;
             }
 
-            level.generateChunkCallback(chunk.getX(), chunk.getZ(), chunk);
+            this.level.generateChunkCallback(chunk.getX(), chunk.getZ(), chunk);
         }
     }
 }

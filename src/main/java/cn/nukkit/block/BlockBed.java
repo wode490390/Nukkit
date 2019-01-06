@@ -108,11 +108,6 @@ public class BlockBed extends BlockTransparentMeta {
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
         if (!down.isTransparent()) {
@@ -168,10 +163,7 @@ public class BlockBed extends BlockTransparentMeta {
     }
 
     private void createBlockEntity(Vector3 pos, int color) {
-        CompoundTag nbt = BlockEntity.getDefaultCompound(pos, BlockEntity.BED);
-        nbt.putByte("color", color);
-
-        BlockEntity.createBlockEntity(BlockEntity.BED, this.level.getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4), nbt);
+        new BlockEntityBed(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.BED).putByte("color", color));
     }
 
     @Override
@@ -185,14 +177,12 @@ public class BlockBed extends BlockTransparentMeta {
     }
 
     public DyeColor getDyeColor() {
-        if (this.level != null) {
-            BlockEntity blockEntity = this.level.getBlockEntity(this);
-
-            if (blockEntity instanceof BlockEntityBed) {
-                return ((BlockEntityBed) blockEntity).getDyeColor();
-            }
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityBed) {
+            return ((BlockEntityBed) blockEntity).getDyeColor();
+        } else {
+            this.createBlockEntity(this, DyeColor.RED.getWoolData());
         }
-
-        return DyeColor.WHITE;
+        return DyeColor.RED;
     }
 }

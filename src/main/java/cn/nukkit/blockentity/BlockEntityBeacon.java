@@ -3,32 +3,42 @@ package cn.nukkit.blockentity;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
-import cn.nukkit.event.block.SignChangeEvent;
 import cn.nukkit.inventory.BeaconInventory;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
-import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.potion.Effect;
-import cn.nukkit.scheduler.NukkitRunnable;
-import cn.nukkit.utils.TextFormat;
-
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * author: Rover656
  */
-public class BlockEntityBeacon extends BlockEntitySpawnable implements InventoryHolder {
-
-    protected final BeaconInventory inventory;
+public class BlockEntityBeacon extends BlockEntitySpawnable implements BlockEntityNameable {
 
     public BlockEntityBeacon(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-        this.inventory = new BeaconInventory(this);
+    }
+
+    @Override
+    public String getName() {
+        return this.hasName() ? this.namedTag.getString("CustomName") : "Beacon";
+    }
+
+    @Override
+    public boolean hasName() {
+        return this.namedTag.contains("CustomName");
+    }
+
+    @Override
+    public void setName(String name) {
+        if (name == null || name.equals("")) {
+            this.namedTag.remove("CustomName");
+            return;
+        }
+
+        this.namedTag.putString("CustomName", name);
     }
 
     @Override
@@ -62,15 +72,17 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return new CompoundTag()
-                .putString("id", BlockEntity.BEACON)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
+        CompoundTag c = getDefaultCompound(this, BEACON)
                 .putString("Lock", this.namedTag.getString("Lock"))
                 .putInt("Levels", this.namedTag.getInt("Levels"))
                 .putInt("Primary", this.namedTag.getInt("Primary"))
                 .putInt("Secondary", this.namedTag.getInt("Secondary"));
+
+        if (this.hasName()) {
+            c.put("CustomName", this.namedTag.get("CustomName"));
+        }
+
+        return c;
     }
 
     private long currentTick = 0;
@@ -84,7 +96,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
 
         //Get the power level based on the pyramid
         setPowerLevel(calculatePowerLevel());
-        
+
         //Skip beacons that do not have a pyramid or sky access
         if (getPowerLevel() < 1 || !hasSkyAccess()) {
             return true;
@@ -96,7 +108,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         //Calculate vars for beacon power
         Integer range = 10 + getPowerLevel() * 10;
         Integer duration = 9 + getPowerLevel() * 2;
-        
+
         for(Map.Entry<Long, Player> entry : players.entrySet()) {
             Player p = entry.getValue();
 
@@ -149,12 +161,12 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
     }
 
     private static final int POWER_LEVEL_MAX = 4;
-    
+
     private boolean hasSkyAccess() {
         int tileX = getFloorX();
         int tileY = getFloorY();
         int tileZ = getFloorZ();
-        
+
         //Check every block from our y coord to the top of the world
         for (int y = tileY + 1; y <= 255; y++) {
             int testBlockId = level.getBlockIdAt(tileX, y, tileZ);
@@ -163,7 +175,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -180,12 +192,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
                 for (int queryZ = tileZ - powerLevel; queryZ <= tileZ + powerLevel; queryZ++) {
 
                     int testBlockId = level.getBlockIdAt(queryX, queryY, queryZ);
-                    if (
-                            testBlockId != Block.IRON_BLOCK &&
-                                    testBlockId != Block.GOLD_BLOCK &&
-                                    testBlockId != Block.EMERALD_BLOCK &&
-                                    testBlockId != Block.DIAMOND_BLOCK
-                            ) {
+                    if (testBlockId != Block.IRON_BLOCK && testBlockId != Block.GOLD_BLOCK && testBlockId != Block.EMERALD_BLOCK && testBlockId != Block.DIAMOND_BLOCK) {
                         return powerLevel - 1;
                     }
 
@@ -204,7 +211,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         int currentLevel = getPowerLevel();
         if (level != currentLevel) {
             namedTag.putInt("Level", level);
-            chunk.setChanged();
+            this.setDirty();
             this.spawnToAll();
         }
     }
@@ -217,7 +224,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         int currentPower = getPrimaryPower();
         if (power != currentPower) {
             namedTag.putInt("Primary", power);
-            chunk.setChanged();
+            this.setDirty();
             this.spawnToAll();
         }
     }
@@ -230,14 +237,9 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         int currentPower = getSecondaryPower();
         if (power != currentPower) {
             namedTag.putInt("Secondary", power);
-            chunk.setChanged();
+            this.setDirty();
             this.spawnToAll();
         }
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return this.inventory;
     }
 
     @Override
@@ -249,7 +251,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements Inventory
         this.setPrimaryPower(nbt.getInt("primary"));
         this.setSecondaryPower(nbt.getInt("secondary"));
 
-        BeaconInventory inv = (BeaconInventory)player.getWindowById(Player.BEACON_WINDOW_ID);
+        BeaconInventory inv = (BeaconInventory) player.getWindowById(Player.BEACON_WINDOW_ID);
 
         inv.setItem(0, new ItemBlock(new BlockAir(), 0, 0));
         return true;

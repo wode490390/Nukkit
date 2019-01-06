@@ -26,6 +26,14 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
 
     public abstract void encode();
 
+    public boolean canBeSentBeforeLogin() {
+        return false;
+    }
+
+    public boolean mayHaveUnreadBytes() {
+        return false;
+    }
+
     @Override
     public DataPacket reset() {
         super.reset();

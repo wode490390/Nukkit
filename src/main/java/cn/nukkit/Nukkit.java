@@ -5,7 +5,6 @@ import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.utils.LogLevel;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.ServerKiller;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -34,8 +33,8 @@ public class Nukkit {
 
     public final static Properties GIT_INFO = getGitInfo();
     public final static String VERSION = getVersion();
-    public final static String API_VERSION = "1.0.7";
-    public final static String CODENAME = "";
+    public final static String API_VERSION = "1.1.0";
+    public final static String CODENAME = getVersionName();
     @Deprecated
     public final static String MINECRAFT_VERSION = ProtocolInfo.MINECRAFT_VERSION;
     @Deprecated
@@ -49,8 +48,11 @@ public class Nukkit {
     public static boolean TITLE = false;
     public static boolean shortTitle = false;
     public static int DEBUG = 1;
+    
+    private static Thread mainThread;
 
     public static void main(String[] args) {
+        mainThread = Thread.currentThread();
 
         // Force IPv4 since Nukkit is not compatible with IPv6
         System.setProperty("java.net.preferIPv4Stack" , "true");
@@ -138,6 +140,10 @@ public class Nukkit {
         System.exit(0);
     }
 
+    public static Thread getMainThread() {
+        return mainThread;
+    }
+
     private static Properties getGitInfo() {
         InputStream gitFileStream = Nukkit.class.getClassLoader().getResourceAsStream("git.properties");
         if (gitFileStream == null) {
@@ -160,5 +166,14 @@ public class Nukkit {
             return version.append("null").toString();
         }
         return version.append(commitId).toString();
+    }
+
+    private static String getVersionName() {
+        StringBuilder verName = new StringBuilder();
+        String branch;
+        if (GIT_INFO == null || (branch = GIT_INFO.getProperty("git.branch")) == null) {
+            return verName.append("null").toString();
+        }
+        return verName.append(branch).toString();
     }
 }

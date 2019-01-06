@@ -17,6 +17,11 @@ public class BlockEntityCauldron extends BlockEntitySpawnable {
     }
 
     @Override
+    public String getName() {
+        return "Cauldron";
+    }
+
+    @Override
     protected void initBlockEntity() {
         if (!namedTag.contains("PotionId")) {
             namedTag.putShort("PotionId", 0xffff);

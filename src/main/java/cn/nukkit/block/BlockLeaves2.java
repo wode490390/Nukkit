@@ -58,4 +58,9 @@ public class BlockLeaves2 extends BlockLeaves {
     public boolean canSilkTouch() {
         return true;
     }
+
+    @Override
+    public boolean diffusesSkyLight() {
+        return true;
+    }
 }

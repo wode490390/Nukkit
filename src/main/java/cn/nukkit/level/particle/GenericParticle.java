@@ -28,9 +28,7 @@ public class GenericParticle extends Particle {
     public DataPacket[] encode() {
         LevelEventPacket pk = new LevelEventPacket();
         pk.evid = (short) (LevelEventPacket.EVENT_ADD_PARTICLE_MASK | this.id);
-        pk.x = (float) this.x;
-        pk.y = (float) this.y;
-        pk.z = (float) this.z;
+        pk.position = this.asVector3f();
         pk.data = this.data;
 
         return new DataPacket[]{pk};

@@ -263,6 +263,11 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         }
     }
 
+    @Override
+    public void setSkyLightArray(byte[] data) {
+        this.skyLight = data;
+    }
+
     private void inflate() {
         try {
             if (compressedLight != null && compressedLight.length != 0) {
@@ -298,6 +303,11 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         } else {
             return EmptyChunkSection.EMPTY_LIGHT_ARR;
         }
+    }
+
+    @Override
+    public void setLightArray(byte[] data) {
+        this.blockLight = data;
     }
 
     @Override

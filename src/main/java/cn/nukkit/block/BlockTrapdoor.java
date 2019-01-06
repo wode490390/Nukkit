@@ -161,9 +161,12 @@ public class BlockTrapdoor extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_REDSTONE || type == Level.BLOCK_UPDATE_NORMAL) {
+        if (type == Level.BLOCK_UPDATE_REDSTONE) {
             if ((!isOpen() && this.level.isBlockPowered(this.getLocation())) || (isOpen() && !this.level.isBlockPowered(this.getLocation()))) {
                 this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, isOpen() ? 15 : 0, isOpen() ? 0 : 15));
+                this.setDamage(this.getDamage() ^ 0x08);
+                this.level.setBlock(this, this, true);
+                this.level.addSound(this, isOpen() ? Sound.RANDOM_DOOR_OPEN : Sound.RANDOM_DOOR_CLOSE);
                 return type;
             }
         }
@@ -216,8 +219,17 @@ public class BlockTrapdoor extends BlockTransparentMeta {
     }
 
     public BlockFace getFacing() {
-        int[] faces = {3, 1, 0, 2};
-        return BlockFace.fromHorizontalIndex(faces[this.getDamage() & 0x03]);
+        switch (this.getDamage() & 0x03) {
+            case 0:
+                return BlockFace.NORTH;
+            case 1:
+                return BlockFace.SOUTH;
+            case 2:
+                return BlockFace.WEST;
+            case 3:
+            default:
+                return BlockFace.EAST;
+        }
     }
 
     public boolean isOpen() {

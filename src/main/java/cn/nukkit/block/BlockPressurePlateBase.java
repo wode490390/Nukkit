@@ -19,7 +19,7 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  * Created by Snake1999 on 2016/1/11.
  * Package cn.nukkit.block in project nukkit
  */
-public abstract class BlockPressurePlateBase extends BlockFlowable {
+public abstract class BlockPressurePlateBase extends BlockFlowableMeta {
 
     protected float onPitch;
     protected float offPitch;
@@ -99,8 +99,7 @@ public abstract class BlockPressurePlateBase extends BlockFlowable {
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-//        System.out.println("place");
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         if (block.down().isTransparent()) {
             return false;
         }

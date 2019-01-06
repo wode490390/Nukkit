@@ -510,6 +510,16 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
+    public int getDifficulty() {
+        return this.levelData.getInt("difficulty");
+    }
+
+    @Override
+    public void setDifficulty(int difficulty) {
+        this.levelData.putInt("difficulty", difficulty);
+    }
+
+    @Override
     public Vector3 getSpawn() {
         return new Vector3(this.levelData.getInt("SpawnX"), this.levelData.getInt("SpawnY"), this.levelData.getInt("SpawnZ"));
     }
