@@ -65,7 +65,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
         this.getLevel().setBlock(this, new BlockWaterStill(), true);
         for (BlockFace face : BlockFace.values()) {
             Block nearBlock = this.getSide(face);
-            if (nearBlock instanceof BlockIceFrosted) {
+            if (nearBlock instanceof BlockIceFrosted && this.getLevel().getFullLight(nearBlock) > 11) {
                 BlockIceFrosted block = (BlockIceFrosted) nearBlock.clone();
                 int age = block.getDamage();System.out.println(age);
                 if (age < 3) {
@@ -102,8 +102,8 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                     }
                 }
             }
+            this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
         }
-        this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
         return 0;
     }
 
