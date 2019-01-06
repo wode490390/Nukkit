@@ -7,7 +7,6 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -81,7 +80,11 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
+        //System.out.println("TYPE: "+type);
+        if (type == Level.BLOCK_UPDATE_SCHEDULED/* || type == Level.BLOCK_UPDATE_RANDOM*/) {
+            System.out.println("FullLight: "+this.getLevel().getFullLight(this));
+            System.out.println("BlockLight: "+this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ());
+            System.out.println("SkyLight: "+this.getLevel().getBlockSkyLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ());
             if (this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) > 11) {
                 List<Block> nearFrosted = new ArrayList<>();
                 for (BlockFace face : BlockFace.values()) {
@@ -90,6 +93,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                         nearFrosted.add(nearBlock);
                     }
                 }
+                //System.out.println("NearFrosted: "+nearFrosted.size());
                 if (ThreadLocalRandom.current().nextInt(3) == 0 || nearFrosted.size() < 4) {
                     int age = this.getDamage();
                     if (age < 3) {
