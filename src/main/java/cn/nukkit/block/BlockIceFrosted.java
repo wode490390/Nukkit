@@ -7,7 +7,6 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -66,11 +65,12 @@ public class BlockIceFrosted extends BlockTransparentMeta {
         this.getLevel().setBlock(this, new BlockWaterStill(), true);
         for (BlockFace face : BlockFace.values()) {
             Block nearBlock = this.getSide(face);
-            if (nearBlock instanceof BlockIceFrosted) {
-                int age = nearBlock.getDamage();
+            if (nearBlock instanceof BlockIceFrosted && this.getLevel().getFullLight(nearBlock) > 11) {
+                BlockIceFrosted block = (BlockIceFrosted) nearBlock.clone();
+                int age = block.getDamage();
                 if (age < 3) {
-                    nearBlock.setDamage(age + 1);
-                    this.getLevel().scheduleUpdate(nearBlock, ThreadLocalRandom.current().nextInt(20, 40));
+                    block.setDamage(age + 1);
+                    this.getLevel().setBlock(nearBlock, block);
                 } else {
                     this.getLevel().setBlock(nearBlock, new BlockWaterStill(), true);
                 }
@@ -81,8 +81,8 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_SCHEDULED || type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) > 11) {
+        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
+            if (this.getLevel().getFullLight(this) > 11) {
                 List<Block> nearFrosted = new ArrayList<>();
                 for (BlockFace face : BlockFace.values()) {
                     Block nearBlock = this.getSide(face);
@@ -91,9 +91,11 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                     }
                 }
                 if (ThreadLocalRandom.current().nextInt(3) == 0 || nearFrosted.size() < 4) {
-                    int age = this.getDamage();
+                    BlockIceFrosted block = (BlockIceFrosted) this.clone();
+                    int age = block.getDamage();
                     if (age < 3) {
-                        this.setDamage(age + 1);
+                        block.setDamage(age + 1);
+                        this.getLevel().setBlock(this, block);
                     } else {
                         this.getLevel().useBreakOn(this);
                         return Level.BLOCK_UPDATE_NORMAL;
@@ -102,7 +104,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
             }
         }
         this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
-        return type;
+        return 0;
     }
 
     @Override
