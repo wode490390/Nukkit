@@ -66,10 +66,10 @@ public class BlockCommandBlock extends BlockSolidMeta {
                 } else if (this.y - y > 0) {
                     this.setDamage(BlockFace.DOWN.getIndex());
                 } else {
-                    this.setDamage(player.getHorizontalFacing().getIndex());
+                    this.setDamage(player.getHorizontalFacing().getOpposite().getIndex());
                 }
             } else {
-                this.setDamage(player.getHorizontalFacing().getIndex());
+                this.setDamage(player.getHorizontalFacing().getOpposite().getIndex());
             }
         } else {
             this.setDamage(0);
