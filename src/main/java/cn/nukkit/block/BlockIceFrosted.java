@@ -83,8 +83,8 @@ public class BlockIceFrosted extends BlockTransparentMeta {
         //System.out.println("TYPE: "+type);
         if (type == Level.BLOCK_UPDATE_SCHEDULED/* || type == Level.BLOCK_UPDATE_RANDOM*/) {
             System.out.println("FullLight: "+this.getLevel().getFullLight(this));
-            System.out.println("BlockLight: "+this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ());
-            System.out.println("SkyLight: "+this.getLevel().getBlockSkyLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ());
+            System.out.println("BlockLight: "+this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()));
+            System.out.println("SkyLight: "+this.getLevel().getBlockSkyLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()));
             if (this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) > 11) {
                 List<Block> nearFrosted = new ArrayList<>();
                 for (BlockFace face : BlockFace.values()) {
