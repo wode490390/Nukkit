@@ -1,8 +1,10 @@
 package cn.nukkit.block;
 
+//import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -45,9 +47,11 @@ public class BlockIce extends BlockTransparent {
     }
 
     @Override
-    public boolean onBreak(Item item) {
-        this.getLevel().setBlock(this, new BlockWater(), true);
-        return true;
+    public boolean onBreak(Item item/*, Player player*/) {
+        if (/*(player == null || player.isSurvival()) &&*/ (item == null || item.getEnchantment(Enchantment.ID_SILK_TOUCH) == null)) {
+            return this.getLevel().setBlock(this, new BlockWater(), true);
+        }
+        return super.onBreak(item/*, player*/);
     }
 
     @Override
