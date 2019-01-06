@@ -57,7 +57,7 @@ public class BlockIce extends BlockTransparent {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 12) {
+            if (this.getLevel().getFullLight(this) > 11 && !Biome.getBiome(this.getLevel().getBiomeId(this.getFloorX(), this.getFloorZ())).isFreezing()) {
                 this.getLevel().setBlock(this, new BlockWater(), true);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
