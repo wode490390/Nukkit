@@ -80,11 +80,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        //System.out.println("TYPE: "+type);
-        if (type == Level.BLOCK_UPDATE_SCHEDULED/* || type == Level.BLOCK_UPDATE_RANDOM*/) {
-            //System.out.println("FullLight: "+this.getLevel().getFullLight(this));
-            //System.out.println("BlockLight: "+this.getLevel().getBlockLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()));
-            //System.out.println("SkyLight: "+this.getLevel().getBlockSkyLightAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()));
+        if (type == Level.BLOCK_UPDATE_SCHEDULED) {
             if (this.getLevel().getFullLight(this) > 11) {
                 List<Block> nearFrosted = new ArrayList<>();
                 for (BlockFace face : BlockFace.values()) {
@@ -93,9 +89,8 @@ public class BlockIceFrosted extends BlockTransparentMeta {
                         nearFrosted.add(nearBlock);
                     }
                 }
-                System.out.println("NearFrosted: "+nearFrosted.size());
                 if (ThreadLocalRandom.current().nextInt(3) == 0 || nearFrosted.size() < 4) {
-                    int age = this.getDamage();
+                    int age = this.getDamage();System.out.println("Age: "+age);
                     if (age < 3) {
                         this.setDamage(age + 1);
                     } else {
@@ -106,7 +101,7 @@ public class BlockIceFrosted extends BlockTransparentMeta {
             }
         }
         this.getLevel().scheduleUpdate(this, ThreadLocalRandom.current().nextInt(20, 40));
-        return type;
+        return 0;
     }
 
     @Override
