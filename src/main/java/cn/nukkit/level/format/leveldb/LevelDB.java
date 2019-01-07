@@ -22,7 +22,6 @@ import cn.nukkit.utils.*;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.impl.Iq80DBFactory;
-
 import java.io.*;
 import java.nio.ByteOrder;
 import java.util.*;
@@ -153,6 +152,11 @@ public class LevelDB implements LevelProvider {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Chunk getEmptyChunk(int chunkX, int chunkZ) {
+        return Chunk.getEmptyChunk(chunkX, chunkZ, this);
     }
 
     @Override
