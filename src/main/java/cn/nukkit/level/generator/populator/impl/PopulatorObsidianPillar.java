@@ -14,15 +14,7 @@ public class PopulatorObsidianPillar extends BlockPopulator {
             int x = (chunkX << 4) + random.nextBoundedInt(16);
             int z = (chunkZ << 4) + random.nextBoundedInt(16);
             int y = this.getHighestWorkableBlock(level, x, z, chunk);
-            if (y < 1) {
-                return;
-            }
-
-            int cx = x & 0xF;
-            int cz = z & 0xF;
-            if (chunk.getBlockId(cx, y, cz) != 0 || chunk.getBlockId(cx, y - 1, cz) != END_STONE) {
-                return;
-            }
+            if (y < 1 || level.getBlockIdAt(x, y, z) != 0 || level.getBlockIdAt(x, y - 1, z) != END_STONE) return;
 
             int height = random.nextBoundedInt(32) + 6;
             int radius = random.nextBoundedInt(4) + 1;
@@ -30,9 +22,7 @@ public class PopulatorObsidianPillar extends BlockPopulator {
             // check under the pillar that there's no gap
             for (int i = -radius; i <= radius; i++) {
                 for (int j = -radius; j <= radius; j++) {
-                    if (i * i + j * j <= radius * radius + 1 && chunk.getBlockId(cx + i, y - 1, cz + j) != END_STONE) {
-                        return;
-                    }
+                    if (i * i + j * j <= radius * radius + 1 && level.getBlockIdAt(x + i, y - 1, z + j) != END_STONE) return;
                 }
             }
 
@@ -40,9 +30,7 @@ public class PopulatorObsidianPillar extends BlockPopulator {
             for (int k = 0; k < height && y + k < 256; k++) {
                 for (int i = -radius; i <= radius; i++) {
                     for (int j = -radius; j <= radius; j++) {
-                        if (i * i + j * j <= radius * radius + 1) {
-                            level.setBlockAt(x + i, y + k, z + j, OBSIDIAN);
-                        }
+                        if (i * i + j * j <= radius * radius + 1) level.setBlockAt(x + i, y + k, z + j, OBSIDIAN);
                     }
                 }
             }
