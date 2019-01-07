@@ -9,9 +9,10 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.noise.PerlinOctaveGenerator;
 import cn.nukkit.level.generator.noise.bukkit.OctaveGenerator;
 import cn.nukkit.level.generator.object.ore.OreType;
-import cn.nukkit.level.generator.populator.impl.PopulatorGlowStone;
-import cn.nukkit.level.generator.populator.impl.PopulatorGroundFire;
-import cn.nukkit.level.generator.populator.impl.PopulatorLava;
+import cn.nukkit.level.generator.populator.nether.PopulatorFire;
+import cn.nukkit.level.generator.populator.nether.PopulatorGlowstone;
+import cn.nukkit.level.generator.populator.nether.PopulatorLava;
+import cn.nukkit.level.generator.populator.nether.PopulatorMushroom;
 import cn.nukkit.level.generator.populator.impl.PopulatorOre;
 import cn.nukkit.level.generator.populator.type.Populator;
 import cn.nukkit.math.NukkitRandom;
@@ -29,20 +30,20 @@ public class Nether extends Generator {
     private static double detailNoiseScaleZ = getConfig("nether.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
     private static double surfaceScale = getConfig("nether.surface-scale", 0.0625d);
 
-    private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
+    private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
     private final double[][][] density = new double[5][5][17];
 
     private ChunkManager level;
     private NukkitRandom nukkitRandom;
     private Random random;
-    private final List<Populator> populators = new ArrayList<Populator>();
-    private List<Populator> generationPopulators = new ArrayList<Populator>();
+    private final List<Populator> populators = new ArrayList<>();
+    private List<Populator> generationPopulators = new ArrayList<>();
 
     private long localSeed1;
     private long localSeed2;
 
     public Nether() {
-        this(new HashMap<String, Object>());
+        this(new HashMap<>());
     }
 
     public Nether(Map<String, Object> options) {
@@ -66,7 +67,7 @@ public class Nether extends Generator {
 
     @Override
     public Map<String, Object> getSettings() {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     @Override
@@ -84,14 +85,32 @@ public class Nether extends Generator {
         this.localSeed2 = this.random.nextLong();
 
         PopulatorLava lava = new PopulatorLava();
-        lava.setBaseAmount(1);
-        lava.setRandomAmount(2);
+        lava.setAmount(16);
         this.populators.add(lava);
 
-        PopulatorGroundFire groundFire = new PopulatorGroundFire();
-        groundFire.setBaseAmount(1);
-        groundFire.setRandomAmount(1);
-        this.populators.add(groundFire);
+        PopulatorLava flowingLava = new PopulatorLava(true);
+        flowingLava.setAmount(8);
+        this.populators.add(flowingLava);
+
+        PopulatorGlowstone glowstone1 = new PopulatorGlowstone();
+        glowstone1.setAmount(1);
+        this.populators.add(glowstone1);
+
+        PopulatorGlowstone glowstone2 = new PopulatorGlowstone(true);
+        glowstone2.setAmount(1);
+        this.populators.add(glowstone2);
+
+        PopulatorMushroom brownMushroom = new PopulatorMushroom(BROWN_MUSHROOM);
+        brownMushroom.setAmount(1);
+        this.populators.add(brownMushroom);
+
+        PopulatorMushroom redMushroom = new PopulatorMushroom(RED_MUSHROOM);
+        redMushroom.setAmount(1);
+        this.populators.add(redMushroom);
+
+        PopulatorFire fire = new PopulatorFire();
+        fire.setAmount(1);
+        this.populators.add(fire);
 
         PopulatorOre ores = new PopulatorOre(NETHERRACK);
         ores.setOreTypes(new OreType[]{
@@ -100,8 +119,6 @@ public class Nether extends Generator {
                 new OreType(new BlockMagma(), 32, 16, 26, 37, NETHERRACK),
         });
         this.populators.add(ores);
-
-        this.populators.add(new PopulatorGlowStone());
     }
 
     @Override
@@ -282,9 +299,7 @@ public class Nether extends Generator {
         for (Populator populator : this.populators) {
             populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
         }
-
-        Biome biome = EnumBiome.getBiome(chunk.getBiomeId(7, 7));
-        biome.populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
+        EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
     @Override
@@ -300,7 +315,7 @@ public class Nether extends Generator {
      */
     protected final Map<String, OctaveGenerator> getWorldOctaves() {
         if (this.octaveCache.get(this.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = new HashMap<String, OctaveGenerator>();
+            Map<String, OctaveGenerator> octaves = new HashMap<>();
             NukkitRandom seed = new NukkitRandom(this.level.getSeed());
 
             OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
