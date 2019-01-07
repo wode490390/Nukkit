@@ -14,7 +14,6 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.ChunkException;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -179,6 +178,7 @@ public class McRegion extends BaseLevelProvider {
         return chunk;
     }
 
+    @Override
     public Chunk getEmptyChunk(int chunkX, int chunkZ) {
         return Chunk.getEmptyChunk(chunkX, chunkZ, this);
     }
