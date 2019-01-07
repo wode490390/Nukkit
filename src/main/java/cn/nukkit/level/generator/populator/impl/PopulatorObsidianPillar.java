@@ -41,14 +41,14 @@ public class PopulatorObsidianPillar extends BlockPopulator {
                 for (int i = -radius; i <= radius; i++) {
                     for (int j = -radius; j <= radius; j++) {
                         if (i * i + j * j <= radius * radius + 1) {
-                            chunk.setBlock(x + i, y + k, z + j, OBSIDIAN);
+                            level.setBlockAt(x + i, y + k, z + j, OBSIDIAN);
                         }
                     }
                 }
             }
 
             //TODO: level.spawnEntity(new EntityEndCrystal(), x + 0.5D, y + height + 1, z + 0.5D, random.nextFloat() * 360, 0);
-            chunk.setBlock(x, y + height, z, BEDROCK);
+            level.setBlockAt(x, y + height, z, BEDROCK);
         }
     }
 }
