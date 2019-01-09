@@ -803,6 +803,7 @@ public abstract class Entity extends Location implements Metadatable {
         if (!this.hasSpawned.containsKey(player.getLoaderId()) && player.usedChunks.containsKey(Level.chunkHash(this.chunk.getX(), this.chunk.getZ()))) {
             this.hasSpawned.put(player.getLoaderId(), player);
         }
+        /*
         if (this.riding != null) {
             SetEntityLinkPacket pkk = new SetEntityLinkPacket();
             pkk.rider = this.riding.getId();
@@ -811,7 +812,7 @@ public abstract class Entity extends Location implements Metadatable {
             pkk.unknownByte = 1;
 
             player.dataPacket(pkk);
-        }
+        }*/
     }
 
     protected DataPacket createAddEntityPacket() {
