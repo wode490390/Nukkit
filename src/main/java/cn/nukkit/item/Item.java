@@ -35,10 +35,7 @@ import java.util.regex.Pattern;
  */
 public class Item implements Cloneable, BlockID, ItemID {
 
-    /**
-     * SERVER SIDE HACK!!
-     */
-    public static int NEGATIVE_BLOCK_ITEM_ID_BASE = 40000; // < 65535
+    public static int NEGATIVE_BLOCK_ITEM_ID_BASE = 0xffff;
 
     protected static String UNKNOWN_STR = "Unknown";
     public static Class[] list;
@@ -90,7 +87,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
     public static void init() {
         if (list == null) {
-            list = new Class[65535];
+            list = new Class[0xffff];
             list[IRON_SHOVEL] = ItemShovelIron.class; //256
             list[IRON_PICKAXE] = ItemPickaxeIron.class; //257
             list[IRON_AXE] = ItemAxeIron.class; //258
@@ -306,16 +303,17 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[RECORD_STRAD] = ItemRecordStrad.class;
             list[RECORD_WAIT] = ItemRecordWait.class;
 
+            //Block item
             for (int i = 0; i < 256; ++i) {
                 if (Block.list[i] != null) {
                     list[i] = Block.list[i];
                 }
             }
 
-            // HACK!!
+            //Negative block item
             for (int i = 256; i < 512; ++i) { //Future needs to be expanded to 1024
                 if (Block.list[i] != null) {
-                    list[NEGATIVE_BLOCK_ITEM_ID_BASE + i] = Block.list[i];
+                    list[(255 - i) & NEGATIVE_BLOCK_ITEM_ID_BASE] = Block.list[i];
                 }
             }
         }
@@ -342,8 +340,8 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         for (Map map : list) {
             try {
-                int id = (int) map.get("id");
-                int damage = (int) map.getOrDefault("damage", 0);
+                int id = ((int) map.get("id")) & 0xffff;
+                int damage = ((int) map.getOrDefault("damage", 0)) & 0xffff;
                 String hex = (String) map.get("nbt_hex");
                 byte[] nbt = hex != null ? Utils.parseHexBinary(hex) : new byte[0];
 
@@ -412,19 +410,19 @@ public class Item implements Cloneable, BlockID, ItemID {
             Class c = list[id];
             Item item;
 
-            if (c == null) {
+            if (c == null) { //Unknow item
                 item = new Item(id, meta, count);
-            } else if (id < 256) {
+            } else if (id < 256) { //Block item
                 if (meta >= 0) {
                     item = new ItemBlock(Block.get(id, meta), meta, count);
                 } else {
                     item = new ItemBlock(Block.get(id), meta, count);
                 }
-            } else if (id >= NEGATIVE_BLOCK_ITEM_ID_BASE) {
+            } else if (id >= 512) { //Negative block item //Future needs to be expanded to 1024
                 if (meta >= 0) {
-                    item = new ItemBlock(Block.get(id - NEGATIVE_BLOCK_ITEM_ID_BASE, meta), meta, count);
+                    item = new ItemBlock(Block.get(NEGATIVE_BLOCK_ITEM_ID_BASE - id + 256, meta), meta, count);
                 } else {
-                    item = new ItemBlock(Block.get(id - NEGATIVE_BLOCK_ITEM_ID_BASE), meta, count);
+                    item = new ItemBlock(Block.get(NEGATIVE_BLOCK_ITEM_ID_BASE - id + 256), meta, count);
                 }
             } else {
                 item = ((Item) c.getConstructor(Integer.class, int.class).newInstance(meta, count));
@@ -456,8 +454,8 @@ public class Item implements Cloneable, BlockID, ItemID {
             }
         }
 
-        id = id & 0xFFFF;
-        if (b.length != 1) meta = Integer.valueOf(b[1]) & 0xFFFF;
+        id = id & 0xffff;
+        if (b.length != 1) meta = Integer.valueOf(b[1]) & 0xffff;
 
         return get(id, meta);
     }
@@ -465,7 +463,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     public static Item fromJson(Map<String, Object> data) {
         String nbt = (String) data.getOrDefault("nbt_hex", "");
 
-        return get(Utils.toInt(data.get("id")), Utils.toInt(data.getOrDefault("damage", 0)), Utils.toInt(data.getOrDefault("count", 1)), nbt.isEmpty() ? new byte[0] : Utils.parseHexBinary(nbt));
+        return get(Utils.toInt(data.get("id")) & 0xffff, Utils.toInt(data.getOrDefault("damage", 0)) & 0xffff, Utils.toInt(data.getOrDefault("count", 1)), nbt.isEmpty() ? new byte[0] : Utils.parseHexBinary(nbt));
     }
 
     public static Item[] fromStringMultiple(String str) {
