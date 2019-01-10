@@ -18,7 +18,7 @@ public class ItemBlock extends Item {
 
     public ItemBlock(Block block, Integer meta, int count) {
         // HACK!!
-        super(block.getId() > 255 ? NEGATIVE_BLOCK_ITEM_ID_BASE + block.getId() : block.getId(), meta, count, block.getName());
+        super(block.getId() > 255 ? (255 - block.getId()) & NEGATIVE_BLOCK_ITEM_ID_BASE : block.getId(), meta, count, block.getName());
         this.block = block;
     }
 
