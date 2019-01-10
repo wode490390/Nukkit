@@ -303,9 +303,9 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[OBSERVER] = BlockObserver.class; //251
             list[STRUCTURE_BLOCK] = BlockStructureBlock.class; //252
 
-            // HACK:
-
-            list[BLUE_ICE] = BlockIceBlue; //266 -11
+            //TODO: more blocks
+            list[BLUE_ICE] = BlockIceBlue; //266
+            //TODO: more blocks
 
             for (int id = 0; id < 512; id++) { //Future needs to be expanded to 1024
                 Class c = list[id];
