@@ -14,7 +14,6 @@ import cn.nukkit.nbt.tag.NumberTag;
 import cn.nukkit.network.protocol.BatchPacket;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +25,7 @@ import java.util.Map;
  * Nukkit Project
  */
 public abstract class BaseFullChunk implements FullChunk, ChunkManager {
+
     protected Map<Long, Entity> entities;
 
     protected Map<Long, BlockEntity> tiles;
@@ -39,7 +39,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
      */
     protected byte[] biomes;
 
-    protected byte[] blocks;
+    protected int[] blocks;
 
     protected byte[] data;
 
@@ -434,7 +434,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     }
 
     @Override
-    public byte[] getBlockIdArray() {
+    public int[] getBlockIdArray() {
         return this.blocks;
     }
 
