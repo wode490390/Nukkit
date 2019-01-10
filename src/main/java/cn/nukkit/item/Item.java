@@ -420,6 +420,12 @@ public class Item implements Cloneable, BlockID, ItemID {
                 } else {
                     item = new ItemBlock(Block.get(id), meta, count);
                 }
+            } else if (id >= NEGATIVE_BLOCK_ITEM_ID_BASE) {
+                if (meta >= 0) {
+                    item = new ItemBlock(Block.get(id - NEGATIVE_BLOCK_ITEM_ID_BASE, meta), meta, count);
+                } else {
+                    item = new ItemBlock(Block.get(id - NEGATIVE_BLOCK_ITEM_ID_BASE), meta, count);
+                }
             } else {
                 item = ((Item) c.getConstructor(Integer.class, int.class).newInstance(meta, count));
             }
