@@ -10,11 +10,11 @@ public class BlockStorage {
     private final NibbleArray blockData;
 
     public BlockStorage() {
-        blockIds = new byte[SECTION_SIZE];
+        blockIds = new int[SECTION_SIZE];
         blockData = new NibbleArray(SECTION_SIZE);
     }
 
-    private BlockStorage(byte[] blockIds, NibbleArray blockData) {
+    private BlockStorage(int[] blockIds, NibbleArray blockData) {
         this.blockIds = blockIds;
         this.blockData = blockData;
     }
