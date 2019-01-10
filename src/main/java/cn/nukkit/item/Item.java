@@ -20,7 +20,6 @@ import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -35,17 +34,21 @@ import java.util.regex.Pattern;
  * Nukkit Project
  */
 public class Item implements Cloneable, BlockID, ItemID {
-    //Normal Item IDs
+
+    /**
+     * SERVER SIDE HACK!!
+     */
+    public static int NEGATIVE_BLOCK_ITEM_ID_BASE = 40000; // < 65535
 
     protected static String UNKNOWN_STR = "Unknown";
-    public static Class[] list = null;
+    public static Class[] list;
 
-    protected Block block = null;
+    protected Block block;
     protected final int id;
     protected int meta;
     protected boolean hasMeta = true;
     private byte[] tags = new byte[0];
-    private CompoundTag cachedNBT = null;
+    private CompoundTag cachedNBT;
     public int count;
     protected int durability = 0;
     protected String name;
@@ -306,6 +309,13 @@ public class Item implements Cloneable, BlockID, ItemID {
             for (int i = 0; i < 256; ++i) {
                 if (Block.list[i] != null) {
                     list[i] = Block.list[i];
+                }
+            }
+
+            // HACK!!
+            for (int i = 256; i < 512; ++i) { //Future needs to be expanded to 1024
+                if (Block.list[i] != null) {
+                    list[NEGATIVE_BLOCK_ITEM_ID_BASE + i] = Block.list[i];
                 }
             }
         }
