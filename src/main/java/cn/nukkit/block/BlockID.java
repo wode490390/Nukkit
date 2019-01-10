@@ -259,8 +259,6 @@ public interface BlockID {
     int HARD_STAINED_GLASS = 254; //edu
     int RESERVED6 = 255;
 
-    /* HACK ID */
-
     int PRISMARINE_STAIRS = 257; //-2
     int DARK_PRISMARINE_STAIRS = 258; //-3
     int PRISMARINE_BRICKS_STAIRS = 259; //-4
