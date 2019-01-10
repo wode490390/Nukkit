@@ -282,21 +282,17 @@ public class BinaryStream {
     public Item getSlot() {
         int id = this.getVarInt();
 
-        if (id <= 0) {
-            return Item.get(0, 0, 0);
-        }
+        if (id = 0) return Item.get(0, 0, 0);
+        if (if < 0) id &= Item.NEGATIVE_BLOCK_ITEM_ID_BASE;
+
         int auxValue = this.getVarInt();
         int data = auxValue >> 8;
-        if (data == Short.MAX_VALUE) {
-            data = -1;
-        }
+        if (data == Short.MAX_VALUE) data = -1;
         int cnt = auxValue & 0xff;
 
         int nbtLen = this.getLShort();
         byte[] nbt = new byte[0];
-        if (nbtLen > 0) {
-            nbt = this.get(nbtLen);
-        }
+        if (nbtLen > 0) nbt = this.get(nbtLen);
 
         //TODO
         int canPlaceOn = this.getVarInt();
