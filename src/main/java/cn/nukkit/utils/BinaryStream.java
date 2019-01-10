@@ -325,9 +325,7 @@ public class BinaryStream {
             return;
         }
 
-        // HACK!!
-        this.putVarInt(item.getId() >= Item.NEGATIVE_BLOCK_ITEM_ID_BASE ? 255 - (item.getId() - Item.NEGATIVE_BLOCK_ITEM_ID_BASE) : item.getId());
-
+        this.putVarInt(item.getId() >= 512 ? item.getId() - (Item.NEGATIVE_BLOCK_ITEM_ID_BASE + 1) : item.getId()); //Future needs to be expanded to 1024
         int auxValue = (((item.hasMeta() ? item.getDamage() : -1) & 0x7fff) << 8) | item.getCount();
         this.putVarInt(auxValue);
         byte[] nbt = item.getCompoundTag();
