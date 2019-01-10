@@ -9,7 +9,6 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.network.protocol.types.*;
-
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -326,7 +325,9 @@ public class BinaryStream {
             return;
         }
 
-        this.putVarInt(item.getId());
+        // HACK!!
+        this.putVarInt(item.getId() >= Item.NEGATIVE_BLOCK_ITEM_ID_BASE ? 255 - (item.getId() - Item.NEGATIVE_BLOCK_ITEM_ID_BASE) : item.getId());
+
         int auxValue = (((item.hasMeta() ? item.getDamage() : -1) & 0x7fff) << 8) | item.getCount();
         this.putVarInt(auxValue);
         byte[] nbt = item.getCompoundTag();
