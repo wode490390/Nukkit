@@ -32,7 +32,7 @@ public interface BlockID {
     int GOLDEN_RAIL = 27, POWERED_RAIL = 27;
     int DETECTOR_RAIL = 28;
     int STICKY_PISTON = 29;
-    int WEB = 30 = COBWEB = 30;
+    int WEB = 30, COBWEB = 30;
     int TALLGRASS = 31, TALL_GRASS = 31;
     int DEADBUSH = 32, BUSH = 32, DEAD_BUSH = 32;
     int PISTON = 33;
@@ -82,7 +82,7 @@ public interface BlockID {
     int STONE_BUTTON = 77;
     int SNOW_LAYER = 78, SNOW = 78;
     int ICE = 79;
-    int SNOW = 80, SNOW_BLOCK = 80;
+    int SNOW_BLOCK = 80;//SNOW = 80, 
     int CACTUS = 81;
     int CLAY_BLOCK = 82;//CLAY = 82, 
     int REEDS = 83, SUGARCANE_BLOCK = 83;
@@ -216,7 +216,7 @@ public interface BlockID {
     //int DENY = 211; //Edu
     //int BORDER_BLOCK = 212; //Edu
     int MAGMA = 213;
-    int NETHER_WART_BLOCK = 214, BLOCK_NETHER_WART_BLOCK = 214;
+    int BLOCK_NETHER_WART_BLOCK = 214;//NETHER_WART_BLOCK = 214, 
     int RED_NETHER_BRICK = 215;
     int BONE_BLOCK = 216;
 
