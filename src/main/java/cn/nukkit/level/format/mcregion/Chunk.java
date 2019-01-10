@@ -15,7 +15,6 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.Zlib;
-
 import java.io.ByteArrayInputStream;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -146,12 +145,12 @@ public class Chunk extends BaseFullChunk {
 
     @Override
     public int getBlockId(int x, int y, int z) {
-        return this.blocks[(x << 11) | (z << 7) | y] & 0xff;
+        return this.blocks[(x << 11) | (z << 7) | y] & 0x1ff; //Future needs to be expanded to 0x3ff
     }
 
     @Override
     public void setBlockId(int x, int y, int z, int id) {
-        this.blocks[(x << 11) | (z << 7) | y] = (byte) id;
+        this.blocks[(x << 11) | (z << 7) | y] = id & 0x1ff; //Future needs to be expanded to 0x3ff
         setChanged();
     }
 
@@ -180,10 +179,10 @@ public class Chunk extends BaseFullChunk {
     @Override
     public int getFullBlock(int x, int y, int z) {
         int i = (x << 11) | (z << 7) | y;
-        int block = this.blocks[i] & 0xff;
+        int block = this.blocks[i] & 0x1ff; //Future needs to be expanded to 0x3ff
         int data = this.data[i >> 1] & 0xff;
         if ((y & 1) == 0) {
-            return (block << 4) | (data & 0x0f);
+            return (block << 4) | (data & 0xf);
         } else {
             return (block << 4) | (data >> 4);
         }
@@ -198,7 +197,7 @@ public class Chunk extends BaseFullChunk {
     public boolean setBlock(int x, int y, int z, int blockId, int meta) {
         int i = (x << 11) | (z << 7) | y;
         boolean changed = false;
-        byte id = (byte) blockId;
+        int id = blockId & 0x1ff; //Future needs to be expanded to 0x3ff
         if (this.blocks[i] != id) {
             this.blocks[i] = id;
             changed = true;
@@ -206,14 +205,14 @@ public class Chunk extends BaseFullChunk {
 
         if (Block.hasMeta[blockId]) {
             i >>= 1;
-            int old = this.data[i] & 0xff;
+            int old = this.data[i] & 0x1ff; //Future needs to be expanded to 0x3ff
             if ((y & 1) == 0) {
-                this.data[i] = (byte) ((old & 0xf0) | (meta & 0x0f));
+                this.data[i] = (byte) ((old & 0x1f0) | (meta & 0xf)); //Future needs to be expanded to 0x3f0
                 if ((old & 0x0f) != meta) {
                     changed = true;
                 }
             } else {
-                this.data[i] = (byte) (((meta & 0x0f) << 4) | (old & 0x0f));
+                this.data[i] = (byte) (((meta & 0xf) << 4) | (old & 0xf));
                 if (meta != (old >> 4)) {
                     changed = true;
                 }
@@ -230,9 +229,9 @@ public class Chunk extends BaseFullChunk {
     public Block getAndSetBlock(int x, int y, int z, Block block) {
         int i = (x << 11) | (z << 7) | y;
         boolean changed = false;
-        byte id = (byte) block.getId();
+        int id = block.getId();
 
-        byte previousId = this.blocks[i];
+        int previousId = this.blocks[i];
 
         if (previousId != id) {
             this.blocks[i] = id;
@@ -241,11 +240,11 @@ public class Chunk extends BaseFullChunk {
 
         int previousData;
         i >>= 1;
-        int old = this.data[i] & 0xff;
+        int old = this.data[i] & 0x1ff; //Future needs to be expanded to 0x3ff
         if ((y & 1) == 0) {
-            previousData = old & 0x0f;
+            previousData = old & 0xf;
             if (Block.hasMeta[block.getId()]) {
-                this.data[i] = (byte) ((old & 0xf0) | (block.getDamage() & 0x0f));
+                this.data[i] = (byte) ((old & 0x1f0) | (block.getDamage() & 0xf)); //Future needs to be expanded to 0x3f0
                 if (block.getDamage() != previousData) {
                     changed = true;
                 }
@@ -253,7 +252,7 @@ public class Chunk extends BaseFullChunk {
         } else {
             previousData = old >> 4;
             if (Block.hasMeta[block.getId()]) {
-                this.data[i] = (byte) (((block.getDamage() & 0x0f) << 4) | (old & 0x0f));
+                this.data[i] = (byte) (((block.getDamage() & 0xf) << 4) | (old & 0xf));
                 if (block.getDamage() != previousData) {
                     changed = true;
                 }
@@ -441,7 +440,7 @@ public class Chunk extends BaseFullChunk {
         nbt.putInt("zPos", this.getZ());
 
         if (this.isGenerated()) {
-            nbt.putByteArray("Blocks", this.getBlockIdArray());
+            nbt.putIntArray("Blocks", this.getBlockIdArray());
             nbt.putByteArray("Data", this.getBlockDataArray());
             nbt.putByteArray("SkyLight", this.getBlockSkyLightArray());
             nbt.putByteArray("BlockLight", this.getBlockLightArray());
