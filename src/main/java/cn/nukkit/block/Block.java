@@ -18,7 +18,6 @@ import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Objects;
@@ -29,31 +28,32 @@ import java.util.Optional;
  * Nukkit Project
  */
 public abstract class Block extends Position implements Metadatable, Cloneable, AxisAlignedBB, BlockID {
-    public static Class[] list = null;
-    public static Block[] fullList = null;
-    public static int[] light = null;
-    public static int[] lightFilter = null;
-    public static boolean[] solid = null;
-    public static double[] hardness = null;
-    public static boolean[] transparent = null;
+
+    public static Class[] list;
+    public static Block[] fullList;
+    public static int[] light;
+    public static int[] lightFilter;
+    public static boolean[] solid;
+    public static double[] hardness;
+    public static boolean[] transparent;
     /**
      * if a block has can have variants
      */
-    public static boolean[] hasMeta = null;
+    public static boolean[] hasMeta;
 
     protected Block() {}
 
     @SuppressWarnings("unchecked")
     public static void init() {
         if (list == null) {
-            list = new Class[256];
-            fullList = new Block[4096];
-            light = new int[256];
-            lightFilter = new int[256];
-            solid = new boolean[256];
-            hardness = new double[256];
-            transparent = new boolean[256];
-            hasMeta = new boolean[256];
+            list = new Class[512]; //Future needs to be expanded to 1024, similarly hereinafter
+            fullList = new Block[8192]; //Future needs to be expanded to 16384
+            light = new int[512];
+            lightFilter = new int[512];
+            solid = new boolean[512];
+            hardness = new double[512];
+            transparent = new boolean[512];
+            hasMeta = new boolean[512];
 
             list[AIR] = BlockAir.class; //0
             list[STONE] = BlockStone.class; //1
@@ -303,7 +303,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[OBSERVER] = BlockObserver.class; //251
             list[STRUCTURE_BLOCK] = BlockStructureBlock.class; //252
 
-            for (int id = 0; id < 256; id++) {
+            // HACK:
+
+            list[BLUE_ICE] = BlockIceBlue; //266 -11
+
+            for (int id = 0; id < 512; id++) { //Future needs to be expanded to 1024
                 Class c = list[id];
                 if (c != null) {
                     Block block;
