@@ -283,7 +283,7 @@ public class BinaryStream {
         int id = this.getVarInt();
 
         if (id == 0) return Item.get(0, 0, 0);
-        if (if < 0) id &= Item.NEGATIVE_BLOCK_ITEM_ID_BASE;
+        if (id < 0) id &= Item.NEGATIVE_BLOCK_ITEM_ID_BASE;
 
         int auxValue = this.getVarInt();
         int data = auxValue >> 8;
