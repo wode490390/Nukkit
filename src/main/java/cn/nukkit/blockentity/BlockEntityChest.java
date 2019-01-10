@@ -14,7 +14,6 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
-
 import java.util.HashSet;
 
 /**
@@ -235,12 +234,14 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
         this.namedTag.remove("pairx");
         this.namedTag.remove("pairz");
+        this.doubleInventory = null;
 
         this.spawnToAll();
 
         if (chest != null) {
             chest.namedTag.remove("pairx");
             chest.namedTag.remove("pairz");
+            chest.doubleInventory = null;
             chest.checkPairing();
             chest.spawnToAll();
         }
@@ -274,5 +275,4 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
         return c;
     }
-
 }
