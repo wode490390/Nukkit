@@ -30,12 +30,12 @@ public class BlockStorage {
     }
 //
     public int getBlockId(int x, int y, int z) {
-        int id = blockIds[getIndex(x, y, z)];if(id<0){System.out.println("a.u.BS:33_"+(id));System.out.println("a.u.BS:34_"+(id < 0 ? 255 - id : id));}
+        int id = blockIds[getIndex(x, y, z)];System.out.println("a.u.BS:33_"+(id));System.out.println("a.u.BS:34_"+(id < 0 ? 255 - id : id));
         return id < 0 ? 255 - id : id;
     }
 //
     public void setBlockId(int x, int y, int z, int id) {
-        blockIds[getIndex(x, y, z)] = (byte) (id > 0xff ? 255 - id : id);System.out.println("a.u.BS:38_"+(blockIds[getIndex(x, y, z)]));
+        blockIds[getIndex(x, y, z)] = (byte) (id > 0xff ? 255 - id : id);if(id<0){System.out.println("a.u.BS:38_"+(blockIds[getIndex(x, y, z)]));}
     }
 
     public void setBlockData(int x, int y, int z, int data) {
