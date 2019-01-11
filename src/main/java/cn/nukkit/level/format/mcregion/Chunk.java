@@ -145,12 +145,13 @@ public class Chunk extends BaseFullChunk {
 
     @Override
     public int getBlockId(int x, int y, int z) {
-        return this.blocks[(x << 11) | (z << 7) | y] & 0x1ff; //Future needs to be expanded to 0x3ff
+        int id = this.blocks[(x << 11) | (z << 7) | y];
+        return id < 0 ? 255 - id : id;
     }
 
     @Override
     public void setBlockId(int x, int y, int z, int id) {
-        this.blocks[(x << 11) | (z << 7) | y] = id & 0x1ff; //Future needs to be expanded to 0x3ff
+        this.blocks[(x << 11) | (z << 7) | y] = (byte) (id > 0xff ? 255 - id : id);
         setChanged();
     }
 
@@ -158,7 +159,7 @@ public class Chunk extends BaseFullChunk {
     public int getBlockData(int x, int y, int z) {
         int b = this.data[(x << 10) | (z << 6) | (y >> 1)] & 0xff;
         if ((y & 1) == 0) {
-            return b & 0x0f;
+            return b & 0xf;
         } else {
             return b >> 4;
         }
@@ -169,9 +170,9 @@ public class Chunk extends BaseFullChunk {
         int i = (x << 10) | (z << 6) | (y >> 1);
         int old = this.data[i] & 0xff;
         if ((y & 1) == 0) {
-            this.data[i] = (byte) ((old & 0xf0) | (data & 0x0f));
+            this.data[i] = (byte) ((old & 0xf0) | (data & 0xf));
         } else {
-            this.data[i] = (byte) (((data & 0x0f) << 4) | (old & 0x0f));
+            this.data[i] = (byte) (((data & 0xf) << 4) | (old & 0xf));
         }
         setChanged();
     }
@@ -179,7 +180,8 @@ public class Chunk extends BaseFullChunk {
     @Override
     public int getFullBlock(int x, int y, int z) {
         int i = (x << 11) | (z << 7) | y;
-        int block = this.blocks[i] & 0x1ff; //Future needs to be expanded to 0x3ff
+        int block = this.blocks[i];
+        if (block < 0) block = 255 - block;
         int data = this.data[i >> 1] & 0xff;
         if ((y & 1) == 0) {
             return (block << 4) | (data & 0xf);
@@ -197,7 +199,7 @@ public class Chunk extends BaseFullChunk {
     public boolean setBlock(int x, int y, int z, int blockId, int meta) {
         int i = (x << 11) | (z << 7) | y;
         boolean changed = false;
-        int id = blockId & 0x1ff; //Future needs to be expanded to 0x3ff
+        byte id = (byte) (blockId > 0xff ? 255 - blockId : blockId);
         if (this.blocks[i] != id) {
             this.blocks[i] = id;
             changed = true;
@@ -208,7 +210,7 @@ public class Chunk extends BaseFullChunk {
             int old = this.data[i] & 0xff;
             if ((y & 1) == 0) {
                 this.data[i] = (byte) ((old & 0xf0) | (meta & 0xf));
-                if ((old & 0x0f) != meta) {
+                if ((old & 0xf) != meta) {
                     changed = true;
                 }
             } else {
@@ -230,11 +232,12 @@ public class Chunk extends BaseFullChunk {
         int i = (x << 11) | (z << 7) | y;
         boolean changed = false;
         int id = block.getId();
+        if (id > 0xff) id = 255 - id;
 
-        int previousId = this.blocks[i];
+        byte previousId = this.blocks[i];
 
         if (previousId != id) {
-            this.blocks[i] = id;
+            this.blocks[i] = (byte) id;
             changed = true;
         }
 
@@ -262,14 +265,14 @@ public class Chunk extends BaseFullChunk {
         if (changed) {
             setChanged();
         }
-        return Block.get(previousId, previousData);
+        return Block.get(previousId < 0 ? 255 - previousId : previousId, previousData);
     }
 
     @Override
     public int getBlockSkyLight(int x, int y, int z) {
         int sl = this.skyLight[(x << 10) | (z << 6) | (y >> 1)] & 0xff;
         if ((y & 1) == 0) {
-            return sl & 0x0f;
+            return sl & 0xf;
         } else {
             return sl >> 4;
         }
@@ -280,9 +283,9 @@ public class Chunk extends BaseFullChunk {
         int i = (x << 10) | (z << 6) | (y >> 1);
         int old = this.skyLight[i] & 0xff;
         if ((y & 1) == 0) {
-            this.skyLight[i] = (byte) ((old & 0xf0) | (level & 0x0f));
+            this.skyLight[i] = (byte) ((old & 0xf0) | (level & 0xf));
         } else {
-            this.skyLight[i] = (byte) (((level & 0x0f) << 4) | (old & 0x0f));
+            this.skyLight[i] = (byte) (((level & 0xf) << 4) | (old & 0xf));
         }
         setChanged();
     }
@@ -291,7 +294,7 @@ public class Chunk extends BaseFullChunk {
     public int getBlockLight(int x, int y, int z) {
         int b = this.blockLight[(x << 10) | (z << 6) | (y >> 1)] & 0xff;
         if ((y & 1) == 0) {
-            return b & 0x0f;
+            return b & 0xf;
         } else {
             return b >> 4;
         }
@@ -302,9 +305,9 @@ public class Chunk extends BaseFullChunk {
         int i = (x << 10) | (z << 6) | (y >> 1);
         int old = this.blockLight[i] & 0xff;
         if ((y & 1) == 0) {
-            this.blockLight[i] = (byte) ((old & 0xf0) | (level & 0x0f));
+            this.blockLight[i] = (byte) ((old & 0xf0) | (level & 0xf));
         } else {
-            this.blockLight[i] = (byte) (((level & 0x0f) << 4) | (old & 0x0f));
+            this.blockLight[i] = (byte) (((level & 0xf) << 4) | (old & 0xf));
         }
         setChanged();
     }
@@ -440,7 +443,7 @@ public class Chunk extends BaseFullChunk {
         nbt.putInt("zPos", this.getZ());
 
         if (this.isGenerated()) {
-            nbt.putIntArray("Blocks", this.getBlockIdArray());
+            nbt.putByteArray("Blocks", this.getBlockIdArray());
             nbt.putByteArray("Data", this.getBlockDataArray());
             nbt.putByteArray("SkyLight", this.getBlockSkyLightArray());
             nbt.putByteArray("BlockLight", this.getBlockLightArray());
