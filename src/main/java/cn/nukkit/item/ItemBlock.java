@@ -7,6 +7,7 @@ import cn.nukkit.block.Block;
  * Nukkit Project
  */
 public class ItemBlock extends Item {
+
     public ItemBlock(Block block) {
         this(block, 0, 1);
     }
@@ -16,7 +17,8 @@ public class ItemBlock extends Item {
     }
 
     public ItemBlock(Block block, Integer meta, int count) {
-        super(block.getId(), meta, count, block.getName());
+        // HACK!!
+        super(block.getId() > 255 ? (255 - block.getId()) & NEGATIVE_BLOCK_ITEM_ID_BASE : block.getId(), meta, count, block.getName());
         this.block = block;
     }
 
@@ -49,5 +51,4 @@ public class ItemBlock extends Item {
         
         return super.getMaxStackSize();
     }
-
 }

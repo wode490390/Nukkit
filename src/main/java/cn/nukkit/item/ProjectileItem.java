@@ -2,6 +2,7 @@ package cn.nukkit.item;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityID;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.event.entity.ProjectileLaunchEvent;
 import cn.nukkit.level.Sound;
@@ -53,7 +54,7 @@ public abstract class ProjectileItem extends Item {
                     projectile.kill();
                 } else {
                     projectile.spawnToAll();
-                    player.getLevel().addSound(player, Sound.RANDOM_BOW, 1, 1, player.getViewers().values());
+                    player.getLevel().addSound(player, Sound.RANDOM_BOW, 0, EntityID.PLAYER);
                 }
             } else {
                 projectile.spawnToAll();

@@ -9,22 +9,17 @@ public class RespawnPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESPAWN_PACKET;
 
-    public float x;
-    public float y;
-    public float z;
+    public Vector3f position;
 
     @Override
     public void decode() {
-        Vector3f v = this.getVector3f();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
+        this.position = this.getVector3();
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putVector3f(this.x, this.y, this.z);
+        this.putVector3(this.position);
     }
 
     @Override

@@ -4,14 +4,15 @@ import cn.nukkit.network.protocol.types.ContainerIds;
 
 public class PlayerHotbarPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.PLAYER_HOTBAR_PACKET;
+
     public int selectedHotbarSlot;
     public int windowId = ContainerIds.INVENTORY;
-
     public boolean selectHotbarSlot = true;
 
     @Override
     public byte pid() {
-        return ProtocolInfo.PLAYER_HOTBAR_PACKET;
+        return NETWORK_ID;
     }
 
     @Override

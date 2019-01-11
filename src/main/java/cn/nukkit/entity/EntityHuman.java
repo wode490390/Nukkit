@@ -8,6 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddPlayerPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.network.protocol.SetEntityLinkPacket;
+import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.utils.Utils;
 
 import java.nio.charset.StandardCharsets;
@@ -161,7 +162,7 @@ public class EntityHuman extends EntityHumanType {
 
             AddPlayerPacket pk = new AddPlayerPacket();
             pk.uuid = this.getUniqueId();
-            pk.username = this.getName();
+            pk.username = this.getNameTag();
             pk.entityUniqueId = this.getId();
             pk.entityRuntimeId = this.getId();
             pk.x = (float) this.x;
@@ -180,10 +181,7 @@ public class EntityHuman extends EntityHumanType {
 
             if (this.riding != null) {
                 SetEntityLinkPacket pkk = new SetEntityLinkPacket();
-                pkk.rider = this.riding.getId();
-                pkk.riding = this.getId();
-                pkk.type = 1;
-                pkk.unknownByte = 1;
+                pkk.link = new EntityLink(this.riding.getId(), this.getId(), EntityLink.TYPE_RIDER, true);
 
                 player.dataPacket(pkk);
             }
@@ -199,7 +197,7 @@ public class EntityHuman extends EntityHumanType {
         if (this.hasSpawned.containsKey(player.getLoaderId())) {
 
             RemoveEntityPacket pk = new RemoveEntityPacket();
-            pk.eid = this.getId();
+            pk.entityUniqueId = this.getId();
             player.dataPacket(pk);
             this.hasSpawned.remove(player.getLoaderId());
         }
