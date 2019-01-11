@@ -68,9 +68,9 @@ public class BlockStorage {
     }
 //
     private int getFullBlock(int index) {
-        int block = blockIds[index];System.out.println("a.u.BS:71_"+(block));
-        if (block < 0) block = 255 - block;System.out.println("a.u.BS:72_"+(block));
-        byte data = blockData.get(index);System.out.println("a.u.BS:74_"+((block << 4) | data));
+        int block = blockIds[index];//System.out.println("a.u.BS:71_"+(block));
+        if (block < 0) block = 255 - block;//System.out.println("a.u.BS:72_"+(block));
+        byte data = blockData.get(index);//System.out.println("a.u.BS:74_"+((block << 4) | data));
         return (block << 4) | data;
     }
 //
