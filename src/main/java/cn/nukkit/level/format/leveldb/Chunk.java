@@ -55,7 +55,7 @@ public class Chunk extends BaseFullChunk {
     public Chunk(LevelProvider level, int chunkX, int chunkZ, byte[] terrain, List<CompoundTag> entityData, List<CompoundTag> tileData, Map<Integer, Integer> extraData) {
         ByteBuffer buffer = ByteBuffer.wrap(terrain).order(ByteOrder.BIG_ENDIAN);
 
-        int[] blocks = new int[32768];
+        byte[] blocks = new byte[32768];
         buffer.get(blocks);
 
         byte[] data = new byte[16384];
@@ -114,12 +114,12 @@ public class Chunk extends BaseFullChunk {
 
     @Override
     public int getBlockId(int x, int y, int z) {
-        return this.blocks[(x << 11) | (z << 7) | y] & 0x1ff; //Future needs to be expanded to 0x3ff
+        return this.blocks[(x << 11) | (z << 7) | y] & 0xff; //Future needs to be expanded to 0x1ff
     }
 
     @Override
     public void setBlockId(int x, int y, int z, int id) {
-        this.blocks[(x << 11) | (z << 7) | y] = id & 0x1ff; //Future needs to be expanded to 0x3ff
+        this.blocks[(x << 11) | (z << 7) | y] = (byte) id; //Future needs to be expanded to 0x1ff
         setChanged();
     }
 
@@ -148,7 +148,7 @@ public class Chunk extends BaseFullChunk {
     @Override
     public int getFullBlock(int x, int y, int z) {
         int i = (x << 11) | (z << 7) | y;
-        int block = this.blocks[i] & 0x1ff; //Future needs to be expanded to 0x3ff
+        int block = this.blocks[i] & 0xff; //Future needs to be expanded to 0x1ff
         int data = this.data[i >> 1] & 0xff;
         if ((y & 1) == 0) {
             return (block << 4) | (data & 0xf);
@@ -161,9 +161,9 @@ public class Chunk extends BaseFullChunk {
     public Block getAndSetBlock(int x, int y, int z, Block block) {
         int i = (x << 11) | (z << 7) | y;
         boolean changed = false;
-        int id = block.getId() & 0x1ff; //Future needs to be expanded to 0x3ff
+        byte id = (byte) block.getId(); //Future needs to be expanded to 0x1ff
 
-        int previousId = this.blocks[i] & 0x1ff; //Future needs to be expanded to 0x3ff
+        byte previousId = this.blocks[i]; //Future needs to be expanded to 0x1ff
 
         if (previousId != id) {
             this.blocks[i] = id;
@@ -206,7 +206,7 @@ public class Chunk extends BaseFullChunk {
     public boolean setBlock(int x, int y, int z, int blockId, int meta) {
         int i = (x << 11) | (z << 7) | y;
         boolean changed = false;
-        int id = blockId & 0x1ff; //Future needs to be expanded to 0x3ff
+        byte id = (byte) blockId; //Future needs to be expanded to 0x1ff
         if (this.blocks[i] != id) {
             this.blocks[i] = id;
             changed = true;
