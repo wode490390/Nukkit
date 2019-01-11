@@ -244,13 +244,13 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
             .putLong(DATA_LEAD_HOLDER_EID, -1)
             .putFloat(DATA_SCALE, 1f);
 
-    public Entity linkedEntity = null;
+    public Entity linkedEntity;
 
-    public Entity riding = null;
+    public Entity riding;
 
     public FullChunk chunk;
 
-    protected EntityDamageEvent lastDamageCause = null;
+    protected EntityDamageEvent lastDamageCause;
 
     public List<Block> blocksAround = new ArrayList<>();
     public List<Block> collisionBlocks = new ArrayList<>();
@@ -278,7 +278,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
     public double entityCollisionReduction = 0; // Higher than 0.9 will result a fast collisions
     public AxisAlignedBB boundingBox;
-    public boolean onGround;
+    public boolean onGround = false;
     public boolean inBlock = false;
     public boolean positionChanged;
     public boolean motionChanged;
@@ -312,10 +312,10 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public boolean isCollidedHorizontally = false;
     public boolean isCollidedVertically = false;
 
-    public int noDamageTicks;
-    public boolean justCreated;
+    public int noDamageTicks = 0;
+    public boolean justCreated = true;
     public boolean fireProof;
-    public boolean invulnerable;
+    public boolean invulnerable = false;
 
     protected Server server;
 
