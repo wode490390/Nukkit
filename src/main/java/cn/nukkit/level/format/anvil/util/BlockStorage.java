@@ -28,14 +28,14 @@ public class BlockStorage {
     public int getBlockData(int x, int y, int z) {
         return blockData.get(getIndex(x, y, z)) & 0xf;
     }
-
+//
     public int getBlockId(int x, int y, int z) {
-        int id = blockIds[getIndex(x, y, z)];
+        int id = blockIds[getIndex(x, y, z)];System.out.println("a.u.BS:33_"+(id));System.out.println("a.u.BS:34_"+(id < 0 ? 255 - id : id));
         return id < 0 ? 255 - id : id;
     }
-
+//
     public void setBlockId(int x, int y, int z, int id) {
-        blockIds[getIndex(x, y, z)] = (byte) (id > 0xff ? 255 - id : id);
+        blockIds[getIndex(x, y, z)] = (byte) (id > 0xff ? 255 - id : id);System.out.println("a.u.BS:38_"+(blockIds[getIndex(x, y, z)]));
     }
 
     public void setBlockData(int x, int y, int z, int data) {
@@ -53,34 +53,34 @@ public class BlockStorage {
     public int getAndSetFullBlock(int x, int y, int z, int value) {
         return getAndSetFullBlock(getIndex(x, y, z), (short) value);
     }
-
+//
     private int getAndSetFullBlock(int index, short value) {
         Preconditions.checkArgument(value < 0x1fff, "Invalid full block"); //Future needs to be expanded to 0x3fff, similarly hereinafter
         int oldBlock = blockIds[index];
         byte oldData = blockData.get(index);
-        int newBlock = (value & 0x1ff0) >> 4;
-        if (newBlock > 0xff) newBlock = 255 - newBlock;
+        int newBlock = (value & 0x1ff0) >> 4;System.out.println("a.u.BS:61_"+(newBlock));
+        if (newBlock > 0xff) newBlock = 255 - newBlock;System.out.println("a.u.BS:62_"+(newBlock));
         byte newData = (byte) (value & 0xf);
-        if (oldBlock != newBlock) blockIds[index] = (byte) newBlock;
+        if (oldBlock != newBlock) blockIds[index] = (byte) newBlock;System.out.println("a.u.BS:64_"+(blockIds[index]));
         if (oldData != newData) blockData.set(index, newData);
         if (oldBlock < 0) oldBlock = 255 - oldBlock;
         return (oldBlock << 4) | oldData;
     }
-
+//
     private int getFullBlock(int index) {
-        int block = blockIds[index];
-        if (block < 0) block = 255 - block;
-        byte data = blockData.get(index);
+        int block = blockIds[index];System.out.println("a.u.BS:71_"+(block));
+        if (block < 0) block = 255 - block;System.out.println("a.u.BS:72_"+(block));
+        byte data = blockData.get(index);System.out.println("a.u.BS:74_"+((block << 4) | data));
         return (block << 4) | data;
     }
-
+//
     private void setFullBlock(int index, short value) {
         Preconditions.checkArgument(value < 0x1fff, "Invalid full block");
-        int block = (value & 0x1ff0) >> 4;
-        if (block > 0xff) block = 255 - block;
+        int block = (value & 0x1ff0) >> 4;System.out.println("a.u.BS:79_"+(block));
+        if (block > 0xff) block = 255 - block;System.out.println("a.u.BS:80_"+(block));
         byte data = (byte) (value & 0xf);
 
-        blockIds[index] = (byte) block;
+        blockIds[index] = (byte) block;System.out.println("a.u.BS:83_"+(blockIds[index]));
         blockData.set(index, data);
     }
 
