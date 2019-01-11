@@ -106,7 +106,7 @@ public class Level implements ChunkManager, Metadatable {
     public static final int MAX_BLOCK_CACHE = 512;
 
     // The blocks that can randomly tick
-    private static final boolean[] randomTickBlocks = new boolean[256];
+    private static final boolean[] randomTickBlocks = new boolean[512];
     static {
         randomTickBlocks[Block.GRASS] = true;
         randomTickBlocks[Block.FARMLAND] = true;
@@ -2242,7 +2242,7 @@ public class Level implements ChunkManager, Metadatable {
 
     @Override
     public synchronized void setBlockIdAt(int x, int y, int z, int id) {
-        this.getChunk(x >> 4, z >> 4, true).setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0xff);
+        this.getChunk(x >> 4, z >> 4, true).setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0x1ff); //Future needs to be expanded to 0x3ff
         addBlockChange(x, y, z);
         temporalVector.setComponents(x, y, z);
         for (ChunkLoader loader : this.getChunkLoaders(x >> 4, z >> 4)) {
@@ -2252,7 +2252,7 @@ public class Level implements ChunkManager, Metadatable {
 
     public synchronized void setBlockAt(int x, int y, int z, int id, int data) {
         BaseFullChunk chunk = this.getChunk(x >> 4, z >> 4, true);
-        chunk.setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0xff);
+        chunk.setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0x1ff); //Future needs to be expanded to 0x3ff
         chunk.setBlockData(x & 0x0f, y & 0xff, z & 0x0f, data & 0xf);
         addBlockChange(x, y, z);
         temporalVector.setComponents(x, y, z);
