@@ -1452,7 +1452,7 @@ public class Level implements ChunkManager, Metadatable {
         } else {
             fullState = 0;
         }
-        Block block = Block.fullList[fullState & 0xFFF].clone();
+        Block block = Block.fullList[fullState & 0x1fff].clone(); //Future needs to be expanded to 0x3fff
         block.x = x;
         block.y = y;
         block.z = z;
