@@ -119,11 +119,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     protected final SourceInterface interfaz;
 
-    public boolean playedBefore;
     public boolean spawned = false;
     public boolean loggedIn = false;
-    public long firstPlayed;
-    public long lastPlayed;
+    public Long firstPlayed;
+    public Long lastPlayed;
     public int gamemode;
     public long lastBreak;
     private BlockVector3 lastBreakPosition = new BlockVector3();
@@ -331,18 +330,18 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     @Override
-    public long getFirstPlayed() {
+    public Long getFirstPlayed() {
         return this.firstPlayed;
     }
 
     @Override
-    public long getLastPlayed() {
+    public Long getLastPlayed() {
         return this.lastPlayed;
     }
 
     @Override
     public boolean hasPlayedBefore() {
-        return this.playedBefore;
+        return this.lastPlayed - this.firstPlayed > 1;
     }
 
     public AdventureSettings getAdventureSettings() {
@@ -1922,8 +1921,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             return;
         }
-
-        this.playedBefore = (nbt.getLong("lastPlayed") - nbt.getLong("firstPlayed")) > 1;
 
         boolean alive = true;
 
