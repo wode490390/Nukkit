@@ -39,7 +39,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
      */
     protected byte[] biomes;
 
-    protected short[] blocks;
+    protected int[] blocks;
 
     protected byte[] data;
 
@@ -434,7 +434,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     }
 
     @Override
-    public short[] getBlockIdArray() {
+    public int[] getBlockIdArray() {
         return this.blocks;
     }
 
