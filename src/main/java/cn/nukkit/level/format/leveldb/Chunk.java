@@ -115,8 +115,7 @@ public class Chunk extends BaseFullChunk {
     @Override
     public int getBlockId(int x, int y, int z) {
         int id = this.blocks[(x << 11) | (z << 7) | y];
-        if (id < 0) id = 255 - id;
-        return id;
+        return id < 0 ? 255 - id : id;
     }
 
     @Override
