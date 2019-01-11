@@ -6,15 +6,15 @@ import java.util.Arrays;
 public class BlockStorage {
 
     private static final int SECTION_SIZE = 4096;
-    private final int[] blockIds;
+    private final byte[] blockIds;
     private final NibbleArray blockData;
 
     public BlockStorage() {
-        blockIds = new int[SECTION_SIZE];
+        blockIds = new byte[SECTION_SIZE];
         blockData = new NibbleArray(SECTION_SIZE);
     }
 
-    private BlockStorage(int[] blockIds, NibbleArray blockData) {
+    private BlockStorage(byte[] blockIds, NibbleArray blockData) {
         this.blockIds = blockIds;
         this.blockData = blockData;
     }
@@ -30,11 +30,12 @@ public class BlockStorage {
     }
 
     public int getBlockId(int x, int y, int z) {
-        return blockIds[getIndex(x, y, z)] & 0x1ff; //Future needs to be expanded to 0x3ff
+        int id = blockIds[getIndex(x, y, z)];
+        return id < 0 ? 255 - id : id;
     }
 
     public void setBlockId(int x, int y, int z, int id) {
-        blockIds[getIndex(x, y, z)] = id & 0x1ff; //Future needs to be expanded to 0x3ff
+        blockIds[getIndex(x, y, z)] = (byte) (id > 0xff ? 255 - id : id);
     }
 
     public void setBlockData(int x, int y, int z, int data) {
@@ -46,44 +47,44 @@ public class BlockStorage {
     }
 
     public void setFullBlock(int x, int y, int z, int value) {
-        this.setFullBlock(getIndex(x, y, z), value);
+        this.setFullBlock(getIndex(x, y, z), (short) value);
     }
 
     public int getAndSetFullBlock(int x, int y, int z, int value) {
-        return getAndSetFullBlock(getIndex(x, y, z), value);
+        return getAndSetFullBlock(getIndex(x, y, z), (short) value);
     }
 
-    private int getAndSetFullBlock(int index, int value) {
-        Preconditions.checkArgument(value < 0x1fff, "Invalid full block"); //Future needs to be expanded to 0x3fff
+    private int getAndSetFullBlock(int index, short value) {
+        Preconditions.checkArgument(value < 0x1fff, "Invalid full block"); //Future needs to be expanded to 0x3fff, similarly hereinafter
         int oldBlock = blockIds[index];
         byte oldData = blockData.get(index);
-        int newBlock = (value & 0x1ff0) >> 4; //Future needs to be expanded to 0x3ff0
+        int newBlock = (value & 0x1ff0) >> 4;
+        if (newBlock > 0xff) newBlock = 255 - newBlock;
         byte newData = (byte) (value & 0xf);
-        if (oldBlock != newBlock) {
-            blockIds[index] = newBlock;
-        }
-        if (oldData != newData) {
-            blockData.set(index, newData);
-        }
-        return ((oldBlock & 0x1ff) << 4) | oldData; //Future needs to be expanded to 0x3ff
+        if (oldBlock != newBlock) blockIds[index] = (byte) newBlock;
+        if (oldData != newData) blockData.set(index, newData);
+        if (oldBlock < 0) oldBlock = 255 - oldBlock;
+        return (oldBlock << 4) | oldData;
     }
 
     private int getFullBlock(int index) {
         int block = blockIds[index];
+        if (block < 0) block = 255 - block;
         byte data = blockData.get(index);
-        return ((block & 0x1ff) << 4) | data; //Future needs to be expanded to 0x3ff
+        return (block << 4) | data;
     }
 
-    private void setFullBlock(int index, int value) {
-        Preconditions.checkArgument(value < 0x1fff, "Invalid full block"); //Future needs to be expanded to 0x3fff
-        int block = (value & 0x1ff0) >> 4; //Future needs to be expanded to 0x3ff0
+    private void setFullBlock(int index, short value) {
+        Preconditions.checkArgument(value < 0x1fff, "Invalid full block");
+        int block = (value & 0x1ff0) >> 4;
+        if (block > 0xff) block = 255 - block;
         byte data = (byte) (value & 0xf);
 
-        blockIds[index] = block;
+        blockIds[index] = (byte) block;
         blockData.set(index, data);
     }
 
-    public int[] getBlockIds() {
+    public byte[] getBlockIds() {
         return Arrays.copyOf(blockIds, blockIds.length);
     }
 
