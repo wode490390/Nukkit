@@ -122,6 +122,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public boolean playedBefore;
     public boolean spawned = false;
     public boolean loggedIn = false;
+    public long firstPlayed;
+    public long lastPlayed;
     public int gamemode;
     public long lastBreak;
     private BlockVector3 lastBreakPosition = new BlockVector3();
@@ -330,12 +332,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     @Override
     public long getFirstPlayed() {
-        return this.namedTag != null ? this.namedTag.getLong("firstPlayed") : null;
+        return this.firstPlayed;
     }
 
     @Override
     public long getLastPlayed() {
-        return this.namedTag != null ? this.namedTag.getLong("lastPlayed") : null;
+        return this.lastPlayed;
     }
 
     @Override
@@ -596,6 +598,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public Player(SourceInterface interfaz, Long clientID, String ip, int port) {
         super(null, new CompoundTag());
+        this.creationTime = System.currentTimeMillis();
+
+        this.firstPlayed = this.namedTag.getLong("firstPlayed", this.creationTime);
+        this.lastPlayed = this.namedTag.getLong("lastPlayed", this.creationTime);
         this.interfaz = interfaz;
         this.windows = new HashMap<>();
         this.perm = new PermissibleBase(this);
@@ -617,8 +623,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.uuid = null;
         this.rawUUID = null;
-
-        this.creationTime = System.currentTimeMillis();
     }
 
     @Override
