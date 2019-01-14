@@ -164,7 +164,7 @@ public class Level implements ChunkManager, Metadatable {
     public static final int MAX_BLOCK_CACHE = 512;
 
     // The blocks that can randomly tick
-    private static final boolean[] randomTickBlocks = new boolean[256];
+    private static final boolean[] randomTickBlocks = new boolean[512];
     static {
         randomTickBlocks[Block.GRASS] = true;
         randomTickBlocks[Block.FARMLAND] = true;
@@ -1570,7 +1570,7 @@ public class Level implements ChunkManager, Metadatable {
         } else {
             fullState = 0;
         }
-        Block block = Block.fullList[fullState & 0xFFF].clone();
+        Block block = Block.fullList[fullState & 0x1fff].clone();
         block.x = x;
         block.y = y;
         block.z = z;
@@ -1724,7 +1724,7 @@ public class Level implements ChunkManager, Metadatable {
 
     @Override
     public synchronized void setBlockFullIdAt(int x, int y, int z, int fullId) {
-        setBlock(x, y, z, Block.fullList[fullId], false, false);
+        this.setBlock(x, y, z, Block.fullList[fullId], false, false);
     }
 
     public synchronized boolean setBlock(Vector3 pos, Block block) {
@@ -1743,10 +1743,11 @@ public class Level implements ChunkManager, Metadatable {
         if (y < 0 || y >= 256) {
             return false;
         }
+        if (block.getId() > 0xff) return false; // TODO: chunk support
         BaseFullChunk chunk = this.getChunk(x >> 4, z >> 4, true);
         Block blockPrevious;
 //        synchronized (chunk) {
-        blockPrevious = chunk.getAndSetBlock(x & 0xF, y, z & 0xF, block);
+        blockPrevious = chunk.getAndSetBlock(x & 0xf, y, z & 0xf, block);
         if (blockPrevious.getFullId() == block.getFullId()) {
             return false;
         }
@@ -2346,20 +2347,22 @@ public class Level implements ChunkManager, Metadatable {
 
     @Override
     public synchronized void setBlockIdAt(int x, int y, int z, int id) {
-        this.getChunk(x >> 4, z >> 4, true).setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0xff);
-        addBlockChange(x, y, z);
-        temporalVector.setComponents(x, y, z);
+        if (id > 0xff) return; // TODO: chunk support
+        this.getChunk(x >> 4, z >> 4, true).setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0x1ff);
+        this.addBlockChange(x, y, z);
+        this.temporalVector.setComponents(x, y, z);
         for (ChunkLoader loader : this.getChunkLoaders(x >> 4, z >> 4)) {
             loader.onBlockChanged(temporalVector);
         }
     }
 
     public synchronized void setBlockAt(int x, int y, int z, int id, int data) {
+        if (id > 0xff) return; // TODO: chunk support
         BaseFullChunk chunk = this.getChunk(x >> 4, z >> 4, true);
-        chunk.setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0xff);
+        chunk.setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0x1ff);
         chunk.setBlockData(x & 0x0f, y & 0xff, z & 0x0f, data & 0xf);
-        addBlockChange(x, y, z);
-        temporalVector.setComponents(x, y, z);
+        this.addBlockChange(x, y, z);
+        this.temporalVector.setComponents(x, y, z);
         for (ChunkLoader loader : this.getChunkLoaders(x >> 4, z >> 4)) {
             loader.onBlockChanged(temporalVector);
         }
