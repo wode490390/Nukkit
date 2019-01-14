@@ -6,6 +6,7 @@ import cn.nukkit.level.format.anvil.util.NibbleArray;
 import cn.nukkit.level.format.generic.EmptyChunkSection;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Binary;
+import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.ThreadCache;
 import cn.nukkit.utils.Utils;
 import cn.nukkit.utils.Zlib;
@@ -321,7 +322,14 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
     public byte[] getBytes() {
         synchronized (storage) {
 
-            byte[] ids = storage.getBlockIds();
+            int[] debug = new int[4096];
+            Arrays.fill(debug, 266);
+            BinaryStream dbg = new BinaryStream();//storage.getBlockIds();
+            for (int i : debug) {
+                dbg.putVarInt(i);
+            }
+            byte[] ids = dbg.getBuffer();
+
             byte[] data = storage.getBlockData();
             byte[] merged = new byte[ids.length + data.length];
 
