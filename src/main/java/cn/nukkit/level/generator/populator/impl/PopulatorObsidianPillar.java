@@ -1,10 +1,12 @@
 package cn.nukkit.level.generator.populator.impl;
 
-//import cn.nukkit.entity.item.EntityEndCrystal;
+import cn.nukkit.entity.item.EntityEndCrystal;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.generator.populator.BlockPopulator;
 import cn.nukkit.math.NukkitRandom;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.nbt.tag.CompoundTag;
 
 public class PopulatorObsidianPillar extends BlockPopulator {
 
@@ -35,7 +37,10 @@ public class PopulatorObsidianPillar extends BlockPopulator {
                 }
             }
 
-            //TODO: level.spawnEntity(new EntityEndCrystal(), x + 0.5D, y + height + 1, z + 0.5D, random.nextFloat() * 360, 0);
+            EntityEndCrystal endCrystal = new EntityEndCrystal(chunk, new CompoundTag());
+            endCrystal.setPosition(new Vector3(x + 0.5d,  y + height + 1, z + 0.5d));
+            chunk.addEntity(endCrystal);
+
             level.setBlockAt(x, y + height, z, BEDROCK);
         }
     }
