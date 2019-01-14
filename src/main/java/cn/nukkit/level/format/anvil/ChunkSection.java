@@ -328,7 +328,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
             //for (int i : debug) {
             //    dbg.putVarInt(i);
             //}
-            byte[] ids = new int[4096];//dbg.getBuffer();//storage.getBlockIds();
+            byte[] ids = new byte[4096];//dbg.getBuffer();//storage.getBlockIds();
             Arrays.fill(debug, -11);
 
             byte[] data = storage.getBlockData();
