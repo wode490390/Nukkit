@@ -322,13 +322,14 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
     public byte[] getBytes() {
         synchronized (storage) {
 
-            int[] debug = new int[4096];
-            Arrays.fill(debug, 266);
-            BinaryStream dbg = new BinaryStream();//storage.getBlockIds();
-            for (int i : debug) {
-                dbg.putVarInt(i);
-            }
-            byte[] ids = dbg.getBuffer();
+            //int[] debug = new int[4096];
+            //Arrays.fill(debug, 266);
+            //BinaryStream dbg = new BinaryStream();
+            //for (int i : debug) {
+            //    dbg.putVarInt(i);
+            //}
+            byte[] ids = new int[4096];//dbg.getBuffer();//storage.getBlockIds();
+            Arrays.fill(debug, -11);
 
             byte[] data = storage.getBlockData();
             byte[] merged = new byte[ids.length + data.length];
