@@ -277,6 +277,7 @@ public class Chunk extends BaseChunk {
             s.putByte("Y", section.getY());
             s.putByteArray("Blocks", section.getIdArray());
             s.putByteArray("Data", section.getDataArray());
+            s.putByteArray("ExtraData", section.getExtraDataArray());
             s.putByteArray("BlockLight", section.getLightArray());
             s.putByteArray("SkyLight", section.getSkyLightArray());
             nbt.getList("Sections", CompoundTag.class).add(s);
@@ -360,6 +361,7 @@ public class Chunk extends BaseChunk {
             s.putByte("Y", (section.getY()));
             s.putByteArray("Blocks", section.getIdArray());
             s.putByteArray("Data", section.getDataArray());
+            s.putByteArray("ExtraData", section.getExtraDataArray());
             s.putByteArray("BlockLight", section.getLightArray());
             s.putByteArray("SkyLight", section.getSkyLightArray());
             sectionList.add(s);
