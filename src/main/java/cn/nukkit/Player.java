@@ -82,6 +82,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * @author MagicDroidX &amp; Box
@@ -2192,6 +2193,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                     playerInstance.close(e.getKickMessage(), e.getKickMessage());
                                 } else if (playerInstance.shouldLogin) {
                                     playerInstance.completeLoginSequence();
+                                }
+
+                                for (Consumer<Server> action : e.getScheduledActions()) {
+                                    action.accept(server);
                                 }
                             }
                         }
