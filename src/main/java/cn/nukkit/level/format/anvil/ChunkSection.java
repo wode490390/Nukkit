@@ -9,7 +9,6 @@ import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.ThreadCache;
 import cn.nukkit.utils.Utils;
 import cn.nukkit.utils.Zlib;
-
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -52,6 +51,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
 
         byte[] blocks = nbt.getByteArray("Blocks");
         NibbleArray data = new NibbleArray(nbt.getByteArray("Data"));
+        NibbleArray extraData = new NibbleArray(nbt.getByteArray("ExtraData"));
 
         storage = new BlockStorage();
 
@@ -62,6 +62,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
                     int index = getAnvilIndex(x, y, z);
                     storage.setBlockId(x, y, z, blocks[index]);
                     storage.setBlockData(x, y, z, data.get(index));
+                    storage.setExtraData(x, y, z, extraData.get(index));
                 }
             }
         }
@@ -172,16 +173,16 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
             } else {
                 this.skyLight = new byte[2048];
                 if (hasSkyLight) {
-                    Arrays.fill(this.skyLight, (byte) 0xFF);
+                    Arrays.fill(this.skyLight, (byte) 0xff);
                 }
             }
         }
         int i = (y << 7) | (z << 3) | (x >> 1);
         int old = this.skyLight[i] & 0xff;
         if ((x & 1) == 0) {
-            this.skyLight[i] = (byte) ((old & 0xf0) | (level & 0x0f));
+            this.skyLight[i] = (byte) ((old & 0xf0) | (level & 0xf));
         } else {
-            this.skyLight[i] = (byte) (((level & 0x0f) << 4) | (old & 0x0f));
+            this.skyLight[i] = (byte) (((level & 0xf) << 4) | (old & 0xf));
         }
     }
 
@@ -191,7 +192,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         this.blockLight = getLightArray();
         int l = blockLight[(y << 7) | (z << 3) | (x >> 1)] & 0xff;
         if ((x & 1) == 0) {
-            return l & 0x0f;
+            return l & 0xf;
         }
         return l >> 4;
     }
@@ -210,9 +211,9 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         int i = (y << 7) | (z << 3) | (x >> 1);
         int old = this.blockLight[i] & 0xff;
         if ((x & 1) == 0) {
-            this.blockLight[i] = (byte) ((old & 0xf0) | (level & 0x0f));
+            this.blockLight[i] = (byte) ((old & 0xf0) | (level & 0xf));
         } else {
-            this.blockLight[i] = (byte) (((level & 0x0f) << 4) | (old & 0x0f));
+            this.blockLight[i] = (byte) (((level & 0xf) << 4) | (old & 0xf));
         }
     }
 
@@ -249,6 +250,22 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         }
     }
 
+    //@Override
+    public byte[] getExtraDataArray() {
+        synchronized (storage) {
+            NibbleArray anvil = new NibbleArray(4096);
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    for (int y = 0; y < 16; y++) {
+                        int index = getAnvilIndex(x, y, z);
+                        anvil.set(index, (byte) storage.getExtraData(x, y, z));
+                    }
+                }
+            }
+            return anvil.getData();
+        }
+    }
+
     @Override
     public byte[] getSkyLightArray() {
         if (this.skyLight != null) return skyLight;
@@ -273,7 +290,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
                 } else {
                     skyLight = new byte[2048];
                     if (hasSkyLight) {
-                        Arrays.fill(skyLight, (byte) 0xFF);
+                        Arrays.fill(skyLight, (byte) 0xff);
                     }
                 }
                 compressedLight = null;
@@ -281,7 +298,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
                 blockLight = new byte[2048];
                 skyLight = new byte[2048];
                 if (hasSkyLight) {
-                    Arrays.fill(skyLight, (byte) 0xFF);
+                    Arrays.fill(skyLight, (byte) 0xff);
                 }
             }
         } catch (IOException e) {
@@ -320,7 +337,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
     public byte[] getBytes() {
         synchronized (storage) {
 
-            byte[] ids = storage.getBlockIds();
+            byte[] ids = storage.getBlockIds(); //TODO: check extra data
             byte[] data = storage.getBlockData();
             byte[] merged = new byte[ids.length + data.length];
 
