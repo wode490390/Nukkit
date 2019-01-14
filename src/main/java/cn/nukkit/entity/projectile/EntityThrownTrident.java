@@ -15,8 +15,6 @@ import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
-
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -117,6 +115,10 @@ public class EntityThrownTrident extends EntityProjectile {
 
         this.timing.startTiming();
 
+        if (this.isCollided && !this.hadCollision) {
+            this.getLevel().addSound(this, Sound.ITEM_TRIDENT_HIT_GROUND);
+        }
+
         boolean hasUpdate = super.onUpdate(currentTick);
 
         if (this.onGround || this.hadCollision) {
@@ -136,7 +138,7 @@ public class EntityThrownTrident extends EntityProjectile {
     @Override
     public void spawnTo(Player player) {
         AddEntityPacket pk = new AddEntityPacket();
-        pk.type = EntityThrownTrident.NETWORK_ID;
+        pk.type = NETWORK_ID;
         pk.entityUniqueId = this.getId();
         pk.entityRuntimeId = this.getId();
         pk.position = this.asVector3f();
@@ -161,6 +163,7 @@ public class EntityThrownTrident extends EntityProjectile {
             ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, entity, DamageCause.PROJECTILE, damage);
         }
         entity.attack(ev);
+        this.getLevel().addSound(this, Sound.ITEM_TRIDENT_HIT);
         this.hadCollision = true;
         this.close();
         Entity newTrident = create("ThrownTrident", this);
@@ -181,7 +184,7 @@ public class EntityThrownTrident extends EntityProjectile {
                         .add(new DoubleTag("", 0))
                         .add(new DoubleTag("", 0)))
                 .putList(new ListTag<FloatTag>("Rotation")
-                        .add(new FloatTag("", new Random().nextFloat() * 360))
+                        .add(new FloatTag("", ThreadLocalRandom.current().nextFloat() * 360))
                         .add(new FloatTag("", 0)));
 
         return Entity.createEntity(type.toString(), chunk, nbt, args);
