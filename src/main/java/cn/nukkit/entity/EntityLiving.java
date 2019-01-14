@@ -10,6 +10,7 @@ import cn.nukkit.event.entity.*;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.GameRule;
+import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -132,12 +133,13 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
                 }
 
                 //Critical hit
-                if (damager instanceof Player && !damager.onGround) {
+                if (damager instanceof Player && !damager.onGround /*&& !damager.isFlying()*/) {
                     AnimatePacket animate = new AnimatePacket();
                     animate.action = AnimatePacket.ACTION_CRITICAL_HIT;
                     animate.entityRuntimeId = this.getId();
 
                     this.getLevel().addChunkPacket(damager.getChunkX(), damager.getChunkZ(), animate);
+                    this.getLevel().addSound(this, Sound.GAME_PLAYER_ATTACK_STRONG);
 
                     source.setDamage(source.getDamage() * 1.5f);
                 }
