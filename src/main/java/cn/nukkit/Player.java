@@ -2228,6 +2228,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             ResourcePackStackPacket stackPacket = new ResourcePackStackPacket();
                             stackPacket.mustAccept = this.server.getForceResources();
                             stackPacket.resourcePackStack = this.server.getResourcePackManager().getResourceStack();
+                            stackPacket.isExperimental = this.getServer().isExperimentalAllowed();
                             this.dataPacket(stackPacket);
                             break;
                         case ResourcePackClientResponsePacket.STATUS_COMPLETED:
