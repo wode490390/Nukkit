@@ -81,7 +81,7 @@ public class ItemTrident extends ItemTool {
                     entityShootBowEvent.getProjectile().kill();
                 } else {
                     entityShootBowEvent.getProjectile().spawnToAll();
-                    player.getLevel().addLevelSoundEvent(new Vector3(player.x, player.y, player.z), 183);
+                    player.getLevel().addSound(player, Sound.ITEM_TRIDENT_THROW);
                     if (!player.isCreative()) {
                         // idk why but trident returns to inventory without this
                         new NukkitRunnable() {
