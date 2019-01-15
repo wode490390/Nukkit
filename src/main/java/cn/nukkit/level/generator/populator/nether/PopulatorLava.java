@@ -8,6 +8,9 @@ import cn.nukkit.math.NukkitRandom;
 
 public class PopulatorLava extends BlockPopulator {
 
+    private ChunkManager level;
+    private NukkitRandom random;
+
     private boolean flowing;
     
     public PopulatorLava() {
@@ -20,6 +23,9 @@ public class PopulatorLava extends BlockPopulator {
 
     @Override
     public void decorate(ChunkManager level, int chunkX, int chunkZ, NukkitRandom random, FullChunk source) {
+        this.level = level;
+        this.random = random;
+
         int bx = chunkX << 4;
         int bz = chunkZ << 4;
 
@@ -28,7 +34,9 @@ public class PopulatorLava extends BlockPopulator {
         int sourceY = flowing ? 4 + random.nextBoundedInt(120) : 10 + random.nextBoundedInt(108);
 
         int block = level.getBlockIdAt(sourceX, sourceY, sourceZ);
-        if (block != NETHERRACK && block != 0 || level.getBlockIdAt(sourceX, sourceY + 1, sourceZ) != NETHERRACK) return;
+        if (block != NETHERRACK && block != 0 || level.getBlockIdAt(sourceX, sourceY + 1, sourceZ) != NETHERRACK) {
+            return;
+        }
         int netherrackBlockCount = 0;
         int airBlockCount = 0;
 
@@ -79,7 +87,9 @@ public class PopulatorLava extends BlockPopulator {
     }
 
     private void lavaSpread(int x, int y, int z) {
-        if (this.level.getChunk(x >> 4, z >> 4) == null) return;
+        if (this.level.getChunk(x >> 4, z >> 4) == null) {
+            return;
+        }
         int decay = this.getFlowDecay(x, y, z, x, y, z);
         int multiplier = 2;
         if (decay > 0) {
@@ -89,7 +99,9 @@ public class PopulatorLava extends BlockPopulator {
             smallestFlowDecay = this.getSmallestFlowDecay(x, y, z, x - 1, y, z, smallestFlowDecay);
             smallestFlowDecay = this.getSmallestFlowDecay(x, y, z, x + 1, y, z, smallestFlowDecay);
             int k = smallestFlowDecay + multiplier;
-            if (k >= 8 || smallestFlowDecay < 0) k = -1;
+            if (k >= 8 || smallestFlowDecay < 0) {
+                k = -1;
+            }
             int topFlowDecay = this.getFlowDecay(x, y, z, x, y + 1, z);
             if (topFlowDecay >= 0) {
                 if (topFlowDecay >= 8) {
@@ -98,7 +110,9 @@ public class PopulatorLava extends BlockPopulator {
                     k = topFlowDecay | 0x08;
                 }
             }
-            if (decay < 8 && k < 8 && k > 1 && random.nextRange(0, 4) != 0) k = decay;
+            if (decay < 8 && k < 8 && k > 1 && this.random.nextRange(0, 4) != 0) {
+                k = decay;
+            }
             if (k != decay) {
                 decay = k;
                 if (decay < 0) {
@@ -119,12 +133,24 @@ public class PopulatorLava extends BlockPopulator {
         } else if (decay >= 0 && (decay == 0 || !this.canFlowInto(x, y - 1, z))) {
             boolean[] flags = this.getOptimalFlowDirections(x, y, z);
             int l = decay + multiplier;
-            if (decay >= 8) l = 1;
-            if (l >= 8) return;
-            if (flags[0]) this.flowIntoBlock(x - 1, y, z, l);
-            if (flags[1]) this.flowIntoBlock(x + 1, y, z, l);
-            if (flags[2]) this.flowIntoBlock(x, y, z - 1, l);
-            if (flags[3]) this.flowIntoBlock(x, y, z + 1, l);
+            if (decay >= 8) {
+                l = 1;
+            }
+            if (l >= 8) {
+                return;
+            }
+            if (flags[0]) {
+                this.flowIntoBlock(x - 1, y, z, l);
+            }
+            if (flags[1]) {
+                this.flowIntoBlock(x + 1, y, z, l);
+            }
+            if (flags[2]) {
+                this.flowIntoBlock(x, y, z - 1, l);
+            }
+            if (flags[3]) {
+                this.flowIntoBlock(x, y, z + 1, l);
+            }
         }
     }
 
@@ -147,25 +173,32 @@ public class PopulatorLava extends BlockPopulator {
                 int x = xx;
                 int y = yy;
                 int z = zz;
-                if (j == 0) {
-                    --x;
-                } else if (j == 1) {
-                    ++x;
-                } else if (j == 2) {
-                    --z;
-                } else if (j == 3) {
-                    ++z;
+                switch (j) {
+                    case 0:
+                        --x;
+                        break;
+                    case 1:
+                        ++x;
+                        break;
+                    case 2:
+                        --z;
+                        break;
+                    case 3:
+                        ++z;
+                        break;
                 }
-                if (!this.canFlowInto(x, y, z)) {
-                    continue;
-                } else if (this.canFlowInto(x, y, z) && this.level.getBlockDataAt(x, y, z) == 0) {
+                if (!this.canFlowInto(x, y, z) || this.canFlowInto(x, y, z) && this.level.getBlockDataAt(x, y, z) == 0) {
                     continue;
                 } else if (this.canFlowInto(x, y - 1, z)) {
                     return accumulatedCost;
                 }
-                if (accumulatedCost >= 4) continue;
+                if (accumulatedCost >= 4) {
+                    continue;
+                }
                 int realCost = this.calculateFlowCost(x, y, z, accumulatedCost + 1, j);
-                if (realCost < cost) cost = realCost;
+                if (realCost < cost) {
+                    cost = realCost;
+                }
             }
         }
         return cost;
@@ -179,19 +212,22 @@ public class PopulatorLava extends BlockPopulator {
             int x = xx;
             int y = yy;
             int z = zz;
-            if (j == 0) {
-                --x;
-            } else if (j == 1) {
-                ++x;
-            } else if (j == 2) {
-                --z;
-            } else if (j == 3) {
-                ++z;
+            switch (j) {
+                case 0:
+                    --x;
+                    break;
+                case 1:
+                    ++x;
+                    break;
+                case 2:
+                    --z;
+                    break;
+                case 3:
+                    ++z;
+                    break;
             }
-            if (!this.canFlowInto(x, y, z)) {
-                continue;
-            } else if (this.canFlowInto(x, y, z) && this.level.getBlockDataAt(x, y, z) == 0) {
-                continue;
+            if (!this.canFlowInto(x, y, z) || this.canFlowInto(x, y, z) && this.level.getBlockDataAt(x, y, z) == 0) {
+
             } else if (this.canFlowInto(x, y - 1, z)) {
                 flowCost[j] = 0;
             } else {
@@ -200,7 +236,9 @@ public class PopulatorLava extends BlockPopulator {
         }
         int minCost = flowCost[0];
         for (int i = 1; i < 4; ++i) {
-            if (flowCost[i] < minCost) minCost = flowCost[i];
+            if (flowCost[i] < minCost) {
+                minCost = flowCost[i];
+            }
         }
         for (int i = 0; i < 4; ++i) {
             isOptimalFlowDirection[i] = (flowCost[i] == minCost);
