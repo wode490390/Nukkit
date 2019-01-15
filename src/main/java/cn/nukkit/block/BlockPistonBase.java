@@ -5,6 +5,7 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityPistonArm;
 import cn.nukkit.event.block.BlockPistonChangeEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
@@ -132,7 +133,7 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
                 if (block.getId() == AIR) {
                     this.level.setBlock(this.getLocation().getSide(facing), new BlockAir(), true, true);
                 }
-                if (canPush(block, facing.getOpposite(), false) && (!(block instanceof BlockFlowable) || block.getId() == PISTON || block.getId() == STICKY_PISTON)) {
+                if (canPush(block, facing.getOpposite(), false) && (!(block instanceof BlockFlowable || block instanceof BlockFlowableMeta) || block.getId() == PISTON || block.getId() == STICKY_PISTON)) {
                     this.doMove(false);
                 }
             } else {
@@ -228,7 +229,7 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
             if (block.getY() <= 255 && (face != BlockFace.UP || block.getY() != 255)) {
                 if (!(block instanceof BlockPistonBase)) {
 
-                    if (block instanceof BlockFlowable) {
+                    if (block instanceof BlockFlowable || block instanceof BlockFlowableMeta) {
                         return destroyBlocks;
                     }
                 } else if (((BlockPistonBase) block).isExtended()) {
@@ -273,7 +274,7 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
             Block block = this.blockToMove;
 
             if (!canPush(block, this.moveDirection, false)) {
-                if (block instanceof BlockFlowable) {
+                if (block instanceof BlockFlowable || block instanceof BlockFlowableMeta) {
                     this.toDestroy.add(this.blockToMove);
                     return true;
                 } else {
@@ -360,7 +361,7 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
                             return false;
                         }
 
-                        if (nextBlock instanceof BlockFlowable) {
+                        if (nextBlock instanceof BlockFlowable || nextBlock instanceof BlockFlowableMeta) {
                             this.toDestroy.add(nextBlock);
                             return true;
                         }
@@ -407,5 +408,10 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
         public List<Block> getBlocksToDestroy() {
             return this.toDestroy;
         }
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
     }
 }

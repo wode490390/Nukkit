@@ -8,13 +8,13 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockTallGrass extends BlockFlowable {
+public class BlockTallGrass extends BlockFlowableMeta {
 
     public BlockTallGrass() {
         this(1);
@@ -95,7 +95,7 @@ public class BlockTallGrass extends BlockFlowable {
 
     @Override
     public Item[] getDrops(Item item) {
-        boolean dropSeeds = new Random().nextInt(10) == 0;
+        boolean dropSeeds = ThreadLocalRandom.current().nextInt(10) == 0;
         if (item.isShears()) {
             //todo enchantment
             if (dropSeeds) {

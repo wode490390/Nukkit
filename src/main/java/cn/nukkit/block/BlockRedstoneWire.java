@@ -19,10 +19,10 @@ import java.util.Set;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockRedstoneWire extends BlockFlowable {
+public class BlockRedstoneWire extends BlockFlowableMeta {
 
     private boolean canProvidePower = true;
-    private final Set<Vector3> blocksNeedingUpdate = new HashSet<>();
+    private final Set<Vector3> blocksNeedingUpdate = new HashSet<Vector3>();
 
     public BlockRedstoneWire() {
         this(0);

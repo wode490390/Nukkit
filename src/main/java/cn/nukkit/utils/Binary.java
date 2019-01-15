@@ -18,6 +18,9 @@ import java.util.UUID;
  */
 public class Binary {
 
+    public static int BIG_ENDIAN = 0x00;
+    public static int LITTLE_ENDIAN = 0x01;
+
     public static int signByte(int value) {
         return value << 56 >> 56;
     }
@@ -182,7 +185,7 @@ public class Binary {
                     value = new LongEntityData(key, stream.getVarLong());
                     break;
                 case Entity.DATA_TYPE_VECTOR3F:
-                    value = new Vector3fEntityData(key, stream.getVector3f());
+                    value = new Vector3fEntityData(key, stream.getVector3());
                     break;
             }
             if (value != null) m.put(value);

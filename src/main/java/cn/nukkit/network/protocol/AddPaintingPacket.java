@@ -3,16 +3,10 @@ package cn.nukkit.network.protocol;
 /**
  * @author Nukkit Project Team
  */
-public class AddPaintingPacket extends DataPacket {
+public class AddPaintingPacket extends AddHangingEntityPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ADD_PAINTING_PACKET;
 
-    public long entityUniqueId;
-    public long entityRuntimeId;
-    public int x;
-    public int y;
-    public int z;
-    public int direction;
     public String title;
 
     @Override
@@ -22,11 +16,7 @@ public class AddPaintingPacket extends DataPacket {
 
     @Override
     public void encode() {
-        this.reset();
-        this.putEntityUniqueId(this.entityUniqueId);
-        this.putEntityRuntimeId(this.entityRuntimeId);
-        this.putBlockVector3(this.x, this.y, this.z);
-        this.putVarInt(this.direction);
+        super.encode();
         this.putString(this.title);
     }
 
@@ -34,5 +24,4 @@ public class AddPaintingPacket extends DataPacket {
     public byte pid() {
         return NETWORK_ID;
     }
-
 }

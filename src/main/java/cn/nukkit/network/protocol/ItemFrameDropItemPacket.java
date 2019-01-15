@@ -15,10 +15,10 @@ public class ItemFrameDropItemPacket extends DataPacket {
 
     @Override
     public void decode() {
-        BlockVector3 v = this.getBlockVector3();
-        this.z = v.z;
-        this.y = v.y;
+        BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
     }
 
     @Override

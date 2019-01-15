@@ -7,7 +7,6 @@ import cn.nukkit.level.format.Chunk;
 import cn.nukkit.level.format.ChunkSection;
 import cn.nukkit.level.format.LevelProvider;
 import cn.nukkit.utils.ChunkException;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
@@ -17,10 +16,12 @@ import java.util.Arrays;
  * author: MagicDroidX
  * Nukkit Project
  */
-
 public abstract class BaseChunk extends BaseFullChunk implements Chunk {
 
-    protected ChunkSection[] sections;
+    private static final byte[] emptyIdArray = new byte[4096];
+    private static final byte[] emptyDataArray = new byte[2048];
+
+    protected ChunkSection[] sections = new ChunkSection[SECTION_COUNT];
 
     @Override
     public BaseChunk clone() {
@@ -202,13 +203,15 @@ public abstract class BaseChunk extends BaseFullChunk implements Chunk {
 
     @Override
     public ChunkSection getSection(float fY) {
+        if (fY < 0 || fY >= SECTION_COUNT) {
+            return new EmptyChunkSection((int) fY);
+        }
+
         return this.sections[(int) fY];
     }
 
     @Override
     public boolean setSection(float fY, ChunkSection section) {
-        byte[] emptyIdArray = new byte[4096];
-        byte[] emptyDataArray = new byte[2048];
         if (Arrays.equals(emptyIdArray, section.getIdArray()) && Arrays.equals(emptyDataArray, section.getDataArray())) {
             this.sections[(int) fY] = EmptyChunkSection.EMPTY[(int) fY];
         } else {

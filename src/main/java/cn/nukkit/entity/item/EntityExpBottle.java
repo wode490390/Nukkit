@@ -14,7 +14,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityExpBottle extends EntityProjectile {
 
-    public static final int NETWORK_ID = 68;
+    public static final int NETWORK_ID = XP_BOTTLE;
 
     @Override
     public int getNetworkId() {

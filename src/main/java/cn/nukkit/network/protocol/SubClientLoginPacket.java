@@ -2,9 +2,13 @@ package cn.nukkit.network.protocol;
 
 public class SubClientLoginPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.SUB_CLIENT_LOGIN_PACKET;
+
+    public String connectionRequestData;
+
     @Override
     public byte pid() {
-        return ProtocolInfo.SUB_CLIENT_LOGIN_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -14,6 +18,7 @@ public class SubClientLoginPacket extends DataPacket {
 
     @Override
     public void encode() {
-        //TODO
+        this.reset();
+        this.putString(this.connectionRequestData);
     }
 }

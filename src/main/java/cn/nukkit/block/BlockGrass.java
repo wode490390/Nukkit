@@ -9,6 +9,7 @@ import cn.nukkit.level.generator.object.ObjectTallGrass;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.BlockColor;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: Angelic47
@@ -71,29 +72,35 @@ public class BlockGrass extends BlockDirt {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
-            NukkitRandom random = new NukkitRandom();
-            x = random.nextRange((int) x - 1, (int) x + 1);
-            y = random.nextRange((int) y - 2, (int) y + 2);
-            z = random.nextRange((int) z - 1, (int) z + 1);
-            Block block = this.getLevel().getBlock(new Vector3(x, y, z));
-            if (block.getId() == Block.DIRT) {
-                if (block.up() instanceof BlockAir) {
-                    BlockSpreadEvent ev = new BlockSpreadEvent(block, this, new BlockGrass());
-                    Server.getInstance().getPluginManager().callEvent(ev);
-                    if (!ev.isCancelled()) {
-                        this.getLevel().setBlock(block, ev.getNewState());
+            Block above = this.up();
+            int light = this.getLevel().getFullLight(above);
+
+            if (light < 4 && Block.lightFilter[above.getId()] >= 3 || above instanceof BlockLiquid || above instanceof BlockIce) {
+                BlockSpreadEvent ev = new BlockSpreadEvent(this, this, new BlockDirt());
+                Server.getInstance().getPluginManager().callEvent(ev);
+
+                if (!ev.isCancelled()) {
+                    this.getLevel().setBlock(this, ev.getNewState(), false, false);
+                }
+            } else if (light >= 9) {
+                for (int i = 0; i < 4; ++i) {
+                    int x = ThreadLocalRandom.current().nextInt(this.getFloorX() - 1, this.getFloorX() + 1);
+                    int y = ThreadLocalRandom.current().nextInt(this.getFloorY() - 3, this.getFloorY() + 1);
+                    int z = ThreadLocalRandom.current().nextInt(this.getFloorZ() - 1, this.getFloorZ() + 1);
+
+                    Block block = this.getLevel().getBlock(new Vector3(x, y, z));
+
+                    if (block.getId() == Block.DIRT && block.getDamage() == 0 && this.level.getFullLight(above) >= 4 && Block.lightFilter[above.getId()] < 3) {
+                        BlockSpreadEvent ev = new BlockSpreadEvent(block, this, new BlockGrass());
+                        Server.getInstance().getPluginManager().callEvent(ev);
+                        if (!ev.isCancelled()) {
+                            this.getLevel().setBlock(block, ev.getNewState());
+                        }
                     }
                 }
-             } else if (block.getId() == Block.GRASS) {
-                if (block.up() instanceof BlockSolid) {
-                    BlockSpreadEvent ev = new BlockSpreadEvent(block, this, new BlockDirt());
-                    Server.getInstance().getPluginManager().callEvent(ev);
-                    if (!ev.isCancelled()) {
-                        this.getLevel().setBlock(block, ev.getNewState());
-                    }
-                }   
             }
         }
+
         return 0;
     }
 

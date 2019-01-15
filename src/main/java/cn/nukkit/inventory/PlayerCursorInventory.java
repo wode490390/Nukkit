@@ -27,12 +27,12 @@ public class PlayerCursorInventory extends BaseInventory {
 
     public void sendSlot(int index, Player... target) {
         InventorySlotPacket pk = new InventorySlotPacket();
-        pk.slot = index;
+        pk.inventorySlot = index;
         pk.item = this.getItem(index);
 
         for (Player p : target) {
             if (p == this.getHolder()) {
-                pk.inventoryId = ContainerIds.CURSOR;
+                pk.windowId = ContainerIds.CURSOR;
                 p.dataPacket(pk);
             } else {
                 int id;
@@ -41,7 +41,7 @@ public class PlayerCursorInventory extends BaseInventory {
                     this.close(p);
                     continue;
                 }
-                pk.inventoryId = id;
+                pk.windowId = id;
                 p.dataPacket(pk);
             }
         }

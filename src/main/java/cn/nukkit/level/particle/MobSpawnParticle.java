@@ -21,13 +21,11 @@ public class MobSpawnParticle extends Particle {
 
     @Override
     public DataPacket[] encode() {
-        LevelEventPacket packet = new LevelEventPacket();
-        packet.evid = LevelEventPacket.EVENT_PARTICLE_SPAWN;
-        packet.x = (float) this.x;
-        packet.y = (float) this.y;
-        packet.z = (float) this.z;
-        packet.data = (this.width & 0xff) + ((this.height & 0xff) << 8);
+        LevelEventPacket pk = new LevelEventPacket();
+        pk.evid = LevelEventPacket.EVENT_PARTICLE_SPAWN;
+        pk.position = this.asVector3f();
+        pk.data = (this.width & 0xff) + ((this.height & 0xff) << 8);
 
-        return new DataPacket[]{packet};
+        return new DataPacket[]{pk};
     }
 }

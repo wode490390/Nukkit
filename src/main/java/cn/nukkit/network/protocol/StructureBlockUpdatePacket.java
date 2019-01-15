@@ -2,9 +2,11 @@ package cn.nukkit.network.protocol;
 
 public class StructureBlockUpdatePacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.STRUCTURE_BLOCK_UPDATE_PACKET;
+
     @Override
     public byte pid() {
-        return ProtocolInfo.STRUCTURE_BLOCK_UPDATE_PACKET;
+        return NETWORK_ID;
     }
 
     @Override

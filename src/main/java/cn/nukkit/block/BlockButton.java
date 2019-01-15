@@ -11,7 +11,7 @@ import cn.nukkit.math.Vector3;
 /**
  * Created by CreeperFace on 27. 11. 2016.
  */
-public abstract class BlockButton extends BlockFlowable {
+public abstract class BlockButton extends BlockFlowableMeta {
 
     public BlockButton() {
         this(0);

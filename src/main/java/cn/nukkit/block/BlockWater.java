@@ -67,4 +67,9 @@ public class BlockWater extends BlockLiquid {
     public int tickRate() {
         return 5;
     }
+
+    @Override
+    public int getLightFilter() {
+        return 1;
+    }
 }

@@ -14,8 +14,10 @@ import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.NBTIO;
+import cn.nukkit.nbt.tag.ByteTag;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.Tag;
 
 import java.util.Random;
 
@@ -136,7 +138,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
 
             float originalDamage = source.getDamage();
 
-            float finalDamage = (float) (originalDamage * (1 - Math.max(points / 5, points - originalDamage / (2 + toughness / 4)) / 25) * (1 - /*0.75 */ epf * 0.04));
+            float finalDamage = (float) (originalDamage * (1 - Math.max((float) points / 5, points - originalDamage / (2 + (float) toughness / 4)) / 25) * (1 - /*0.75 */ epf * 0.04));
 
             source.setDamage(finalDamage - originalDamage, DamageModifier.ARMOR);
             //source.setDamage(source.getDamage(DamageModifier.ARMOR_ENCHANTMENTS) - (originalDamage - originalDamage * (1 - epf / 25)), DamageModifier.ARMOR_ENCHANTMENTS);
@@ -151,6 +153,9 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
 
             for (int slot = 0; slot < 4; slot++) {
                 Item armor = this.inventory.getArmorItem(slot);
+
+                Tag tag = armor.getNamedTagEntry("Unbreakable");
+                if (tag != null && tag instanceof ByteTag && ((ByteTag) tag).data > 0) continue;
 
                 if (armor.hasEnchantments()) {
                     if (damager != null) {

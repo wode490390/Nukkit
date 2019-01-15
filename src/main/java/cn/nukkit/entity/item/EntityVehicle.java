@@ -11,10 +11,9 @@ import cn.nukkit.event.entity.EntityVehicleExitEvent;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.SetEntityLinkPacket;
+import cn.nukkit.network.protocol.types.EntityLink;
 
 import java.util.Objects;
-
-import static cn.nukkit.network.protocol.SetEntityLinkPacket.*;
 
 /**
  * author: MagicDroidX
@@ -82,21 +81,15 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
                 return false;
             }
             // New Packet
-            SetEntityLinkPacket pk;
-
-            pk = new SetEntityLinkPacket();
-            pk.rider = getId();         // To the?
-            pk.riding = entity.getId(); // From who?
-            pk.type = TYPE_REMOVE;      // Byte for leave
+            SetEntityLinkPacket pk = new SetEntityLinkPacket();
+            pk.link = new EntityLink(this.getId(), entity.getId(), EntityLink.TYPE_REMOVE);
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
             // Broadcast to player
             if (entity instanceof Player) {
-                pk = new SetEntityLinkPacket();
-                pk.rider = 0;               // To the place of?
-                pk.riding = entity.getId(); // From what
-                pk.type = TYPE_REMOVE;      // Another byte for leave
-                ((Player) entity).dataPacket(pk);
+                SetEntityLinkPacket pk2 = new SetEntityLinkPacket();
+                pk2.link = new EntityLink(0, entity.getId(), EntityLink.TYPE_REMOVE);
+                ((Player) entity).dataPacket(pk2);
             }
 
             // Refurbish the entity
@@ -113,21 +106,15 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
             }
 
             // New Packet
-            SetEntityLinkPacket pk;
-
-            pk = new SetEntityLinkPacket();
-            pk.rider = getId();         // To the?
-            pk.riding = entity.getId(); // From who?
-            pk.type = TYPE_PASSENGER;   // Type
+            SetEntityLinkPacket pk = new SetEntityLinkPacket();
+            pk.link = new EntityLink(this.getId(), entity.getId(), EntityLink.TYPE_PASSENGER);
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
             // Broadcast to player
             if (entity instanceof Player) {
-                pk = new SetEntityLinkPacket();
-                pk.rider = 0;               // To the place of?
-                pk.riding = entity.getId(); // From what
-                pk.type = TYPE_PASSENGER;   // Byte
-                ((Player) entity).dataPacket(pk);
+                SetEntityLinkPacket pk2 = new SetEntityLinkPacket();
+                pk2.link = new EntityLink(0, entity.getId(), EntityLink.TYPE_PASSENGER);
+                ((Player) entity).dataPacket(pk2);
             }
 
             // Add variables to entity

@@ -29,6 +29,9 @@ public class UDPServerSocket extends ChannelInboundHandlerAdapter {
     protected Bootstrap bootstrap;
     protected Channel channel;
 
+    private String bindAddress;
+    private int bindPort;
+
     protected ConcurrentLinkedQueue<DatagramPacket> packets = new ConcurrentLinkedQueue<>();
 
     public UDPServerSocket(ThreadedLogger logger) {
@@ -41,6 +44,8 @@ public class UDPServerSocket extends ChannelInboundHandlerAdapter {
 
     public UDPServerSocket(ThreadedLogger logger, int port, String interfaz) {
         this.logger = logger;
+        this.bindAddress = interfaz;
+        this.bindPort = port;
         try {
             if (Epoll.isAvailable()) {
                 bootstrap = new Bootstrap()
@@ -57,12 +62,20 @@ public class UDPServerSocket extends ChannelInboundHandlerAdapter {
                         .handler(this);
                 this.logger.info("Epoll is unavailable. Reverting to NioEventLoop.");
             }
-            channel = bootstrap.bind(interfaz, port).sync().channel();
+            channel = bootstrap.bind(this.bindAddress, this.bindPort).sync().channel();
         } catch (Exception e) {
-            this.logger.critical("**** FAILED TO BIND TO " + interfaz + ":" + port + "!");
+            this.logger.critical("**** FAILED TO BIND TO " + this.bindAddress + ":" + this.bindPort + "!");
             this.logger.critical("Perhaps a server is already running on that port?");
             System.exit(1);
         }
+    }
+
+    public String getBindAddress() {
+        return this.bindAddress;
+    }
+
+    public int getBindPort() {
+        return this.bindPort;
     }
 
     public void close() {

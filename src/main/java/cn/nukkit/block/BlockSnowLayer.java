@@ -12,7 +12,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/6 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockSnowLayer extends BlockFlowable {
+public class BlockSnowLayer extends BlockFlowableMeta {
 
     public BlockSnowLayer() {
         this(0);
@@ -52,14 +52,22 @@ public class BlockSnowLayer extends BlockFlowable {
         return true;
     }
 
-    //TODO:雪片叠垒乐
-
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        if (target instanceof BlockSnowLayer) {
+            BlockSnowLayer old = (BlockSnowLayer) target.clone();
+            int layer = old.getDamage();
+            if (layer < 7) {
+                old.setDamage(layer + 1);
+                this.getLevel().setBlock(block, old, true);
+                return true;
+            }
+            return false;
+        }
+
         Block down = this.down();
         if (down.isSolid()) {
             this.getLevel().setBlock(block, this, true);
-
             return true;
         }
         return false;
@@ -67,13 +75,8 @@ public class BlockSnowLayer extends BlockFlowable {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_NORMAL) {
-            if (this.down().isTransparent()) {
-                this.getLevel().useBreakOn(this);
-
-                return Level.BLOCK_UPDATE_NORMAL;
-            }
-        } else if (type == Level.BLOCK_UPDATE_RANDOM) {
+        super.onUpdate(type);
+        if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 10) {
                 this.getLevel().setBlock(this, new BlockAir(), true);
                 return Level.BLOCK_UPDATE_NORMAL;
@@ -83,10 +86,15 @@ public class BlockSnowLayer extends BlockFlowable {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemSnowball();
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         if (item.isShovel() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    new ItemSnowball()
+                    this.toItem()
             };
         } else {
             return new Item[0];
@@ -103,5 +111,3 @@ public class BlockSnowLayer extends BlockFlowable {
         return false;
     }
 }
-
-

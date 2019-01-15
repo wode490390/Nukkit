@@ -10,7 +10,7 @@ import cn.nukkit.math.Vector3;
 /**
  * @author CreeperFace
  */
-public abstract class BlockRedstoneDiode extends BlockFlowable {
+public abstract class BlockRedstoneDiode extends BlockFlowableMeta {
 
     protected boolean isPowered = false;
 
@@ -64,7 +64,6 @@ public abstract class BlockRedstoneDiode extends BlockFlowable {
                     this.level.updateAroundRedstone(this.getLocation().getSide(getFacing().getOpposite()), null);
 
                     if (!shouldBePowered) {
-//                        System.out.println("schedule update 2");
                         level.scheduleUpdate(getPowered(), this, this.getDelay());
                     }
                 }

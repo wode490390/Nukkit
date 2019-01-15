@@ -10,15 +10,16 @@ import cn.nukkit.event.entity.*;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.GameRule;
+import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.FloatTag;
+import cn.nukkit.network.protocol.AnimatePacket;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockIterator;
 import co.aikar.timings.Timings;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +51,18 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
     protected float movementSpeed = 0.1f;
 
+    //Optimization
+    protected boolean needLivingBaseTick = true;
+    protected boolean needCollidingWithRideable = true;
+
+    public boolean isNeedCollidingWithRideable() {
+        return needCollidingWithRideable;
+    }
+
+    public boolean isNeedLivingBaseTick() {
+        return needLivingBaseTick;
+    }
+
     @Override
     protected void initEntity() {
         super.initEntity();
@@ -72,8 +85,8 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         super.setHealth(health);
         if (this.isAlive() && !wasAlive) {
             EntityEventPacket pk = new EntityEventPacket();
-            pk.eid = this.getId();
-            pk.eid = EntityEventPacket.RESPAWN;
+            pk.entityRuntimeId = this.getId();
+            pk.event = EntityEventPacket.RESPAWN;
             Server.broadcastPacket(this.hasSpawned.values(), pk);
         }
     }
@@ -114,22 +127,34 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
         if (super.attack(source)) {
             if (source instanceof EntityDamageByEntityEvent) {
-                Entity e = ((EntityDamageByEntityEvent) source).getDamager();
+                Entity damager = ((EntityDamageByEntityEvent) source).getDamager();
                 if (source instanceof EntityDamageByChildEntityEvent) {
-                    e = ((EntityDamageByChildEntityEvent) source).getChild();
+                    damager = ((EntityDamageByChildEntityEvent) source).getChild();
                 }
 
-                if (e.isOnFire() && !(e instanceof Player)) {
+                //Critical hit
+                if (damager instanceof Player && !damager.onGround /*&& !damager.isFlying()*/) {
+                    AnimatePacket animate = new AnimatePacket();
+                    animate.action = AnimatePacket.ACTION_CRITICAL_HIT;
+                    animate.entityRuntimeId = this.getId();
+
+                    this.getLevel().addChunkPacket(damager.getChunkX(), damager.getChunkZ(), animate);
+                    this.getLevel().addSound(this, Sound.GAME_PLAYER_ATTACK_STRONG);
+
+                    source.setDamage(source.getDamage() * 1.5f);
+                }
+
+                if (damager.isOnFire() && !(damager instanceof Player)) {
                     this.setOnFire(2 * this.server.getDifficulty());
                 }
 
-                double deltaX = this.x - e.x;
-                double deltaZ = this.z - e.z;
-                this.knockBack(e, source.getDamage(), deltaX, deltaZ, ((EntityDamageByEntityEvent) source).getKnockBack());
+                double deltaX = this.x - damager.x;
+                double deltaZ = this.z - damager.z;
+                this.knockBack(damager, source.getDamage(), deltaX, deltaZ, ((EntityDamageByEntityEvent) source).getKnockBack());
             }
 
             EntityEventPacket pk = new EntityEventPacket();
-            pk.eid = this.getId();
+            pk.entityRuntimeId = this.getId();
             pk.event = this.getHealth() <= 0 ? EntityEventPacket.DEATH_ANIMATION : EntityEventPacket.HURT_ANIMATION;
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 

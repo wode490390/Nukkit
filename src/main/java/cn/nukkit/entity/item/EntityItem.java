@@ -17,7 +17,8 @@ import cn.nukkit.network.protocol.DataPacket;
  * @author MagicDroidX
  */
 public class EntityItem extends Entity {
-    public static final int NETWORK_ID = 64;
+
+    public static final int NETWORK_ID = ITEM;
 
     public static final int DATA_SOURCE_ID = 17;
 
@@ -261,12 +262,8 @@ public class EntityItem extends Entity {
         AddItemEntityPacket addEntity = new AddItemEntityPacket();
         addEntity.entityUniqueId = this.getId();
         addEntity.entityRuntimeId = this.getId();
-        addEntity.x = (float) this.x;
-        addEntity.y = (float) this.y;
-        addEntity.z = (float) this.z;
-        addEntity.speedX = (float) this.motionX;
-        addEntity.speedY = (float) this.motionY;
-        addEntity.speedZ = (float) this.motionZ;
+        addEntity.position = this.asVector3f();
+        addEntity.motion = this.getMotion().asVector3f();
         addEntity.metadata = this.dataProperties;
         addEntity.item = this.getItem();
         return addEntity;
