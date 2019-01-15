@@ -49,23 +49,23 @@ public abstract class ItemArmor extends Item {
         if (this.isHelmet() && player.getInventory().getHelmet().isNull()) {
             if (player.getInventory().setHelmet(this)) {
                 player.getInventory().clear(player.getInventory().getHeldItemIndex());
+                equip = true;
             }
-            equip = true;
         } else if (this.isChestplate() && player.getInventory().getChestplate().isNull()) {
             if (player.getInventory().setChestplate(this)) {
                 player.getInventory().clear(player.getInventory().getHeldItemIndex());
+                equip = true;
             }
-            equip = true;
         } else if (this.isLeggings() && player.getInventory().getLeggings().isNull()) {
             if (player.getInventory().setLeggings(this)) {
                 player.getInventory().clear(player.getInventory().getHeldItemIndex());
+                equip = true;
             }
-            equip = true;
         } else if (this.isBoots() && player.getInventory().getBoots().isNull()) {
             if (player.getInventory().setBoots(this)) {
                 player.getInventory().clear(player.getInventory().getHeldItemIndex());
+                equip = true;
             }
-            equip = true;
         }
         if (equip) {
             switch (this.getTier()) {
