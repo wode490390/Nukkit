@@ -258,7 +258,7 @@ public class LevelSoundEventPacket extends DataPacket {
     public static final int SOUND_CANT_BREED = 254;
     public static final int SOUND_UNDEFINED = 255;
 
-    public int sound = -1;
+    public int sound = SOUND_DEFAULT;
     public Vector3f position = new Vector3f();
     public int extraData = -1;
     public String entityType = ":"; //???
