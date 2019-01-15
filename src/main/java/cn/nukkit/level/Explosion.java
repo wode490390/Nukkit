@@ -205,7 +205,7 @@ public class Explosion {
 
         this.level.addChunkPacket((int) source.x >> 4, (int) source.z >> 4, pk);
         this.level.addParticle(new HugeExplodeSeedParticle(this.source));
-        this.getLevel().addLevelSoundEvent(source, LevelSoundEventPacket.SOUND_EXPLODE);
+        this.level.addLevelSoundEvent(source, LevelSoundEventPacket.SOUND_EXPLODE);
 
         return true;
     }
