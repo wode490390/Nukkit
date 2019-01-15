@@ -599,8 +599,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         super(null, new CompoundTag());
         this.creationTime = System.currentTimeMillis();
 
-        this.firstPlayed = this.namedTag.getLong("firstPlayed", this.creationTime);
-        this.lastPlayed = this.namedTag.getLong("lastPlayed", this.creationTime);
+        this.firstPlayed = this.creationTime;
+        this.lastPlayed = this.creationTime;
         this.interfaz = interfaz;
         this.windows = new HashMap<>();
         this.perm = new PermissibleBase(this);
@@ -616,7 +616,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.gamemode = this.server.getGamemode();
         this.setLevel(this.server.getDefaultLevel());
         this.viewDistance = this.server.getViewDistance();
-        this.chunkRadius = viewDistance;
+        this.chunkRadius = this.viewDistance;
         //this.newPosition = new Vector3(0, 0, 0);
         this.boundingBox = new SimpleAxisAlignedBB(0, 0, 0, 0, 0, 0);
 
@@ -627,8 +627,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @Override
     protected void initEntity() {
         super.initEntity();
-
         this.addDefaultWindows();
+
+        this.firstPlayed = this.namedTag.getLong("firstPlayed", this.creationTime);
+        this.lastPlayed = this.namedTag.getLong("lastPlayed", this.creationTime);
     }
 
     @Override
