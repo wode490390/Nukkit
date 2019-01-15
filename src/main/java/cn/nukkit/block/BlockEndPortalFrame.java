@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Sound;
+import cn.nukkit.math.BlockFace;
 
 /**
  * Created by Pub4Game on 26.12.2015.
@@ -86,6 +87,14 @@ public class BlockEndPortalFrame extends BlockTransparentMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        int[] faces = {0, 3, 1, 2};
+        this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
+        this.getLevel().setBlock(block, this, true);
+        return true;
     }
 
     @Override
