@@ -1,6 +1,5 @@
 package cn.nukkit.level.generator.populator.nether;
 
-import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.generator.populator.BlockPopulator;
@@ -13,7 +12,7 @@ public class PopulatorMushroom extends BlockPopulator {
 
     private final int type;
 
-    public MushroomDecorator(int type) {
+    public PopulatorMushroom(int type) {
         if (type != BROWN_MUSHROOM && type != RED_MUSHROOM) {
             throw new IllegalArgumentException("MushroomDecorator type must be BROWN_MUSHROOM or RED_MUSHROOM");
         }
