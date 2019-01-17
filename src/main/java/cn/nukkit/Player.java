@@ -832,16 +832,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     protected void doFirstSpawn() {
-        this.spawned = true;
-
         this.setEnableClientCommand(true);
 
         this.getAdventureSettings().update();
 
         this.sendPotionEffects(this);
         this.sendData(this);
-        this.inventory.sendContents(this);
-        this.inventory.sendArmorContents(this);
 
         SetTimePacket setTimePacket = new SetTimePacket();
         setTimePacket.time = this.level.getTime();
@@ -859,23 +855,24 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             pos = this.getSpawn();
 
             RespawnPacket respawnPacket = new RespawnPacket();
-            respawnPacket.position = pos.asVector3f();
+            respawnPacket.position = pos.asVector3f().add(0, this.getEyeHeight());
             this.dataPacket(respawnPacket);
         }
 
         this.sendPlayStatus(PlayStatusPacket.PLAYER_SPAWN);
 
-        PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(this,
-                new TranslationContainer(TextFormat.YELLOW + "%multiplayer.player.joined", new String[]{
-                        this.getDisplayName()
-                })
-        );
+        PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(this, new TranslationContainer(TextFormat.YELLOW + "%multiplayer.player.joined", new String[]{this.getDisplayName()}));
 
         this.server.getPluginManager().callEvent(playerJoinEvent);
+
+        this.spawned = true;
 
         if (playerJoinEvent.getJoinMessage().toString().trim().length() > 0) {
             this.server.broadcastMessage(playerJoinEvent.getJoinMessage());
         }
+
+        this.inventory.sendContents(this);
+        this.inventory.sendArmorContents(this);
 
         this.noDamageTicks = 60;
 
@@ -2290,7 +2287,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     if (this.forceMovement != null && (newPos.distanceSquared(this.forceMovement) > 0.1 || revert)) {
-                        this.sendPosition(this.forceMovement, movePlayerPacket.yaw, movePlayerPacket.pitch, MovePlayerPacket.MODE_RESET);
+                        this.sendPosition(this.forceMovement, movePlayerPacket.yaw, movePlayerPacket.pitch, MovePlayerPacket.MODE_TELEPORT);
                     } else {
 
                         movePlayerPacket.yaw %= 360;
