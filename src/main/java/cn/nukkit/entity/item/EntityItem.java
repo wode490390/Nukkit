@@ -223,6 +223,11 @@ public class EntityItem extends Entity {
         return item;
     }
 
+    public void setItem(Item item) {
+        this.item = item;
+        this.respawnToAll();
+    }
+
     @Override
     public boolean canCollideWith(Entity entity) {
         return false;

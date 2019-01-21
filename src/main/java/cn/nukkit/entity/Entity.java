@@ -1185,7 +1185,16 @@ public abstract class Entity extends Location implements Metadatable {
     }
 
     public void addMovement(double x, double y, double z, double yaw, double pitch, double headYaw) {
-        this.level.addEntityMovement(this.chunk.getX(), this.chunk.getZ(), this.id, x, y, z, yaw, pitch, headYaw);
+        MoveEntityPacket pk = new MoveEntityPacket();
+        pk.eid = this.getId();
+        pk.x = (float) x;
+        pk.y = (float) y;
+        pk.z = (float) z;
+        pk.yaw = (float) yaw;
+        pk.headYaw = (float) yaw;
+        pk.pitch = (float) pitch;
+        Server.broadcastPacket(this.getViewers().values(), pk);
+        //this.level.addEntityMovement(this.chunk.getX(), this.chunk.getZ(), this.id, x, y, z, yaw, pitch, headYaw);
     }
 
     public void addMotion(double motionX, double motionY, double motionZ) {
@@ -1928,7 +1937,7 @@ public abstract class Entity extends Location implements Metadatable {
         for (Player player : this.hasSpawned.values()) {
             this.spawnTo(player);
         }
-        this.hasSpawned = new HashMap<>();
+        //this.hasSpawned = new HashMap<>();
     }
 
     public void spawnToAll() {
