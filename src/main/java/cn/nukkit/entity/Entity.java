@@ -322,6 +322,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public double highestPosition;
 
     public boolean closed = false;
+    private boolean needsDespawn = false;
 
     protected Timing timing;
 
@@ -2079,6 +2080,15 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         for (Player player : new ArrayList<>(this.hasSpawned.values())) {
             this.despawnFrom(player);
         }
+    }
+
+    public void flagForDespawn() {
+        this.needsDespawn = true;
+        this.scheduleUpdate();
+    }
+
+    public boolean isFlaggedForDespawn() {
+        return this.needsDespawn;
     }
 
     public void close() {
