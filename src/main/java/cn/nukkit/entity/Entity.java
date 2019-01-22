@@ -34,7 +34,6 @@ import cn.nukkit.utils.MainLogger;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
 import co.aikar.timings.TimingsHistory;
-
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -2190,6 +2189,45 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
     public boolean getDataFlag(int propertyId, int id) {
         return (((propertyId == EntityHuman.DATA_PLAYER_FLAGS ? this.getDataPropertyByte(propertyId) & 0xff : this.getDataPropertyLong(propertyId))) & (1L << id)) > 0;
+    }
+
+    public void broadcastEntityEvent(int eventId) {
+        this.broadcastEntityEvent(eventId , 0);
+    }
+
+    public void broadcastEntityEvent(int eventId, int eventData) {
+        this.broadcastEntityEvent(eventId , eventData, this.getViewers());
+    }
+
+    public void broadcastEntityEvent(int eventId, int eventData, Collection<Player> players) {
+        this.broadcastEntityEvent(eventId , eventData, players.toArray(new Player[players.size()]));
+    }
+
+    public void broadcastEntityEvent(int eventId, int eventData, Player[] players) {
+        EntityEventPacket pk = new EntityEventPacket();
+        pk.entityRuntimeId = this.getId();
+        pk.event = eventId;
+        pk.data = eventData;
+        this.getServer().broadcastPacket(players, pk);
+    }
+
+    public void broadcastAnimation(int animationId) {
+        this.broadcastAnimation(animationId, this.getViewers());
+    }
+
+    public void broadcastAnimation(int animationId, Collection<Player> players) {
+        this.broadcastAnimation(animationId, players.toArray(new Player[players.size()]));
+    }
+
+    public void broadcastAnimation(int animationId, Player[] players) {
+        AnimatePacket pk = new AnimatePacket();
+        pk.entityRuntimeId = this.getId();
+        pk.action = animationId;
+        this.getServer().broadcastPacket(players, pk);
+    }
+
+    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+        this.server.getEntityMetadata().setMetadata(this, metadataKey, newMetadataValue);
     }
 
     @Override
