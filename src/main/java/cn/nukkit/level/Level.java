@@ -1078,8 +1078,11 @@ public class Level implements ChunkManager, Metadatable {
 
         if (!this.updateEntities.isEmpty()) {
             for (Entity entity : new ArrayList<>(this.updateEntities.values())) {
-                if (entity.closed || !entity.onUpdate(currentTick)) {
+                if (entity.isClosed() || !entity.onUpdate(currentTick)) {
                     this.updateEntities.remove(entity.getId());
+                }
+                if (entity.isFlaggedForDespawn()) {
+                    entity.close();
                 }
             }
 
