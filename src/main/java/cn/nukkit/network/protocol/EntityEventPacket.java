@@ -58,15 +58,15 @@ public class EntityEventPacket extends DataPacket {
     public static final int DRAGON_PUKE = 68; //they call this puke particles
     public static final int ITEM_ENTITY_MERGE = 69;
 
-	//TODO: add more events
+    //TODO: add more events
 
     @Override
     public byte pid() {
         return NETWORK_ID;
     }
 
-    public long entityRuntimeId;
-    public int event;
+    public long entityRuntimeId = -1;
+    public int event = -1;
     public int data = 0;
 
     @Override
