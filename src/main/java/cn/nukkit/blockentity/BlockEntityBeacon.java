@@ -2,7 +2,6 @@ package cn.nukkit.blockentity;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockAir;
 import cn.nukkit.inventory.BeaconInventory;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
@@ -16,30 +15,10 @@ import java.util.Map;
 /**
  * author: Rover656
  */
-public class BlockEntityBeacon extends BlockEntitySpawnable implements BlockEntityNameable {
+public class BlockEntityBeacon extends BlockEntitySpawnable {
 
     public BlockEntityBeacon(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-    }
-
-    @Override
-    public String getName() {
-        return this.hasName() ? this.namedTag.getString("CustomName") : "Beacon";
-    }
-
-    @Override
-    public boolean hasName() {
-        return this.namedTag.contains("CustomName");
-    }
-
-    @Override
-    public void setName(String name) {
-        if (name == null || name.equals("")) {
-            this.namedTag.remove("CustomName");
-            return;
-        }
-
-        this.namedTag.putString("CustomName", name);
     }
 
     @Override
@@ -67,23 +46,17 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements BlockEnti
 
     @Override
     public boolean isBlockEntityValid() {
-        int blockID = getBlock().getId();
+        int blockID = this.getBlock().getId();
         return blockID == Block.BEACON;
     }
 
     @Override
     public CompoundTag getSpawnCompound() {
-        CompoundTag c = getDefaultCompound(this, BEACON)
+        return getDefaultCompound(this, BEACON)
                 .putString("Lock", this.namedTag.getString("Lock"))
                 .putInt("Levels", this.namedTag.getInt("Levels"))
                 .putInt("Primary", this.namedTag.getInt("Primary"))
                 .putInt("Secondary", this.namedTag.getInt("Secondary"));
-
-        if (this.hasName()) {
-            c.put("CustomName", this.namedTag.get("CustomName"));
-        }
-
-        return c;
     }
 
     private long currentTick = 0;
@@ -173,9 +146,9 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements BlockEnti
     private static final int POWER_LEVEL_MAX = 4;
 
     private boolean hasSkyAccess() {
-        int tileX = getFloorX();
-        int tileY = getFloorY();
-        int tileZ = getFloorZ();
+        int tileX = this.getFloorX();
+        int tileY = this.getFloorY();
+        int tileZ = this.getFloorZ();
 
         //Check every block from our y coord to the top of the world
         for (int y = tileY + 1; y <= 255; y++) {
@@ -190,9 +163,9 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements BlockEnti
     }
 
     private int calculatePowerLevel() {
-        int tileX = getFloorX();
-        int tileY = getFloorY();
-        int tileZ = getFloorZ();
+        int tileX = this.getFloorX();
+        int tileY = this.getFloorY();
+        int tileZ = this.getFloorZ();
 
         //The power level that we're testing for
         for (int powerLevel = 1; powerLevel <= POWER_LEVEL_MAX; powerLevel++) {
@@ -263,7 +236,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable implements BlockEnti
         this.getLevel().addSound(this, Sound.BEACON_POWER);
 
         BeaconInventory inv = (BeaconInventory) player.getWindowById(Player.BEACON_WINDOW_ID);
-        inv.setItem(0, new ItemBlock(new BlockAir(), 0, 0));
+        inv.setItem(0, Block.get(Block.AIR));
 
         return true;
     }
