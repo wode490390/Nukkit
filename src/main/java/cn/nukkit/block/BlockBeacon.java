@@ -60,13 +60,12 @@ public class BlockBeacon extends BlockTransparent {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null) {
-
             BlockEntity t = this.getLevel().getBlockEntity(this);
             BlockEntityBeacon beacon;
             if (t instanceof BlockEntityBeacon) {
                 beacon = (BlockEntityBeacon) t;
             } else {
-                beacon = new BlockEntityBeacon(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.BEACON));
+                beacon = new BlockEntityBeacon(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.BEACON));
             }
 
             if (beacon.namedTag.contains("Lock") && beacon.namedTag.get("Lock") instanceof StringTag) {
@@ -87,10 +86,6 @@ public class BlockBeacon extends BlockTransparent {
         if (blockSuccess) {
             CompoundTag nbt = BlockEntity.getDefaultCompound(this, BlockEntity.BEACON);
 
-            if (item.hasCustomName()) {
-                nbt.putString("CustomName", item.getCustomName());
-            }
-
             if (item.hasCustomBlockData()) {
                 Map<String, Tag> customData = item.getCustomBlockData().getTags();
                 for (Map.Entry<String, Tag> tag : customData.entrySet()) {
@@ -98,7 +93,7 @@ public class BlockBeacon extends BlockTransparent {
                 }
             }
 
-            new BlockEntityBeacon(this.level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+            new BlockEntityBeacon(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
         }
 
         return blockSuccess;
