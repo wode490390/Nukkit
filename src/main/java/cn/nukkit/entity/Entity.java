@@ -1398,8 +1398,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     protected void updateRiderPosition(float offset) {
         // Messy unknown variables
         if (updateRidden()) {
-            linkedEntity.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION,
-                    new Vector3f(0, offset, 0)));
+            linkedEntity.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, new Vector3f(0, offset, 0)));
         }
     }
 
@@ -1408,8 +1407,9 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public final void scheduleUpdate() {
-        this.level.updateEntities.put(this.id, this);
-//        this.chunk.updateEntity(this);
+        if (!this.isClosed()) {
+            this.getLevel().updateEntities.put(this.id, this);
+        }
     }
 
     public boolean isOnFire() {
