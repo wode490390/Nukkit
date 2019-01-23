@@ -40,6 +40,11 @@ public class EntityMetadata {
         return this;
     }
 
+    public EntityMetadata remove(int id) {
+        this.map.remove(id);
+        return this;
+    }
+
     public int getByte(int id) {
         return (int) this.getOrDefault(id, new ByteEntityData(id, 0)).getData() & 0xff;
     }
