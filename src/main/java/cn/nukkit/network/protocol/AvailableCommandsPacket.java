@@ -37,8 +37,11 @@ public class AvailableCommandsPacket extends DataPacket {
     public static final int ARG_TYPE_WILDCARD_INT = 0x4;
     public static final int ARG_TYPE_OPERATOR = 0x5;
     public static final int ARG_TYPE_TARGET = 0x6;
+    public static final int ARG_TYPE_WILDCARD_TARGET = 0x7;
 
-    public static final int ARG_TYPE_UNKNOWN = 0xe;
+    public static final int ARG_TYPE_FILE_PATH = 0xe;
+
+    public static final int ARG_TYPE_INT_RANGE = 0x12;
 
     public static final int ARG_TYPE_STRING = 0x1a;
 
