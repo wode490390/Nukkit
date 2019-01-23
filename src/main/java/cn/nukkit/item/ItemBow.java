@@ -12,8 +12,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -83,10 +82,10 @@ public class ItemBow extends ItemTool {
         int diff = (Server.getInstance().getTick() - player.getStartActionTick());
         double p = (double) diff / 20;
 
-        double f = Math.min((p * p + p * 2) / 3, 1) * 2;
-        EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(player, this, new EntityArrow(player.chunk, nbt, player, f == 2), f);
+        double baseForce = Math.min((p * p + p * 2) / 3, 1);
+        EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(player, this, new EntityArrow(player.chunk, nbt, player, baseForce >= 1), baseForce * 3);
 
-        if (f < 0.1 || diff < 5) {
+        if (baseForce < 0.1 || diff < 5) {
             entityShootBowEvent.setCancelled();
         }
 
@@ -103,7 +102,7 @@ public class ItemBow extends ItemTool {
                     player.getInventory().removeItem(itemArrow);
                 if (!this.isUnbreakable()) {
                     Enchantment durability = this.getEnchantment(Enchantment.ID_DURABILITY);
-                    if (!(durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= new Random().nextInt(100))) {
+                    if (!(durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= ThreadLocalRandom.current().nextInt(100))) {
                         this.setDamage(this.getDamage() + 1);
                         if (this.getDamage() >= getMaxDurability()) {
                             this.count--;
