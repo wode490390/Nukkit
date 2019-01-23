@@ -6,6 +6,7 @@ import static cn.nukkit.network.protocol.AvailableCommandsPacket.*;
  * @author CreeperFace
  */
 public enum CommandParamType {
+
     INT(ARG_TYPE_INT),
     FLOAT(ARG_TYPE_FLOAT),
     VALUE(ARG_TYPE_VALUE),
@@ -18,7 +19,8 @@ public enum CommandParamType {
     JSON(ARG_TYPE_JSON),
     TEXT(ARG_TYPE_RAWTEXT), // backwards compatibility
     COMMAND(ARG_TYPE_COMMAND),
-    ;
+    UNKNOWN(ARG_TYPE_UNKNOWN),
+    OPERATOR(ARG_TYPE_OPERATOR);
 
     private final int id;
 
