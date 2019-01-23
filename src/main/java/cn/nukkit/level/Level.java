@@ -1041,10 +1041,17 @@ public class Level implements ChunkManager, Metadatable {
             if (b == null) {
                 continue;
             }
+            int x = b.getFloorX();
+            int y = b.getFloorY();
+            int z = b.getFloorZ();
+            if (y > 255 || y < 0) {
+                continue;
+            }
+
             boolean first = !optimizeRebuilds;
 
             if (optimizeRebuilds) {
-                long index = Level.chunkHash((int) b.x >> 4, (int) b.z >> 4);
+                long index = Level.chunkHash(x >> 4, z >> 4);
                 if (!chunks.contains(index)) {
                     chunks.add(index);
                     first = true;
@@ -1052,20 +1059,25 @@ public class Level implements ChunkManager, Metadatable {
             }
 
             UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket();
-            updateBlockPacket.x = (int) b.x;
-            updateBlockPacket.y = (int) b.y;
-            updateBlockPacket.z = (int) b.z;
+            updateBlockPacket.x = x;
+            updateBlockPacket.y = y;
+            updateBlockPacket.z = z;
             updateBlockPacket.flags = first ? flags : UpdateBlockPacket.FLAG_NONE;
             int fullId;
             if (b instanceof Block) {
                 fullId = ((Block) b).getFullId();
             } else {
-                fullId = getFullBlock((int) b.x, (int) b.y, (int) b.z);
+                fullId = this.getFullBlock(x, y, z);
             }
             try {
                 updateBlockPacket.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(fullId);
             } catch (NoSuchElementException e) {
-                throw new IllegalStateException("Unable to create BlockUpdatePacket at (" + b.x + ", " + b.y + ", " + b.z + ") in " + getName(), e);
+                try {
+                    updateBlockPacket.blockRuntimeId = GlobalBlockPalette.getOrCreateRuntimeId(this.getBlockIdAt(x, y, z), 0);
+                } catch (NoSuchElementException ex) {
+                    this.getServer().getLogger().logException(new IllegalStateException("Unable to create BlockUpdatePacket at (" + x + ", " + y + ", " + z + ") in " + this.getName(), e));
+                    continue;
+                }
             }
             packets[packetIndex++] = updateBlockPacket;
         }
