@@ -34,6 +34,7 @@ public class ItemMap extends Item {
         if (!hasCompoundTag() || !getNamedTag().contains("map_uuid")) {
             CompoundTag tag = new CompoundTag();
             tag.putLong("map_uuid", mapCount++);
+            tag.putBoolean("map_display_players", true);
             this.setNamedTag(tag);
         }
     }
