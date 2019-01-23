@@ -236,7 +236,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
         this.getLevel().addSound(this, Sound.BEACON_POWER);
 
         BeaconInventory inv = (BeaconInventory) player.getWindowById(Player.BEACON_WINDOW_ID);
-        inv.setItem(0, Block.get(Block.AIR));
+        inv.setItem(0, new ItemBlock(Block.get(Block.AIR)));
 
         return true;
     }
