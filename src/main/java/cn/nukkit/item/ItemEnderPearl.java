@@ -28,4 +28,9 @@ public class ItemEnderPearl extends ProjectileItem {
     public float getThrowForce() {
         return 1.5f;
     }
+
+    @Override
+    public int getCooldownTicks() {
+        return 20;
+    }
 }
