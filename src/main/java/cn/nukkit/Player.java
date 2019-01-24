@@ -167,6 +167,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected String displayName;
 
     protected int startAction = -1;
+    protected final Map<Integer, Integer> usedItemsCooldown =  new Int2IntOpenHashMap<>();
 
     protected Vector3 sleeping;
     protected Long clientID;
@@ -677,6 +678,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return port;
     }
 
+    /**
+     * @return Position
+     */
     public Position getNextPosition() {
         return this.newPosition != null ? new Position(this.newPosition.x, this.newPosition.y, this.newPosition.z, this.level) : this.getPosition();
     }
@@ -692,7 +696,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     /**
      * Returns whether the player is currently using an item (right-click and hold).
      *
-     * @return bool
+     * @return boolean
      */
     public boolean isUsingItem() {
         return this.getDataFlag(DATA_FLAGS, DATA_FLAG_ACTION) && this.startAction > -1;
@@ -701,6 +705,48 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public void setUsingItem(boolean value) {
         this.startAction = value ? this.server.getTick() : -1;
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_ACTION, value);
+    }
+
+    /**
+     * Returns how long the player has been using their currently-held item for. Used for determining arrow shoot force for bows.
+     *
+     * @return int
+     */
+    public int getItemUseDuration() {
+        return this.startAction == -1 ? -1 : this.getServer().getTick() - this.startAction;
+    }
+
+    /**
+     * Returns whether the player has a cooldown period left before it can use the given item again.
+     *
+     * @param Item item
+     *
+     * @return boolean
+     */
+    public boolean hasItemCooldown(Item item) {
+        this.checkItemCooldowns();
+        return this.usedItemsCooldown.containsKey(item.getId());
+    }
+
+    /**
+     * Resets the player's cooldown time for the given item back to the maximum.
+     *
+     * @param Item item
+     */
+    public void resetItemCooldown(Item item) {
+        int ticks = item.getCooldownTicks();
+        if (ticks > 0) {
+            this.usedItemsCooldown.put(item.getId(), this.getServer().getTick() + ticks);
+        }
+    }
+
+    protected void checkItemCooldowns() {
+        int serverTick = this.getServer().getTick();
+        for (Map.Entry<Integer, Integer> entry : this.usedItemsCooldown.entrySet()) {
+            if (entry.getValue() <= serverTick) {
+                this.usedItemsCooldown.remove(entry.getKey());
+            }
+        }
     }
 
     public String getButtonText() {
@@ -3018,6 +3064,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                     }
 
                                     PlayerInteractEvent interactEvent = new PlayerInteractEvent(this, item, directionVector, face, Action.RIGHT_CLICK_AIR);
+                                    if (this.hasItemCooldown(item)) {
+                                        interactEvent.setCancelled();
+                                    }
 
                                     this.server.getPluginManager().callEvent(interactEvent);
 
@@ -3027,6 +3076,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                     }
 
                                     if (item.onClickAir(this, directionVector) && this.isSurvival()) {
+                                        this.resetItemCooldown(item);
                                         this.inventory.setItemInHand(item);
                                     }
 
@@ -3147,7 +3197,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                     case InventoryTransactionPacket.RELEASE_ITEM_ACTION_RELEASE:
                                         if (this.isUsingItem()) {
                                             item = this.inventory.getItemInHand();
+                                            if (this.hasItemCooldown(item)) {
+                                                this.inventory.sendContents(this);
+                                                return;
+                                            }
                                             if (item.onReleaseUsing(this)) {
+                                                this.resetItemCooldown(item);
                                                 this.inventory.setItemInHand(item);
                                             }
                                         } else {
@@ -3157,6 +3212,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                     case InventoryTransactionPacket.RELEASE_ITEM_ACTION_CONSUME:
                                         Item itemInHand = this.inventory.getItemInHand();
                                         PlayerItemConsumeEvent consumeEvent = new PlayerItemConsumeEvent(this, itemInHand);
+                                        if (this.hasItemCooldown(itemInHand)) {
+                                            consumeEvent.setCancelled();
+                                        }
 
                                         if (itemInHand.getId() == Item.POTION) {
                                             this.server.getPluginManager().callEvent(consumeEvent);
@@ -3207,6 +3265,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                             if (food != null && food.eatenBy(this)) --itemInHand.count;
                                             this.inventory.setItemInHand(itemInHand);
                                         }
+
+                                        this.resetItemCooldown(itemInHand);
                                         return;
                                     default:
                                         break;
