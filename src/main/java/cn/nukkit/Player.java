@@ -724,8 +724,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             pk.time = targetLevel.getTime();
             this.dataPacket(pk);
 
-            int distance = this.viewDistance * 2 * 16 * 2;
-            this.sendPosition(this.add(distance, 0, distance), this.yaw, this.pitch, MovePlayerPacket.MODE_RESET);
+            //int distance = this.viewDistance * 2 * 16 * 2;
+            //this.sendPosition(this.add(distance, 0, distance), this.yaw, this.pitch, MovePlayerPacket.MODE_RESET);
             return true;
         }
         return false;
@@ -2190,7 +2190,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     }
 
                     if (this.forceMovement != null && (newPos.distanceSquared(this.forceMovement) > 0.1 || revert)) {
-                        this.sendPosition(this.forceMovement, movePlayerPacket.yaw, movePlayerPacket.pitch, MovePlayerPacket.MODE_TELEPORT);
+                        this.sendPosition(this.forceMovement, this.yaw, this.pitch, MovePlayerPacket.MODE_TELEPORT);
                     } else {
 
                         movePlayerPacket.yaw %= 360;
@@ -3198,14 +3198,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public void setViewDistance(int distance) {
-        if (this.chunkRadius != distance) {
-            this.chunkRadius = distance;
+        this.chunkRadius = distance;
 
-            ChunkRadiusUpdatedPacket pk = new ChunkRadiusUpdatedPacket();
-            pk.radius = distance;
+        ChunkRadiusUpdatedPacket pk = new ChunkRadiusUpdatedPacket();
+        pk.radius = distance;
 
-            this.dataPacket(pk);
-        }
+        this.dataPacket(pk);
     }
 
     public int getViewDistance() {
