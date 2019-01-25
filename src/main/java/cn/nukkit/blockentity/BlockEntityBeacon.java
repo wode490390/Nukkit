@@ -6,9 +6,9 @@ import cn.nukkit.inventory.BeaconInventory;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.ItemBlock;
-import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.potion.Effect;
 import java.util.Map;
 
@@ -76,13 +76,13 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
         //Skip beacons that do not have a pyramid or sky access
         if (newPowerLevel < 1 || !this.hasSkyAccess()) {
             if (oldPowerLevel > 0) {
-                this.getLevel().addSound(this, Sound.BEACON_DEACTIVATE);
+                this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BEACON_DEACTIVATE);
             }
             return true;
         } else if (oldPowerLevel < 1) {
-            this.getLevel().addSound(this, Sound.BEACON_ACTIVATE);
+            this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BEACON_ACTIVATE);
         } else {
-            this.getLevel().addSound(this, Sound.BEACON_AMBIENT);
+            this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BEACON_AMBIENT);
         }
 
         //Get all players in game
@@ -233,7 +233,8 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
 
         this.setPrimaryPower(nbt.getInt("primary"));
         this.setSecondaryPower(nbt.getInt("secondary"));
-        this.getLevel().addSound(this, Sound.BEACON_POWER);
+
+        this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BEACON_POWER);
 
         BeaconInventory inv = (BeaconInventory) player.getWindowById(Player.BEACON_WINDOW_ID);
         inv.setItem(0, new ItemBlock(Block.get(Block.AIR)));
