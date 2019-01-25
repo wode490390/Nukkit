@@ -1107,7 +1107,7 @@ public class Item implements Cloneable {
         return null;
     }
 
-    public void addEnchantment(Enchantment... enchantments) {
+    public Item addEnchantment(Enchantment... enchantments) {
         CompoundTag tag;
         if (!this.hasCompoundTag()) {
             tag = new CompoundTag();
@@ -1147,6 +1147,7 @@ public class Item implements Cloneable {
         }
 
         this.setNamedTag(tag);
+        return this;
     }
 
     public Enchantment[] getEnchantments() {
