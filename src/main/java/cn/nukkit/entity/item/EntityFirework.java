@@ -16,9 +16,7 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.network.protocol.LevelSoundEventPacket;
-import cn.nukkit.network.protocol.PlaySoundPacket;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author CreeperFace
@@ -35,11 +33,10 @@ public class EntityFirework extends Entity {
         super(chunk, nbt);
 
         this.fireworkAge = 0;
-        Random rand = new Random();
 
-        this.motionX = rand.nextGaussian() * 0.001D;
-        this.motionZ = rand.nextGaussian() * 0.001D;
-        this.motionY = 0.05D;
+        this.motionX = ThreadLocalRandom.current().nextGaussian() * 0.001d;
+        this.motionZ = ThreadLocalRandom.current().nextGaussian() * 0.001d;
+        this.motionY = 0.05d;
 
         if (nbt.contains("FireworkItem")) {
             firework = NBTIO.getItemHelper(nbt.getCompound("FireworkItem"));
@@ -81,30 +78,22 @@ public class EntityFirework extends Entity {
 
         if (this.isAlive()) {
 
-            this.motionX *= 1.15D;
-            this.motionZ *= 1.15D;
-            this.motionY += 0.04D;
+            this.motionX *= 1.15d;
+            this.motionZ *= 1.15d;
+            this.motionY += 0.04d;
             this.move(this.motionX, this.motionY, this.motionZ);
 
             this.updateMovement();
 
 
             float f = (float) Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.yaw = (float) (Math.atan2(this.motionX, this.motionZ) * (180D / Math.PI));
+            this.yaw = (float) (Math.atan2(this.motionX, this.motionZ) * (180d / Math.PI));
 
-            this.pitch = (float) (Math.atan2(this.motionY, (double) f) * (180D / Math.PI));
+            this.pitch = (float) (Math.atan2(this.motionY, (double) f) * (180d / Math.PI));
 
 
             if (this.fireworkAge == 0) {
-                PlaySoundPacket pk = new PlaySoundPacket();
-                pk.soundName = Sound.FIREWORK_LAUNCH.getSound();
-                pk.volume = 1;
-                pk.pitch = 1;
-                pk.x = getFloorX();
-                pk.y = getFloorY();
-                pk.z = getFloorZ();
-
-                this.level.addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
+                this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_LAUNCH);
             }
 
             this.fireworkAge++;
@@ -131,11 +120,7 @@ public class EntityFirework extends Entity {
 
     @Override
     public boolean attack(EntityDamageEvent source) {
-        return (source.getCause() == DamageCause.VOID ||
-                source.getCause() == DamageCause.FIRE_TICK ||
-                source.getCause() == DamageCause.ENTITY_EXPLOSION ||
-                source.getCause() == DamageCause.BLOCK_EXPLOSION)
-                && super.attack(source);
+        return (source.getCause() == DamageCause.VOID || source.getCause() == DamageCause.FIRE_TICK || source.getCause() == DamageCause.ENTITY_EXPLOSION || source.getCause() == DamageCause.BLOCK_EXPLOSION) && super.attack(source);
     }
 
     public void setFirework(Item item) {
