@@ -642,7 +642,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
         if (this.spawned) {
-            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getDisplayName(), this.getSkin(), this.getLoginChainData().getXUID());
+            //TODO this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getDisplayName(), this.getSkin(), this.getLoginChainData().getXUID());
         }
     }
 
@@ -650,7 +650,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public void setSkin(Skin skin) {
         super.setSkin(skin);
         if (this.spawned) {
-            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getDisplayName(), skin, this.getLoginChainData().getXUID());
+            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getDisplayName(), skin, this.getLoginChainData().getXUID(), this.getLevel().getPlayers().values());
         }
     }
 
