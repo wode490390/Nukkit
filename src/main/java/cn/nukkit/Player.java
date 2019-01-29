@@ -537,15 +537,18 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.perm.recalculatePermissions();
 
-        if (this.hasPermission(Server.BROADCAST_CHANNEL_USERS)) {
-            this.server.getPluginManager().subscribeToPermission(Server.BROADCAST_CHANNEL_USERS, this);
-        }
+        if (this.spawned) {
+            if (this.hasPermission(Server.BROADCAST_CHANNEL_USERS)) {
+                this.server.getPluginManager().subscribeToPermission(Server.BROADCAST_CHANNEL_USERS, this);
+            }
+            if (this.hasPermission(Server.BROADCAST_CHANNEL_ADMINISTRATIVE)) {
+                this.server.getPluginManager().subscribeToPermission(Server.BROADCAST_CHANNEL_ADMINISTRATIVE, this);
+            }
 
-        if (this.hasPermission(Server.BROADCAST_CHANNEL_ADMINISTRATIVE)) {
-            this.server.getPluginManager().subscribeToPermission(Server.BROADCAST_CHANNEL_ADMINISTRATIVE, this);
+            if (this.isEnableClientCommand()) {
+                this.sendCommandData();
+            }
         }
-
-        if (this.isEnableClientCommand() && spawned) this.sendCommandData();
     }
 
     public boolean isEnableClientCommand() {
@@ -557,7 +560,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         SetCommandsEnabledPacket pk = new SetCommandsEnabledPacket();
         pk.enabled = enable;
         this.dataPacket(pk);
-        if (enable) this.sendCommandData();
+        if (enable) {
+            this.sendCommandData();
+        }
     }
 
     public void sendCommandData() {
@@ -2667,8 +2672,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 case ProtocolInfo.BLOCK_PICK_REQUEST_PACKET:
                     BlockPickRequestPacket pickRequestPacket = (BlockPickRequestPacket) packet;
                     Block block = this.level.getBlock(this.temporalVector.setComponents(pickRequestPacket.blockX, pickRequestPacket.blockY, pickRequestPacket.blockZ));
-                    item = block.toItem();
+                    if (block instanceof BlockUnknown) {
+                        return true;
+                    }
 
+                    item = block.toItem();
                     if (pickRequestPacket.addUserData) {
                         BlockEntity blockEntity = this.getLevel().getBlockEntity(new Vector3(pickRequestPacket.blockX, pickRequestPacket.blockY, pickRequestPacket.blockZ));
                         if (blockEntity != null) {
