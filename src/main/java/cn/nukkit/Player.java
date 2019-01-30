@@ -50,6 +50,7 @@ import cn.nukkit.level.particle.CriticalParticle;
 import cn.nukkit.level.particle.PunchBlockParticle;
 import cn.nukkit.level.sound.ExperienceOrbSound;
 import cn.nukkit.level.sound.ItemFrameItemRemovedSound;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.*;
 import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.nbt.NBTIO;
@@ -229,6 +230,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected Map<Integer, FormWindow> serverSettings = new HashMap<>();
 
     protected Map<Long, DummyBossBar> dummyBossBars = new HashMap<>();
+
+    protected Map<String, ResourcePack> resourcePacks;
+    protected Map<String, ResourcePack> behaviourPacks;
+    protected boolean forceResources = false;
 
     public int getStartActionTick() {
         return startAction;
@@ -1933,9 +1938,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.forceMovement = this.teleportPosition = this.getPosition();
 
+        PlayerRequestResourcePackEvent resourcePackEvent = new PlayerRequestResourcePackEvent(this, this.server.getResourcePackManager().getResourcePacksMap(), new HashMap<>(), this.server.getForceResources());
+        this.server.getPluginManager().callEvent(resourcePackEvent);
+        this.resourcePacks = resourcePackEvent.getResourcePacks();
+        this.behaviourPacks = resourcePackEvent.getResourcePacks();
+        this.forceResources = resourcePackEvent.isMustAccept();
+
         ResourcePacksInfoPacket infoPacket = new ResourcePacksInfoPacket();
-        infoPacket.resourcePackEntries = this.server.getResourcePackManager().getResourceStack();
-        infoPacket.mustAccept = this.server.getForceResources();
+        infoPacket.resourcePackEntries = this.resourcePacks.values().toArray(new ResourcePack[0]);
+        infoPacket.behaviourPackEntries = this.behaviourPacks.values().toArray(new ResourcePack[0]);
+        infoPacket.mustAccept = this.forceResources;
         this.dataPacket(infoPacket);
     }
 
@@ -2121,7 +2133,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             break;
                         case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
                             for (String id : responsePacket.packIds) {
-                                ResourcePack resourcePack = this.server.getResourcePackManager().getPackById(id);
+                                ResourcePack resourcePack = this.resourcePacks.getOrDefault(id, this.behaviourPacks.get(id));
                                 if (resourcePack == null) {
                                     this.close("", "disconnectionScreen.resourcePack");
                                     break;
@@ -2138,8 +2150,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             break;
                         case ResourcePackClientResponsePacket.STATUS_HAVE_ALL_PACKS:
                             ResourcePackStackPacket stackPacket = new ResourcePackStackPacket();
-                            stackPacket.mustAccept = this.server.getForceResources();
-                            stackPacket.resourcePackStack = this.server.getResourcePackManager().getResourceStack();
+                            stackPacket.mustAccept = this.forceResources;
+                            stackPacket.resourcePackStack = this.resourcePacks.values().toArray(new ResourcePack[0]);
+                            stackPacket.behaviourPackStack = this.behaviourPacks.values().toArray(new ResourcePack[0]);
                             this.dataPacket(stackPacket);
                             break;
                         case ResourcePackClientResponsePacket.STATUS_COMPLETED:
@@ -2149,7 +2162,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     break;
                 case ProtocolInfo.RESOURCE_PACK_CHUNK_REQUEST_PACKET:
                     ResourcePackChunkRequestPacket requestPacket = (ResourcePackChunkRequestPacket) packet;
-                    ResourcePack resourcePack = this.server.getResourcePackManager().getPackById(requestPacket.packId);
+                    ResourcePack resourcePack = this.resourcePacks.getOrDefault(requestPacket.packId, this.behaviourPacks.get(requestPacket.packId));
                     if (resourcePack == null) {
                         this.close("", "disconnectionScreen.resourcePack");
                         break;
@@ -2569,6 +2582,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                 break;
                             }
 
+                            this.getLevel().addSound(this.add(0, this.getEyeHeight(), 0), SoundEnum.RANDOM_EAT);
                             /*this.dataPacket(packet); //bug?
                             Server.broadcastPacket(this.getViewers().values(), packet);*/
                             break;
@@ -4614,5 +4628,17 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         ShowProfilePacket pk = new ShowProfilePacket();
         pk.xuid = xuid;
         this.dataPacket(pk);
+    }
+
+    public Map<String, ResourcePack> getResourcePacks() {
+        return this.resourcePacks;
+    }
+
+    public Map<String, ResourcePack> getBehaviourPacks() {
+        return this.behaviourPacks;
+    }
+
+    public boolean isForceResources() {
+        return this.forceResources;
     }
 }

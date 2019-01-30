@@ -54,6 +54,10 @@ public class ResourcePackManager {
                 .translateString("nukkit.resources.success", String.valueOf(this.resourcePacks.length)));
     }
 
+    public Map<String, ResourcePack> getResourcePacksMap() {
+        return resourcePacksById;
+    }
+
     public ResourcePack[] getResourceStack() {
         return this.resourcePacks;
     }

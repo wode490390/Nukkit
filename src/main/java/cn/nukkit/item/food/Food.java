@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.player.PlayerEatFoodEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 
@@ -124,6 +125,7 @@ public abstract class Food {
         PlayerEatFoodEvent event = new PlayerEatFoodEvent(player, this);
         player.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
+        player.getLevel().addSound(player, SoundEnum.RANDOM_BURP);
         return event.getFood().onEatenBy(player);
     }
 
