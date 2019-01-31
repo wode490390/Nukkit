@@ -114,8 +114,8 @@ public abstract class Entity extends Location implements Metadatable {
     public static final int DATA_FUSE_LENGTH = 56; //int
     public static final int DATA_RIDER_SEAT_POSITION = 57; //vector3f
     public static final int DATA_RIDER_ROTATION_LOCKED = 58; //byte
-    public static final int DATA_RIDER_MAX_ROTATION = 59; //float
-    public static final int DATA_RIDER_MIN_ROTATION = 60; //float
+    public static final int DATA_SEAT_LOCK_RIDER_ROTATION_DEGREES = 59; //float
+    public static final int DATA_SEAT_ROTATION_OFFSET = 60; //float
     public static final int DATA_AREA_EFFECT_CLOUD_RADIUS = 61; //float
     public static final int DATA_AREA_EFFECT_CLOUD_WAITING = 62; //int
     public static final int DATA_AREA_EFFECT_CLOUD_PARTICLE_ID = 63; //int
