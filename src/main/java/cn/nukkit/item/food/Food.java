@@ -4,9 +4,9 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.player.PlayerEatFoodEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
-
 import java.util.*;
 
 /**
@@ -96,12 +96,12 @@ public abstract class Food {
 
     public static Food getByRelative(Item item) {
         Objects.requireNonNull(item);
-        return getByRelative(item.getId(), item.getDamage());
+        return this.getByRelative(item.getId(), item.getDamage());
     }
 
     public static Food getByRelative(Block block) {
         Objects.requireNonNull(block);
-        return getByRelative(block.getId(), block.getDamage());
+        return this.getByRelative(block.getId(), block.getDamage());
     }
 
     public static Food getByRelative(int relativeID, int meta) {
@@ -124,7 +124,10 @@ public abstract class Food {
     public final boolean eatenBy(Player player) {
         PlayerEatFoodEvent event = new PlayerEatFoodEvent(player, this);
         player.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled()) return false;
+        if (event.isCancelled()) {
+            return false;
+        }
+        player.getLevel().addLevelSoundEvent(player, LevelSoundEventPacket.SOUND_BURP);
         return event.getFood().onEatenBy(player);
     }
 
@@ -143,12 +146,14 @@ public abstract class Food {
     }
 
     private Food addRelative(NodeIDMeta node) {
-        if (!relativeIDs.contains(node)) relativeIDs.add(node);
+        if (!this.relativeIDs.contains(node)) {
+            this.relativeIDs.add(node);
+        }
         return this;
     }
 
     public int getRestoreFood() {
-        return restoreFood;
+        return this.restoreFood;
     }
 
     public Food setRestoreFood(int restoreFood) {
@@ -157,7 +162,7 @@ public abstract class Food {
     }
 
     public float getRestoreSaturation() {
-        return restoreSaturation;
+        return this.restoreSaturation;
     }
 
     public Food setRestoreSaturation(float restoreSaturation) {
@@ -183,5 +188,4 @@ public abstract class Food {
             this.plugin = plugin;
         }
     }
-
 }
