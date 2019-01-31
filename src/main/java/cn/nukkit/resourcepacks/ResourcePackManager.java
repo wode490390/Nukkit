@@ -2,7 +2,6 @@ package cn.nukkit.resourcepacks;
 
 import cn.nukkit.Server;
 import com.google.common.io.Files;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ResourcePackManager {
+
     private ResourcePack[] resourcePacks;
-    private Map<String, ResourcePack> resourcePacksById = new HashMap<String, ResourcePack>();
+    private Map<String, ResourcePack> resourcePacksById = new HashMap<>();
 
     public ResourcePackManager(File path) {
         if (!path.exists()) {
@@ -60,5 +60,9 @@ public class ResourcePackManager {
 
     public ResourcePack getPackById(String id) {
         return this.resourcePacksById.get(id.toLowerCase());
+    }
+
+    public Map<String, ResourcePack> getResourcePacksMap() {
+        return resourcePacksById;
     }
 }
