@@ -245,6 +245,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected BlockVector3 lastTouchPosition; //TODO: hack client spam
     protected long lastTouch;
 
+    protected Map<String, ResourcePack> resourcePacks;
+    protected Map<String, ResourcePack> behaviourPacks;
+    protected boolean forceResources = false;
+
     public int getStartActionTick() {
         return startAction;
     }
@@ -2050,9 +2054,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.forceMovement = this.teleportPosition = this.getPosition();
 
+        PlayerRequestResourcePackEvent resourcePackEvent = new PlayerRequestResourcePackEvent(this, this.getServer().getResourcePackManager().getResourcePacksMap(), new HashMap<>(), this.getServer().getForceResources());
+        this.getServer().getPluginManager().callEvent(resourcePackEvent);
+        this.resourcePacks = resourcePackEvent.getResourcePacks();
+        this.behaviourPacks = resourcePackEvent.getResourcePacks();
+        this.forceResources = resourcePackEvent.isMustAccept();
+
         ResourcePacksInfoPacket infoPacket = new ResourcePacksInfoPacket();
-        infoPacket.resourcePackEntries = this.server.getResourcePackManager().getResourceStack();
-        infoPacket.mustAccept = this.server.getForceResources();
+        infoPacket.resourcePackEntries = this.resourcePacks.values().toArray(new ResourcePack[0]);
+        infoPacket.behaviourPackEntries = this.behaviourPacks.values().toArray(new ResourcePack[0]);
+        infoPacket.mustAccept = this.forceResources;
         this.dataPacket(infoPacket);
     }
 
@@ -2264,7 +2275,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             break;
                         case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
                             for (ResourcePackClientResponsePacket.Entry entry : responsePacket.packIds) {
-                                ResourcePack resourcePack = this.server.getResourcePackManager().getPackById(entry.uuid);
+                                ResourcePack resourcePack = this.resourcePacks.getOrDefault(id, this.behaviourPacks.get(id));
                                 if (resourcePack == null) {
                                     this.close("", "disconnectionScreen.resourcePack");
                                     break;
@@ -2281,8 +2292,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             break;
                         case ResourcePackClientResponsePacket.STATUS_HAVE_ALL_PACKS:
                             ResourcePackStackPacket stackPacket = new ResourcePackStackPacket();
-                            stackPacket.mustAccept = this.server.getForceResources();
-                            stackPacket.resourcePackStack = this.server.getResourcePackManager().getResourceStack();
+                            stackPacket.mustAccept = this.forceResources;
+                            stackPacket.resourcePackStack = this.resourcePacks.values().toArray(new ResourcePack[0]);
+                            stackPacket.behaviourPackStack = this.behaviourPacks.values().toArray(new ResourcePack[0]);
                             stackPacket.isExperimental = this.getServer().isExperimentalAllowed();
                             this.dataPacket(stackPacket);
                             break;
@@ -2297,7 +2309,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     break;
                 case ProtocolInfo.RESOURCE_PACK_CHUNK_REQUEST_PACKET:
                     ResourcePackChunkRequestPacket requestPacket = (ResourcePackChunkRequestPacket) packet;
-                    ResourcePack resourcePack = this.server.getResourcePackManager().getPackById(requestPacket.packId);
+                    ResourcePack resourcePack = this.resourcePacks.getOrDefault(requestPacket.packId, this.behaviourPacks.get(requestPacket.packId));
                     if (resourcePack == null) {
                         this.close("", "disconnectionScreen.resourcePack");
                         break;
@@ -4916,5 +4928,17 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         ShowProfilePacket pk = new ShowProfilePacket();
         pk.xuid = xuid;
         this.dataPacket(pk);
+    }
+
+    public Map<String, ResourcePack> getResourcePacks() {
+        return this.resourcePacks;
+    }
+
+    public Map<String, ResourcePack> getBehaviourPacks() {
+        return this.behaviourPacks;
+    }
+
+    public boolean isForceResources() {
+        return this.forceResources;
     }
 }
