@@ -7,7 +7,7 @@ import cn.nukkit.item.ItemTool;
 /**
  * Created by CreeperFace on 26. 11. 2016.
  */
-public class BlockDoubleSlabRedSandstone extends BlockSolidMeta {
+public class BlockDoubleSlabRedSandstone extends BlockDoubleSlab {
 
     public BlockDoubleSlabRedSandstone() {
         this(0);
@@ -20,16 +20,6 @@ public class BlockDoubleSlabRedSandstone extends BlockSolidMeta {
     @Override
     public int getId() {
         return DOUBLE_RED_SANDSTONE_SLAB;
-    }
-
-    @Override
-    public double getResistance() {
-        return 30;
-    }
-
-    @Override
-    public double getHardness() {
-        return 2;
     }
 
     @Override
@@ -50,19 +40,19 @@ public class BlockDoubleSlabRedSandstone extends BlockSolidMeta {
                 ""
         };
 
-        return "Double " + names[this.getDamage() & 0x07] + " Slab";
+        return "Double " + names[this.getDamage() & 0x7] + " Slab";
     }
 
     @Override
     public Item toItem() {
-        return new ItemBlock(new BlockSlabRedSandstone(), this.getDamage() & 0x07);
+        return new ItemBlock(new BlockSlabRedSandstone(), this.getDamage() & 0x7);
     }
 
     @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    Item.get(Item.RED_SANDSTONE_SLAB, this.getDamage() & 0x07, 2)
+                    Item.get(Item.RED_SANDSTONE_SLAB, this.getDamage() & 0x7, 2)
             };
         } else {
             return new Item[0];
