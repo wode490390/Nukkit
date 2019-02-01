@@ -4,9 +4,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDye;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.math.NukkitRandom;
-
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -15,8 +12,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class BlockOreLapis extends BlockSolid {
 
-
     public BlockOreLapis() {
+
     }
 
     @Override
@@ -40,13 +37,18 @@ public class BlockOreLapis extends BlockSolid {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_STONE;
+    }
+
+    @Override
     public String getName() {
         return "Lapis Lazuli Ore";
     }
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_STONE) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             int count = 4 + ThreadLocalRandom.current().nextInt(5);
             Enchantment fortune = item.getEnchantment(Enchantment.ID_FORTUNE_DIGGING);
             if (fortune != null && fortune.getLevel() >= 1) {
@@ -60,7 +62,7 @@ public class BlockOreLapis extends BlockSolid {
             }
 
             return new Item[]{
-                    new ItemDye(4, new Random().nextInt(4) + 4)
+                    Item.get(Item.DYE, ItemDye.LIGHT_BLUE, ThreadLocalRandom.current().nextInt(4, 8))
             };
         } else {
             return new Item[0];
@@ -69,7 +71,7 @@ public class BlockOreLapis extends BlockSolid {
 
     @Override
     public int getDropExp() {
-        return new NukkitRandom().nextRange(2, 5);
+        return ThreadLocalRandom.current().nextInt(2, 5);
     }
 
     @Override
