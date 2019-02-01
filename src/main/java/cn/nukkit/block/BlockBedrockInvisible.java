@@ -10,6 +10,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockBedrockInvisible extends BlockSolid {
 
     public BlockBedrockInvisible() {
+
     }
 
     @Override
@@ -29,7 +30,7 @@ public class BlockBedrockInvisible extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
