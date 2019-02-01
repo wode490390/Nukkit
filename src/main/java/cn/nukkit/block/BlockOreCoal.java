@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockOreCoal extends BlockSolid {
+public class BlockOreCoal extends BlockOre {
 
     public BlockOreCoal() {
 
@@ -22,28 +22,18 @@ public class BlockOreCoal extends BlockSolid {
     }
 
     @Override
-    public double getHardness() {
-        return 3;
-    }
-
-    @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
-    }
-
-    @Override
     public String getName() {
         return "Coal Ore";
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             int count = 1;
             Enchantment fortune = item.getEnchantment(Enchantment.ID_FORTUNE_DIGGING);
             if (fortune != null && fortune.getLevel() >= 1) {
@@ -67,11 +57,6 @@ public class BlockOreCoal extends BlockSolid {
     @Override
     public int getDropExp() {
         return ThreadLocalRandom.current().nextInt(2);
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return false;
     }
 
     @Override
