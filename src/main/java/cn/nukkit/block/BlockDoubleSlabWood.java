@@ -31,7 +31,7 @@ public class BlockDoubleSlabWood extends BlockSolidMeta {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
