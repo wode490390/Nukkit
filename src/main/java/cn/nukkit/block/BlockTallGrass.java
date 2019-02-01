@@ -2,12 +2,10 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemSeedsWheat;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -37,7 +35,7 @@ public class BlockTallGrass extends BlockFlowableMeta {
                 "Fern",
                 ""
         };
-        return names[this.getDamage() & 0x03];
+        return names[this.getDamage() & 0x3];
     }
 
     @Override
@@ -48,6 +46,16 @@ public class BlockTallGrass extends BlockFlowableMeta {
     @Override
     public boolean canBeReplaced() {
         return true;
+    }
+
+    @Override
+    public double getHardness() {
+        return 0;
+    }
+
+    @Override
+    public double getResistance() {
+        return 0;
     }
 
     @Override
@@ -100,7 +108,7 @@ public class BlockTallGrass extends BlockFlowableMeta {
             //todo enchantment
             if (dropSeeds) {
                 return new Item[]{
-                        new ItemSeedsWheat(),
+                        Item.get(Item.WHEAT_SEEDS),
                         Item.get(Item.TALL_GRASS, this.getDamage(), 1)
                 };
             } else {
@@ -112,7 +120,7 @@ public class BlockTallGrass extends BlockFlowableMeta {
 
         if (dropSeeds) {
             return new Item[]{
-                    new ItemSeedsWheat()
+                    Item.get(Item.WHEAT_SEEDS)
             };
         } else {
             return new Item[0];
