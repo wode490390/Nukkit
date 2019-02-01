@@ -36,14 +36,14 @@ import java.util.regex.Pattern;
 public class Item implements Cloneable, BlockID, ItemID {
 
     protected static String UNKNOWN_STR = "Unknown";
-    public static Class[] list = null;
+    public static Class[] list;
 
-    protected Block block = null;
+    protected Block block;
     protected final int id;
     protected int meta;
     protected boolean hasMeta = true;
     private byte[] tags = new byte[0];
-    private CompoundTag cachedNBT = null;
+    private CompoundTag cachedNBT;
     public int count;
     protected int durability = 0;
     protected String name;
@@ -348,7 +348,14 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         for (Map map : list) {
             try {
-                int id = ((int) map.get("id")) & 0xffff;
+                int rid = ((int) map.get("id"));
+
+                int tid = rid < 0 ? 0xff - rid : rid;
+                if (rid <= 0xff && (Block.experimental[tid] && !server.isExperimentalAllowed() || Block.education[tid] && !server.isEducationAllowed())) {
+                    continue;
+                }
+
+                int id = rid & 0xffff;
                 int damage = ((int) map.getOrDefault("damage", 0)) & 0xffff;
                 String hex = (String) map.get("nbt_hex");
                 byte[] nbt = hex != null ? Utils.parseHexBinary(hex) : new byte[0];
