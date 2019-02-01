@@ -10,6 +10,7 @@ import cn.nukkit.item.ItemTool;
 public class BlockOreGold extends BlockSolid {
 
     public BlockOreGold() {
+
     }
 
     @Override
@@ -24,7 +25,7 @@ public class BlockOreGold extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
