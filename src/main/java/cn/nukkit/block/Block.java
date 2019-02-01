@@ -452,6 +452,10 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         return ItemTool.TYPE_NONE;
     }
 
+    public int getToolHarvestLevel() {
+        return 0;
+    }
+
     public double getFrictionFactor() {
         return 0.6;
     }
