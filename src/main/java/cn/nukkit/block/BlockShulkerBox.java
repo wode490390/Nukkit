@@ -13,7 +13,6 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.DyeColor;
-
 import java.util.Map;
 
 /**
@@ -46,12 +45,12 @@ public class BlockShulkerBox extends BlockTransparentMeta {
 
     @Override
     public double getHardness() {
-        return 6;
+        return 2;
     }
 
     @Override
     public double getResistance() {
-        return 30;
+        return 10;
     }
 
     @Override
