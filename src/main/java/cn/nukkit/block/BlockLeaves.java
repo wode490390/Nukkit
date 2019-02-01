@@ -215,9 +215,4 @@ public class BlockLeaves extends BlockTransparentMeta {
     public boolean diffusesSkyLight() {
         return true;
     }
-
-    @Override
-    public int getLightFilter() {
-        return 1;
-    }
 }
