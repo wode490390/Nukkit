@@ -28,7 +28,7 @@ public class BlockBedrock extends BlockSolidMeta {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
