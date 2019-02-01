@@ -28,18 +28,21 @@ import java.util.Optional;
  * Nukkit Project
  */
 public abstract class Block extends Position implements Metadatable, Cloneable, AxisAlignedBB, BlockID {
-    public static Class[] list = null;
-    public static Block[] fullList = null;
-    public static int[] light = null;
-    public static int[] lightFilter = null;
-    public static boolean[] solid = null;
-    public static double[] hardness = null;
-    public static boolean[] transparent = null;
-    public static boolean[] diffusesSkyLight = null;
+
+    public static Class[] list;
+    public static Block[] fullList;
+    public static int[] light;
+    public static int[] lightFilter;
+    public static boolean[] solid;
+    public static double[] hardness;
+    public static boolean[] transparent;
+    public static boolean[] diffusesSkyLight;
+    public static boolean[] experimental;
+    public static boolean[] education;
     /**
      * if a block has can have variants
      */
-    public static boolean[] hasMeta = null;
+    public static boolean[] hasMeta;
 
     protected Block() {}
 
@@ -55,6 +58,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             transparent = new boolean[512];
             diffusesSkyLight = new boolean[512];
             hasMeta = new boolean[512];
+            experimental = new boolean[512];
+            education = new boolean[512];
 
             list[AIR] = BlockAir.class; //0
             list[STONE] = BlockStone.class; //1
@@ -336,6 +341,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
                     light[id] = block.getLightLevel();
                     diffusesSkyLight[id] = block.diffusesSkyLight();
                     lightFilter[id] = block.getLightFilter() + 1;
+                    experimental[id] = block.isExperimental();
+                    education[id] = block.isEducation();
                 } else {
                     for (int data = 0; data < 16; ++data) {
                         fullList[(id << 4) | data] = new BlockUnknown(id, data);
