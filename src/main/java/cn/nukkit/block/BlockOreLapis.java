@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockOreLapis extends BlockSolid {
+public class BlockOreLapis extends BlockOre {
 
     public BlockOreLapis() {
 
@@ -19,21 +19,6 @@ public class BlockOreLapis extends BlockSolid {
     @Override
     public int getId() {
         return LAPIS_ORE;
-    }
-
-    @Override
-    public double getHardness() {
-        return 3;
-    }
-
-    @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
@@ -72,11 +57,6 @@ public class BlockOreLapis extends BlockSolid {
     @Override
     public int getDropExp() {
         return ThreadLocalRandom.current().nextInt(2, 5);
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return false;
     }
 
     @Override
