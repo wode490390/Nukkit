@@ -5,9 +5,7 @@ import cn.nukkit.item.ItemRedstone;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
-import cn.nukkit.math.NukkitRandom;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -16,6 +14,7 @@ import java.util.Random;
 public class BlockOreRedstone extends BlockSolid {
 
     public BlockOreRedstone() {
+
     }
 
     @Override
@@ -30,12 +29,17 @@ public class BlockOreRedstone extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_IRON;
     }
 
     @Override
@@ -45,12 +49,12 @@ public class BlockOreRedstone extends BlockSolid {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_IRON) {
-            int count = new Random().nextInt(2) + 4;
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
+            int count = ThreadLocalRandom.current().nextInt(4, 5);
 
             Enchantment fortune = item.getEnchantment(Enchantment.ID_FORTUNE_DIGGING);
             if (fortune != null && fortune.getLevel() >= 1) {
-                count += new Random().nextInt(fortune.getLevel() + 1);
+                count += ThreadLocalRandom.current().nextInt(1, fortune.getLevel());
             }
 
             return new Item[]{
@@ -74,7 +78,7 @@ public class BlockOreRedstone extends BlockSolid {
 
     @Override
     public int getDropExp() {
-        return new NukkitRandom().nextRange(1, 5);
+        return ThreadLocalRandom.current().nextInt(1, 5);
     }
 
     @Override
