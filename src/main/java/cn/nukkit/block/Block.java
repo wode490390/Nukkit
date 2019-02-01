@@ -347,6 +347,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
                     for (int data = 0; data < 16; ++data) {
                         fullList[(id << 4) | data] = new BlockUnknown(id, data);
                     }
+                    experimental[id] = false;
+                    education[id] = false;
                 }
             }
         }
