@@ -12,15 +12,14 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
-
 import java.util.Map;
 
 /**
  * @author Reece Mackie
  */
-public class BlockUndyedShulkerBox extends BlockTransparent {
+public class BlockShulkerBoxUndyed extends BlockTransparent {
 
-    public BlockUndyedShulkerBox() {
+    public BlockShulkerBoxUndyed() {
 
     }
 
@@ -41,12 +40,12 @@ public class BlockUndyedShulkerBox extends BlockTransparent {
 
     @Override
     public double getHardness() {
-        return 6;
+        return 2;
     }
 
     @Override
     public double getResistance() {
-        return 30;
+        return 10;
     }
 
     @Override
