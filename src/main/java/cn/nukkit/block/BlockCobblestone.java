@@ -10,6 +10,7 @@ import cn.nukkit.item.ItemTool;
 public class BlockCobblestone extends BlockSolid {
 
     public BlockCobblestone() {
+
     }
 
     @Override
@@ -24,7 +25,7 @@ public class BlockCobblestone extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 30;
+        return 10;
     }
 
     @Override
