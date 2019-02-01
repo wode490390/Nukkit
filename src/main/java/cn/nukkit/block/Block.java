@@ -433,11 +433,15 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     public double getHardness() {
-        return 10;
+        return 0;
     }
 
     public double getResistance() {
-        return 1;
+        return this.getHardness() * 5d;
+    }
+
+    public double getExplosionResistance() {
+        return this.getResistance() / 5d;
     }
 
     public int getBurnChance() {
