@@ -4,8 +4,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDiamond;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.math.NukkitRandom;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -14,8 +12,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class BlockOreDiamond extends BlockSolid {
 
-
     public BlockOreDiamond() {
+
     }
 
     @Override
@@ -30,7 +28,7 @@ public class BlockOreDiamond extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
@@ -68,7 +66,7 @@ public class BlockOreDiamond extends BlockSolid {
 
     @Override
     public int getDropExp() {
-        return new NukkitRandom().nextRange(3, 7);
+        return ThreadLocalRandom.current().nextInt(3, 7);
     }
 
     @Override
