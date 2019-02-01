@@ -4,8 +4,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemCoal;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.math.NukkitRandom;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -15,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BlockOreCoal extends BlockSolid {
 
     public BlockOreCoal() {
+
     }
 
     @Override
@@ -29,7 +28,7 @@ public class BlockOreCoal extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
@@ -67,7 +66,7 @@ public class BlockOreCoal extends BlockSolid {
 
     @Override
     public int getDropExp() {
-        return new NukkitRandom().nextRange(0, 2);
+        return ThreadLocalRandom.current().nextInt(2);
     }
 
     @Override
