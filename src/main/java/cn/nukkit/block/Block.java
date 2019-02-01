@@ -984,6 +984,10 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         return false;
     }
 
+    public int getFuelTime() {
+        return 0;
+    }
+
     public boolean isExperimental() {
         return false;
     }
