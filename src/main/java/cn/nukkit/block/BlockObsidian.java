@@ -11,6 +11,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockObsidian extends BlockSolid {
 
     public BlockObsidian() {
+
     }
 
     @Override
@@ -35,7 +36,7 @@ public class BlockObsidian extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 6000;
+        return 2000;
     }
 
     @Override
