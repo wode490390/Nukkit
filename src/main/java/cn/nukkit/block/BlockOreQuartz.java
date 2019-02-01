@@ -1,7 +1,6 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemQuartz;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created on 2015/12/26 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockOreQuartz extends BlockSolid {
+public class BlockOreQuartz extends BlockOre {
 
     public BlockOreQuartz() {
 
@@ -24,21 +23,6 @@ public class BlockOreQuartz extends BlockSolid {
     @Override
     public int getId() {
         return QUARTZ_ORE;
-    }
-
-    @Override
-    public double getHardness() {
-        return 3;
-    }
-
-    @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
@@ -72,11 +56,6 @@ public class BlockOreQuartz extends BlockSolid {
     @Override
     public int getDropExp() {
         return ThreadLocalRandom.current().nextInt(2, 5);
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return false;
     }
 
     @Override
