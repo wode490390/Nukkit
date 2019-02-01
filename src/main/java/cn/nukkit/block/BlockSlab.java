@@ -35,7 +35,7 @@ public abstract class BlockSlab extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return getToolType() < ItemTool.TYPE_AXE ? 30 : 15;
+        return this.getToolType() < ItemTool.TYPE_AXE ? 10 : 5;
     }
 
     @Override
