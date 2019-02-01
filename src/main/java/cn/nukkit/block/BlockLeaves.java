@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
  * Nukkit Project
  */
 public class BlockLeaves extends BlockTransparentMeta {
+
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
     public static final int BIRCH = 2;
@@ -208,5 +209,10 @@ public class BlockLeaves extends BlockTransparentMeta {
     @Override
     public boolean diffusesSkyLight() {
         return true;
+    }
+
+    @Override
+    public int getLightFilter() {
+        return 1;
     }
 }
