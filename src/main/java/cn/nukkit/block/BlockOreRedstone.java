@@ -1,7 +1,6 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemRedstone;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Level;
@@ -11,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockOreRedstone extends BlockSolid {
+public class BlockOreRedstone extends BlockOre {
 
     public BlockOreRedstone() {
 
@@ -20,21 +19,6 @@ public class BlockOreRedstone extends BlockSolid {
     @Override
     public int getId() {
         return REDSTONE_ORE;
-    }
-
-    @Override
-    public double getHardness() {
-        return 3;
-    }
-
-    @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
@@ -58,7 +42,7 @@ public class BlockOreRedstone extends BlockSolid {
             }
 
             return new Item[]{
-                    new ItemRedstone(0, count)
+                    Item.get(Item.REDSTONE, 0, count)
             };
         } else {
             return new Item[0];
@@ -79,11 +63,6 @@ public class BlockOreRedstone extends BlockSolid {
     @Override
     public int getDropExp() {
         return ThreadLocalRandom.current().nextInt(1, 5);
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return false;
     }
 
     @Override
