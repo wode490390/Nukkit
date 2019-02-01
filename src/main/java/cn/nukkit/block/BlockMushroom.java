@@ -13,10 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class BlockMushroom extends BlockFlowable {
 
-    public BlockMushroom() {
-
-    }
-
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
@@ -41,6 +37,16 @@ public abstract class BlockMushroom extends BlockFlowable {
     @Override
     public boolean canBeActivated() {
         return true;
+    }
+
+    @Override
+    public double getHardness() {
+        return 0;
+    }
+
+    @Override
+    public double getResistance() {
+        return 0;
     }
 
     @Override
