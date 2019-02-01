@@ -12,7 +12,6 @@ import cn.nukkit.utils.BlockColor;
  */
 public class BlockWater extends BlockLiquid {
 
-
     public BlockWater() {
         this(0);
     }
@@ -70,6 +69,6 @@ public class BlockWater extends BlockLiquid {
 
     @Override
     public int getLightFilter() {
-        return 1;
+        return 2;
     }
 }
