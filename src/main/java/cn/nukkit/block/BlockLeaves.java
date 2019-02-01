@@ -46,6 +46,11 @@ public class BlockLeaves extends BlockTransparentMeta {
     }
 
     @Override
+    public double getResistance() {
+        return 1;
+    }
+
+    @Override
     public int getToolType() {
         return ItemTool.TYPE_SHEARS;
     }
