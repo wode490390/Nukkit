@@ -2,12 +2,10 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemStick;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created on 2015/12/2 by xtypr.
@@ -32,6 +30,16 @@ public class BlockDeadBush extends BlockFlowable {
     @Override
     public boolean canBeReplaced() {
         return true;
+    }
+
+    @Override
+    public double getHardness() {
+        return 0;
+    }
+
+    @Override
+    public double getResistance() {
+        return 0;
     }
 
     @Override
@@ -61,11 +69,11 @@ public class BlockDeadBush extends BlockFlowable {
     public Item[] getDrops(Item item) {
         if (item.isShears()) {
             return new Item[]{
-                    toItem()
+                    this.toItem()
             };
         } else {
             return new Item[]{
-                    new ItemStick(0, new Random().nextInt(3))
+                    Item.get(Item.STICK, 0, ThreadLocalRandom.current().nextInt(3))
             };
         }
     }
