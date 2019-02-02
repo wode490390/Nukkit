@@ -20,6 +20,21 @@ public class ItemIceBomb extends Item {
     }
 
     @Override
+    public int getCooldownTicks() {
+        return 20;
+    }
+
+    //@Override
+    //public String getProjectileEntityType() {
+    //    return "IceBomb";
+    //}
+
+    @Override
+    public float getThrowForce() {
+        return 1.5f;
+    }
+
+    @Override
     public boolean isEducation() {
         return true;
     }
