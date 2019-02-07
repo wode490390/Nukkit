@@ -9,6 +9,7 @@ import cn.nukkit.event.entity.EntityDamageEvent.DamageModifier;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.PlayerEnderChestInventory;
 import cn.nukkit.inventory.PlayerInventory;
+import cn.nukkit.inventory.PlayerOffhandInventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -24,6 +25,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
 
     protected PlayerInventory inventory;
     protected PlayerEnderChestInventory enderChestInventory;
+    protected PlayerOffhandInventory offhandInventory;
 
     public EntityHumanType(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -36,6 +38,10 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
 
     public PlayerEnderChestInventory getEnderChestInventory() {
         return enderChestInventory;
+    }
+
+    public PlayerOffhandInventory getOffhandInventory() {
+        return this.offhandInventory;
     }
 
     @Override
@@ -51,6 +57,8 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                     inventoryList.remove(item);
                 } else if (slot >= 100 && slot < 104) {
                     this.inventory.setItem(this.inventory.getSize() + slot - 100, NBTIO.getItemHelper(item));
+                } else if (slot == -106) {
+                    this.offhandInventory.setItem(0, NBTIO.getItemHelper(item));
                 } else {
                     this.inventory.setItem(slot - 9, NBTIO.getItemHelper(item));
                 }
@@ -96,6 +104,12 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                 if (item != null && item.getId() != Item.AIR) {
                     this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, slot));
                 }
+            }
+        }
+        if (this.offhandInventory != null) {
+            Item item = this.offhandInventory.getItem(0);
+            if (item != null && item.getId() != Item.AIR) {
+                this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, -106));
             }
         }
 
