@@ -3,9 +3,9 @@ package cn.nukkit.level.generator.noise.bukkit;
 public abstract class OctaveGenerator {
 
     protected final NoiseGenerator[] octaves;
-    protected double xScale = 1.0d;
-    protected double yScale = 1.0d;
-    protected double zScale = 1.0d;
+    protected double xScale = 1;
+    protected double yScale = 1;
+    protected double zScale = 1;
 
     protected OctaveGenerator(NoiseGenerator[] octaves) {
         this.octaves = octaves;
@@ -46,19 +46,19 @@ public abstract class OctaveGenerator {
     }
 
     public double noise(double x, double frequency, double amplitude) {
-        return this.noise(x, 0.0d, 0.0d, frequency, amplitude);
+        return this.noise(x, 0, 0, frequency, amplitude);
     }
 
     public double noise(double x, double frequency, double amplitude, boolean normalized) {
-        return this.noise(x, 0.0d, 0.0d, frequency, amplitude, normalized);
+        return this.noise(x, 0, 0, frequency, amplitude, normalized);
     }
 
     public double noise(double x, double y, double frequency, double amplitude) {
-        return this.noise(x, y, 0.0d, frequency, amplitude);
+        return this.noise(x, y, 0, frequency, amplitude);
     }
 
     public double noise(double x, double y, double frequency, double amplitude, boolean normalized) {
-        return this.noise(x, y, 0.0d, frequency, amplitude, normalized);
+        return this.noise(x, y, 0, frequency, amplitude, normalized);
     }
 
     public double noise(double x, double y, double z, double frequency, double amplitude) {
@@ -66,10 +66,10 @@ public abstract class OctaveGenerator {
     }
 
     public double noise(double x, double y, double z, double frequency, double amplitude, boolean normalized) {
-        double result = 0.0d;
-        double amp = 1.0d;
-        double freq = 1.0d;
-        double max = 0.0d;
+        double result = 0;
+        double amp = 1;
+        double freq = 1;
+        double max = 0;
 
         x *= this.xScale;
         y *= this.yScale;

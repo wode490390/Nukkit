@@ -51,15 +51,15 @@ public class QueryRegenerateEvent extends ServerEvent {
     public QueryRegenerateEvent(Server server, int timeout) {
         this.timeout = timeout;
         this.serverName = server.getMotd();
-        this.listPlugins = (boolean) server.getConfig("settings.query-plugins", true);
-        this.plugins = server.getPluginManager().getPlugins().values().toArray(new Plugin[server.getPluginManager().getPlugins().values().size()]);
+        this.listPlugins = server.getConfig("settings.query-plugins", true);
+        this.plugins = server.getPluginManager().getPlugins().values().toArray(new Plugin[0]);
         List<Player> players = new ArrayList<>();
         for (Player player : server.getOnlinePlayers().values()) {
             if (player.isOnline()) {
                 players.add(player);
             }
         }
-        this.players = players.toArray(new Player[players.size()]);
+        this.players = players.toArray(new Player[0]);
 
         this.gameType = (server.getGamemode() & 0x01) == 0 ? "SMP" : "CMP";
         this.version = server.getVersion();
@@ -222,5 +222,4 @@ public class QueryRegenerateEvent extends ServerEvent {
         }
         return query.toByteArray();
     }
-
 }

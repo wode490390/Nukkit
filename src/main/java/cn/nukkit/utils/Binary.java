@@ -5,7 +5,6 @@ import cn.nukkit.entity.data.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.NukkitMath;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -395,7 +394,7 @@ public class Binary {
     }
 
     public static String bytesToHexString(byte[] src, boolean blank) {
-        StringBuilder stringBuilder = new StringBuilder("");
+        StringBuilder stringBuilder = new StringBuilder();
         if (src == null || src.length <= 0) {
             return null;
         }
@@ -492,6 +491,4 @@ public class Binary {
         }
         return buffer.array();
     }
-
-
 }

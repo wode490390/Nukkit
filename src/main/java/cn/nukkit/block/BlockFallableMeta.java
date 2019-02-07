@@ -9,10 +9,6 @@ import cn.nukkit.nbt.tag.ListTag;
 
 public abstract class BlockFallableMeta extends BlockSolidMeta {
 
-    protected BlockFallableMeta(int meta) {
-        super(meta);
-    }
-
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {

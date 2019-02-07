@@ -61,63 +61,63 @@ public class BlockTrapdoor extends BlockTransparentMeta {
         for (int damage = 0; damage < 16; damage++) {
             AxisAlignedBB bb;
             double f = 0.1875;
-            if ((damage & 0x08) > 0) {
+            if ((damage & 0x8) > 0) {
                 bb = new SimpleAxisAlignedBB(
                         0,
-                        0 + 1 - f,
+                        1 - f,
                         0,
-                        0 + 1,
-                        0 + 1,
-                        0 + 1
+                        1,
+                        1,
+                        1
                 );
             } else {
                 bb = new SimpleAxisAlignedBB(
                         0,
                         0,
                         0,
-                        0 + 1,
-                        0 + f,
-                        0 + 1
+                        1,
+                        f,
+                        1
                 );
             }
-            if ((damage & 0x04) > 0) {
-                if ((damage & 0x03) == 0) {
+            if ((damage & 0x4) > 0) {
+                if ((damage & 0x3) == 0) {
                     bb.setBounds(
                             0,
                             0,
-                            0 + 1 - f,
-                            0 + 1,
-                            0 + 1,
-                            0 + 1
+                            1 - f,
+                            1,
+                            1,
+                            1
                     );
-                } else if ((damage & 0x03) == 1) {
+                } else if ((damage & 0x3) == 1) {
                     bb.setBounds(
                             0,
                             0,
                             0,
-                            0 + 1,
-                            0 + 1,
-                            0 + f
-                    );
-                }
-                if ((damage & 0x03) == 2) {
-                    bb.setBounds(
-                            0 + 1 - f,
-                            0,
-                            0,
-                            0 + 1,
-                            0 + 1,
-                            0 + 1
+                            1,
+                            1,
+                            f
                     );
                 }
-                if ((damage & 0x03) == 3) {
+                if ((damage & 0x3) == 2) {
+                    bb.setBounds(
+                            1 - f,
+                            0,
+                            0,
+                            1,
+                            1,
+                            1
+                    );
+                }
+                if ((damage & 0x3) == 3) {
                     bb.setBounds(
                             0,
                             0,
                             0,
-                            0 + f,
-                            0 + 1,
-                            0 + 1
+                            f,
+                            1,
+                            1
                     );
                 }
             }
@@ -164,7 +164,7 @@ public class BlockTrapdoor extends BlockTransparentMeta {
         if (type == Level.BLOCK_UPDATE_REDSTONE) {
             if ((!isOpen() && this.level.isBlockPowered(this.getLocation())) || (isOpen() && !this.level.isBlockPowered(this.getLocation()))) {
                 this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, isOpen() ? 15 : 0, isOpen() ? 0 : 15));
-                this.setDamage(this.getDamage() ^ 0x08);
+                this.setDamage(this.getDamage() ^ 0x8);
                 this.level.setBlock(this, this, true);
                 this.level.addSound(this, isOpen() ? Sound.RANDOM_DOOR_OPEN : Sound.RANDOM_DOOR_CLOSE);
                 return type;
@@ -193,7 +193,7 @@ public class BlockTrapdoor extends BlockTransparentMeta {
         this.setDamage(this.getDamage() | faceBit);
 
         if (top) {
-            this.setDamage(this.getDamage() | 0x04);
+            this.setDamage(this.getDamage() | 0x4);
         }
 
         this.getLevel().setBlock(block, this, true, true);
@@ -207,7 +207,7 @@ public class BlockTrapdoor extends BlockTransparentMeta {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        this.setDamage(this.getDamage() ^ 0x08);
+        this.setDamage(this.getDamage() ^ 0x8);
         this.level.setBlock(this, this, true);
         this.level.addSound(this, isOpen() ? Sound.RANDOM_DOOR_OPEN : Sound.RANDOM_DOOR_CLOSE);
         return true;
@@ -219,7 +219,7 @@ public class BlockTrapdoor extends BlockTransparentMeta {
     }
 
     public BlockFace getFacing() {
-        switch (this.getDamage() & 0x03) {
+        switch (this.getDamage() & 0x3) {
             case 0:
                 return BlockFace.NORTH;
             case 1:
@@ -233,10 +233,10 @@ public class BlockTrapdoor extends BlockTransparentMeta {
     }
 
     public boolean isOpen() {
-        return (this.getDamage() & 0x08) != 0;
+        return (this.getDamage() & 0x8) != 0;
     }
 
     public boolean isTop() {
-        return (this.getDamage() & 0x04) != 0;
+        return (this.getDamage() & 0x4) != 0;
     }
 }

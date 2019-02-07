@@ -8,7 +8,6 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.BoneMealParticle;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -16,10 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * Nukkit Project
  */
 public abstract class BlockCrops extends BlockFlowableMeta {
-
-    protected BlockCrops(int meta) {
-        super(meta);
-    }
 
     @Override
     public boolean canBeActivated() {

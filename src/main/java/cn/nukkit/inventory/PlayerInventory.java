@@ -15,7 +15,6 @@ import cn.nukkit.network.protocol.InventorySlotPacket;
 import cn.nukkit.network.protocol.MobArmorEquipmentPacket;
 import cn.nukkit.network.protocol.MobEquipmentPacket;
 import cn.nukkit.network.protocol.types.ContainerIds;
-
 import java.util.Collection;
 
 /**
@@ -160,7 +159,7 @@ public class PlayerInventory extends BaseInventory {
     }
 
     public void sendHeldItem(Collection<Player> players) {
-        this.sendHeldItem(players.stream().toArray(Player[]::new));
+        this.sendHeldItem(players.toArray(new Player[0]));
     }
 
     @Override
@@ -368,7 +367,7 @@ public class PlayerInventory extends BaseInventory {
     }
 
     public void sendArmorContents(Collection<Player> players) {
-        this.sendArmorContents(players.stream().toArray(Player[]::new));
+        this.sendArmorContents(players.toArray(new Player[0]));
     }
 
     public void sendArmorSlot(int index, Player player) {
@@ -398,7 +397,7 @@ public class PlayerInventory extends BaseInventory {
     }
 
     public void sendArmorSlot(int index, Collection<Player> players) {
-        this.sendArmorSlot(index, players.stream().toArray(Player[]::new));
+        this.sendArmorSlot(index, players.toArray(new Player[0]));
     }
 
     @Override
@@ -408,7 +407,7 @@ public class PlayerInventory extends BaseInventory {
 
     @Override
     public void sendContents(Collection<Player> players) {
-        this.sendContents(players.stream().toArray(Player[]::new));
+        this.sendContents(players.toArray(new Player[0]));
     }
 
     @Override
@@ -445,7 +444,7 @@ public class PlayerInventory extends BaseInventory {
 
     @Override
     public void sendSlot(int index, Collection<Player> players) {
-        this.sendSlot(index, players.stream().toArray(Player[]::new));
+        this.sendSlot(index, players.toArray(new Player[0]));
     }
 
     @Override
@@ -480,7 +479,7 @@ public class PlayerInventory extends BaseInventory {
         pk.windowId = ContainerIds.CREATIVE;
 
         if (!p.isSpectator()) { //fill it for all gamemodes except spectator
-            pk.items = Item.getCreativeItems().stream().toArray(Item[]::new);
+            pk.items = Item.getCreativeItems().toArray(new Item[0]);
         }
 
         p.dataPacket(pk);

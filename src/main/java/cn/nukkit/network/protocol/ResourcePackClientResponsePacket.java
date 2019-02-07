@@ -1,5 +1,7 @@
 package cn.nukkit.network.protocol;
 
+import java.util.UUID;
+
 public class ResourcePackClientResponsePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_CLIENT_RESPONSE_PACKET;
@@ -18,7 +20,7 @@ public class ResourcePackClientResponsePacket extends DataPacket {
         this.packIds = new Entry[this.getLShort()];
         for (int i = 0; i < this.packIds.length; i++) {
             String[] entry = this.getString().split("_");
-            this.packIds[i] = new Entry(entry[0], entry[1]);
+            this.packIds[i] = new Entry(UUID.fromString(entry[0]), entry[1]);
         }
     }
 
@@ -38,10 +40,10 @@ public class ResourcePackClientResponsePacket extends DataPacket {
     }
 
     public static class Entry {
-        public final String uuid;
+        public final UUID uuid;
         public final String version;
 
-        public Entry(String uuid, String version) {
+        public Entry(UUID uuid, String version) {
             this.uuid = uuid;
             this.version = version;
         }

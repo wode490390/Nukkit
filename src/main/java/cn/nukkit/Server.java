@@ -79,7 +79,6 @@ import cn.nukkit.utils.*;
 import cn.nukkit.utils.bugreport.ExceptionHandler;
 import co.aikar.timings.Timings;
 import com.google.common.base.Preconditions;
-
 import java.io.*;
 import java.nio.ByteOrder;
 import java.util.*;
@@ -388,7 +387,11 @@ public class Server {
         this.scheduler = new ServerScheduler();
 
         if (this.getPropertyBoolean("enable-rcon", false)) {
-            this.rcon = new RCON(this, this.getPropertyString("rcon.password", ""), (!this.getIp().equals("")) ? this.getIp() : "0.0.0.0", this.getPropertyInt("rcon.port", this.getPort()));
+            try {
+                this.rcon = new RCON(this, this.getPropertyString("rcon.password", ""), (!this.getIp().equals("")) ? this.getIp() : "0.0.0.0", this.getPropertyInt("rcon.port", this.getPort()));
+            } catch (IllegalArgumentException e) {
+                this.logger.critical(getLanguage().translateString(e.getMessage(), e.getCause().getMessage()));
+            }
         }
 
         this.entityMetadata = new EntityMetadataStore();
@@ -971,10 +974,7 @@ public class Server {
     }
 
     public void updatePlayerListData(UUID uuid, long entityId, String name, Skin skin, String xboxUserId, Collection<Player> players) {
-        this.updatePlayerListData(uuid, entityId, name, skin, xboxUserId,
-                players.stream()
-                        .filter(p -> !p.getUniqueId().equals(uuid))
-                        .toArray(Player[]::new));
+        this.updatePlayerListData(uuid, entityId, name, skin, xboxUserId, players.stream().filter(p -> !p.getUniqueId().equals(uuid)).toArray(Player[]::new));
     }
 
     public void removePlayerListData(UUID uuid) {
@@ -2018,9 +2018,7 @@ public class Server {
                 String key = (String) entry.getKey();
                 Object value = entry.getValue();
                 if (value instanceof List) {
-                    for (String string : (List<String>) value) {
-                        commands.add(string);
-                    }
+                    commands.addAll((List<String>) value);
                 } else {
                     commands.add((String) value);
                 }
@@ -2172,7 +2170,7 @@ public class Server {
         BlockEntity.registerBlockEntity(BlockEntity.JUKEBOX, BlockEntityJukebox.class);
         //BlockEntity.registerBlockEntity(BlockEntity.MOB_SPAWNER, BlockEntityMobSpawner.class);
         BlockEntity.registerBlockEntity(BlockEntity.MOVING_BLOCK, BlockEntityMovingBlock.class);
-        BlockEntity.registerBlockEntity(BlockEntity.MUSIC, BlockEntityNoteBlock.class);
+        BlockEntity.registerBlockEntity(BlockEntity.MUSIC, BlockEntityMusic.class);
         BlockEntity.registerBlockEntity(BlockEntity.PISTON_ARM, BlockEntityPistonArm.class);
         BlockEntity.registerBlockEntity(BlockEntity.SHULKER_BOX, BlockEntityShulkerBox.class);
         BlockEntity.registerBlockEntity(BlockEntity.SIGN, BlockEntitySign.class);

@@ -16,14 +16,6 @@ import cn.nukkit.nbt.tag.ListTag;
  */
 public abstract class BlockRedstoneComparator extends BlockRedstoneDiode {
 
-    public BlockRedstoneComparator() {
-        this(0);
-    }
-
-    public BlockRedstoneComparator(int meta) {
-        super(meta);
-    }
-
     @Override
     protected int getDelay() {
         return 2;

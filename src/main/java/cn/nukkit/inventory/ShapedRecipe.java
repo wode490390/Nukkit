@@ -3,7 +3,6 @@ package cn.nukkit.inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.Utils;
 import io.netty.util.collection.CharObjectHashMap;
-
 import java.util.*;
 
 /**
@@ -49,8 +48,7 @@ public class ShapedRecipe implements CraftingRecipe {
 
 
         //for($shape as $y => $row) {
-        for (int y = 0; y < rowCount; y++) {
-            String row = shape[y];
+        for (String row : shape) {
 
             if (row.length() != columnCount) {
                 throw new RuntimeException("Shaped recipe rows must all have the same length (expected " + columnCount + ", got " + row.length() + ")");

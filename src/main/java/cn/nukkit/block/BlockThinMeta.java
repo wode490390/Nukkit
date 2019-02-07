@@ -6,10 +6,6 @@ import cn.nukkit.utils.LevelException;
 
 public abstract class BlockThinMeta extends BlockTransparentMeta {
 
-    protected BlockThinMeta(int meta) {
-        super(meta);
-    }
-
     @Override
     public boolean isSolid() {
         return false;

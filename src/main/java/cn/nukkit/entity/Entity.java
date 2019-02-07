@@ -472,8 +472,8 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         }
         this.fireTicks = this.namedTag.getShort("Fire", 0);
         if (this.isOnFire()) {
-			this.setGenericFlag(DATA_FLAG_ONFIRE);
-		}
+            this.setGenericFlag(DATA_FLAG_ONFIRE);
+        }
 
         if (!this.namedTag.contains("Air")) {
             this.namedTag.putShort("Air", 300);
@@ -579,14 +579,14 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public void recalculateBoundingBox() {
         double halfWidth = this.getWidth() / 2d;
 
-		this.boundingBox.setBounds(
-			this.x - halfWidth,
-			this.y,
-			this.z - halfWidth,
-			this.x + halfWidth,
-			this.y + this.height,
-			this.z + halfWidth
-		);
+        this.boundingBox.setBounds(
+            this.x - halfWidth,
+            this.y,
+            this.z - halfWidth,
+            this.x + halfWidth,
+            this.y + this.height,
+            this.z + halfWidth
+        );
     }
 
     public boolean isSneaking() {
@@ -2375,7 +2375,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void broadcastEntityEvent(int eventId, int eventData, Collection<Player> players) {
-        this.broadcastEntityEvent(eventId , eventData, players.toArray(new Player[players.size()]));
+        this.broadcastEntityEvent(eventId , eventData, players.toArray(new Player[0]));
     }
 
     public void broadcastEntityEvent(int eventId, int eventData, Player[] players) {
@@ -2391,7 +2391,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void broadcastAnimation(int animationId, Collection<Player> players) {
-        this.broadcastAnimation(animationId, players.toArray(new Player[players.size()]));
+        this.broadcastAnimation(animationId, players.toArray(new Player[0]));
     }
 
     public void broadcastAnimation(int animationId, Player[] players) {

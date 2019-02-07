@@ -8,7 +8,6 @@ import cn.nukkit.utils.completers.PlayersCompleter;
 import co.aikar.timings.Timings;
 import jline.console.ConsoleReader;
 import jline.console.CursorBuffer;
-
 import java.io.IOException;
 
 /**
@@ -56,7 +55,7 @@ public class CommandReader extends Thread implements InterruptibleThread {
     }
 
     public void run() {
-        Long lastLine = System.currentTimeMillis();
+        long lastLine = System.currentTimeMillis();
         String line;
 
         try {
@@ -122,5 +121,4 @@ public class CommandReader extends Thread implements InterruptibleThread {
             e.printStackTrace();
         }
     }
-
 }

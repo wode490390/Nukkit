@@ -2,7 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
-import cn.nukkit.blockentity.BlockEntityNoteBlock;
+import cn.nukkit.blockentity.BlockEntityMusic;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
@@ -55,26 +55,25 @@ public class BlockNoteblock extends BlockSolid {
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         this.getLevel().setBlock(block, this, true);
-        new BlockEntityNoteBlock(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
+        this.createBlockEntity();
         return true;
     }
 
     public int getStrength() {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity instanceof BlockEntityNoteBlock) {
+        if (blockEntity instanceof BlockEntityMusic) {
             return Math.abs(blockEntity.namedTag.getByte("note")) % 25;
-        } else {
-            new BlockEntityNoteBlock(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
         }
+        this.createBlockEntity();
         return 0;
     }
 
     public void increaseStrength() {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity instanceof BlockEntityNoteBlock) {
-            ((BlockEntityNoteBlock) blockEntity).changePitch();
+        if (blockEntity instanceof BlockEntityMusic) {
+            ((BlockEntityMusic) blockEntity).changePitch();
         } else {
-            new BlockEntityNoteBlock(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
+            this.createBlockEntity();
         }
     }
 
@@ -222,7 +221,9 @@ public class BlockNoteblock extends BlockSolid {
     }
 
     public void emitSound() {
-        if (this.up().getId() != AIR) return;
+        if (this.up().getId() != AIR) {
+            return;
+        }
 
         Instrument instrument = this.getInstrument();
 
@@ -234,7 +235,7 @@ public class BlockNoteblock extends BlockSolid {
         pk.eventData = this.getStrength();
         this.getLevel().addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
 
-        this.getLevel().addSound(this, instrument.getSound(), 1, (float) Math.pow(2d, (double) (this.getStrength() - 12d) / 12d));
+        this.getLevel().addSound(this, instrument.getSound(), 1, (float) Math.pow(2d, (this.getStrength() - 12d) / 12d));
         //this.getLevel().addParticle(new NoteParticle(new Vector3(this.getFloorX() + 0.5d, this.getFloorY() + 1.2d, this.getFloorZ() + 0.5d)));
     }
 
@@ -248,9 +249,15 @@ public class BlockNoteblock extends BlockSolid {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_REDSTONE) {
-            if (this.getLevel().isBlockPowered(this)) this.emitSound();
+            if (this.getLevel().isBlockPowered(this)) {
+                this.emitSound();
+            }
         }
         return 0;
+    }
+
+    private BlockEntityMusic createBlockEntity() {
+        return new BlockEntityMusic(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
     }
 
     public enum Instrument {

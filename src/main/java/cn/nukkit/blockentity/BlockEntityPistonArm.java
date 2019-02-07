@@ -15,14 +15,14 @@ import cn.nukkit.nbt.tag.ListTag;
  */
 public class BlockEntityPistonArm extends BlockEntitySpawnable {
 
-    public float progress = 1F;
+    public float progress = 1f;
     public float lastProgress = 0;
     public BlockFace facing;
     public boolean extending = false;
     public boolean sticky = false;
     public byte state = 1;
     public byte newState = 1;
-    public Vector3 attachedBlock = null;
+    public Vector3 attachedBlock;
     public boolean isMovable = true;
     public boolean powered = false;
 
@@ -74,16 +74,15 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         double x = (double) (lastProgress * (float) this.facing.getXOffset());
         double y = (double) (lastProgress * (float) this.facing.getYOffset());
         double z = (double) (lastProgress * (float) this.facing.getZOffset());
-        AxisAlignedBB bb = new SimpleAxisAlignedBB(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D);
+        AxisAlignedBB bb = new SimpleAxisAlignedBB(x, y, z, x + 1.0d, y + 1.0d, z + 1.0d);
         Entity[] entities = this.level.getCollidingEntities(bb);
         if (entities.length != 0) {
 
         }
-
     }
 
     private float getExtendedProgress(float progress) {
-        return this.extending ? progress - 1.0F : 1.0F - progress;
+        return this.extending ? progress - 1.0f : 1.0f - progress;
     }
 
     public boolean isBlockEntityValid() {

@@ -6,11 +6,9 @@ import cn.nukkit.inventory.BigCraftingGrid;
 import cn.nukkit.inventory.CraftingRecipe;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.item.Item;
-import cn.nukkit.math.NukkitMath;
 import cn.nukkit.network.protocol.ContainerClosePacket;
 import cn.nukkit.network.protocol.types.ContainerIds;
 import cn.nukkit.scheduler.Task;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,7 +46,7 @@ public class CraftingTransaction extends InventoryTransaction {
     }
 
     public void setInput(int index, Item item) {
-        int y = NukkitMath.floorDouble((double) index / this.gridSize);
+        int y = index / this.gridSize;
         int x = index % this.gridSize;
 
         if (this.inputs[y][x].isNull()) {
@@ -146,12 +144,12 @@ public class CraftingTransaction extends InventoryTransaction {
     protected void sendInventories() {
         super.sendInventories();
 
-		/*
+        /*
          * TODO: HACK!
-		 * we can't resend the contents of the crafting window, so we force the client to close it instead.
-		 * So people don't whine about messy desync issues when someone cancels CraftItemEvent, or when a crafting
-		 * transaction goes wrong.
-		 */
+         * we can't resend the contents of the crafting window, so we force the client to close it instead.
+         * So people don't whine about messy desync issues when someone cancels CraftItemEvent, or when a crafting
+         * transaction goes wrong.
+         */
         ContainerClosePacket pk = new ContainerClosePacket();
         pk.windowId = ContainerIds.NONE;
         source.getServer().getScheduler().scheduleDelayedTask(new Task() {

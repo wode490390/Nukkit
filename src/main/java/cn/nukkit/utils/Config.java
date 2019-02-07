@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -233,7 +232,7 @@ public class Config {
                 case Config.ENUM:
                     for (Object o : this.config.entrySet()) {
                         Map.Entry entry = (Map.Entry) o;
-                        content += String.valueOf(entry.getKey()) + "\r\n";
+                        content += entry.getKey() + "\r\n";
                     }
                     break;
             }
@@ -466,14 +465,14 @@ public class Config {
             if (v instanceof Boolean) {
                 v = (Boolean) v ? "on" : "off";
             }
-            content += String.valueOf(k) + "=" + String.valueOf(v) + "\r\n";
+            content += k + "=" + v + "\r\n";
         }
         return content;
     }
 
     private void parseProperties(String content) {
         for (String line : content.split("\n")) {
-            if (Pattern.compile("[a-zA-Z0-9\\-_\\.]*+=+[^\\r\\n]*").matcher(line).matches()) {
+            if (Pattern.compile("[a-zA-Z0-9\\-_.]*+=+[^\\r\\n]*").matcher(line).matches()) {
                 String[] b = line.split("=", -1);
                 String k = b[0];
                 String v = b[1].trim();

@@ -1,8 +1,6 @@
 package cn.nukkit.level;
 
 import cn.nukkit.Server;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
 
 public enum EnumLevel {
@@ -107,6 +105,6 @@ public enum EnumLevel {
     }
 
     private static final int mRound(int value, int factor) {
-        return Math.round(value / factor) * factor;
+        return Math.round((float) value / factor) * factor;
     }
 }

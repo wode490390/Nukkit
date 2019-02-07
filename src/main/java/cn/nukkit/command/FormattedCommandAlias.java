@@ -4,7 +4,6 @@ import cn.nukkit.Server;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.TextFormat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class FormattedCommandAlias extends Command {
 
     public FormattedCommandAlias(String alias, List<String> formatStrings) {
         super(alias);
-        this.formatStrings = formatStrings.toArray(new String[formatStrings.size()]);
+        this.formatStrings = formatStrings.toArray(new String[0]);
     }
 
     @Override
@@ -134,5 +133,4 @@ public class FormattedCommandAlias extends Command {
     private static boolean inRange(int i, int j, int k) {
         return i >= j && i <= k;
     }
-
 }

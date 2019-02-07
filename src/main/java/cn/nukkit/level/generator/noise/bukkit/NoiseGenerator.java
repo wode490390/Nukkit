@@ -7,16 +7,12 @@ public abstract class NoiseGenerator {
     protected double offsetY;
     protected double offsetZ;
 
-    public NoiseGenerator() {
-
-    }
-
     public static int floor(double x) {
-        return x >= 0.0d ? (int) x : (int) x - 1;
+        return x >= 0 ? (int) x : (int) x - 1;
     }
 
     protected static double fade(double x) {
-        return x * x * x * (x * (x * 6.0d - 15.0d) + 10.0d);
+        return x * x * x * (x * (x * 6 - 15) + 10);
     }
 
     protected static double lerp(double x, double y, double z) {
@@ -24,36 +20,36 @@ public abstract class NoiseGenerator {
     }
 
     protected static double grad(int hash, double x, double y, double z) {
-        hash &= 0xF;
+        hash &= 0xf;
         double u = hash < 8 ? x : y;
         double v = (hash == 12) || (hash == 14) ? x : hash < 4 ? y : z;
         return ((hash & 0x1) == 0 ? u : -u) + ((hash & 0x2) == 0 ? v : -v);
     }
 
     public double noise(double x) {
-        return this.noise(x, 0.0d, 0.0d);
+        return this.noise(x, 0, 0);
     }
 
     public double noise(double x, double y) {
-        return this.noise(x, y, 0.0d);
+        return this.noise(x, y, 0);
     }
 
     public abstract double noise(double p0, double p1, double p2);
 
     public double noise(double x, int octaves, double frequency, double amplitude) {
-        return this.noise(x, 0.0d, 0.0d, octaves, frequency, amplitude);
+        return this.noise(x, 0, 0, octaves, frequency, amplitude);
     }
 
     public double noise(double x, int octaves, double frequency, double amplitude, boolean normalized) {
-        return this.noise(x, 0.0d, 0.0d, octaves, frequency, amplitude, normalized);
+        return this.noise(x, 0, 0, octaves, frequency, amplitude, normalized);
     }
 
     public double noise(double x, double y, int octaves, double frequency, double amplitude) {
-        return this.noise(x, y, 0.0d, octaves, frequency, amplitude);
+        return this.noise(x, y, 0, octaves, frequency, amplitude);
     }
 
     public double noise(double x, double y, int octaves, double frequency, double amplitude, boolean normalized) {
-        return this.noise(x, y, 0.0d, octaves, frequency, amplitude, normalized);
+        return this.noise(x, y, 0, octaves, frequency, amplitude, normalized);
     }
 
     public double noise(double x, double y, double z, int octaves, double frequency, double amplitude) {
@@ -61,10 +57,10 @@ public abstract class NoiseGenerator {
     }
 
     public double noise(double x, double y, double z, int octaves, double frequency, double amplitude, boolean normalized) {
-        double result = 0.0d;
-        double amp = 1.0d;
-        double freq = 1.0d;
-        double max = 0.0d;
+        double result = 0;
+        double amp = 1;
+        double freq = 1;
+        double max = 0;
         for (int i = 0; i < octaves; i++) {
             result += this.noise(x * freq, y * freq, z * freq) * amp;
             max += amp;

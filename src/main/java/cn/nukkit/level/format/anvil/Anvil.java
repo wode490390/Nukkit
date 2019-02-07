@@ -78,7 +78,7 @@ public class Anvil extends BaseLevelProvider {
                 .putLong("DayTime", 0)
                 .putInt("GameType", 0)
                 .putString("generatorName", Generator.getGeneratorName(generator))
-                .putString("generatorOptions", options.containsKey("preset") ? options.get("preset") : "")
+                .putString("generatorOptions", options.getOrDefault("preset", ""))
                 .putInt("generatorVersion", 1)
                 .putBoolean("hardcore", false)
                 .putBoolean("initialized", true)
@@ -134,14 +134,12 @@ public class Anvil extends BaseLevelProvider {
         Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
         BinaryStream extraData;
         if (!extra.isEmpty()) {
-            extraData = new BinaryStream();
+            extraData = ThreadCache.binaryStream.get().reset();
             extraData.putVarInt(extra.size());
             for (Map.Entry<Integer, Integer> entry : extra.entrySet()) {
                 extraData.putVarInt(entry.getKey());
                 extraData.putLShort(entry.getValue());
             }
-        } else {
-            extraData = null;
         }
 
         BinaryStream stream = ThreadCache.binaryStream.get().reset();

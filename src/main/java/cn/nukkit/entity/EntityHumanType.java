@@ -18,8 +18,7 @@ import cn.nukkit.nbt.tag.ByteTag;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class EntityHumanType extends EntityCreature implements InventoryHolder {
 
@@ -114,7 +113,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
     @Override
     public Item[] getDrops() {
         if (this.inventory != null) {
-            return this.inventory.getContents().values().stream().toArray(Item[]::new);
+            return this.inventory.getContents().values().toArray(new Item[0]);
         }
         return new Item[0];
     }
@@ -138,7 +137,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
 
             float originalDamage = source.getDamage();
 
-            float finalDamage = (float) (originalDamage * (1 - Math.max((float) points / 5, points - originalDamage / (2 + (float) toughness / 4)) / 25) * (1 - /*0.75 */ epf * 0.04));
+            float finalDamage = (float) (originalDamage * (1 - Math.max((float) points / 5f, points - originalDamage / (2 + (float) toughness / 4f)) / 25) * (1 - /*0.75 */ epf * 0.04));
 
             source.setDamage(finalDamage - originalDamage, DamageModifier.ARMOR);
             //source.setDamage(source.getDamage(DamageModifier.ARMOR_ENCHANTMENTS) - (originalDamage - originalDamage * (1 - epf / 25)), DamageModifier.ARMOR_ENCHANTMENTS);
@@ -165,7 +164,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                     }
 
                     Enchantment durability = armor.getEnchantment(Enchantment.ID_DURABILITY);
-                    if (durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= new Random().nextInt(100))
+                    if (durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= ThreadLocalRandom.current().nextInt(100))
                         continue;
                 }
                 armor.setDamage(armor.getDamage() + 1);

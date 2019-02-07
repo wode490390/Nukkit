@@ -4,7 +4,6 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BinaryStream;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,12 +13,13 @@ import static cn.nukkit.level.GameRule.*;
 
 @SuppressWarnings({"unchecked"})
 public class GameRules {
+
     private final EnumMap<GameRule, Value> gameRules = new EnumMap<>(GameRule.class);
     private boolean stale;
 
     private GameRules() {
-    }
 
+    }
 
     public static GameRules getDefault() {
         GameRules gameRules = new GameRules();
@@ -137,7 +137,7 @@ public class GameRules {
     }
 
     public GameRule[] getRules() {
-        return gameRules.keySet().toArray(new GameRule[gameRules.size()]);
+        return gameRules.keySet().toArray(new GameRule[0]);
     }
 
     // TODO: This needs to be moved out since there is not a separate compound tag in the LevelDB format for Game Rules.

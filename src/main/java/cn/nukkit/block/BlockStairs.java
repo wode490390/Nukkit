@@ -13,10 +13,6 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  */
 public abstract class BlockStairs extends BlockTransparentMeta {
 
-    protected BlockStairs(int meta) {
-        super(meta);
-    }
-
     @Override
     public double getMinY() {
         // TODO: this seems wrong

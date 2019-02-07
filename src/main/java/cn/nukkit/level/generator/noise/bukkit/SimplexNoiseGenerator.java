@@ -6,18 +6,18 @@ import cn.nukkit.math.NukkitRandom;
 
 public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
 
-    protected static final double SQRT_3 = Math.sqrt(3.0d);
-    protected static final double SQRT_5 = Math.sqrt(5.0d);
-    protected static final double F2 = 0.5d * (SQRT_3 - 1.0d);
-    protected static final double G2 = (3.0d - SQRT_3) / 6.0d;
-    protected static final double G22 = G2 * 2.0d - 1.0d;
+    protected static final double SQRT_3 = Math.sqrt(3);
+    protected static final double SQRT_5 = Math.sqrt(5);
+    protected static final double F2 = 0.5 * (SQRT_3 - 1);
+    protected static final double G2 = (3 - SQRT_3) / 6;
+    protected static final double G22 = G2 * 2 - 1;
     protected static final double F3 = 0.3333333333333333d;
     protected static final double G3 = 0.16666666666666666d;
-    protected static final double F4 = (SQRT_5 - 1.0d) / 4.0d;
-    protected static final double G4 = (5.0d - SQRT_5) / 20.0d;
-    protected static final double G42 = G4 * 2.0d;
-    protected static final double G43 = G4 * 3.0d;
-    protected static final double G44 = G4 * 4.0d - 1.0d;
+    protected static final double F4 = (SQRT_5 - 1) / 4;
+    protected static final double G4 = (5 - SQRT_5) / 20;
+    protected static final double G42 = G4 * 2;
+    protected static final double G43 = G4 * 3;
+    protected static final double G44 = G4 * 4 - 1;
     protected static final int[][] grad4 = new int[][]{{0, 1, 1, 1}, {0, 1, 1, -1}, {0, 1, -1, 1}, {0, 1, -1, -1}, {0, -1, 1, 1}, {0, -1, 1, -1}, {0, -1, -1, 1}, {0, -1, -1, -1}, {1, 0, 1, 1}, {1, 0, 1, -1}, {1, 0, -1, 1}, {1, 0, -1, -1}, {-1, 0, 1, 1}, {-1, 0, 1, -1}, {-1, 0, -1, 1}, {-1, 0, -1, -1}, {1, 1, 0, 1}, {1, 1, 0, -1}, {1, -1, 0, 1}, {1, -1, 0, -1}, {-1, 1, 0, 1}, {-1, 1, 0, -1}, {-1, -1, 0, 1}, {-1, -1, 0, -1}, {1, 1, 1, 0}, {1, 1, -1, 0}, {1, -1, 1, 0}, {1, -1, -1, 0}, {-1, 1, 1, 0}, {-1, 1, -1, 0}, {-1, -1, 1, 0}, {-1, -1, -1, 0}};
     protected static final int[][] simplex = new int[][]{{0, 1, 2, 3}, {0, 1, 3, 2}, {0, 0, 0, 0}, {0, 2, 3, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 2, 3, 0}, {0, 2, 1, 3}, {0, 0, 0, 0}, {0, 3, 1, 2}, {0, 3, 2, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 3, 2, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 2, 0, 3}, {0, 0, 0, 0}, {1, 3, 0, 2}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {2, 3, 0, 1}, {2, 3, 1, 0}, {1, 0, 2, 3}, {1, 0, 3, 2}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {2, 0, 3, 1}, {0, 0, 0, 0}, {2, 1, 3, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {2, 0, 1, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {3, 0, 1, 2}, {3, 0, 2, 1}, {0, 0, 0, 0}, {3, 1, 2, 0}, {2, 1, 0, 3}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {3, 1, 0, 2}, {0, 0, 0, 0}, {3, 2, 0, 1}, {3, 2, 1, 0}};
     protected double offsetW;
@@ -41,7 +41,7 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
 
     public SimplexNoiseGenerator(NukkitRandom rand) {
         super(rand);
-        this.offsetW = rand.nextDouble() * 256.0d;
+        this.offsetW = rand.nextDouble() * 256;
     }
 
     protected static double dot(int[] g, double x, double y) {
@@ -146,51 +146,51 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
         double x3 = x0 - i3 + 0.3333333333333333d;
         double y3 = y0 - j3 + 0.3333333333333333d;
         double z3 = z0 - k3 + 0.3333333333333333d;
-        double x4 = x0 - 1.0d + 0.5d;
-        double y4 = y0 - 1.0d + 0.5d;
-        double z4 = z0 - 1.0d + 0.5d;
+        double x4 = x0 - 1 + 0.5d;
+        double y4 = y0 - 1 + 0.5d;
+        double z4 = z0 - 1 + 0.5d;
 
-        int ii = i & 0xFF;
-        int jj = j & 0xFF;
-        int kk = k & 0xFF;
+        int ii = i & 0xff;
+        int jj = j & 0xff;
+        int kk = k & 0xff;
         int gi0 = this.perm[ii + this.perm[jj + this.perm[kk]]] % 12;
         int gi2 = this.perm[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2]]] % 12;
         int gi3 = this.perm[ii + i3 + this.perm[jj + j3 + this.perm[kk + k3]]] % 12;
         int gi4 = this.perm[ii + 1 + this.perm[jj + 1 + this.perm[kk + 1]]] % 12;
 
-        double t2 = 0.6d - x0 * x0 - y0 * y0 - z0 * z0;
+        double t2 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
         double n0;
-        if (t2 < 0.0d) {
-            n0 = 0.0d;
+        if (t2 < 0) {
+            n0 = 0;
         } else {
             t2 *= t2;
             n0 = t2 * t2 * dot(grad3[gi0], x0, y0, z0);
         }
-        double t3 = 0.6d - x2 * x2 - y2 * y2 - z2 * z2;
+        double t3 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
         double n2;
-        if (t3 < 0.0d) {
-            n2 = 0.0d;
+        if (t3 < 0) {
+            n2 = 0;
         } else {
             t3 *= t3;
             n2 = t3 * t3 * dot(grad3[gi2], x2, y2, z2);
         }
-        double t4 = 0.6d - x3 * x3 - y3 * y3 - z3 * z3;
+        double t4 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
         double n3;
-        if (t4 < 0.0d) {
-            n3 = 0.0d;
+        if (t4 < 0) {
+            n3 = 0;
         } else {
             t4 *= t4;
             n3 = t4 * t4 * dot(grad3[gi3], x3, y3, z3);
         }
-        double t5 = 0.6d - x4 * x4 - y4 * y4 - z4 * z4;
+        double t5 = 0.6 - x4 * x4 - y4 * y4 - z4 * z4;
         double n4;
-        if (t5 < 0.0d) {
-            n4 = 0.0d;
+        if (t5 < 0) {
+            n4 = 0;
         } else {
             t5 *= t5;
             n4 = t5 * t5 * dot(grad3[gi4], x4, y4, z4);
         }
-        return 32.0d * (n0 + n2 + n3 + n4);
+        return 32 * (n0 + n2 + n3 + n4);
     }
 
     @Override
@@ -220,37 +220,37 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
         double x3 = x0 + G22;
         double y3 = y0 + G22;
 
-        int ii = i & 0xFF;
-        int jj = j & 0xFF;
+        int ii = i & 0xff;
+        int jj = j & 0xff;
         int gi0 = this.perm[ii + this.perm[jj]] % 12;
         int gi2 = this.perm[ii + i2 + this.perm[jj + j2]] % 12;
         int gi3 = this.perm[ii + 1 + this.perm[jj + 1]] % 12;
 
         double t2 = 0.5d - x0 * x0 - y0 * y0;
         double n0;
-        if (t2 < 0.0d) {
-            n0 = 0.0d;
+        if (t2 < 0) {
+            n0 = 0;
         } else {
             t2 *= t2;
             n0 = t2 * t2 * dot(grad3[gi0], x0, y0);
         }
         double t3 = 0.5d - x2 * x2 - y2 * y2;
         double n2;
-        if (t3 < 0.0d) {
-            n2 = 0.0d;
+        if (t3 < 0) {
+            n2 = 0;
         } else {
             t3 *= t3;
             n2 = t3 * t3 * dot(grad3[gi2], x2, y2);
         }
         double t4 = 0.5d - x3 * x3 - y3 * y3;
         double n3;
-        if (t4 < 0.0d) {
-            n3 = 0.0d;
+        if (t4 < 0) {
+            n3 = 0;
         } else {
             t4 *= t4;
             n3 = t4 * t4 * dot(grad3[gi3], x3, y3);
         }
-        return 70.0d * (n0 + n2 + n3);
+        return 70 * (n0 + n2 + n3);
     }
 
     public double noise(double x, double y, double z, double w) {
@@ -318,10 +318,10 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
         double z6 = z2 + G44;
         double w6 = w2 + G44;
 
-        int ii = i & 0xFF;
-        int jj = j & 0xFF;
-        int kk = k & 0xFF;
-        int ll = l & 0xFF;
+        int ii = i & 0xff;
+        int jj = j & 0xff;
+        int kk = k & 0xff;
+        int ll = l & 0xff;
 
         int gi0 = this.perm[ii + this.perm[jj + this.perm[kk + this.perm[ll]]]] % 32;
         int gi2 = this.perm[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2 + this.perm[ll + l2]]]] % 32;
@@ -331,45 +331,45 @@ public class SimplexNoiseGenerator extends PerlinNoiseGenerator {
 
         double t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2;
         double n0;
-        if (t2 < 0.0d) {
-            n0 = 0.0d;
+        if (t2 < 0) {
+            n0 = 0;
         } else {
             t2 *= t2;
             n0 = t2 * t2 * dot(grad4[gi0], x2, y2, z2, w2);
         }
-        double t3 = 0.6d - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
+        double t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
         double n2;
-        if (t3 < 0.0d) {
-            n2 = 0.0d;
+        if (t3 < 0) {
+            n2 = 0;
         } else {
             t3 *= t3;
             n2 = t3 * t3 * dot(grad4[gi2], x3, y3, z3, w3);
         }
-        double t4 = 0.6d - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
+        double t4 = 0.6 - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
         double n3;
-        if (t4 < 0.0d) {
-            n3 = 0.0d;
+        if (t4 < 0) {
+            n3 = 0;
         } else {
             t4 *= t4;
             n3 = t4 * t4 * dot(grad4[gi3], x4, y4, z4, w4);
         }
-        double t5 = 0.6d - x5 * x5 - y5 * y5 - z5 * z5 - w5 * w5;
+        double t5 = 0.6 - x5 * x5 - y5 * y5 - z5 * z5 - w5 * w5;
         double n4;
-        if (t5 < 0.0d) {
-            n4 = 0.0d;
+        if (t5 < 0) {
+            n4 = 0;
         } else {
             t5 *= t5;
             n4 = t5 * t5 * dot(grad4[gi4], x5, y5, z5, w5);
         }
-        double t6 = 0.6d - x6 * x6 - y6 * y6 - z6 * z6 - w6 * w6;
+        double t6 = 0.6 - x6 * x6 - y6 * y6 - z6 * z6 - w6 * w6;
         double n5;
-        if (t6 < 0.0d) {
-            n5 = 0.0d;
+        if (t6 < 0) {
+            n5 = 0;
         } else {
             t6 *= t6;
             n5 = t6 * t6 * dot(grad4[gi5], x6, y6, z6, w6);
         }
-        return 27.0d * (n0 + n2 + n3 + n4 + n5);
+        return 27 * (n0 + n2 + n3 + n4 + n5);
     }
 
     public static SimplexNoiseGenerator getInstance() {

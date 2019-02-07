@@ -6,7 +6,7 @@ import cn.nukkit.math.NukkitRandom;
 
 public class SimplexOctaveGenerator extends OctaveGenerator {
 
-    private double wScale = 1.0d;
+    private double wScale = 1;
 
     public SimplexOctaveGenerator(Level world, int octaves) {
         this(new NukkitRandom(world.getSeed()), octaves);
@@ -43,10 +43,10 @@ public class SimplexOctaveGenerator extends OctaveGenerator {
     }
 
     public double noise(double x, double y, double z, double w, double frequency, double amplitude, boolean normalized) {
-        double result = 0.0d;
-        double amp = 1.0d;
-        double freq = 1.0d;
-        double max = 0.0d;
+        double result = 0;
+        double amp = 1;
+        double freq = 1;
+        double max = 0;
 
         x *= this.xScale;
         y *= this.yScale;

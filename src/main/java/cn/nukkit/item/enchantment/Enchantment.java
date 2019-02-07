@@ -23,7 +23,6 @@ import cn.nukkit.item.enchantment.trident.EnchantmentTridentChanneling;
 import cn.nukkit.item.enchantment.trident.EnchantmentTridentImpaling;
 import cn.nukkit.item.enchantment.trident.EnchantmentTridentLoyalty;
 import cn.nukkit.item.enchantment.trident.EnchantmentTridentRiptide;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
@@ -134,7 +133,7 @@ public abstract class Enchantment implements Cloneable {
             list.add(enchantment);
         }
 
-        return list.stream().toArray(Enchantment[]::new);
+        return list.toArray(new Enchantment[0]);
     }
 
     public final int id;
@@ -260,7 +259,7 @@ public abstract class Enchantment implements Cloneable {
             set.add(Enchantment.words[ThreadLocalRandom.current().nextInt(0, Enchantment.words.length)]);
         }
 
-        String[] words = set.stream().toArray(String[]::new);
+        String[] words = set.toArray(new String[0]);
         return String.join(" ", words);
     }
 }

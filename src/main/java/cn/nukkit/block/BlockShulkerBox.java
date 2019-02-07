@@ -11,9 +11,7 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.DyeColor;
-import java.util.Map;
 
 /**
  * Created by PetteriM1
@@ -128,7 +126,7 @@ public class BlockShulkerBox extends BlockTransparentMeta {
             }
         }
 
-        BlockEntity blockEntity = new BlockEntityShulkerBox(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        new BlockEntityShulkerBox(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
 
         return true;
     }

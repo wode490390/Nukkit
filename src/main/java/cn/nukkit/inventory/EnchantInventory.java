@@ -1,10 +1,20 @@
 package cn.nukkit.inventory;
 
 import cn.nukkit.Player;
+//import cn.nukkit.block.Block;
+//import cn.nukkit.item.Item;
+//import cn.nukkit.item.ItemBookEnchanted;
+//import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.item.enchantment.EnchantmentEntry;
+//import cn.nukkit.item.enchantment.EnchantmentList;
+//import cn.nukkit.level.Level;
+//import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
-
-import java.util.Random;
+//import cn.nukkit.network.protocol.CraftingDataPacket;
+//import cn.nukkit.utils.DyeColor;
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -12,12 +22,10 @@ import java.util.Random;
  */
 public class EnchantInventory extends ContainerInventory {
 
-    private final Random random = new Random();
-
     private int bookshelfAmount = 0;
 
-    private int[] levels = null;
-    private EnchantmentEntry[] entries = null;
+    private int[] levels;
+    private EnchantmentEntry[] entries;
 
     public EnchantInventory(Position position) {
         super(null, InventoryType.ENCHANT_TABLE);
@@ -45,9 +53,7 @@ public class EnchantInventory extends ContainerInventory {
                 this.bookshelfAmount = 15;
             }
 
-            NukkitRandom random = new NukkitRandom();
-
-            double base = (double) random.nextRange(1, 8) + (bookshelfAmount / 2d) + (double) random.nextRange(0, bookshelfAmount);
+            double base = (double) ThreadLocalRandom.current().nextInt(1, 8) + (bookshelfAmount / 2d) + (double) ThreadLocalRandom.current().nextInt(0, bookshelfAmount);
             this.levels[0] = (int) Math.max(base / 3, 1);
             this.levels[1] = (int) ((base * 2) / 3 + 1);
             this.levels[2] = (int) Math.max(base, bookshelfAmount * 2);
@@ -61,9 +67,9 @@ public class EnchantInventory extends ContainerInventory {
 
         if (index == 0) {
             Item item = this.getItem(0);
-            if (item.getId() == Item.AIR) {
+            if (item.getPackId() == Item.AIR) {
                 this.entries = null;
-            } else if (before.getId() == Item.AIR && !item.hasEnchantments()) {
+            } else if (before.getPackId() == Item.AIR && !item.hasEnchantments()) {
                 //before enchant
                 if (this.entries == null) {
                     int enchantAbility = item.getEnchantAbility();
@@ -182,8 +188,8 @@ public class EnchantInventory extends ContainerInventory {
     }
 
     /*public void onEnchant(Player who, Item before, Item after) {
-        Item result = (before.getId() == Item.BOOK) ? new ItemBookEnchanted() : before;
-        if (!before.hasEnchantments() && after.hasEnchantments() && after.getId() == result.getId() && this.levels != null && this.entries != null) {
+        Item result = (before.getPackId() == Item.BOOK) ? new ItemBookEnchanted() : before;
+        if (!before.hasEnchantments() && after.hasEnchantments() && after.getPackId() == result.getPackId() && this.levels != null && this.entries != null) {
             Enchantment[] enchantments = after.getEnchantments();
             for (int i = 0; i < 3; i++) {
                 if (Arrays.equals(enchantments, this.entries[i].getEnchantments())) {
@@ -191,7 +197,7 @@ public class EnchantInventory extends ContainerInventory {
                     int level = who.getExperienceLevel();
                     int exp = who.getExperience();
                     int cost = this.entries[i].getCost();
-                    if (lapis.getId() == Item.DYE && lapis.getDamage() == DyeColor.BLUE.getDyeData() && lapis.getCount() > i && level >= cost) {
+                    if (lapis.getPackId() == Item.DYE && lapis.getDamage() == DyeColor.BLUE.getDyeData() && lapis.getCount() > i && level >= cost) {
                         result.addEnchantment(enchantments);
                         this.setItem(0, result);
                         lapis.setCount(lapis.getCount() - i - 1);
@@ -216,17 +222,17 @@ public class EnchantInventory extends ContainerInventory {
                     if (level.getBlock(loc.add(x, 0, z)).isTransparent()) {
                         if (level.getBlock(loc.add(0, 1, 0)).isTransparent()) {
                             //diagonal and straight
-                            if (level.getBlock(loc.add(x << 1, y, z << 1)).getId() == Block.BOOKSHELF) {
+                            if (level.getBlock(loc.add(x << 1, y, z << 1)).getPackId() == Block.BOOKSHELF) {
                                 count++;
                             }
 
                             if (x != 0 && z != 0) {
                                 //one block diagonal and one straight
-                                if (level.getBlock(loc.add(x << 1, y, z)).getId() == Block.BOOKSHELF) {
+                                if (level.getBlock(loc.add(x << 1, y, z)).getPackId() == Block.BOOKSHELF) {
                                     ++count;
                                 }
 
-                                if (level.getBlock(loc.add(x, y, z << 1)).getId() == Block.BOOKSHELF) {
+                                if (level.getBlock(loc.add(x, y, z << 1)).getPackId() == Block.BOOKSHELF) {
                                     ++count;
                                 }
                             }

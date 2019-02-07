@@ -16,6 +16,7 @@ import cn.nukkit.nbt.tag.ListTag;
 public class BlockJukebox extends BlockSolid {
 
     public BlockJukebox() {
+
     }
 
     @Override
@@ -41,7 +42,7 @@ public class BlockJukebox extends BlockSolid {
     @Override
     public boolean onActivate(Item item, Player player) {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity == null || !(blockEntity instanceof BlockEntityJukebox)) {
+        if (!(blockEntity instanceof BlockEntityJukebox)) {
             blockEntity = this.createBlockEntity();
         }
 

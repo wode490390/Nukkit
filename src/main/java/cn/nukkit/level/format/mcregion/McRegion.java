@@ -14,6 +14,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.ChunkException;
+import cn.nukkit.utils.ThreadCache;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class McRegion extends BaseLevelProvider {
                 .putLong("DayTime", 0)
                 .putInt("GameType", 0)
                 .putString("generatorName", Generator.getGeneratorName(generator))
-                .putString("generatorOptions", options.containsKey("preset") ? options.get("preset") : "")
+                .putString("generatorOptions", options.getOrDefault("preset", ""))
                 .putInt("generatorVersion", 1)
                 .putBoolean("hardcore", false)
                 .putBoolean("initialized", true)
@@ -125,17 +126,15 @@ public class McRegion extends BaseLevelProvider {
         Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
         BinaryStream extraData;
         if (!extra.isEmpty()) {
-            extraData = new BinaryStream();
+            extraData = ThreadCache.binaryStream.get().reset();
             extraData.putLInt(extra.size());
             for (Map.Entry<Integer, Integer> entry : extra.entrySet()) {
                 extraData.putLInt(entry.getKey());
                 extraData.putLShort(entry.getValue());
             }
-        } else {
-            extraData = null;
         }
 
-        BinaryStream stream = new BinaryStream();
+        BinaryStream stream = ThreadCache.binaryStream.get().reset();
         stream.put(chunk.getBlockIdArray());
         stream.put(chunk.getBlockDataArray());
         stream.put(chunk.getBlockSkyLightArray());

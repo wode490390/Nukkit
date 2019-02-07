@@ -917,7 +917,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
     public String getSaveId() {
         String name = getClass().getName();
-        return name.substring(16, name.length());
+        return name.substring(16);
     }
 
     @Override

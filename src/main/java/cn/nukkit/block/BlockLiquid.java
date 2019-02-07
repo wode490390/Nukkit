@@ -28,10 +28,6 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
     protected Vector3 flowVector;
     private Long2ByteMap flowCostVisited = new Long2ByteOpenHashMap();
 
-    protected BlockLiquid(int meta) {
-        super(meta);
-    }
-
     @Override
     public boolean canBeFlowedInto() {
         return true;
@@ -363,7 +359,6 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
             Block block = this.level.getBlock(x, y, z);
             if (!this.canFlowInto(block)) {
                 this.flowCostVisited.put(Level.blockHash(x, y, z), BLOCKED);
-                continue;
             } else if (this.getLevel().getBlock(x, y - 1, z).canBeFlowedInto()) {
                 this.flowCostVisited.put(Level.blockHash(x, y, z), CAN_FLOW_DOWN);
                 flowCost[j] = maxCost = 0;

@@ -1,7 +1,6 @@
 package cn.nukkit.utils;
 
 import com.google.common.collect.Maps;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -10,6 +9,7 @@ import java.util.regex.Pattern;
  * All supported formatting values for chat and console.
  */
 public enum TextFormat {
+
     /**
      * Represents black.
      */
@@ -105,7 +105,7 @@ public enum TextFormat {
      */
     public static final char ESCAPE = '\u00A7';
 
-    private static final Pattern CLEAN_PATTERN = Pattern.compile("(?i)" + String.valueOf(ESCAPE) + "[0-9A-FK-OR]");
+    private static final Pattern CLEAN_PATTERN = Pattern.compile("(?i)" + ESCAPE + "[0-9A-FK-OR]");
     private final static Map<Integer, TextFormat> BY_ID = Maps.newTreeMap();
     private final static Map<Character, TextFormat> BY_CHAR = new HashMap<>();
 
