@@ -28,6 +28,10 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
     protected Vector3 flowVector;
     private Long2ByteMap flowCostVisited = new Long2ByteOpenHashMap();
 
+    protected BlockLiquid(int meta) {
+        super(meta);
+    }
+
     @Override
     public boolean canBeFlowedInto() {
         return true;

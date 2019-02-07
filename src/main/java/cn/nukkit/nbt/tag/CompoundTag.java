@@ -211,7 +211,7 @@ public class CompoundTag extends Tag implements Cloneable {
         return this.getFloat(name, 0);
     }
 
-    public float getFloat(String name, xxxx defaultValue) {
+    public float getFloat(String name, float defaultValue) {
         return this.getFloat(name, defaultValue, false);
     }
 

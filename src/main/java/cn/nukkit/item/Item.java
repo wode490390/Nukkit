@@ -633,7 +633,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         if (tag.contains("ench") && tag.get("ench") instanceof ListTag) {
             for (CompoundTag entry : tag.getList("ench", CompoundTag.class).getAll()) {
-                if (entry.getShort("id") == enchantmentId && (level == -1 || entry.getShort("lvl") == level)) {
+                if (entry.getShort("id") == id && (level == -1 || entry.getShort("lvl") == level)) {
                     return true;
                 }
             }

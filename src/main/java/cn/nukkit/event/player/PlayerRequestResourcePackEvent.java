@@ -5,6 +5,7 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.resourcepacks.ResourcePack;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerRequestResourcePackEvent extends PlayerEvent {
 
@@ -14,18 +15,18 @@ public class PlayerRequestResourcePackEvent extends PlayerEvent {
         return handlers;
     }
 
-    private final Map<String, ResourcePack> resourcePacks = new HashMap<>();
-    private final Map<String, ResourcePack> behaviourPacks = new HashMap<>();
+    private final Map<UUID, ResourcePack> resourcePacks = new HashMap<>();
+    private final Map<UUID, ResourcePack> behaviourPacks = new HashMap<>();
     private boolean mustAccept;
 
-    public PlayerRequestResourcePackEvent(Player player, Map<String, ResourcePack> resourcePacks, Map<String, ResourcePack> behaviourPacks, boolean mustAccept) {
+    public PlayerRequestResourcePackEvent(Player player, Map<UUID, ResourcePack> resourcePacks, Map<UUID, ResourcePack> behaviourPacks, boolean mustAccept) {
         this.player = player;
         this.resourcePacks.putAll(resourcePacks);
         this.behaviourPacks.putAll(behaviourPacks);
         this.mustAccept = mustAccept;
     }
 
-    public Map<String, ResourcePack> getResourcePacks() {
+    public Map<UUID, ResourcePack> getResourcePacks() {
         return resourcePacks;
     }
 
@@ -35,7 +36,7 @@ public class PlayerRequestResourcePackEvent extends PlayerEvent {
         }
     }
 
-    public Map<String, ResourcePack> getBehaviourPacks() {
+    public Map<UUID, ResourcePack> getBehaviourPacks() {
         return behaviourPacks;
     }
 

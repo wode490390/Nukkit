@@ -93,8 +93,8 @@ public class EntityArrow extends EntityProjectile {
     @Override
     public void saveNBT() {
         super.saveNBT();
-        this.namedTag.setByte(TAG_PICKUP, this.pickupMode);
-        this.namedTag.setShort("life", this.collideTicks);
+        this.namedTag.putByte(TAG_PICKUP, this.pickupMode);
+        this.namedTag.putShort("life", this.collideTicks);
     }
 
     public boolean isCritical() {
@@ -156,7 +156,7 @@ public class EntityArrow extends EntityProjectile {
         return hasUpdate;
     }
 
-    @Override
+    /*@Override
     public void onHit(ProjectileHitEvent event) {
         this.setCritical(false);
         this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BOW_HIT);
@@ -178,7 +178,7 @@ public class EntityArrow extends EntityProjectile {
                 entityHit.setMotion(entityHit.getMotion().add(this.motionX * multiplier, 0.1, this.motionZ * multiplier));
             }
         }
-    }
+    }*/
 
     public int getPickupMode() {
         return this.pickupMode;
@@ -188,7 +188,7 @@ public class EntityArrow extends EntityProjectile {
         this.pickupMode = pickupMode;
     }
 
-    @Override
+    /*@Override
     public void onCollideWithPlayer(EntityHuman entityPlayer) {
         if (this.blockHit == null) {
             return;
@@ -217,5 +217,5 @@ public class EntityArrow extends EntityProjectile {
         this.getServer().broadcastPacket(this.getViewers(), pk);
         player.getInventory().addItem(item);
         this.flagForDespawn();
-    }
+    }*/
 }

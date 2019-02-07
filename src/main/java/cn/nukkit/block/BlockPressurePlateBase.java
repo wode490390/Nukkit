@@ -24,6 +24,10 @@ public abstract class BlockPressurePlateBase extends BlockFlowableMeta {
     protected float onPitch;
     protected float offPitch;
 
+    protected BlockPressurePlateBase(int meta) {
+        super(meta);
+    }
+
     @Override
     public boolean canPassThrough() {
         return true;

@@ -124,7 +124,7 @@ public class McRegion extends BaseLevelProvider {
         }
 
         Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
-        BinaryStream extraData;
+        BinaryStream extraData = null;
         if (!extra.isEmpty()) {
             extraData = ThreadCache.binaryStream.get().reset();
             extraData.putLInt(extra.size());

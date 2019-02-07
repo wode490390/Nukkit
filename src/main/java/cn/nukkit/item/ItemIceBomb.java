@@ -1,6 +1,6 @@
 package cn.nukkit.item;
 
-public class ItemIceBomb extends Item {
+public class ItemIceBomb extends Item {//ProjectileItem
 
     public ItemIceBomb() {
         this(0, 1);
@@ -29,10 +29,10 @@ public class ItemIceBomb extends Item {
     //    return "IceBomb";
     //}
 
-    @Override
-    public float getThrowForce() {
-        return 1.5f;
-    }
+    //@Override
+    //public float getThrowForce() {
+    //    return 1.5f;
+    //}
 
     @Override
     public boolean isEducation() {

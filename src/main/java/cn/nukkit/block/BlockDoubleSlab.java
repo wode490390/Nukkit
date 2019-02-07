@@ -8,6 +8,10 @@ import cn.nukkit.item.ItemTool;
  */
 public abstract class BlockDoubleSlab extends BlockSolidMeta {
 
+    protected BlockDoubleSlab(int meta) {
+        super(meta);
+    }
+
     @Override
     public double getHardness() {
         return 2;

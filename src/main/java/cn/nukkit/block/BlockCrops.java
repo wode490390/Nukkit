@@ -16,6 +16,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public abstract class BlockCrops extends BlockFlowableMeta {
 
+    protected BlockCrops(int meta) {
+        super(meta);
+    }
+
     @Override
     public boolean canBeActivated() {
         return true;

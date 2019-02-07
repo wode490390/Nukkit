@@ -67,6 +67,7 @@ import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.*;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
@@ -167,7 +168,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected String displayName;
 
     protected int startAction = -1;
-    protected final Map<Integer, Integer> usedItemsCooldown =  new Int2IntOpenHashMap<>();
+    protected final Map<Integer, Integer> usedItemsCooldown =  new Int2IntOpenHashMap();
 
     protected Vector3 sleeping;
     protected Long clientID;
@@ -245,8 +246,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected BlockVector3 lastTouchPosition; //TODO: hack client spam
     protected long lastTouch;
 
-    protected Map<String, ResourcePack> resourcePacks;
-    protected Map<String, ResourcePack> behaviourPacks;
+    protected Map<UUID, ResourcePack> resourcePacks;
+    protected Map<UUID, ResourcePack> behaviourPacks;
     protected boolean forceResources = false;
 
     public int getStartActionTick() {
@@ -2276,7 +2277,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             break;
                         case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
                             for (ResourcePackClientResponsePacket.Entry entry : responsePacket.packIds) {
-                                ResourcePack resourcePack = this.resourcePacks.getOrDefault(id, this.behaviourPacks.get(id));
+                                ResourcePack resourcePack = this.resourcePacks.getOrDefault(entry.uuid, this.behaviourPacks.get(entry.uuid));
                                 if (resourcePack == null) {
                                     this.close("", "disconnectionScreen.resourcePack");
                                     break;
@@ -2686,7 +2687,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     BlockPickRequestPacket pickRequestPacket = (BlockPickRequestPacket) packet;
                     Block block = this.level.getBlock(this.temporalVector.setComponents(pickRequestPacket.blockX, pickRequestPacket.blockY, pickRequestPacket.blockZ));
                     if (block instanceof BlockUnknown) {
-                        return true;
+                        return;
                     }
 
                     item = block.toItem();
@@ -4931,11 +4932,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.dataPacket(pk);
     }
 
-    public Map<String, ResourcePack> getResourcePacks() {
+    public Map<UUID, ResourcePack> getResourcePacks() {
         return this.resourcePacks;
     }
 
-    public Map<String, ResourcePack> getBehaviourPacks() {
+    public Map<UUID, ResourcePack> getBehaviourPacks() {
         return this.behaviourPacks;
     }
 

@@ -21,6 +21,10 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
 
     public boolean sticky;
 
+    protected BlockPistonBase(int meta) {
+        super(meta);
+    }
+
     @Override
     public double getResistance() {
         return 2.5;

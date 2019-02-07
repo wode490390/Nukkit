@@ -8,6 +8,10 @@ import cn.nukkit.math.AxisAlignedBB;
  */
 public abstract class BlockFlowableMeta extends BlockTransparentMeta {
 
+    protected BlockFlowableMeta(int meta) {
+        super(meta);
+    }
+
     @Override
     public boolean canBeFlowedInto() {
         return true;

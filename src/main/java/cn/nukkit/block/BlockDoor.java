@@ -16,6 +16,10 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  */
 public abstract class BlockDoor extends BlockTransparentMeta {
 
+    protected BlockDoor(int meta) {
+        super(meta);
+    }
+
     @Override
     public boolean canBeActivated() {
         return true;

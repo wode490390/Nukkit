@@ -13,6 +13,10 @@ import cn.nukkit.math.Vector3;
  */
 public abstract class BlockButton extends BlockFlowableMeta {
 
+    protected BlockButton(int meta) {
+        super(meta);
+    }
+
     @Override
     public double getResistance() {
         return 2.5;

@@ -24,7 +24,7 @@ public class ResourcePackManager {
         List<ResourcePack> loadedResourcePacks = new ArrayList<>();
         for (File pack : path.listFiles()) {
             try {
-                ResourcePack resourcePack;
+                ResourcePack resourcePack = null;
 
                 if (!pack.isDirectory()) { //directory resource packs temporarily unsupported
                     switch (Files.getFileExtension(pack.getName())) {
@@ -40,7 +40,7 @@ public class ResourcePackManager {
 
                 if (resourcePack != null) {
                     loadedResourcePacks.add(resourcePack);
-                    this.resourcePacksById.put(resourcePack.getPackId().toLowerCase(), resourcePack);
+                    this.resourcePacksById.put(resourcePack.getPackId(), resourcePack);
                 }
             } catch (IllegalArgumentException e) {
                 Server.getInstance().getLogger().warning(Server.getInstance().getLanguage().translateString("nukkit.resources.fail", pack.getName(), e.getMessage()));
@@ -56,10 +56,10 @@ public class ResourcePackManager {
     }
 
     public ResourcePack getPackById(UUID id) {
-        return this.resourcePacksById.get(id.toLowerCase());
+        return this.resourcePacksById.get(id);
     }
 
-    public Map<String, ResourcePack> getResourcePacksMap() {
+    public Map<UUID, ResourcePack> getResourcePacksMap() {
         return resourcePacksById;
     }
 }

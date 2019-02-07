@@ -187,7 +187,7 @@ public class LevelDB implements LevelProvider {
         }
 
         Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
-        BinaryStream extraData;
+        BinaryStream extraData = null;
         if (!extra.isEmpty()) {
             extraData = ThreadCache.binaryStream.get().reset();
             extraData.putLInt(extra.size());

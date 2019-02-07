@@ -2244,7 +2244,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         return false;
     }
 
-    public boolean removeDataProperty(int id) {
+    public void removeDataProperty(int id) {
         this.getDataProperties().remove(id);
     }
 
@@ -2371,7 +2371,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void broadcastEntityEvent(int eventId, int eventData) {
-        this.broadcastEntityEvent(eventId , eventData, this.getViewers());
+        this.broadcastEntityEvent(eventId , eventData, this.getViewers().values());
     }
 
     public void broadcastEntityEvent(int eventId, int eventData, Collection<Player> players) {
@@ -2387,7 +2387,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void broadcastAnimation(int animationId) {
-        this.broadcastAnimation(animationId, this.getViewers());
+        this.broadcastAnimation(animationId, this.getViewers().values());
     }
 
     public void broadcastAnimation(int animationId, Collection<Player> players) {
@@ -2399,10 +2399,6 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         pk.entityRuntimeId = this.getId();
         pk.action = animationId;
         this.getServer().broadcastPacket(players, pk);
-    }
-
-    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-        this.server.getEntityMetadata().setMetadata(this, metadataKey, newMetadataValue);
     }
 
     @Override
