@@ -296,7 +296,7 @@ public class Item implements Cloneable {
     public static final int PURPUR_STAIRS = 203;
 
     public static final int END_BRICKS = 206;
-
+    public static final int ICE_FROSTED = 207;
     public static final int END_ROD = 208;
     public static final int END_GATEWAY = 209;
 
