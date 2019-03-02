@@ -13,7 +13,6 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.Map;
 
 /**
@@ -48,11 +47,6 @@ public class BlockChest extends BlockTransparentMeta {
     @Override
     public double getHardness() {
         return 2.5;
-    }
-
-    @Override
-    public double getResistance() {
-        return 12.5;
     }
 
     @Override

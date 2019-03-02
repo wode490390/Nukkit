@@ -7,7 +7,7 @@ import cn.nukkit.utils.BlockColor;
 /**
  * Created by Pub4Game on 03.01.2016.
  */
-public class BlockBedrockInvisible extends BlockSolid {
+public class BlockBedrockInvisible extends BlockTransparent {
 
     public BlockBedrockInvisible() {
 

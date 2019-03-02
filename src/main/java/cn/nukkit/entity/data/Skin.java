@@ -2,16 +2,19 @@ package cn.nukkit.entity.data;
 
 import cn.nukkit.nbt.stream.FastByteArrayOutputStream;
 import com.google.common.base.Preconditions;
-
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class Skin {
+
     private static final int PIXEL_SIZE = 4;
 
     public static final int SINGLE_SKIN_SIZE = 64 * 32 * PIXEL_SIZE;
@@ -25,10 +28,10 @@ public class Skin {
     private static final byte[] EMPTY = new byte[SINGLE_SKIN_SIZE];
 
     private String skinId = "Steve";
-    private byte[] skinData = null;
-    private byte[] capeData = null;
+    private byte[] skinData;
+    private byte[] capeData;
     private String geometryName = GEOMETRY_CUSTOM;
-    private String geometryData = null;
+    private String geometryData;
 
     public boolean isValid() {
         if (skinData != null) {
@@ -60,12 +63,18 @@ public class Skin {
     }
 
     public void setSkinData(BufferedImage image) {
-        setSkinData(parseBufferedImage(image));
+        this.setSkinData(parseBufferedImage(image), true);
     }
 
     public void setSkinData(byte[] skinData) {
+        this.setSkinData(skinData, false);
+    }
+
+    public void setSkinData(byte[] skinData, boolean processed) {
         if (skinData == null || !isValidSkin(skinData.length)) {
             throw new IllegalArgumentException("Invalid skin");
+        } else if (!processed) {
+            //skinData = removeAlphaChannel(skinData); //bug?
         }
         this.skinData = skinData;
     }
@@ -86,7 +95,7 @@ public class Skin {
     }
 
     public void setCapeData(BufferedImage image) {
-        setCapeData(parseBufferedImage(image));
+        setCapeData(parseBufferedImage(image, true));
     }
 
     public void setCapeData(byte[] capeData) {
@@ -118,7 +127,19 @@ public class Skin {
         return skin;
     }
 
+    private static byte[] removeAlphaChannel(byte[] imageData) {
+        try {
+            return parseBufferedImage(ImageIO.read(new ByteArrayInputStream(imageData)));
+        } catch(IOException e)  {
+            return imageData;
+        }
+    }
+
     private static byte[] parseBufferedImage(BufferedImage image) {
+        return parseBufferedImage(image, false);
+    }
+
+    private static byte[] parseBufferedImage(BufferedImage image, boolean alpha) {
         FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -126,7 +147,7 @@ public class Skin {
                 outputStream.write(color.getRed());
                 outputStream.write(color.getGreen());
                 outputStream.write(color.getBlue());
-                outputStream.write(color.getAlpha());
+                outputStream.write(alpha ? color.getAlpha() : 0xff);
             }
         }
         image.flush();

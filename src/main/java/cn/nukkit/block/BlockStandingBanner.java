@@ -40,11 +40,6 @@ public class BlockStandingBanner extends BlockTransparentMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
     public double getHardness() {
         return 1;
     }

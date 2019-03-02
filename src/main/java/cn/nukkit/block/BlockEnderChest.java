@@ -55,12 +55,17 @@ public class BlockEnderChest extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return 3000;
+        return 1000;
     }
 
     @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override
@@ -151,13 +156,12 @@ public class BlockEnderChest extends BlockTransparentMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     Item.get(Item.OBSIDIAN, 0, 8)
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override

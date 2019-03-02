@@ -38,16 +38,6 @@ public class BlockTNT extends BlockSolidMeta {
     }
 
     @Override
-    public double getHardness() {
-        return 0;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0;
-    }
-
-    @Override
     public boolean canBeActivated() {
         return true;
     }

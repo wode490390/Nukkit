@@ -3,7 +3,7 @@ package cn.nukkit.item;
 public class ItemSparkler extends ItemTool {
 
     public ItemSparkler() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemSparkler(Integer meta) {
@@ -11,13 +11,13 @@ public class ItemSparkler extends ItemTool {
     }
 
     public ItemSparkler(Integer meta, int count) {
-        super(SPARKLER, meta, count, "Sparkler");
+        super(SPARKLER, meta, 1, "Sparkler");
     }
 
-    //@Override
-    //public int getMaxDurability() {
-    //    return ItemTool.DURABILITY_SPARKLER; //TODO: check
-    //}
+    @Override
+    public int getMaxDurability() {
+        return ItemTool.DURABILITY_SPARKLER;
+    }
 
     @Override
     public boolean isEducation() {

@@ -37,6 +37,10 @@ public class BlockEnchantingTable extends BlockTransparent {
         return ItemTool.TYPE_PICKAXE;
     }
 
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
     @Override
     public double getHardness() {
         return 5;
@@ -44,7 +48,7 @@ public class BlockEnchantingTable extends BlockTransparent {
 
     @Override
     public double getResistance() {
-        return 6000;
+        return 2000;
     }
 
     @Override
@@ -59,13 +63,12 @@ public class BlockEnchantingTable extends BlockTransparent {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    toItem()
+                    this.toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override

@@ -29,11 +29,6 @@ public class BlockBookshelf extends BlockSolid {
     }
 
     @Override
-    public double getResistance() {
-        return 7.5;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_AXE;
     }

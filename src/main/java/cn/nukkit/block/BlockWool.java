@@ -39,12 +39,7 @@ public class BlockWool extends BlockSolidMeta {
 
     @Override
     public double getHardness() {
-        return 0.8;
-    }
-
-    @Override
-    public double getResistance() {
-        return 4;
+        return 0.800000011920929;
     }
 
     @Override

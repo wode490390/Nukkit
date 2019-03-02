@@ -5,6 +5,7 @@ public class NetworkStackLatencyPacket extends DataPacket {
     public static final byte NETWORK_ID = ProtocolInfo.NETWORK_STACK_LATENCY_PACKET;
 
     public long timestamp;
+    public boolean needResponse;
 
     @Override
     public byte pid() {
@@ -14,11 +15,13 @@ public class NetworkStackLatencyPacket extends DataPacket {
     @Override
     public void decode() {
         this.timestamp = this.getLLong();
+        this.needResponse = this.getBoolean();
     }
 
     @Override
     public void encode() {
         this.reset();
         this.putLLong(this.timestamp);
+        this.putBoolean(this.needResponse);
     }
 }

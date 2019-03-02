@@ -47,7 +47,7 @@ public interface BlockID {
     int PISTON = 33;
     int PISTON_HEAD = 34;
     int WOOL = 35;
-
+    int ELEMENT_0 = 36;
     int DANDELION = 37;
     int POPPY = 38;
     int ROSE = 38;
@@ -227,7 +227,7 @@ public interface BlockID {
     int DARK_OAK_WOOD_STAIRS = 164;
     int DARK_OAK_WOODEN_STAIRS = 164;
     int SLIME_BLOCK = 165;
-
+    int GLOW_STICK = 166;
     int IRON_TRAPDOOR = 167;
     int PRISMARINE = 168;
     int SEA_LANTERN = 169;

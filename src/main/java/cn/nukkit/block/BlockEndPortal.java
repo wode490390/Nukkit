@@ -45,7 +45,7 @@ public class BlockEndPortal extends BlockFlowable {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override

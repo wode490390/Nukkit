@@ -1,7 +1,6 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDoorWood;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 
@@ -35,18 +34,13 @@ public class BlockDoorWood extends BlockDoor {
     }
 
     @Override
-    public double getResistance() {
-        return 15;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_AXE;
     }
 
     @Override
     public Item toItem() {
-        return new ItemDoorWood();
+        return Item.get(Item.WOODEN_DOOR);
     }
 
     @Override

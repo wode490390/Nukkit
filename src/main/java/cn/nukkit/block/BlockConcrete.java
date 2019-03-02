@@ -22,13 +22,8 @@ public class BlockConcrete extends BlockSolidMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 9;
-    }
-
-    @Override
     public double getHardness() {
-        return 1.8;
+        return 1.7999999523162842;
     }
 
     @Override
@@ -42,7 +37,12 @@ public class BlockConcrete extends BlockSolidMeta {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        return item.getTier() >= ItemTool.TIER_WOODEN ? new Item[]{toItem()} : new Item[0];
+        return item.getTier() >= this.getToolHarvestLevel() ? new Item[]{this.toItem()} : new Item[0];
     }
 }

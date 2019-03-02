@@ -32,7 +32,7 @@ public class BlockDaylightDetector extends BlockTransparentMeta {
 
     @Override
     public double getHardness() {
-        return 0.2;
+        return 0.20000000298023224;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cn.nukkit.item;
 
 public interface ItemID {
+
     int IRON_SHOVEL = 256;
     int IRON_PICKAXE = 257;
     int IRON_AXE = 258;
@@ -213,6 +214,11 @@ public interface ItemID {
     int TURTLE_SHELL = 469;
     int PHANTOM_MEMBRANE = 470;
     int CROSSBOW = 471;
+    int SPRUCE_SIGN = 472;
+    int BIRCH_SIGN = 473;
+    int JUNGLE_SIGN = 474;
+    int ACACIA_SIGN = 475;
+    int DARK_OAK_SIGN = 476;
 
     //int CAMERA = 498; //Edu
     int COMPOUND = 499; //edu

@@ -31,16 +31,6 @@ public class BlockTripWire extends BlockFlowableMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 0;
-    }
-
-    @Override
-    public double getHardness() {
-        return 0;
-    }
-
-    @Override
     public AxisAlignedBB getBoundingBox() {
         return null;
     }
@@ -64,19 +54,19 @@ public class BlockTripWire extends BlockFlowableMeta {
 
     public void setPowered(boolean value) {
         if (value ^ this.isPowered()) {
-            this.setDamage(this.getDamage() ^ 0x01);
+            this.setDamage(this.getDamage() ^ 0x1);
         }
     }
 
     public void setAttached(boolean value) {
         if (value ^ this.isAttached()) {
-            this.setDamage(this.getDamage() ^ 0x04);
+            this.setDamage(this.getDamage() ^ 0x4);
         }
     }
 
     public void setDisarmed(boolean value) {
         if (value ^ this.isDisarmed()) {
-            this.setDamage(this.getDamage() ^ 0x08);
+            this.setDamage(this.getDamage() ^ 0x8);
         }
     }
 

@@ -13,4 +13,9 @@ public class ItemTotem extends Item {
     public ItemTotem(Integer meta, int count) {
         super(TOTEM, meta, count, "Totem of Undying");
     }
+
+    @Override
+    public int getMaxStackSize() {
+        return 1;
+    }
 }

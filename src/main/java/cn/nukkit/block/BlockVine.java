@@ -35,12 +35,7 @@ public class BlockVine extends BlockTransparentMeta {
 
     @Override
     public double getHardness() {
-        return 0.2;
-    }
-
-    @Override
-    public double getResistance() {
-        return 1;
+        return 0.20000000298023224;
     }
 
     @Override

@@ -9,6 +9,7 @@ import cn.nukkit.math.BlockFace;
 public class BlockChorusPlant extends BlockTransparent {
 
     public BlockChorusPlant() {
+
     }
 
     @Override
@@ -23,17 +24,7 @@ public class BlockChorusPlant extends BlockTransparent {
 
     @Override
     public double getHardness() {
-        return 0.4;
-    }
-
-    @Override
-    public double getResistance() {
-        return 2;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_NONE;
+        return 0.4000000059604645;
     }
 
     @Override

@@ -8,12 +8,24 @@ import cn.nukkit.block.Block;
  */
 public class ItemBlock extends Item {
 
+    public ItemBlock(int block) {
+        this(block, 0);
+    }
+
     public ItemBlock(Block block) {
-        this(block, 0, 1);
+        this(block, 0);
+    }
+
+    public ItemBlock(int block, Integer meta) {
+        this(block, meta, 1);
     }
 
     public ItemBlock(Block block, Integer meta) {
         this(block, meta, 1);
+    }
+
+    public ItemBlock(int block, Integer meta, int count) {
+        this(Block.get(block, meta), meta, count);
     }
 
     public ItemBlock(Block block, Integer meta, int count) {
@@ -43,11 +55,20 @@ public class ItemBlock extends Item {
 
     @Override
     public int getMaxStackSize() {
-        //Shulker boxes don't stack!
-        if (this.getBlock().getId() == Block.SHULKER_BOX || this.getBlock().getId() == Block.UNDYED_SHULKER_BOX) {
+        int id = this.getBlock().getId();
+        if (id == Block.SHULKER_BOX || id == Block.UNDYED_SHULKER_BOX || id == Block.GLOW_STICK) {
             return 1;
         }
-        
+
         return super.getMaxStackSize();
+    }
+
+    @Override
+    public int getMaxDurability() {
+        if (this.getBlock().getId() == Block.GLOW_STICK) {
+            return 100;
+        }
+
+        return super.getMaxDurability();
     }
 }

@@ -31,16 +31,6 @@ public class BlockDandelion extends BlockFlowableMeta {
     }
 
     @Override
-    public double getHardness() {
-        return 0;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0;
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
         if (down.getId() == 2 || down.getId() == 3 || down.getId() == 60) {

@@ -28,12 +28,7 @@ public class BlockDirt extends BlockSolidMeta {
 
     @Override
     public boolean canBeActivated() {
-        return (this.getDamage() == 0);
-    }
-
-    @Override
-    public double getResistance() {
-        return 2.5;
+        return true;
     }
 
     @Override
@@ -48,7 +43,7 @@ public class BlockDirt extends BlockSolidMeta {
 
     @Override
     public String getName() {
-        return this.getDamage() == 0 ? "Dirt" : "Coarse Dirt";
+        return (this.getDamage() == 0 ? "" : "Coarse ") + "Dirt";
     }
 
     @Override
@@ -58,10 +53,9 @@ public class BlockDirt extends BlockSolidMeta {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        if (this.getDamage() != 0) return false;
         if (item.isHoe()) {
             item.useOn(this);
-            this.getLevel().setBlock(this, new BlockFarmland(), true);
+            this.getLevel().setBlock(this, this.getDamage() == 0 ? get(FARMLAND) : get(DIRT, 0), true);
 
             return true;
         }
@@ -71,12 +65,13 @@ public class BlockDirt extends BlockSolidMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        return new Item[]{new ItemBlock(new BlockDirt())};
+        return new Item[]{
+				new ItemBlock(get(DIRT))
+		};
     }
 
     @Override
     public BlockColor getColor() {
         return BlockColor.DIRT_BLOCK_COLOR;
     }
-
 }

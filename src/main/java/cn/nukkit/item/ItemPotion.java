@@ -1,6 +1,6 @@
 package cn.nukkit.item;
 
-public class ItemPotion extends Item {
+public class ItemPotion extends ItemEdible {
 
     public static final int NO_EFFECTS = 0;
     public static final int WATER = 0;

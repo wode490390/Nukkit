@@ -258,7 +258,7 @@ public class LevelSoundEventPacket extends DataPacket {
     public static final int SOUND_CANT_BREED = 254;
     public static final int SOUND_UNDEFINED = 255;
 
-    public int sound = SOUND_DEFAULT;
+    public int sound;
     public Vector3f position = new Vector3f();
     public int extraData = -1;
     public String entityType = ":"; //???
@@ -267,7 +267,7 @@ public class LevelSoundEventPacket extends DataPacket {
 
     @Override
     public void decode() {
-        this.sound = this.getByte();
+        this.sound = (int) this.getUnsignedVarInt();
         this.position = this.getVector3();
         this.extraData = this.getVarInt();
         this.entityType = this.getString();
@@ -278,7 +278,7 @@ public class LevelSoundEventPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putByte((byte) this.sound);
+        this.putUnsignedVarInt(this.sound);
         this.putVector3(this.position);
         this.putVarInt(this.extraData);
         this.putString(this.entityType);

@@ -37,11 +37,6 @@ public class BlockSignPost extends BlockTransparentMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
     public boolean isSolid() {
         return false;
     }

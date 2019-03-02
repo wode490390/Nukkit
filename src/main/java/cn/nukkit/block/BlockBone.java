@@ -33,18 +33,18 @@ public class BlockBone extends BlockSolidMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 10;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{new ItemBlock(this)};
         }
 

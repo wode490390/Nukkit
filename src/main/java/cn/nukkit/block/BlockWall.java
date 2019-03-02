@@ -10,9 +10,21 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  * Nukkit Project
  */
 public class BlockWall extends BlockTransparentMeta {
+
     public static final int NONE_MOSSY_WALL = 0;
     public static final int MOSSY_WALL = 1;
-
+    public static final int GRANITE_WALL = 2;
+    public static final int DIORITE_WALL = 3;
+    public static final int ANDESITE_WALL = 4;
+    public static final int SANDSTONE_WALL = 5;
+    public static final int BRICK_WALL = 6;
+    public static final int STONE_BRICK_WALL = 7;
+    public static final int MOSSY_STONE_BRICK_WALL = 8;
+    public static final int NETHER_BRICK_WALL = 9;
+    public static final int END_STONE_BRICK_WALL = 10;
+    public static final int PRISMARINE_WALL = 11;
+    public static final int RED_SANDSTONE_WALL = 12;
+    public static final int RED_NETHER_BRICK_WALL = 13;
 
     public BlockWall() {
         this(0);
@@ -44,11 +56,25 @@ public class BlockWall extends BlockTransparentMeta {
 
     @Override
     public String getName() {
-        if (this.getDamage() == 0x01) {
-            return "Mossy Cobblestone Wall";
-        }
-
-        return "Cobblestone Wall";
+        String[] names = new String[]{
+                "Cobblestone",
+                "Mossy Cobblestone",
+                "Granite",
+                "Diorite",
+                "Andesite",
+                "Sandstone",
+                "Brick",
+                "Stone Brick",
+                "Mossy Stone Brick",
+                "End Stone Brick",
+                "Nether Brick",
+                "Prismarine",
+                "Red Sandstone",
+                "Red Nether Brick",
+                "",
+                ""
+        };
+        return names[this.getDamage() & 0xf] + " Wall";
     }
 
     @Override
@@ -89,6 +115,11 @@ public class BlockWall extends BlockTransparentMeta {
     @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override

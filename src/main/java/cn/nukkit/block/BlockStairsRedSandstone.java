@@ -24,7 +24,7 @@ public class BlockStairsRedSandstone extends BlockStairs {
 
     @Override
     public double getHardness() {
-        return 0.8;
+        return 0.800000011920929;
     }
 
     @Override

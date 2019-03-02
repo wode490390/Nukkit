@@ -413,12 +413,12 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     public boolean onBreak(Item item) {
-        return this.onBreak(item, null);
+        return this.getLevel().setBlock(this, new BlockAir(), true, true);//return this.onBreak(item, null);
     }
 
-    public boolean onBreak(Item item, Player player) {
-        return this.getLevel().setBlock(this, new BlockAir(), true, true);
-    }
+    //public boolean onBreak(Item item, Player player) {
+    //    return this.getLevel().setBlock(this, new BlockAir(), true, true);
+    //}
 
     public int onUpdate(int type) {
         return 0;
@@ -437,11 +437,11 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     public double getResistance() {
-        return this.getHardness() * 5d;
+        return this.getHardness() * 5;
     }
 
     public double getExplosionResistance() {
-        return this.getResistance() / 5d;
+        return this.getResistance() / 5;
     }
 
     public int getBurnChance() {
@@ -461,7 +461,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     }
 
     public double getFrictionFactor() {
-        return 0.6;
+        return 0.6000000238418579;
     }
 
     public int getLightLevel() {

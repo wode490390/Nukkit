@@ -32,16 +32,6 @@ public class BlockEndRod extends BlockTransparentMeta {
     }
 
     @Override
-    public double getHardness() {
-        return 0;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0;
-    }
-
-    @Override
     public int getLightLevel() {
         return 14;
     }
@@ -89,5 +79,4 @@ public class BlockEndRod extends BlockTransparentMeta {
     public Item toItem() {
         return new ItemBlock(this, 0);
     }
-
 }

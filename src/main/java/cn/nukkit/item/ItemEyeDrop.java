@@ -3,7 +3,7 @@ package cn.nukkit.item;
 public class ItemEyeDrop extends Item {
 
     public ItemEyeDrop() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemEyeDrop(Integer meta) {
@@ -11,7 +11,12 @@ public class ItemEyeDrop extends Item {
     }
 
     public ItemEyeDrop(Integer meta, int count) {
-        super(EYE_DROP, meta, count, "Potion");
+        super(EYE_DROP, meta, 1, "Potion");
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return 1;
     }
 
     @Override

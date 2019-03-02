@@ -59,12 +59,17 @@ public class BlockAnvil extends BlockFallableMeta {
 
     @Override
     public double getResistance() {
-        return 6000;
+        return 2000;
     }
 
     @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override
@@ -79,12 +84,12 @@ public class BlockAnvil extends BlockFallableMeta {
             int[] faces = {1, 2, 3, 0};
             this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
             if (damage >= 4 && damage <= 7) {
-                this.setDamage(this.getDamage() | 0x04);
+                this.setDamage(this.getDamage() | 0x4);
             } else if (damage >= 8 && damage <= 11) {
-                this.setDamage(this.getDamage() | 0x08);
+                this.setDamage(this.getDamage() | 0x8);
             }
             this.getLevel().setBlock(block, this, true);
-            this.getLevel().addSound(this, Sound.RANDOM_ANVIL_LAND, 1, 0.8F);
+            this.getLevel().addSound(this, Sound.RANDOM_ANVIL_LAND, 1, 0.8f);
             return true;
         }
         return false;
@@ -102,9 +107,9 @@ public class BlockAnvil extends BlockFallableMeta {
     public Item toItem() {
         int damage = this.getDamage();
         if (damage >= 4 && damage <= 7) {
-            return new ItemBlock(this, this.getDamage() & 0x04);
+            return new ItemBlock(this, this.getDamage() & 0x4);
         } else if (damage >= 8 && damage <= 11) {
-            return new ItemBlock(this, this.getDamage() & 0x08);
+            return new ItemBlock(this, this.getDamage() & 0x8);
         } else {
             return new ItemBlock(this);
         }
@@ -112,7 +117,7 @@ public class BlockAnvil extends BlockFallableMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     this.toItem()
             };

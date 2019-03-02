@@ -40,7 +40,7 @@ public class BlockFence extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
@@ -51,16 +51,16 @@ public class BlockFence extends BlockTransparentMeta {
     @Override
     public String getName() {
         String[] names = new String[]{
-                "Oak Fence",
-                "Spruce Fence",
-                "Birch Fence",
-                "Jungle Fence",
-                "Acacia Fence",
-                "Dark Oak Fence",
+                "Oak",
+                "Spruce",
+                "Birch",
+                "Jungle",
+                "Acacia",
+                "Dark Oak",
                 "",
                 ""
         };
-        return names[this.getDamage() & 0x07];
+        return names[this.getDamage() & 0x7] + " Fence";
     }
 
     @Override
@@ -104,6 +104,6 @@ public class BlockFence extends BlockTransparentMeta {
 
     @Override		
     public Item toItem() {		
-        return new ItemBlock(this, this.getDamage() & 0x07);		
+        return new ItemBlock(this, this.getDamage() & 0x7);		
     }
 }

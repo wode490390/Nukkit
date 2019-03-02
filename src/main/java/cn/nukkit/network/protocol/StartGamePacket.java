@@ -12,6 +12,12 @@ public class StartGamePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.START_GAME_PACKET;
 
+    public static final int GAME_PUBLISH_SETTING_NO_MULTI_PLAY = 0;
+    public static final int GAME_PUBLISH_SETTING_INVITE_ONLY = 1;
+    public static final int GAME_PUBLISH_SETTING_FRIENDS_ONLY = 2;
+    public static final int GAME_PUBLISH_SETTING_FRIENDS_OF_FRIENDS = 3;
+    public static final int GAME_PUBLISH_SETTING_PUBLIC = 4;
+
     @Override
     public byte pid() {
         return NETWORK_ID;
@@ -25,8 +31,8 @@ public class StartGamePacket extends DataPacket {
 
     public Vector3f playerPosition = new Vector3f();
 
-    public float pitch = 0.0f;
-    public float yaw = 0.0f;
+    public float pitch = 0;
+    public float yaw = 0;
 
     public int seed = 0;
     public byte dimension = 0;
@@ -40,23 +46,22 @@ public class StartGamePacket extends DataPacket {
     public int time = -1; //-1 = not stopped, any positive value = stopped at that time
     public boolean eduMode = false;
     public boolean hasEduFeaturesEnabled = false;
-    public float rainLevel = 0.0f;
-    public float lightningLevel = 0.0f;
+    public float rainLevel = 0;
+    public float lightningLevel = 0;
+    public boolean hasConfirmedPlatformLockedContent = false;
     public boolean isMultiplayerGame = true;
     public boolean hasLANBroadcast = true;
-    public boolean hasXboxLiveBroadcast = true;
+    public int xboxLiveBroadcastMode = GAME_PUBLISH_SETTING_PUBLIC;
+    public int platformBroadcastMode = GAME_PUBLISH_SETTING_PUBLIC;
     public boolean commandsEnabled = false;
     public boolean isTexturePacksRequired = false;
     public GameRules gameRules;
     public boolean hasBonusChestEnabled = false;
     public boolean hasStartWithMapEnabled = false;
-    public boolean hasTrustPlayersEnabled = false;
     public int defaultPlayerPermission = PlayerPermissions.MEMBER; //TODO
-    public int xboxLiveBroadcastMode = 0;
+
     public int serverChunkTickRange = 4; //TODO (leave as default for now)
-    public boolean broadcastToPlatform = false;
-    public int platformBroadcastMode = 0;
-    public boolean xboxLiveBroadcastIntent = false;
+
     public boolean hasLockedBehaviorPack = false;
     public boolean hasLockedResourcePack = false;
     public boolean isFromLockedWorldTemplate = false;
@@ -102,21 +107,18 @@ public class StartGamePacket extends DataPacket {
         this.putBoolean(this.hasEduFeaturesEnabled);
         this.putLFloat(this.rainLevel);
         this.putLFloat(this.lightningLevel);
+		this.putBoolean(this.hasConfirmedPlatformLockedContent);
         this.putBoolean(this.isMultiplayerGame);
         this.putBoolean(this.hasLANBroadcast);
-        this.putBoolean(this.hasXboxLiveBroadcast);
+        this.putVarInt(this.xboxLiveBroadcastMode);
+		this.putVarInt(this.platformBroadcastMode);
         this.putBoolean(this.commandsEnabled);
         this.putBoolean(this.isTexturePacksRequired);
         this.putGameRules(this.gameRules);
         this.putBoolean(this.hasBonusChestEnabled);
         this.putBoolean(this.hasStartWithMapEnabled);
-        this.putBoolean(this.hasTrustPlayersEnabled);
         this.putVarInt(this.defaultPlayerPermission);
-        this.putVarInt(this.xboxLiveBroadcastMode);
         this.putLInt(this.serverChunkTickRange);
-        this.putBoolean(this.broadcastToPlatform);
-        this.putVarInt(this.platformBroadcastMode);
-        this.putBoolean(this.xboxLiveBroadcastIntent);
         this.putBoolean(this.hasLockedBehaviorPack);
         this.putBoolean(this.hasLockedResourcePack);
         this.putBoolean(this.isFromLockedWorldTemplate);

@@ -8,8 +8,7 @@ import cn.nukkit.item.ItemChorusFruit;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockChorusFlower extends BlockTransparentMeta {
 
@@ -33,12 +32,7 @@ public class BlockChorusFlower extends BlockTransparentMeta {
 
     @Override
     public double getHardness() {
-        return 0.4;
-    }
-
-    @Override
-    public double getResistance() {
-        return 2;
+        return 0.4000000059604645;
     }
 
     @Override
@@ -74,8 +68,8 @@ public class BlockChorusFlower extends BlockTransparentMeta {
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (new Random().nextInt(3) == 1) {
-                if (this.getDamage() < 0x06) {
+            if (ThreadLocalRandom.current().nextInt(3) == 1) {
+                if (this.getDamage() < 0x6) {
                     BlockChorusFlower block = (BlockChorusFlower) this.clone();
                     block.setDamage(block.getDamage() + 1);
                     BlockGrowEvent ev = new BlockGrowEvent(this, block);

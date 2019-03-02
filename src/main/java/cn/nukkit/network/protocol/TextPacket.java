@@ -21,6 +21,7 @@ public class TextPacket extends DataPacket {
     public static final byte TYPE_SYSTEM = 6;
     public static final byte TYPE_WHISPER = 7;
     public static final byte TYPE_ANNOUNCEMENT = 8;
+    public static final byte TYPE_JSON = 9;
 
     public byte type;
     public boolean needsTranslation = false;
@@ -42,6 +43,7 @@ public class TextPacket extends DataPacket {
             case TYPE_RAW:
             case TYPE_TIP:
             case TYPE_SYSTEM:
+            case TYPE_JSON:
                 this.message = this.getString();
                 break;
 
@@ -74,6 +76,7 @@ public class TextPacket extends DataPacket {
             case TYPE_RAW:
             case TYPE_TIP:
             case TYPE_SYSTEM:
+            case TYPE_JSON:
                 this.putString(this.message);
                 break;
 

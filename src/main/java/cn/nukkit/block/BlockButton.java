@@ -18,11 +18,6 @@ public abstract class BlockButton extends BlockFlowableMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 2.5;
-    }
-
-    @Override
     public double getHardness() {
         return 0.5;
     }
@@ -50,7 +45,7 @@ public abstract class BlockButton extends BlockFlowableMeta {
         }
 
         this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, 0, 15));
-        this.setDamage(this.getDamage() ^ 0x08);
+        this.setDamage(this.getDamage() ^ 0x8);
         this.level.setBlock(this, this, true, false);
         this.level.addSound(this.add(0.5, 0.5, 0.5), Sound.RANDOM_CLICK);
         this.level.scheduleUpdate(this, 30);
@@ -72,7 +67,7 @@ public abstract class BlockButton extends BlockFlowableMeta {
             if (this.isActivated()) {
                 this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, 15, 0));
 
-                this.setDamage(this.getDamage() ^ 0x08);
+                this.setDamage(this.getDamage() ^ 0x8);
                 this.level.setBlock(this, this, true, false);
                 this.level.addSound(this.add(0.5, 0.5, 0.5), Sound.RANDOM_CLICK);
 
@@ -88,7 +83,7 @@ public abstract class BlockButton extends BlockFlowableMeta {
     }
 
     public boolean isActivated() {
-        return ((this.getDamage() & 0x08) == 0x08);
+        return ((this.getDamage() & 0x8) == 0x8);
     }
 
     @Override
@@ -105,7 +100,7 @@ public abstract class BlockButton extends BlockFlowableMeta {
     }
 
     public BlockFace getFacing() {
-        int side = isActivated() ? getDamage() ^ 0x08 : getDamage();
+        int side = isActivated() ? getDamage() ^ 0x8 : getDamage();
         return BlockFace.fromIndex(side);
     }
 

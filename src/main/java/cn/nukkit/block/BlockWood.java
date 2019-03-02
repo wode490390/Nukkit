@@ -12,11 +12,11 @@ import cn.nukkit.utils.BlockColor;
  * Nukkit Project
  */
 public class BlockWood extends BlockSolidMeta {
+
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
     public static final int BIRCH = 2;
     public static final int JUNGLE = 3;
-
 
     public BlockWood() {
         this(0);
@@ -37,11 +37,6 @@ public class BlockWood extends BlockSolidMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 10;
-    }
-
-    @Override
     public String getName() {
         String[] names = new String[]{
                 "Oak Wood",
@@ -50,7 +45,7 @@ public class BlockWood extends BlockSolidMeta {
                 "Jungle Wood"
         };
 
-        return names[this.getDamage() & 0x03];
+        return names[this.getDamage() & 0x3];
     }
 
     @Override
@@ -79,7 +74,7 @@ public class BlockWood extends BlockSolidMeta {
                 0b0100
         };
 
-        this.setDamage(((this.getDamage() & 0x03) | faces[face.getIndex()]));
+        this.setDamage(((this.getDamage() & 0x3) | faces[face.getIndex()]));
         this.getLevel().setBlock(block, this, true, true);
 
         return true;
@@ -87,7 +82,7 @@ public class BlockWood extends BlockSolidMeta {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(this, this.getDamage() & 0x03);
+        return new ItemBlock(this, this.getDamage() & 0x3);
     }
 
     @Override

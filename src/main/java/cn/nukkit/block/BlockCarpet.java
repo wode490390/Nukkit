@@ -33,12 +33,7 @@ public class BlockCarpet extends BlockFlowableMeta {
 
     @Override
     public double getHardness() {
-        return 0.1;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0.5;
+        return 0.10000000149011612;
     }
 
     @Override

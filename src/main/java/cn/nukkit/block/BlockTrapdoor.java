@@ -41,11 +41,6 @@ public class BlockTrapdoor extends BlockTransparentMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 15;
-    }
-
-    @Override
     public boolean canBeActivated() {
         return true;
     }

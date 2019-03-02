@@ -32,7 +32,7 @@ public class BlockCommandBlock extends BlockSolidMeta {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BlockCommandBlock extends BlockSolidMeta {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(new BlockAir());
+        return new ItemBlock(get(AIR));
     }
 
     @Override

@@ -1,8 +1,6 @@
 package cn.nukkit.plugin.service;
 
-
 import cn.nukkit.plugin.Plugin;
-
 import java.util.List;
 
 /**
@@ -58,4 +56,9 @@ public interface ServiceManager {
      */
     List<Class<?>> getKnownService();
 
+    List<RegisteredServiceProvider<?>> getRegistrations(Plugin plugin);
+
+    <T> List<RegisteredServiceProvider<T>> getRegistrations(Class<T> service);
+
+    <T> boolean isProvidedFor(Class<T> service);
 }

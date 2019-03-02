@@ -32,13 +32,8 @@ public class BlockFarmland extends BlockTransparentMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 3;
-    }
-
-    @Override
     public double getHardness() {
-        return 0.6;
+        return 0.6000000238418579;
     }
 
     @Override
@@ -114,7 +109,7 @@ public class BlockFarmland extends BlockTransparentMeta {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(new BlockDirt());
+        return new ItemBlock(Block.get(Block.DIRT));
     }
 
     @Override

@@ -33,11 +33,6 @@ public class BlockBeacon extends BlockTransparent {
     }
 
     @Override
-    public double getResistance() {
-        return 15;
-    }
-
-    @Override
     public int getLightLevel() {
         return 15;
     }

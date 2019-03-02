@@ -300,7 +300,6 @@ public class Network {
         this.registerPacket(ProtocolInfo.SET_LOCAL_PLAYER_AS_INITIALIZED_PACKET, SetLocalPlayerAsInitializedPacket.class);
         this.registerPacket(ProtocolInfo.NETWORK_STACK_LATENCY_PACKET, NetworkStackLatencyPacket.class);
         this.registerPacket(ProtocolInfo.UPDATE_SOFT_ENUM_PACKET, UpdateSoftEnumPacket.class);
-        this.registerPacket(ProtocolInfo.ADD_HANGING_ENTITY_PACKET, AddHangingEntityPacket.class);
         this.registerPacket(ProtocolInfo.COMMAND_OUTPUT_PACKET, CommandOutputPacket.class);
         this.registerPacket(ProtocolInfo.LAB_TABLE_PACKET, LabTablePacket.class);
         this.registerPacket(ProtocolInfo.PHOTO_TRANSFER_PACKET, PhotoTransferPacket.class);
@@ -318,5 +317,6 @@ public class Network {
         this.registerPacket(ProtocolInfo.LEVEL_SOUND_EVENT_PACKET_V1, LevelSoundEventPacketV1.class);
         this.registerPacket(ProtocolInfo.NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET, NetworkChunkPublisherUpdatePacket.class);
         this.registerPacket(ProtocolInfo.SPAWN_PARTICLE_EFFECT_PACKET, SpawnParticleEffectPacket.class);
+        this.registerPacket(ProtocolInfo.LEVEL_SOUND_EVENT_PACKET_V2, LevelSoundEventPacketV2.class);
     }
 }

@@ -21,12 +21,7 @@ public class BlockStonecutter extends BlockSolid {
 
     @Override
     public double getHardness() {
-        return 3.5;
-    }
-
-    @Override
-    public double getResistance() {
-        return 17.5;
+        return 2.5;
     }
 
     @Override
@@ -35,8 +30,13 @@ public class BlockStonecutter extends BlockSolid {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     this.toItem()
             };

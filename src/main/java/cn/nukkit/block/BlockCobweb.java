@@ -2,8 +2,8 @@ package cn.nukkit.block;
 
 import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemString;
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -32,13 +32,8 @@ public class BlockCobweb extends BlockFlowable {
     }
 
     @Override
-    public double getResistance() {
-        return 20;
-    }
-
-    @Override
     public int getToolType() {
-        return ItemTool.TYPE_SWORD;
+        return ItemTool.TYPE_SWORD;//TODO: shears
     }
 
     @Override
@@ -48,13 +43,16 @@ public class BlockCobweb extends BlockFlowable {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isShears() || item.isSword()) {
+        if (item.isShears()) {
             return new Item[]{
-                    new ItemString()
+                    this.toItem()
             };
-        } else {
-            return new Item[0];
+        } else if (item.isSword()) {
+            return new Item[]{
+                    Item.get(Item.STRING)
+            };
         }
+        return new Item[0];
     }
 
     @Override
