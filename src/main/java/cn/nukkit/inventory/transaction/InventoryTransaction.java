@@ -9,7 +9,6 @@ import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.MainLogger;
-
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -78,9 +77,7 @@ public class InventoryTransaction {
      * @param inventory to add
      */
     public void addInventory(Inventory inventory) {
-        if (!this.inventories.contains(inventory)) {
-            this.inventories.add(inventory);
-        }
+        this.inventories.add(inventory);
     }
 
     protected boolean matchItems(List<Item> needItems, List<Item> haveItems) {

@@ -10,14 +10,14 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.Tag;
-
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import java.util.Map;
 
 /**
  * author: CreeperFace
  * Nukkit Project
  */
-public class BlockCauldron extends BlockSolidMeta {
+public class BlockCauldron extends BlockTransparentMeta {
 
     public BlockCauldron() {
         super(0);
@@ -37,11 +37,6 @@ public class BlockCauldron extends BlockSolidMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 10;
-    }
-
-    @Override
     public double getHardness() {
         return 2;
     }
@@ -52,16 +47,21 @@ public class BlockCauldron extends BlockSolidMeta {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public boolean canBeActivated() {
         return true;
     }
 
     public boolean isFull() {
-        return this.getDamage() == 0x06;
+        return this.getDamage() == 0x6;
     }
 
     public boolean isEmpty() {
-        return this.getDamage() == 0x00;
+        return this.getDamage() == 0;
     }
 
     @Override
@@ -96,7 +96,6 @@ public class BlockCauldron extends BlockSolidMeta {
                         this.getLevel().addSound(this.add(0.5, 1, 0.5), Sound.CAULDRON_TAKEWATER);
                     }
                 } else if (item.getDamage() == 8) {//water bucket
-
                     if (isFull() && !cauldron.isCustomColor() && !cauldron.hasPotion()) {
                         break;
                     }
@@ -121,26 +120,58 @@ public class BlockCauldron extends BlockSolidMeta {
                             this.setDamage(6);//fill
                             cauldron.clearCustomColor();
                             this.level.setBlock(this, this, true);
-                            this.level.addSound(this.add(0.5, 1, 0.5), Sound.BUCKET_FILL_WATER);
+                            this.getLevel().addLevelSoundEvent(this.add(0.5, 1, 0.5), LevelSoundEventPacket.SOUND_BUCKET_FILL_WATER);
                         }
                         //this.update();
                     }
+                /*} else if (item.getDamage() == 10) {//lava bucket
+                    if (isFull() && !cauldron.isCustomColor() && !cauldron.hasPotion()) {
+                        break;
+                    }
+
+                    ItemBucket bucket = (ItemBucket) item.clone();
+                    bucket.setDamage(0);//empty bucket
+
+                    PlayerBucketEmptyEvent ev = new PlayerBucketEmptyEvent(player, this, null, item, bucket);
+                    this.level.getServer().getPluginManager().callEvent(ev);
+                    if (!ev.isCancelled()) {
+                        if (player.isSurvival()) {
+                            player.getInventory().setItemInHand(ev.getItem());
+                        }
+                        if (cauldron.hasPotion()) {//if has potion
+                            this.setDamage(0);//empty
+                            cauldron.setPotionId(0xffff);//reset potion
+                            cauldron.setSplashPotion(false);
+                            cauldron.clearCustomColor();
+                            this.level.setBlock(this, this, true);
+                            this.level.addSound(this.add(0.5, 0, 0.5), Sound.CAULDRON_EXPLODE);
+                        } else {
+                            //this.getLevel().setBlock(this, Block.get(465), true);//-210
+                            this.setDamage(14);//fill
+                            cauldron.clearCustomColor();
+                            //this.getLevel().setBlock(this, this, true);
+                            this.getLevel().addLevelSoundEvent(this.add(0.5, 1, 0.5), LevelSoundEventPacket.SOUND_BUCKET_FILL_LAVA);
+                        }
+                        //this.update();
+                    }*/
                 }
                 break;
-            case Item.DYE: //TODO
-                break;
+            case Item.DYE:
+                break; //TODO
             case Item.LEATHER_CAP:
             case Item.LEATHER_TUNIC:
             case Item.LEATHER_PANTS:
             case Item.LEATHER_BOOTS:
-                break;
+                break; //TODO
+            case Item.ARROW:
+                break; //TODO
             case Item.POTION:
                 if (isFull()) {
                     break;
                 }
                 this.setDamage(this.getDamage() + 1);
-                if (this.getDamage() > 0x06)
-                    this.setDamage(0x06);
+                if (this.getDamage() > 0x6)
+                    this.setDamage(0x6);
 
                 if (item.getCount() == 1) {
                     player.getInventory().setItemInHand(new ItemBlock(new BlockAir()));
@@ -164,8 +195,8 @@ public class BlockCauldron extends BlockSolidMeta {
                 }
 
                 this.setDamage(this.getDamage() - 1);
-                if (this.getDamage() < 0x00)
-                    this.setDamage(0x00);
+                if (this.getDamage() < 0)
+                    this.setDamage(0);
 
                 if (item.getCount() == 1) {
                     player.getInventory().setItemInHand(new ItemPotion());
@@ -215,7 +246,7 @@ public class BlockCauldron extends BlockSolidMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{new ItemCauldron()};
         }
 

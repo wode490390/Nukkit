@@ -2,7 +2,6 @@ package cn.nukkit.utils.completers;
 
 import cn.nukkit.Server;
 import jline.console.completer.Completer;
-
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -26,7 +25,7 @@ public class PlayersCompleter implements Completer {
             buffer = split[split.length - 1]; // So we split and get the last value
             split[split.length - 1] = ""; // And now clear the last value
             String cmd = String.join(" ", split);
-            SortedSet<String> names = new TreeSet<String>();
+            SortedSet<String> names = new TreeSet<>();
             Server.getInstance().getOnlinePlayers().values().forEach((p) -> names.add(p.getName()));
             for (String match : names) {
                 if (!match.toLowerCase().startsWith(buffer.toLowerCase())) {
@@ -39,5 +38,4 @@ public class PlayersCompleter implements Completer {
 
         return candidates.isEmpty() ? -1 : 0;
     }
-
 }

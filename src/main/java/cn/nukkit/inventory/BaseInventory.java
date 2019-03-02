@@ -3,6 +3,7 @@ package cn.nukkit.inventory;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.BlockAir;
+import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityInventoryChangeEvent;
 import cn.nukkit.event.inventory.InventoryOpenEvent;
@@ -10,7 +11,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.network.protocol.InventoryContentPacket;
 import cn.nukkit.network.protocol.InventorySlotPacket;
-
 import java.util.*;
 
 /**
@@ -157,6 +157,10 @@ public abstract class BaseInventory implements Inventory {
             }
 
             item = ev.getNewItem();
+        }
+
+        if (holder instanceof BlockEntity) {
+            ((BlockEntity) holder).setDirty();
         }
 
         Item old = this.getItem(index);
@@ -320,7 +324,7 @@ public abstract class BaseInventory implements Inventory {
             }
         }
 
-        return itemSlots.stream().toArray(Item[]::new);
+        return itemSlots.toArray(new Item[0]);
     }
 
     @Override
@@ -356,7 +360,7 @@ public abstract class BaseInventory implements Inventory {
             }
         }
 
-        return itemSlots.stream().toArray(Item[]::new);
+        return itemSlots.toArray(new Item[0]);
     }
 
     @Override
@@ -373,6 +377,10 @@ public abstract class BaseInventory implements Inventory {
                     return false;
                 }
                 item = ev.getNewItem();
+            }
+
+            if (holder instanceof BlockEntity) {
+                ((BlockEntity) holder).setDirty();
             }
 
             if (item.getId() != Item.AIR) {
@@ -451,9 +459,9 @@ public abstract class BaseInventory implements Inventory {
     @Override
     public void sendContents(Player... players) {
         InventoryContentPacket pk = new InventoryContentPacket();
-        pk.slots = new Item[this.getSize()];
+        pk.items = new Item[this.getSize()];
         for (int i = 0; i < this.getSize(); ++i) {
-            pk.slots[i] = this.getItem(i);
+            pk.items[i] = this.getItem(i);
         }
 
         for (Player player : players) {
@@ -462,7 +470,7 @@ public abstract class BaseInventory implements Inventory {
                 this.close(player);
                 continue;
             }
-            pk.inventoryId = id;
+            pk.windowId = id;
             player.dataPacket(pk);
         }
     }
@@ -517,7 +525,7 @@ public abstract class BaseInventory implements Inventory {
 
     @Override
     public void sendContents(Collection<Player> players) {
-        this.sendContents(players.stream().toArray(Player[]::new));
+        this.sendContents(players.toArray(new Player[0]));
     }
 
     @Override
@@ -528,7 +536,7 @@ public abstract class BaseInventory implements Inventory {
     @Override
     public void sendSlot(int index, Player... players) {
         InventorySlotPacket pk = new InventorySlotPacket();
-        pk.slot = index;
+        pk.inventorySlot = index;
         pk.item = this.getItem(index).clone();
 
         for (Player player : players) {
@@ -537,14 +545,14 @@ public abstract class BaseInventory implements Inventory {
                 this.close(player);
                 continue;
             }
-            pk.inventoryId = id;
+            pk.windowId = id;
             player.dataPacket(pk);
         }
     }
 
     @Override
     public void sendSlot(int index, Collection<Player> players) {
-        this.sendSlot(index, players.stream().toArray(Player[]::new));
+        this.sendSlot(index, players.toArray(new Player[0]));
     }
 
     @Override

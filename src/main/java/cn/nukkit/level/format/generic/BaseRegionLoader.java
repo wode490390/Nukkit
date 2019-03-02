@@ -13,6 +13,7 @@ import java.util.Map;
  * Nukkit Project
  */
 abstract public class BaseRegionLoader {
+
     public static final int VERSION = 1;
     public static final byte COMPRESSION_GZIP = 1;
     public static final byte COMPRESSION_ZLIB = 2;
@@ -36,7 +37,7 @@ abstract public class BaseRegionLoader {
             this.x = regionX;
             this.z = regionZ;
             this.levelProvider = level;
-            String filePath = this.levelProvider.getPath() + "region/r." + regionX + "." + regionZ + "." + ext;
+            String filePath = (this.levelProvider.getPath().endsWith("/") ? this.levelProvider.getPath() : this.levelProvider.getPath() + "/") + "region/r." + regionX + "." + regionZ + "." + ext;
             File file = new File(filePath);
             boolean exists = file.exists();
             if (!exists) {
@@ -96,7 +97,6 @@ abstract public class BaseRegionLoader {
     public abstract int getZ();
 
     public Integer[] getLocationIndexes() {
-        return this.locationTable.keySet().stream().toArray(Integer[]::new);
+        return this.locationTable.keySet().toArray(new Integer[0]);
     }
-
 }

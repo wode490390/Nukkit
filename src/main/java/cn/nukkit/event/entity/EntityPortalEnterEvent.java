@@ -5,6 +5,7 @@ import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.HandlerList;
 
 public class EntityPortalEnterEvent extends EntityEvent implements Cancellable {
+
     private static final HandlerList handlers = new HandlerList();
 
     private final PortalType type;
@@ -24,6 +25,6 @@ public class EntityPortalEnterEvent extends EntityEvent implements Cancellable {
 
     public enum PortalType {
         NETHER,
-        END
+        THE_END
     }
 }

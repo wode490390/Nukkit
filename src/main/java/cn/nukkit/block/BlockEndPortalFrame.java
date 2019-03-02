@@ -2,11 +2,15 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
+import cn.nukkit.level.Sound;
+import cn.nukkit.math.BlockFace;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 
 /**
  * Created by Pub4Game on 26.12.2015.
  */
-public class BlockEndPortalFrame extends BlockTransparentMeta {
+public class BlockEndPortalFrame extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockEndPortalFrame() {
         this(0);
@@ -23,7 +27,7 @@ public class BlockEndPortalFrame extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
@@ -71,8 +75,9 @@ public class BlockEndPortalFrame extends BlockTransparentMeta {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        if((this.getDamage() & 0x04) == 0 && player instanceof Player && item.getId() == Item.ENDER_EYE) {
+        if ((this.getDamage() & 0x04) == 0 && player instanceof Player && item.getId() == Item.ENDER_EYE) {
             this.setDamage(this.getDamage() + 4);
+            this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BLOCK_END_PORTAL_FRAME_FILL);
             this.getLevel().setBlock(this, this, true, true);
             //TODO: create portal
             return true;
@@ -83,5 +88,23 @@ public class BlockEndPortalFrame extends BlockTransparentMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        int[] faces = {0, 3, 1, 2};
+        this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
+        this.getLevel().setBlock(block, this, true);
+        return true;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

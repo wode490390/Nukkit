@@ -11,7 +11,9 @@ import cn.nukkit.utils.BlockColor;
  * Package cn.nukkit.block in project Nukkit .
  */
 public class BlockCraftingTable extends BlockSolid {
+
     public BlockCraftingTable() {
+
     }
 
     @Override
@@ -32,11 +34,6 @@ public class BlockCraftingTable extends BlockSolid {
     @Override
     public double getHardness() {
         return 2.5;
-    }
-
-    @Override
-    public double getResistance() {
-        return 15;
     }
 
     @Override

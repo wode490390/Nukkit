@@ -11,7 +11,6 @@ import cn.nukkit.utils.PluginException;
 import cn.nukkit.utils.Utils;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
-
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -175,8 +174,12 @@ public class PluginManager {
 
                             for (String version : description.getCompatibleAPIs()) {
 
-                                //Check the format: majorVersion.minorVersion.patch
-                                if (!Pattern.matches("[0-9]\\.[0-9]\\.[0-9]", version)) {
+                                try {
+                                    //Check the format: majorVersion.minorVersion.patch
+                                    if (!Pattern.matches("[0-9]\\.[0-9]\\.[0-9]", version)) {
+                                        throw new IllegalArgumentException();
+                                    }
+                                } catch (NullPointerException | IllegalArgumentException e) {
                                     this.server.getLogger().error(this.server.getLanguage().translateString("nukkit.plugin.loadError", new String[]{name, "Wrong API format"}));
                                     continue;
                                 }
@@ -476,7 +479,7 @@ public class PluginManager {
                             aliasList.add(alias);
                         }
 
-                        newCmd.setAliases(aliasList.stream().toArray(String[]::new));
+                        newCmd.setAliases(aliasList.toArray(new String[0]));
                     }
                 }
 

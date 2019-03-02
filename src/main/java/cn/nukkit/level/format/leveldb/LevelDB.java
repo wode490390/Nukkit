@@ -22,7 +22,6 @@ import cn.nukkit.utils.*;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.impl.Iq80DBFactory;
-
 import java.io.*;
 import java.nio.ByteOrder;
 import java.util.*;
@@ -156,6 +155,11 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
+    public Chunk getEmptyChunk(int chunkX, int chunkZ) {
+        return Chunk.getEmptyChunk(chunkX, chunkZ, this);
+    }
+
+    @Override
     public AsyncTask requestChunkTask(int x, int z) {
         Chunk chunk = this.getChunk(x, z, false);
         if (chunk == null) {
@@ -183,19 +187,17 @@ public class LevelDB implements LevelProvider {
         }
 
         Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
-        BinaryStream extraData;
+        BinaryStream extraData = null;
         if (!extra.isEmpty()) {
-            extraData = new BinaryStream();
+            extraData = ThreadCache.binaryStream.get().reset();
             extraData.putLInt(extra.size());
             for (Integer key : extra.values()) {
                 extraData.putLInt(key);
                 extraData.putLShort(extra.get(key));
             }
-        } else {
-            extraData = null;
         }
 
-        BinaryStream stream = new BinaryStream();
+        BinaryStream stream = ThreadCache.binaryStream.get().reset();
         stream.put(chunk.getBlockIdArray());
         stream.put(chunk.getBlockDataArray());
         stream.put(chunk.getBlockSkyLightArray());
@@ -329,7 +331,7 @@ public class LevelDB implements LevelProvider {
     @Override
     public boolean unloadChunk(int x, int z, boolean safe) {
         long index = Level.chunkHash(x, z);
-        Chunk chunk = this.chunks.containsKey(index) ? this.chunks.get(index) : null;
+        Chunk chunk = this.chunks.getOrDefault(index, null);
         if (chunk != null && chunk.unload(false, safe)) {
             this.chunks.remove(index);
             return true;
@@ -365,7 +367,7 @@ public class LevelDB implements LevelProvider {
             return this.chunks.get(index);
         } else {
             this.loadChunk(x, z, create);
-            return this.chunks.containsKey(index) ? this.chunks.get(index) : null;
+            return this.chunks.getOrDefault(index, null);
         }
     }
 
@@ -510,6 +512,16 @@ public class LevelDB implements LevelProvider {
     }
 
     @Override
+    public int getDifficulty() {
+        return this.levelData.getInt("difficulty");
+    }
+
+    @Override
+    public void setDifficulty(int difficulty) {
+        this.levelData.putInt("difficulty", difficulty);
+    }
+
+    @Override
     public Vector3 getSpawn() {
         return new Vector3(this.levelData.getInt("SpawnX"), this.levelData.getInt("SpawnY"), this.levelData.getInt("SpawnZ"));
     }
@@ -559,6 +571,6 @@ public class LevelDB implements LevelProvider {
                 result.add(key);
             }
         });
-        return result.stream().toArray(byte[][]::new);
+        return result.toArray(new byte[0][]);
     }
 }

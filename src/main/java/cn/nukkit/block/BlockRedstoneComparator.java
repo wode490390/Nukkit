@@ -16,11 +16,7 @@ import cn.nukkit.nbt.tag.ListTag;
  */
 public abstract class BlockRedstoneComparator extends BlockRedstoneDiode {
 
-    public BlockRedstoneComparator() {
-        this(0);
-    }
-
-    public BlockRedstoneComparator(int meta) {
+    protected BlockRedstoneComparator(int meta) {
         super(meta);
     }
 

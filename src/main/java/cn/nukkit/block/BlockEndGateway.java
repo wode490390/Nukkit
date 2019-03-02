@@ -1,14 +1,16 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.utils.BlockColor;
 
 /**
  * @author PikyCZ
  */
-public class BlockEndGateway extends BlockSolid {
+public class BlockEndGateway extends BlockTransparent {
 
     public BlockEndGateway() {
+
     }
 
     @Override
@@ -38,7 +40,7 @@ public class BlockEndGateway extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
@@ -56,4 +58,8 @@ public class BlockEndGateway extends BlockSolid {
         return BlockColor.AIR_BLOCK_COLOR;
     }
 
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockAir());
+    }
 }

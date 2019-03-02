@@ -5,7 +5,6 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.AsyncTask;
-
 import java.util.Map;
 
 /**
@@ -13,6 +12,7 @@ import java.util.Map;
  * Nukkit Project
  */
 public interface LevelProvider {
+
     byte ORDER_YZX = 0;
     byte ORDER_ZXY = 1;
 
@@ -31,6 +31,8 @@ public interface LevelProvider {
     BaseFullChunk getChunk(int X, int Z);
 
     BaseFullChunk getChunk(int X, int Z, boolean create);
+
+    BaseFullChunk getEmptyChunk(int x, int z);
 
     void saveChunks();
 
@@ -87,6 +89,10 @@ public interface LevelProvider {
     long getSeed();
 
     void setSeed(long value);
+
+    int getDifficulty();
+
+    void setDifficulty(int difficulty);
 
     Vector3 getSpawn();
 

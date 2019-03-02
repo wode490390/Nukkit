@@ -5,7 +5,6 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityHopper;
 import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemHopper;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
@@ -15,7 +14,7 @@ import cn.nukkit.nbt.tag.ListTag;
 /**
  * @author CreeperFace
  */
-public class BlockHopper extends BlockTransparentMeta {
+public class BlockHopper extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockHopper() {
         this(0);
@@ -143,19 +142,25 @@ public class BlockHopper extends BlockTransparentMeta {
     @Override
     public Item[] getDrops(Item item) {
         if (item.getTier() >= ItemTool.TIER_WOODEN) {
-            return new Item[]{toItem()};
+            return new Item[]{
+                    this.toItem()
+            };
         }
-
         return new Item[0];
     }
 
     @Override
     public Item toItem() {
-        return new ItemHopper();
+        return Item.get(Item.HOPPER);
     }
 
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

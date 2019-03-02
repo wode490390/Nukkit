@@ -1,8 +1,11 @@
 package cn.nukkit.block;
 
+//import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.biome.Biome;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -36,7 +39,7 @@ public class BlockIce extends BlockTransparent {
 
     @Override
     public double getFrictionFactor() {
-        return 0.98;
+        return 0.9800000190734863;
     }
 
     @Override
@@ -45,15 +48,17 @@ public class BlockIce extends BlockTransparent {
     }
 
     @Override
-    public boolean onBreak(Item item) {
-        this.getLevel().setBlock(this, new BlockWater(), true);
-        return true;
+    public boolean onBreak(Item item/*, Player player*/) {
+        if (/*(player == null || player.isSurvival()) &&*/ (item == null || item.getEnchantment(Enchantment.ID_SILK_TOUCH) == null)) {
+            return this.getLevel().setBlock(this, new BlockWater(), true);
+        }
+        return super.onBreak(item/*, player*/);
     }
 
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 12) {
+            if (this.getLevel().getFullLight(this) > 11 && !Biome.getBiome(this.getLevel().getBiomeId(this.getFloorX(), this.getFloorZ())).isFreezing()) {
                 this.getLevel().setBlock(this, new BlockWater(), true);
                 return Level.BLOCK_UPDATE_NORMAL;
             }

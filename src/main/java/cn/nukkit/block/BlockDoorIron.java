@@ -2,7 +2,6 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDoorIron;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 
@@ -32,7 +31,7 @@ public class BlockDoorIron extends BlockDoor {
 
     @Override
     public boolean canBeActivated() {
-        return true;
+        return false;
     }
 
     @Override
@@ -41,29 +40,28 @@ public class BlockDoorIron extends BlockDoor {
     }
 
     @Override
-    public double getResistance() {
-        return 25;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    toItem()
+                    this.toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override
     public Item toItem() {
-        return new ItemDoorIron();
+        return Item.get(Item.IRON_DOOR);
     }
 
     @Override

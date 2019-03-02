@@ -4,24 +4,24 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.event.block.BlockGrowEvent;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDye;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.BoneMealParticle;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.SimpleAxisAlignedBB;
-import java.util.Random;
+import cn.nukkit.utils.DyeColor;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by CreeperFace on 27. 10. 2016.
  */
-public class BlockCocoa extends BlockTransparentMeta {
+public class BlockCocoa extends BlockTransparentMeta implements BlockFaceable {
 
-    protected static final AxisAlignedBB[] EAST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.6875D, 0.4375D, 0.375D, 0.9375D, 0.75D, 0.625D), new SimpleAxisAlignedBB(0.5625D, 0.3125D, 0.3125D, 0.9375D, 0.75D, 0.6875D), new SimpleAxisAlignedBB(0.5625D, 0.3125D, 0.3125D, 0.9375D, 0.75D, 0.6875D)};
-    protected static final AxisAlignedBB[] WEST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.0625D, 0.4375D, 0.375D, 0.3125D, 0.75D, 0.625D), new SimpleAxisAlignedBB(0.0625D, 0.3125D, 0.3125D, 0.4375D, 0.75D, 0.6875D), new SimpleAxisAlignedBB(0.0625D, 0.3125D, 0.3125D, 0.4375D, 0.75D, 0.6875D)};
-    protected static final AxisAlignedBB[] NORTH = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.375D, 0.4375D, 0.0625D, 0.625D, 0.75D, 0.3125D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.0625D, 0.6875D, 0.75D, 0.4375D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.0625D, 0.6875D, 0.75D, 0.4375D)};
-    protected static final AxisAlignedBB[] SOUTH = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.375D, 0.4375D, 0.6875D, 0.625D, 0.75D, 0.9375D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.5625D, 0.6875D, 0.75D, 0.9375D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.5625D, 0.6875D, 0.75D, 0.9375D)};
+    protected static final AxisAlignedBB[] EAST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.6875, 0.4375, 0.375, 0.9375, 0.75, 0.625), new SimpleAxisAlignedBB(0.5625, 0.3125, 0.3125, 0.9375, 0.75, 0.6875), new SimpleAxisAlignedBB(0.5625, 0.3125, 0.3125, 0.9375, 0.75, 0.6875)};
+    protected static final AxisAlignedBB[] WEST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.0625, 0.4375, 0.375, 0.3125, 0.75, 0.625), new SimpleAxisAlignedBB(0.0625, 0.3125, 0.3125, 0.4375, 0.75, 0.6875), new SimpleAxisAlignedBB(0.0625, 0.3125, 0.3125, 0.4375, 0.75, 0.6875)};
+    protected static final AxisAlignedBB[] NORTH = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.375, 0.4375, 0.0625, 0.625, 0.75, 0.3125), new SimpleAxisAlignedBB(0.3125, 0.3125, 0.0625, 0.6875, 0.75, 0.4375), new SimpleAxisAlignedBB(0.3125, 0.3125, 0.0625, 0.6875, 0.75, 0.4375)};
+    protected static final AxisAlignedBB[] SOUTH = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.375, 0.4375, 0.6875, 0.625, 0.75, 0.9375), new SimpleAxisAlignedBB(0.3125, 0.3125, 0.5625, 0.6875, 0.75, 0.9375), new SimpleAxisAlignedBB(0.3125, 0.3125, 0.5625, 0.6875, 0.75, 0.9375)};
     protected static final AxisAlignedBB[] ALL = new AxisAlignedBB[12];
 
     public BlockCocoa() {
@@ -41,12 +41,6 @@ public class BlockCocoa extends BlockTransparentMeta {
     public String getName() {
         return "Cocoa";
     }
-
-    @Override
-    public void setDamage(int meta) {
-        super.setDamage(meta);
-    }
-
 
     @Override
     public double getMinX() {
@@ -124,7 +118,7 @@ public class BlockCocoa extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target.getId() == Block.WOOD && target.getDamage() == BlockWood.JUNGLE) {
+        if (target.getId() == Block.WOOD && (target.getDamage() & 0x3) == BlockWood.JUNGLE) {
             if (face != BlockFace.DOWN && face != BlockFace.UP) {
                 int[] faces = new int[]{
                         0,
@@ -152,12 +146,12 @@ public class BlockCocoa extends BlockTransparentMeta {
 
             Block side = this.getSide(BlockFace.fromIndex(faces[this.getDamage()]));
 
-            if (side.getId() != Block.WOOD && side.getDamage() != BlockWood.JUNGLE) {
+            if (side.getId() != Block.WOOD && (side.getDamage() & 0x3) != BlockWood.JUNGLE) {
                 this.getLevel().useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (new Random().nextInt(2) == 1) {
+            if (ThreadLocalRandom.current().nextInt(2) == 1) {
                 if (this.getDamage() / 4 < 2) {
                     BlockCocoa block = (BlockCocoa) this.clone();
                     block.setDamage(block.getDamage() + 4);
@@ -185,7 +179,7 @@ public class BlockCocoa extends BlockTransparentMeta {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        if (item.getId() == Item.DYE && item.getDamage() == 0x0f) {
+        if (item.getId() == Item.DYE && item.getDamage() == 0xf) {
             Block block = this.clone();
             if (this.getDamage() / 4 < 2) {
                 block.setDamage(block.getDamage() + 4);
@@ -208,12 +202,12 @@ public class BlockCocoa extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
     public double getHardness() {
-        return 0.2;
+        return 0.20000000298023224;
     }
 
     @Override
@@ -222,15 +216,24 @@ public class BlockCocoa extends BlockTransparentMeta {
     }
 
     @Override
+    public Item toItem() {
+        return Item.get(Item.DYE, DyeColor.BROWN.getDyeData());
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         if (this.getDamage() >= 8) {
             return new Item[]{
-                    new ItemDye(3, 3)
-            };
-        } else {
-            return new Item[]{
-                    new ItemDye(3, 1)
+                    Item.get(Item.DYE, DyeColor.BROWN.getDyeData(), 3)
             };
         }
+        return new Item[]{
+                this.toItem()
+        };
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

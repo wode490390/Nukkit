@@ -6,6 +6,7 @@ import cn.nukkit.item.ItemTool;
 public class BlockBricksRedNether extends BlockNetherBrick {
 
     public BlockBricksRedNether() {
+
     }
 
     @Override
@@ -20,13 +21,12 @@ public class BlockBricksRedNether extends BlockNetherBrick {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    Item.get(Item.RED_NETHER_BRICK, 0, 1)
+                    Item.get(Item.RED_NETHER_BRICK)
             };
         } else {
             return new Item[0];
         }
     }
-
 }

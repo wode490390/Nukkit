@@ -1,7 +1,6 @@
 package cn.nukkit.network.rcon;
 
 import cn.nukkit.Server;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.BufferUnderflowException;
@@ -21,6 +20,7 @@ import java.util.*;
  * @author Tee7even
  */
 public class RCONServer extends Thread {
+
     private static final int SERVERDATA_AUTH = 3;
     private static final int SERVERDATA_AUTH_RESPONSE = 2;
     private static final int SERVERDATA_EXECCOMMAND = 2;
@@ -132,24 +132,16 @@ public class RCONServer extends Thread {
         } catch (IOException exception) {
             key.cancel();
             channel.close();
-            if (this.rconSessions.contains(channel)) {
-                this.rconSessions.remove(channel);
-            }
-            if (this.sendQueues.containsKey(channel)) {
-                this.sendQueues.remove(channel);
-            }
+            this.rconSessions.remove(channel);
+            this.sendQueues.remove(channel);
             return;
         }
 
         if (bytesRead == -1) {
             key.cancel();
             channel.close();
-            if (this.rconSessions.contains(channel)) {
-                this.rconSessions.remove(channel);
-            }
-            if (this.sendQueues.containsKey(channel)) {
-                this.sendQueues.remove(channel);
-            }
+            this.rconSessions.remove(channel);
+            this.sendQueues.remove(channel);
             return;
         }
 
@@ -161,7 +153,6 @@ public class RCONServer extends Thread {
         switch (packet.getType()) {
             case SERVERDATA_AUTH:
                 byte[] payload = new byte[1];
-                payload[0] = 0;
 
                 if (new String(packet.getPayload(), Charset.forName("UTF-8")).equals(this.password)) {
                     this.rconSessions.add(channel);
@@ -197,12 +188,8 @@ public class RCONServer extends Thread {
             } catch (IOException exception) {
                 key.cancel();
                 channel.close();
-                if (this.rconSessions.contains(channel)) {
-                    this.rconSessions.remove(channel);
-                }
-                if (this.sendQueues.containsKey(channel)) {
-                    this.sendQueues.remove(channel);
-                }
+                this.rconSessions.remove(channel);
+                this.sendQueues.remove(channel);
                 return;
             }
 

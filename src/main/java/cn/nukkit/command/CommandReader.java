@@ -8,7 +8,6 @@ import cn.nukkit.utils.completers.PlayersCompleter;
 import co.aikar.timings.Timings;
 import jline.console.ConsoleReader;
 import jline.console.CursorBuffer;
-
 import java.io.IOException;
 
 /**
@@ -56,7 +55,7 @@ public class CommandReader extends Thread implements InterruptibleThread {
     }
 
     public void run() {
-        Long lastLine = System.currentTimeMillis();
+        long lastLine = System.currentTimeMillis();
         String line;
 
         try {
@@ -72,7 +71,7 @@ public class CommandReader extends Thread implements InterruptibleThread {
                         ServerCommandEvent event = new ServerCommandEvent(Server.getInstance().getConsoleSender(), line);
                         Server.getInstance().getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
-                            Server.getInstance().getScheduler().scheduleTask(() -> Server.getInstance().dispatchCommand(event.getSender(), event.getCommand()));
+                            Server.getInstance().getScheduler().scheduleTask(null, () -> Server.getInstance().dispatchCommand(event.getSender(), event.getCommand()));
                         }
                         Timings.serverCommandTimer.stopTiming();
                     } catch (Exception e) {
@@ -115,12 +114,11 @@ public class CommandReader extends Thread implements InterruptibleThread {
         }
     }
 
-    public void removePromptLine() {
+    public synchronized void removePromptLine() {
         try {
             reader.resetPromptLine("", "", 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

@@ -26,7 +26,7 @@ public class DebugPasteCommand extends VanillaCommand {
             return true;
         }
         Server server = Server.getInstance();
-        server.getScheduler().scheduleAsyncTask(new AsyncTask() {
+        server.getScheduler().scheduleAsyncTask(null, new AsyncTask() {
             @Override
             public void onRun() {
                 try {

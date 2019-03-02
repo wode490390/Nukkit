@@ -42,11 +42,6 @@ public class BlockCake extends BlockTransparentMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 2.5;
-    }
-
-    @Override
     public double getMinX() {
         return this.x + (1 + getDamage() * 2) / 16;
     }
@@ -112,8 +107,8 @@ public class BlockCake extends BlockTransparentMeta {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null && player.getFoodData().getLevel() < player.getFoodData().getMaxLevel()) {
-            if (getDamage() <= 0x06) setDamage(getDamage() + 1);
-            if (getDamage() >= 0x06) {
+            if (getDamage() <= 0x6) setDamage(getDamage() + 1);
+            if (getDamage() >= 0x6) {
                 getLevel().setBlock(this, new BlockAir(), true);
             } else {
                 Food.getByRelative(this).eatenBy(player);

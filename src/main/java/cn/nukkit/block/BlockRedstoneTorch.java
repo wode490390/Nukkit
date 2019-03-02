@@ -42,25 +42,27 @@ public class BlockRedstoneTorch extends BlockTorch {
             return false;
         }
 
-        if (!checkState()) {
-            BlockFace facing = getFacing().getOpposite();
-            Vector3 pos = getLocation();
+//        if (!checkState()) {
+//            BlockFace facing = this.getBlockFace().getOpposite();
+//            Vector3 pos = getLocation();
+//
+//            for (BlockFace side : BlockFace.values()) {
+//                if (facing == side) {
+//                    continue;
+//                }
+//
+//                this.level.updateAround(pos.getSide(side));
+//            }
+//        }
 
-            for (BlockFace side : BlockFace.values()) {
-                if (facing == side) {
-                    continue;
-                }
-
-                this.level.updateAround(pos.getSide(side));
-            }
-        }
+        checkState();
 
         return true;
     }
 
     @Override
     public int getWeakPower(BlockFace side) {
-        return getFacing() != side ? 15 : 0;
+        return this.getBlockFace() != side ? 15 : 0;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class BlockRedstoneTorch extends BlockTorch {
 
         Vector3 pos = getLocation();
 
-        BlockFace face = getFacing().getOpposite();
+        BlockFace face = this.getBlockFace().getOpposite();
 
         for (BlockFace side : BlockFace.values()) {
             if (side == face) {
@@ -90,8 +92,11 @@ public class BlockRedstoneTorch extends BlockTorch {
     public int onUpdate(int type) {
         if (super.onUpdate(type) == 0) {
             if (type == Level.BLOCK_UPDATE_NORMAL || type == Level.BLOCK_UPDATE_REDSTONE) {
+                this.level.scheduleUpdate(this, tickRate());
+            } else if (type == Level.BLOCK_UPDATE_SCHEDULED) {
                 RedstoneUpdateEvent ev = new RedstoneUpdateEvent(this);
                 getLevel().getServer().getPluginManager().callEvent(ev);
+
                 if (ev.isCancelled()) {
                     return 0;
                 }
@@ -106,10 +111,10 @@ public class BlockRedstoneTorch extends BlockTorch {
     }
 
     protected boolean checkState() {
-        BlockFace face = getFacing().getOpposite();
-        Vector3 pos = getLocation();
+        if (isPoweredFromSide()) {
+            BlockFace face = this.getBlockFace().getOpposite();
+            Vector3 pos = getLocation();
 
-        if (this.level.isSidePowered(pos.getSide(face), face)) {
             this.level.setBlock(pos, new BlockRedstoneTorchUnlit(getDamage()), false, true);
 
             for (BlockFace side : BlockFace.values()) {
@@ -124,6 +129,16 @@ public class BlockRedstoneTorch extends BlockTorch {
         }
 
         return false;
+    }
+
+    protected boolean isPoweredFromSide() {
+        BlockFace face = this.getBlockFace().getOpposite();
+        return this.level.isSidePowered(this.getLocation().getSide(face), face);
+    }
+
+    @Override
+    public int tickRate() {
+        return 2;
     }
 
     @Override

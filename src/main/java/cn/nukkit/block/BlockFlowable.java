@@ -2,15 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.math.AxisAlignedBB;
 
-/**
- * author: MagicDroidX
- * Nukkit Project
- */
-public abstract class BlockFlowable extends BlockTransparentMeta {
-
-    protected BlockFlowable(int meta) {
-        super(meta);
-    }
+public abstract class BlockFlowable extends BlockTransparent {
 
     @Override
     public boolean canBeFlowedInto() {

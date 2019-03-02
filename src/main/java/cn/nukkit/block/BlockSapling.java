@@ -10,23 +10,25 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.BlockColor;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockSapling extends BlockFlowable {
+public class BlockSapling extends BlockFlowableMeta {
+
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
     public static final int BIRCH = 2;
+    public static final int JUNGLE = 3;
+    public static final int ACACIA = 4;
+    public static final int DARK_OAK = 5;
     /**
      * placeholder
      */
     public static final int BIRCH_TALL = 8 | BIRCH;
-    public static final int JUNGLE = 3;
-    public static final int ACACIA = 4;
-    public static final int DARK_OAK = 5;
 
     public BlockSapling() {
         this(0);
@@ -54,6 +56,16 @@ public class BlockSapling extends BlockFlowable {
                 ""
         };
         return names[this.getDamage() & 0x07];
+    }
+
+    @Override
+    public double getHardness() {
+        return 0;
+    }
+
+    @Override
+    public double getResistance() {
+        return 0;
     }
 
     @Override

@@ -12,14 +12,13 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
-
 import java.util.Map;
 
 /**
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockFurnaceBurning extends BlockSolidMeta {
+public class BlockFurnaceBurning extends BlockSolidMeta implements BlockFaceable {
 
     public BlockFurnaceBurning() {
         this(0);
@@ -60,13 +59,18 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public int getLightLevel() {
         return 13;
     }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
+        int[] faces = {2, 5, 3, 4};
         this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
         this.getLevel().setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag()
@@ -128,14 +132,18 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockFurnace());
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    new ItemBlock(new BlockFurnace())
+                    this.toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     public boolean hasComparatorInputOverride() {
@@ -156,5 +164,10 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

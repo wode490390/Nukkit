@@ -13,7 +13,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityXPOrb extends Entity {
 
-    public static final int NETWORK_ID = 69;
+    public static final int NETWORK_ID = XP_ORB;
 
     @Override
     public int getNetworkId() {

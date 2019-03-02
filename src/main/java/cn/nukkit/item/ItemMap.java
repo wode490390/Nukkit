@@ -33,7 +33,8 @@ public class ItemMap extends Item {
 
         if (!hasCompoundTag() || !getNamedTag().contains("map_uuid")) {
             CompoundTag tag = new CompoundTag();
-            tag.putString("map_uuid", "" + mapCount++);
+            tag.putLong("map_uuid", mapCount++);
+            tag.putBoolean("map_display_players", true);
             this.setNamedTag(tag);
         }
     }
@@ -74,7 +75,7 @@ public class ItemMap extends Item {
     }
 
     public long getMapId() {
-        return Long.valueOf(getNamedTag().getString("map_uuid"));
+        return getNamedTag().getLong("map_uuid");
     }
 
     public void sendImage(Player p) {

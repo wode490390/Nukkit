@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityEnderChest;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -15,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class BlockEnderChest extends BlockTransparentMeta {
+public class BlockEnderChest extends BlockTransparentMeta implements BlockFaceable {
 
     private Set<Player> viewers = new HashSet<>();
 
@@ -54,12 +55,17 @@ public class BlockEnderChest extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return 3000;
+        return 1000;
     }
 
     @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override
@@ -150,13 +156,12 @@ public class BlockEnderChest extends BlockTransparentMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     Item.get(Item.OBSIDIAN, 0, 8)
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override
@@ -181,5 +186,15 @@ public class BlockEnderChest extends BlockTransparentMeta {
     @Override
     public boolean canSilkTouch() {
         return true;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

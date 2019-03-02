@@ -7,7 +7,7 @@ package cn.nukkit.item;
 public class ItemChestplateLeather extends ItemColorArmor {
 
     public ItemChestplateLeather() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemChestplateLeather(Integer meta) {
@@ -15,7 +15,7 @@ public class ItemChestplateLeather extends ItemColorArmor {
     }
 
     public ItemChestplateLeather(Integer meta, int count) {
-        super(LEATHER_TUNIC, meta, count, "Leather Tunic");
+        super(LEATHER_TUNIC, meta, 1, "Leather Tunic");
     }
 
     @Override
@@ -35,6 +35,6 @@ public class ItemChestplateLeather extends ItemColorArmor {
 
     @Override
     public int getMaxDurability() {
-        return 81;
+        return 80;
     }
 }

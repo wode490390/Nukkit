@@ -5,14 +5,14 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.ByteTag;
 import cn.nukkit.nbt.tag.Tag;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public abstract class ItemTool extends Item {
+
     public static final int TIER_WOODEN = 1;
     public static final int TIER_GOLD = 2;
     public static final int TIER_STONE = 3;
@@ -26,30 +26,35 @@ public abstract class ItemTool extends Item {
     public static final int TYPE_AXE = 4;
     public static final int TYPE_SHEARS = 5;
 
-    public static final int DURABILITY_WOODEN = 60;
-    public static final int DURABILITY_GOLD = 33;
-    public static final int DURABILITY_STONE = 132;
-    public static final int DURABILITY_IRON = 251;
-    public static final int DURABILITY_DIAMOND = 1562;
-    public static final int DURABILITY_FLINT_STEEL = 65;
-    public static final int DURABILITY_SHEARS = 239;
-    public static final int DURABILITY_BOW = 385;
-    public static final int DURABILITY_TRIDENT = 251;
+    public static final int DURABILITY_WOODEN = 59;
+    public static final int DURABILITY_GOLD = 32;
+    public static final int DURABILITY_STONE = 131;
+    public static final int DURABILITY_IRON = 250;
+    public static final int DURABILITY_DIAMOND = 1561;
+
+    public static final int DURABILITY_FLINT_STEEL = 64;
+    public static final int DURABILITY_SHEARS = 238;
+    public static final int DURABILITY_BOW = 384;
+    public static final int DURABILITY_TRIDENT = 250;
+    public static final int DURABILITY_CROSSBOW = 464;
+    public static final int DURABILITY_CARROT_ON_A_STICK = 26;
+    public static final int DURABILITY_FISHING_ROD = 384;
+    public static final int DURABILITY_SPARKLER = 100;
 
     public ItemTool(int id) {
-        this(id, 0, 1, UNKNOWN_STR);
+        super(id);
     }
 
     public ItemTool(int id, Integer meta) {
-        this(id, meta, 1, UNKNOWN_STR);
+        super(id, meta);
     }
 
     public ItemTool(int id, Integer meta, int count) {
-        this(id, meta, count, UNKNOWN_STR);
+        super(id, meta);
     }
 
     public ItemTool(int id, Integer meta, int count, String name) {
-        super(id, meta, count, name);
+        super(id, meta, 1, name);
     }
 
     @Override
@@ -103,7 +108,7 @@ public abstract class ItemTool extends Item {
         }
 
         Enchantment durability = getEnchantment(Enchantment.ID_DURABILITY);
-        return durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= new Random().nextInt(100);
+        return durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= ThreadLocalRandom.current().nextInt(100);
     }
 
     @Override
@@ -144,7 +149,7 @@ public abstract class ItemTool extends Item {
 
     @Override
     public boolean isTool() {
-        return (this.id == FLINT_STEEL || this.id == SHEARS || this.id == BOW || this.isPickaxe() || this.isAxe() || this.isShovel() || this.isSword() || this.isHoe());
+        return (this.id == FISHING_ROD || this.id == CARROT_ON_A_STICK || this.id == FLINT_STEEL || this.id == SHEARS || this.id == BOW || this.id == CROSSBOW || this.id == SPARKLER || this.isPickaxe() || this.isAxe() || this.isShovel() || this.isSword() || this.isHoe());
     }
 
     @Override

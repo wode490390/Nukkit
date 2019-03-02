@@ -16,9 +16,9 @@ import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.particle.HugeExplodeSeedParticle;
 import cn.nukkit.math.*;
 import cn.nukkit.network.protocol.ExplodePacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.utils.Hash;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -195,18 +195,20 @@ public class Explosion {
             send.add(new Vector3(block.x - source.x, block.y - source.y, block.z - source.z));
         }
 
+        Vector3f[] records = new Vector3f[send.size()];
+        for (int i = 0; i < send.size(); i++) {
+            records[i] = send.get(i).asVector3f();
+        }
+
         ExplodePacket pk = new ExplodePacket();
-        pk.x = (float) this.source.x;
-        pk.y = (float) this.source.y;
-        pk.z = (float) this.source.z;
+        pk.position = this.source.asVector3f();
         pk.radius = (float) this.size;
-        pk.records = send.toArray(new Vector3[0]);
+        pk.records = records;
 
         this.level.addChunkPacket((int) source.x >> 4, (int) source.z >> 4, pk);
         this.level.addParticle(new HugeExplodeSeedParticle(this.source));
-        this.level.addSound(new Vector3(this.source.x, this.source.y, this.source.z), Sound.RANDOM_EXPLODE);
+        this.level.addLevelSoundEvent(source, LevelSoundEventPacket.SOUND_EXPLODE);
 
         return true;
     }
-
 }

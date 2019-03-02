@@ -1,9 +1,9 @@
 package cn.nukkit.math;
 
 import com.google.common.collect.Iterators;
-
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 public enum BlockFace {
@@ -128,6 +128,14 @@ public enum BlockFace {
      */
     public static BlockFace random(Random rand) {
         return VALUES[rand.nextInt(VALUES.length)];
+    }
+
+    public static BlockFace random(NukkitRandom rand) {
+        return VALUES[rand.nextBoundedInt(VALUES.length)];
+    }
+
+    public static BlockFace random() {
+        return VALUES[ThreadLocalRandom.current().nextInt(VALUES.length)];
     }
 
     /**
@@ -350,8 +358,16 @@ public enum BlockFace {
 
         private BlockFace[] faces;
 
-        public BlockFace random(NukkitRandom rand) { //todo Default Random?
+        public BlockFace random(NukkitRandom rand) {
             return faces[rand.nextBoundedInt(faces.length)];
+        }
+
+        public BlockFace random(Random rand) {
+            return faces[rand.nextInt(faces.length)];
+        }
+
+        public BlockFace random() {
+            return faces[ThreadLocalRandom.current().nextInt(faces.length)];
         }
 
         public boolean test(BlockFace face) {

@@ -5,7 +5,6 @@ import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.generator.populator.type.Populator;
 import cn.nukkit.math.NukkitRandom;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import java.util.List;
  * Nukkit Project
  */
 public abstract class Biome implements BlockID {
+
     public static final int MAX_BIOMES = 256;
     public static final Biome[] biomes = new Biome[MAX_BIOMES];
     public static final List<Biome> unorderedBiomes = new ArrayList<>();
@@ -29,7 +29,7 @@ public abstract class Biome implements BlockID {
         unorderedBiomes.add(biome);
     }
 
-    static Biome getBiome(int id) {
+    public static Biome getBiome(int id) {
         Biome biome = biomes[id];
         return biome != null ? biome : EnumBiome.OCEAN.biome;
     }
@@ -40,10 +40,12 @@ public abstract class Biome implements BlockID {
      * @param name Name of biome. Name could contain symbol "_" instead of space
      * @return Biome. Null - when biome was not found
      */
-    static Biome getBiome(String name) {
+    public static Biome getBiome(String name) {
         for (Biome biome : biomes) {
             if (biome != null) {
-                if (biome.getName().equalsIgnoreCase(name.replace("_", " "))) return biome;
+                if (biome.getName().equalsIgnoreCase(name.replace("_", " "))) {
+                    return biome;
+                }
             }
         }
         return null;

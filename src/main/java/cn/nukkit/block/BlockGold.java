@@ -30,20 +30,25 @@ public class BlockGold extends BlockSolid {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_IRON;
+    }
+
+    @Override
     public double getHardness() {
         return 3;
     }
 
     @Override
     public double getResistance() {
-        return 30;
+        return 10;
     }
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_IRON) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    toItem()
+                    this.toItem()
             };
         } else {
             return new Item[0];

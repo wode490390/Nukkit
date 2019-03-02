@@ -11,7 +11,6 @@ import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import io.netty.util.collection.CharObjectHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -82,7 +81,7 @@ public class CraftingManager {
                         List<Map> output = (List<Map>) recipe.get("output");
 
                         first = output.remove(0);
-                        String[] shape = ((List<String>) recipe.get("shape")).stream().toArray(String[]::new);
+                        String[] shape = ((List<String>) recipe.get("shape")).toArray(new String[0]);
                         Map<Character, Item> ingredients = new CharObjectHashMap<>();
                         List<Item> extraResults = new ArrayList<>();
 

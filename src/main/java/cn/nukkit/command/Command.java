@@ -9,7 +9,6 @@ import cn.nukkit.permission.Permissible;
 import cn.nukkit.utils.TextFormat;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
-
 import java.util.*;
 
 /**
@@ -18,7 +17,7 @@ import java.util.*;
  */
 public abstract class Command {
 
-    private static CommandData defaultDataTemplate = null;
+    private static CommandData defaultDataTemplate;
 
     protected CommandData commandData;
 
@@ -32,15 +31,15 @@ public abstract class Command {
 
     private String[] activeAliases = new String[0];
 
-    private CommandMap commandMap = null;
+    private CommandMap commandMap;
 
     protected String description = "";
 
     protected String usageMessage = "";
 
-    private String permission = null;
+    private String permission;
 
-    private String permissionMessage = null;
+    private String permissionMessage;
 
     protected Map<String, CommandParameter[]> commandParameters = new HashMap<>();
 
@@ -68,7 +67,7 @@ public abstract class Command {
         this.aliases = aliases;
         this.activeAliases = aliases;
         this.timing = Timings.getCommandTiming(this);
-        this.commandParameters.put("default", new CommandParameter[]{new CommandParameter("args", "rawtext", true)});
+        this.commandParameters.put("default", new CommandParameter[]{new CommandParameter("args", CommandParamType.RAWTEXT, true)});
     }
 
     /**
@@ -322,5 +321,4 @@ public abstract class Command {
     public String toString() {
         return this.name;
     }
-
 }
