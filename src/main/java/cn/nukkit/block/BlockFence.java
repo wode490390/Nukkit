@@ -102,8 +102,8 @@ public class BlockFence extends BlockTransparentMeta {
         return BlockColor.WOOD_BLOCK_COLOR;
     }
 
-    @Override		
-    public Item toItem() {		
-        return new ItemBlock(this, this.getDamage() & 0x7);		
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, this.getDamage() & 0x7);
     }
 }

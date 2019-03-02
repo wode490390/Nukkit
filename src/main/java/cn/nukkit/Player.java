@@ -19,6 +19,7 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageModifier;
+import cn.nukkit.event.entity.ProjectileLaunchEvent;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryPickupArrowEvent;
 import cn.nukkit.event.inventory.InventoryPickupItemEvent;
@@ -243,8 +244,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public int cachedExperienceChange = 0;
 
-    protected BlockVector3 lastTouchPosition; //TODO: hack client spam
-    protected long lastTouch;
+    public EntityFishingHook fishing;
 
     protected Map<UUID, ResourcePack> resourcePacks;
     protected Map<UUID, ResourcePack> behaviourPacks;
@@ -901,7 +901,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         Position pos = this.level.getSafeSpawn(this);
 
-        PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(this, pos);
+        PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(this, pos, true);
 
         this.server.getPluginManager().callEvent(respawnEvent);
 
@@ -1441,7 +1441,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         for (Block block : this.getCollisionBlocks()) {
             int blockId = block.getId();
-            if (blockId == Block.NETHER_PORTAL) {
+            if (blockId == Block.END_PORTAL) {
                 this.inEndPortal = true;
                 continue;
             }
@@ -2265,7 +2265,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         }
                     };
 
-                    this.server.getScheduler().scheduleAsyncTask(this.preLoginEventTask);
+                    this.server.getScheduler().scheduleAsyncTask(null, this.preLoginEventTask);
 
                     this.processLogin();
                     break;
@@ -2988,13 +2988,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                 case InventoryTransactionPacket.USE_ITEM_ACTION_CLICK_BLOCK:
                                     this.setDataFlag(DATA_FLAGS, DATA_FLAG_ACTION, false);
 
-                                    if (Objects.equals(blockVector, this.lastTouchPosition) && System.currentTimeMillis() - this.lastTouch < 20) {
-                                        break packetswitch;
-                                    }
-
-                                    this.lastTouchPosition = blockVector;
-                                    this.lastTouch = System.currentTimeMillis();
-
                                     if (this.canInteract(blockVector.add(0.5, 0.5, 0.5), this.isCreative() ? 13 : 7)) {
                                         if (this.isCreative()) {
                                             Item i = inventory.getItemInHand();
@@ -3610,6 +3603,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 if (this.loggedIn && ev.getAutoSave()) {
                     this.save();
                 }
+                if (this.fishing != null) {
+                    this.stopFishing(false);
+                }
             }
 
             for (Player player : new ArrayList<>(this.server.getOnlinePlayers().values())) {
@@ -3852,6 +3848,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     message = "death.attack.magic";
                     break;
 
+                case HUNGER:
+                    message = "death.attack.starve";
+                    break;
+
                 case CUSTOM:
                     break;
 
@@ -3907,7 +3907,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         //this is a dirty hack to prevent dying in a different level than the respawn point from breaking everything
         if (this.level != pos.level)   {
-            this.teleport(new Location(pos.x, -100, pos.z, pos.level), null);
+            this.teleportImmediate(new Location(0, -100, 0, pos.level)); //this.teleport(new Location(pos.x, -100, pos.z, pos.level), null);
             this.teleport(new Location(pos.x, pos.y, pos.z, pos.level), null);
         }
 
@@ -4688,11 +4688,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             spawnPosition.z = spawn.getFloorZ();
             this.dataPacket(spawnPosition);
 
-            /*int dimensionId = level.getDimension();
-            if (oldLevel.getDimension() != dimensionId) {
-                this.setDimension(dimensionId); //BUG
-            }*/
-
             // Remove old chunks
             this.forceSendEmptyChunks();
             for (long index : new ArrayList<>(this.usedChunks.keySet())) {
@@ -4700,6 +4695,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 int chunkZ = Level.getHashZ(index);
                 this.unloadChunk(chunkX, chunkZ, oldLevel);
             }
+
+            int dimensionId = level.getDimension();
+            if (oldLevel.getDimension() != dimensionId) {
+                this.setDimension(dimensionId);
+            }
+
             this.usedChunks.clear();
 
             this.level.sendTime(this);
@@ -4934,6 +4935,45 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         ShowProfilePacket pk = new ShowProfilePacket();
         pk.xuid = xuid;
         this.dataPacket(pk);
+    }
+
+    public void startFishing(Item fishingRod) {
+        CompoundTag nbt = new CompoundTag()
+                .putList(new ListTag<DoubleTag>("Pos")
+                        .add(new DoubleTag("", x))
+                        .add(new DoubleTag("", y + this.getEyeHeight()))
+                        .add(new DoubleTag("", z)))
+                .putList(new ListTag<DoubleTag>("Motion")
+                        .add(new DoubleTag("", -Math.sin(yaw / 180 + Math.PI) * Math.cos(pitch / 180 * Math.PI)))
+                        .add(new DoubleTag("", -Math.sin(pitch / 180 * Math.PI)))
+                        .add(new DoubleTag("", Math.cos(yaw / 180 * Math.PI) * Math.cos(pitch / 180 * Math.PI))))
+                .putList(new ListTag<FloatTag>("Rotation")
+                        .add(new FloatTag("", (float) yaw))
+                        .add(new FloatTag("", (float) pitch)));
+        double f = 0.9;
+        EntityFishingHook fishingHook = new EntityFishingHook(chunk, nbt, this);
+        fishingHook.setMotion(new Vector3(-Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)) * f * f, -Math.sin(Math.toRadians(pitch)) * f * f,
+                Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)) * f * f));
+        ProjectileLaunchEvent ev = new ProjectileLaunchEvent(fishingHook);
+        this.getServer().getPluginManager().callEvent(ev);
+        if (ev.isCancelled()) {
+            fishingHook.kill();
+        } else {
+            fishingHook.spawnToAll();
+            this.fishing = fishingHook;
+            fishingHook.rod = fishingRod;
+        }
+    }
+
+    public void stopFishing(boolean click) {
+        if (click) {
+            fishing.reelLine();
+        } else if (this.fishing != null) {
+            this.fishing.kill();
+            this.fishing.close();
+        }
+
+        this.fishing = null;
     }
 
     public Map<UUID, ResourcePack> getResourcePacks() {

@@ -107,8 +107,8 @@ public abstract class Enchantment implements Cloneable {
         enchantments[ID_CURSE_BINDING]  = new EnchantmentCurseBinding();
         enchantments[ID_CURSE_VANISHING]  = new EnchantmentCurseVanishing();
         enchantments[ID_TRIDENT_IMPALING]  = new EnchantmentTridentImpaling();
-        enchantments[ID_TRIDENT_LOYALTY]  = new EnchantmentTridentLoyalty();
         enchantments[ID_TRIDENT_RIPTIDE]  = new EnchantmentTridentRiptide();
+        enchantments[ID_TRIDENT_LOYALTY]  = new EnchantmentTridentLoyalty();
         enchantments[ID_TRIDENT_CHANNELING]  = new EnchantmentTridentChanneling();
         enchantments[ID_CROSSBOW_MULTISHOT]  = new EnchantmentCrossbowMultishot();
         enchantments[ID_CROSSBOW_PIERCING]  = new EnchantmentCrossbowPiercing();
@@ -116,7 +116,7 @@ public abstract class Enchantment implements Cloneable {
     }
 
     public static Enchantment get(int id) {
-        return id >= 0 && id < enchantments.length ? enchantments[id] : null;
+        return id >= 0 && id < enchantments.length ? enchantments[id] : new UnknownEnchantment(id);
     }
 
     public static Enchantment getEnchantment(int id) {
@@ -261,5 +261,12 @@ public abstract class Enchantment implements Cloneable {
 
         String[] words = set.toArray(new String[0]);
         return String.join(" ", words);
+    }
+
+    private static class UnknownEnchantment extends Enchantment {
+
+        protected UnknownEnchantment(int id) {
+            super(id, "unknown", 0, EnchantmentType.ALL);
+        }
     }
 }

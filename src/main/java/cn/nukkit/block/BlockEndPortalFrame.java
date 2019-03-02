@@ -10,7 +10,7 @@ import cn.nukkit.network.protocol.LevelSoundEventPacket;
 /**
  * Created by Pub4Game on 26.12.2015.
  */
-public class BlockEndPortalFrame extends BlockTransparentMeta {
+public class BlockEndPortalFrame extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockEndPortalFrame() {
         this(0);
@@ -101,5 +101,10 @@ public class BlockEndPortalFrame extends BlockTransparentMeta {
     @Override
     public Item toItem() {
         return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

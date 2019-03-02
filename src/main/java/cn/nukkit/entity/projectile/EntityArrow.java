@@ -207,7 +207,7 @@ public class EntityArrow extends EntityProjectile {
         if (this.pickupMode == PICKUP_NONE || (this.pickupMode == PICKUP_CREATIVE && !player.isCreative())) {
             ev.setCancelled();
         }
-		Server.getInstance().getPluginManager().callEvent(ev);
+        Server.getInstance().getPluginManager().callEvent(ev);
         if (ev.isCancelled()) {
             return;
         }

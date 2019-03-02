@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.event.block.BlockGrowEvent;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDye;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.BoneMealParticle;
@@ -17,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Created by CreeperFace on 27. 10. 2016.
  */
-public class BlockCocoa extends BlockTransparentMeta {
+public class BlockCocoa extends BlockTransparentMeta implements BlockFaceable {
 
     protected static final AxisAlignedBB[] EAST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.6875, 0.4375, 0.375, 0.9375, 0.75, 0.625), new SimpleAxisAlignedBB(0.5625, 0.3125, 0.3125, 0.9375, 0.75, 0.6875), new SimpleAxisAlignedBB(0.5625, 0.3125, 0.3125, 0.9375, 0.75, 0.6875)};
     protected static final AxisAlignedBB[] WEST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.0625, 0.4375, 0.375, 0.3125, 0.75, 0.625), new SimpleAxisAlignedBB(0.0625, 0.3125, 0.3125, 0.4375, 0.75, 0.6875), new SimpleAxisAlignedBB(0.0625, 0.3125, 0.3125, 0.4375, 0.75, 0.6875)};
@@ -218,19 +217,23 @@ public class BlockCocoa extends BlockTransparentMeta {
 
     @Override
     public Item toItem() {
-        return new ItemDye(DyeColor.BROWN.getDyeData());
+        return Item.get(Item.DYE, DyeColor.BROWN.getDyeData());
     }
 
     @Override
     public Item[] getDrops(Item item) {
         if (this.getDamage() >= 8) {
             return new Item[]{
-                    new ItemDye(3, 3)
-            };
-        } else {
-            return new Item[]{
-                    new ItemDye(3, 1)
+                    Item.get(Item.DYE, DyeColor.BROWN.getDyeData(), 3)
             };
         }
+        return new Item[]{
+                this.toItem()
+        };
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

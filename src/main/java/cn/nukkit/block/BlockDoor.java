@@ -14,7 +14,7 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class BlockDoor extends BlockTransparentMeta {
+public abstract class BlockDoor extends BlockTransparentMeta implements BlockFaceable {
 
     protected BlockDoor(int meta) {
         super(meta);
@@ -335,5 +335,10 @@ public abstract class BlockDoor extends BlockTransparentMeta {
 
     public boolean isTop(int meta) {
         return (meta & 8) != 0;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

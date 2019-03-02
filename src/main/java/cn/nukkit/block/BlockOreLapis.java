@@ -1,9 +1,9 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDye;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
+import cn.nukkit.utils.DyeColor;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -47,11 +47,10 @@ public class BlockOreLapis extends BlockOre {
             }
 
             return new Item[]{
-                    Item.get(Item.DYE, ItemDye.LIGHT_BLUE, ThreadLocalRandom.current().nextInt(4, 8))
+                    Item.get(Item.DYE, DyeColor.LIGHT_BLUE.getDyeData(), ThreadLocalRandom.current().nextInt(4, 8))
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override

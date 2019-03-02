@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by CreeperFace on 15.4.2017.
  */
-public class BlockDispenser extends BlockSolidMeta {
+public class BlockDispenser extends BlockSolidMeta implements BlockFaceable {
 
     public BlockDispenser() {
         this(0);
@@ -197,5 +197,10 @@ public class BlockDispenser extends BlockSolidMeta {
             };
         }
         return new Item[0];
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

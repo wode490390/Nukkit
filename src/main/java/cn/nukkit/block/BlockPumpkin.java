@@ -11,7 +11,8 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/8 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockPumpkin extends BlockSolidMeta {
+public class BlockPumpkin extends BlockSolidMeta implements BlockFaceable {
+
     public BlockPumpkin() {
         this(0);
     }
@@ -65,5 +66,10 @@ public class BlockPumpkin extends BlockSolidMeta {
     @Override
     public boolean canBePushed() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

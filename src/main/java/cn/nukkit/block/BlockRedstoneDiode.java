@@ -10,7 +10,7 @@ import cn.nukkit.math.Vector3;
 /**
  * @author CreeperFace
  */
-public abstract class BlockRedstoneDiode extends BlockFlowableMeta {
+public abstract class BlockRedstoneDiode extends BlockFlowableMeta implements BlockFaceable {
 
     protected boolean isPowered = false;
 
@@ -195,5 +195,10 @@ public abstract class BlockRedstoneDiode extends BlockFlowableMeta {
         BlockFace side = getFacing().getOpposite();
         Block block = this.getSide(side);
         return block instanceof BlockRedstoneDiode && ((BlockRedstoneDiode) block).getFacing() != side;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

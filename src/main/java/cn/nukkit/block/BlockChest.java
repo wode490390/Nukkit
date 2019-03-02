@@ -19,7 +19,7 @@ import java.util.Map;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockChest extends BlockTransparentMeta {
+public class BlockChest extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockChest() {
         this(0);
@@ -208,5 +208,10 @@ public class BlockChest extends BlockTransparentMeta {
     @Override
     public Item[] getDrops(Item item) {
         return super.getDrops(item);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

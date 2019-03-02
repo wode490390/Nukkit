@@ -17,7 +17,7 @@ import cn.nukkit.utils.DyeColor;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockBed extends BlockTransparentMeta {
+public class BlockBed extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockBed() {
         this(0);
@@ -179,5 +179,10 @@ public class BlockBed extends BlockTransparentMeta {
             this.createBlockEntity(this, DyeColor.RED.getWoolData());
         }
         return DyeColor.RED;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

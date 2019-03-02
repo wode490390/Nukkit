@@ -11,7 +11,7 @@ import cn.nukkit.math.BlockFace;
  *
  * @author PikyCZ
  */
-public class BlockEndRod extends BlockTransparentMeta {
+public class BlockEndRod extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockEndRod() {
         this(0);
@@ -78,5 +78,10 @@ public class BlockEndRod extends BlockTransparentMeta {
     @Override
     public Item toItem() {
         return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

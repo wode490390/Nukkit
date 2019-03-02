@@ -676,7 +676,7 @@ public class Server {
         }
 
         if (!forceSync && this.networkCompressionAsync) {
-            this.getScheduler().scheduleAsyncTask(new CompressBatchedTask(payload, targets, this.networkCompressionLevel));
+            this.getScheduler().scheduleAsyncTask(null, new CompressBatchedTask(payload, targets, this.networkCompressionLevel));
         } else {
             try {
                 byte[] data = Binary.appendBytes(payload);
@@ -1550,7 +1550,7 @@ public class Server {
         if (this.shouldSavePlayerData()) {
             try {
                 if (async) {
-                    this.getScheduler().scheduleAsyncTask(new FileWriteTask(this.getDataPath() + "players/" + name.toLowerCase() + ".dat", NBTIO.writeGZIPCompressed(tag, ByteOrder.BIG_ENDIAN)));
+                    this.getScheduler().scheduleAsyncTask(null, new FileWriteTask(this.getDataPath() + "players/" + name.toLowerCase() + ".dat", NBTIO.writeGZIPCompressed(tag, ByteOrder.BIG_ENDIAN)));
                 } else {
                     Utils.writeFile(this.getDataPath() + "players/" + name.toLowerCase() + ".dat", new ByteArrayInputStream(NBTIO.writeGZIPCompressed(tag, ByteOrder.BIG_ENDIAN)));
                 }
@@ -1744,10 +1744,14 @@ public class Server {
     }
 
     public boolean generateLevel(String name, long seed, Class<? extends Generator> generator, Map<String, Object> options) {
-        return generateLevel(name, seed, generator, options, null);
+        return this.generateLevel(name, seed, generator, options, null);
     }
 
     public boolean generateLevel(String name, long seed, Class<? extends Generator> generator, Map<String, Object> options, Class<? extends LevelProvider> provider) {
+        return this.generateLevel(name, seed, generator, options, provider, null);
+    }
+
+    public boolean generateLevel(String name, long seed, Class<? extends Generator> generator, Map<String, Object> options, Class<? extends LevelProvider> provider, String path) {
         if (Objects.equals(name.trim(), "") || this.isLevelGenerated(name)) {
             return false;
         }
@@ -1764,12 +1768,12 @@ public class Server {
             provider = LevelProviderManager.getProviderByName(this.getConfig().get("level-settings.default-format", "anvil"));
         }
 
-        String path;
-
-        if (name.contains("/") || name.contains("\\")) {
-            path = name;
-        } else {
-            path = this.getDataPath() + "worlds/" + name + "/";
+        if (path == null) {
+            if (name.contains("/") || name.contains("\\")) {
+                path = name;
+            } else {
+                path = this.getDataPath() + "worlds/" + name + "/";
+            }
         }
 
         Level level;
@@ -2134,6 +2138,7 @@ public class Server {
         Entity.registerEntity("EnderPearl", EntityEnderPearl.class);
         Entity.registerEntity("Snowball", EntitySnowball.class);
         Entity.registerEntity("ThrownTrident", EntityThrownTrident.class);
+        Entity.registerEntity("FishingHook", EntityFishingHook.class);
         //Other
         Entity.registerEntity("LightningBolt", EntityLightning.class);
         Entity.registerEntity("Human", EntityHuman.class, true);

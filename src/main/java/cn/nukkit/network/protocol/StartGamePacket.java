@@ -107,11 +107,11 @@ public class StartGamePacket extends DataPacket {
         this.putBoolean(this.hasEduFeaturesEnabled);
         this.putLFloat(this.rainLevel);
         this.putLFloat(this.lightningLevel);
-		this.putBoolean(this.hasConfirmedPlatformLockedContent);
+        this.putBoolean(this.hasConfirmedPlatformLockedContent);
         this.putBoolean(this.isMultiplayerGame);
         this.putBoolean(this.hasLANBroadcast);
         this.putVarInt(this.xboxLiveBroadcastMode);
-		this.putVarInt(this.platformBroadcastMode);
+        this.putVarInt(this.platformBroadcastMode);
         this.putBoolean(this.commandsEnabled);
         this.putBoolean(this.isTexturePacksRequired);
         this.putGameRules(this.gameRules);

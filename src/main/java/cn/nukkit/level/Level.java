@@ -325,21 +325,24 @@ public class Level implements ChunkManager, Metadatable {
     private BlockLightUpdate blockLightUpdate;
     private SkyLightUpdate skyLightUpdate;
 
+    private final String path;
+
     public Level(Server server, String name, String path, Class<? extends LevelProvider> provider) {
         this.levelId = levelIdCounter++;
         this.blockMetadata = new BlockMetadataStore(this);
         this.server = server;
         this.autoSave = server.getAutoSave();
+        this.path = path;
 
         boolean convert = provider == McRegion.class || provider == LevelDB.class;
         if (convert) throw new LevelException("We don't need to load LevelDB maps!");
         try {
             if (convert) {
-                String newPath = new File(path).getParent() + "/" + name + ".old/";
-                new File(path).renameTo(new File(newPath));
+                String newPath = new File(this.path).getParent() + "/" + name + ".old/";
+                new File(this.path).renameTo(new File(newPath));
                 this.provider = provider.getConstructor(Level.class, String.class).newInstance(this, newPath);
             } else {
-                this.provider = provider.getConstructor(Level.class, String.class).newInstance(this, path);
+                this.provider = provider.getConstructor(Level.class, String.class).newInstance(this, this.path);
             }
         } catch (Exception e) {
             throw new LevelException("Caused by " + Utils.getExceptionMessage(e));
@@ -351,7 +354,7 @@ public class Level implements ChunkManager, Metadatable {
             this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.updating", TextFormat.GREEN + this.provider.getName() + TextFormat.WHITE));
             LevelProvider old = this.provider;
             try {
-                this.provider = new LevelProviderConverter(this, path)
+                this.provider = new LevelProviderConverter(this, this.path)
                         .from(old)
                         .to(Anvil.class)
                         .perform();
@@ -1091,6 +1094,10 @@ public class Level implements ChunkManager, Metadatable {
         this.timings.entityTick.startTiming();
 
         if (!this.updateEntities.isEmpty()) {
+            //if (!this.server.isPrimaryThread()) {
+            //    MainLogger.getLogger().logException(new NullPointerException("Another thread"));
+            //}
+
             for (Entity entity : new ArrayList<>(this.updateEntities.values())) {
                 if (entity.isClosed() || !entity.onUpdate(currentTick)) {
                     this.updateEntities.remove(entity.getId());
@@ -2012,7 +2019,7 @@ public class Level implements ChunkManager, Metadatable {
 
         if (this.gameRules.getBoolean(GameRule.DO_TILE_DROPS)) {
             int dropExp = target.getDropExp();
-            if (!isSilkTouch && player != null) {
+            if (!isSilkTouch && player != null && drops.length != 0) {
                 player.addExperience(dropExp);
                 if (player.isSurvival()) {
                     for (int ii = 1; ii <= dropExp; ii++) {
@@ -2666,7 +2673,7 @@ public class Level implements ChunkManager, Metadatable {
             this.timings.syncChunkSendPrepareTimer.startTiming();
             AsyncTask task = this.provider.requestChunkTask(x, z);
             if (task != null) {
-                this.server.getScheduler().scheduleAsyncTask(task);
+                this.server.getScheduler().scheduleAsyncTask(null, task);
             }
             this.timings.syncChunkSendPrepareTimer.stopTiming();
         }
@@ -2714,6 +2721,10 @@ public class Level implements ChunkManager, Metadatable {
         }
 
         this.entities.remove(entity.getId());
+        //if (!this.server.isPrimaryThread()) {
+        //    MainLogger.getLogger().logException(new NullPointerException("Another thread"));
+        //}
+
         this.updateEntities.remove(entity.getId());
     }
 
@@ -2792,7 +2803,7 @@ public class Level implements ChunkManager, Metadatable {
         chunk.initChunk();
 
         if (chunk instanceof BaseChunk && !chunk.isLightPopulated() && chunk.isPopulated() && this.getServer().getConfig("chunk-ticking.light-updates", false)) {
-            this.getServer().getScheduler().scheduleAsyncTask(new LightPopulationTask(this, (BaseChunk) chunk));
+            this.getServer().getScheduler().scheduleAsyncTask(null, new LightPopulationTask(this, (BaseChunk) chunk));
         }
 
         if (this.isChunkInUse(index)) {
@@ -3033,7 +3044,7 @@ public class Level implements ChunkManager, Metadatable {
                     }
 
                     PopulationTask task = new PopulationTask(this, chunk);
-                    this.server.getScheduler().scheduleAsyncTask(task);
+                    this.server.getScheduler().scheduleAsyncTask(null, task);
                 }
             }
             Timings.populationTimer.stopTiming();
@@ -3057,7 +3068,7 @@ public class Level implements ChunkManager, Metadatable {
             Timings.generationTimer.startTiming();
             this.chunkGenerationQueue.put(index, Boolean.TRUE);
             GenerationTask task = new GenerationTask(this, this.getChunk(x, z, true));
-            this.server.getScheduler().scheduleAsyncTask(task);
+            this.server.getScheduler().scheduleAsyncTask(null, task);
             Timings.generationTimer.stopTiming();
         }
     }

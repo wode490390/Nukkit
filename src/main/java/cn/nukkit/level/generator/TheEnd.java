@@ -2,6 +2,7 @@ package cn.nukkit.level.generator;
 
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.noise.PerlinOctaveGenerator;
@@ -179,7 +180,7 @@ public class TheEnd extends Generator {
         for (Populator populator : this.populators) {
             populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
         }
-        EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
+        Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
     @Override

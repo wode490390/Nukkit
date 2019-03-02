@@ -11,7 +11,7 @@ import cn.nukkit.math.Vector3;
 /**
  * Created by CreeperFace on 27. 11. 2016.
  */
-public abstract class BlockButton extends BlockFlowableMeta {
+public abstract class BlockButton extends BlockFlowableMeta implements BlockFaceable {
 
     protected BlockButton(int meta) {
         super(meta);
@@ -116,5 +116,10 @@ public abstract class BlockButton extends BlockFlowableMeta {
     @Override
     public Item toItem() {
         return Item.get(this.getId(), 0, 1);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

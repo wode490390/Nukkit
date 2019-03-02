@@ -503,8 +503,6 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
         this.lastUpdate = this.server.getTick();
         this.server.getPluginManager().callEvent(new EntitySpawnEvent(this));
-
-        this.scheduleUpdate();
     }
 
     public boolean hasCustomName() {
@@ -1297,8 +1295,8 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
                         public void onRun(int currentTick) {
                             // dirty hack to make sure chunks are loaded and generated before spawning
                             // player
-                            teleport(newPos.add(1.5, 1, 0.5));
-                            BlockNetherPortal.spawnPortal(newPos);
+                            Position finalPos = BlockNetherPortal.spawnPortal(newPos);
+                            teleport(finalPos.add(1.5, 1, 0.5));
                         }
                     }, 20);
                 }
@@ -1344,8 +1342,8 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void addMotion(double motionX, double motionY, double motionZ) {
-        int chunkX = this.getFloorX() >> 16;
-        int chunkZ = this.getFloorZ() >> 16;
+        int chunkX = this.getFloorX() >> 4;
+        int chunkZ = this.getFloorZ() >> 4;
         SetEntityMotionPacket pk = new SetEntityMotionPacket();
         pk.entityRuntimeId = this.getId();
         pk.motion = new Vector3(motionX, motionY, motionZ).asVector3f();
@@ -1443,6 +1441,9 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public final void scheduleUpdate() {
+        //if (!this.server.isPrimaryThread()) {
+        //    MainLogger.getLogger().logException(new NullPointerException("Another thread"));
+        //}
         if (!this.isClosed()) {
             this.getLevel().updateEntities.put(this.id, this);
         }
@@ -1643,10 +1644,10 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void onStruckByLightning(Entity entity) {
-        this.attack(new EntityDamageByEntityEvent(entity, this, DamageCause.LIGHTNING, 5));
-
-        if (this.fireTicks < 8 * 20) {
-            this.setOnFire(8);
+        if (this.attack(new EntityDamageByEntityEvent(entity, this, DamageCause.LIGHTNING, 5))) {
+            if (this.fireTicks < 8 * 20) {
+                this.setOnFire(8);
+            }
         }
     }
 
@@ -1936,7 +1937,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
         for (Block block : this.getCollisionBlocks()) {
             int blockId = block.getId();
-            if (blockId == Block.NETHER_PORTAL) {
+            if (blockId == Block.END_PORTAL) {
                 this.inEndPortal = true;
                 continue;
             }

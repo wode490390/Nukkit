@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySign;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemSign;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
@@ -16,7 +15,7 @@ import cn.nukkit.utils.BlockColor;
 /**
  * @author Nukkit Project Team
  */
-public class BlockSignPost extends BlockTransparentMeta {
+public class BlockSignPost extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockSignPost() {
         this(0);
@@ -105,7 +104,7 @@ public class BlockSignPost extends BlockTransparentMeta {
 
     @Override
     public Item toItem() {
-        return new ItemSign();
+        return Item.get(Item.SIGN);
     }
 
     @Override
@@ -116,5 +115,10 @@ public class BlockSignPost extends BlockTransparentMeta {
     @Override
     public BlockColor getColor() {
         return BlockColor.AIR_BLOCK_COLOR;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

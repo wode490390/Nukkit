@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author CreeperFace
  */
-public abstract class BlockPistonBase extends BlockSolidMeta {
+public abstract class BlockPistonBase extends BlockSolidMeta implements BlockFaceable {
 
     public boolean sticky;
 
@@ -38,6 +38,11 @@ public abstract class BlockPistonBase extends BlockSolidMeta {
     @Override
     public Item toItem() {
         return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 
     @Override

@@ -8,7 +8,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * Created by CreeperFace on 2.6.2017.
  */
-public abstract class BlockTerracottaGlazed extends BlockSolidMeta {
+public abstract class BlockTerracottaGlazed extends BlockSolidMeta implements BlockFaceable {
 
     public BlockTerracottaGlazed() {
         this(0);
@@ -53,5 +53,10 @@ public abstract class BlockTerracottaGlazed extends BlockSolidMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

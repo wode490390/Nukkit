@@ -8,7 +8,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * Created by Leonidius20 on 18.08.18.
  */
-public class BlockObserver extends BlockSolidMeta {
+public class BlockObserver extends BlockSolidMeta implements BlockFaceable {
 
     public BlockObserver() {
         this(0);
@@ -70,4 +70,8 @@ public class BlockObserver extends BlockSolidMeta {
         return 17.5;
     }
 
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
+    }
 }

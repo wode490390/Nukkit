@@ -12,21 +12,21 @@ import cn.nukkit.utils.BlockColor;
 /**
  * Created by Pub4Game on 27.12.2015.
  */
-public class BlockAnvil extends BlockFallableMeta {
+public class BlockAnvil extends BlockFallableMeta implements BlockFaceable {
 
     private static final String[] NAMES = new String[]{
-            "Anvil",
-            "Anvil",
-            "Anvil",
-            "Anvil",
-            "Slighty Damaged Anvil",
-            "Slighty Damaged Anvil",
-            "Slighty Damaged Anvil",
-            "Slighty Damaged Anvil",
-            "Very Damaged Anvil",
-            "Very Damaged Anvil",
-            "Very Damaged Anvil",
-            "Very Damaged Anvil"
+            "",
+            "",
+            "",
+            "",
+            "Slighty Damaged ",
+            "Slighty Damaged ",
+            "Slighty Damaged ",
+            "Slighty Damaged ",
+            "Very Damaged ",
+            "Very Damaged ",
+            "Very Damaged ",
+            "Very Damaged "
     };
 
     public BlockAnvil() {
@@ -74,7 +74,7 @@ public class BlockAnvil extends BlockFallableMeta {
 
     @Override
     public String getName() {
-        return NAMES[this.getDamage() > 11 ? 0 : this.getDamage()];
+        return NAMES[this.getDamage() > 11 ? 0 : this.getDamage()] + "Anvil";
     }
 
     @Override
@@ -133,5 +133,10 @@ public class BlockAnvil extends BlockFallableMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

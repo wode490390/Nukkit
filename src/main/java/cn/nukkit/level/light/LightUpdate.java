@@ -4,6 +4,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.SubChunkIteratorManager;
 import cn.nukkit.math.BlockVector3;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -47,9 +48,9 @@ public abstract class LightUpdate {
     }
 
     private void prepareNodes() {
-        for (Map.Entry<BlockVector3, Integer> entry : updateNodes.entrySet()) {
+        for (Object2IntMap.Entry<BlockVector3> entry : updateNodes.object2IntEntrySet()) {
             BlockVector3 pos = entry.getKey();
-            int newLevel = entry.getValue();
+            int newLevel = entry.getIntValue();
 
             if (this.subChunkHandler.moveTo(pos.x, pos.y, pos.z)) {
                 int oldLevel = this.getLight(pos.x, pos.y, pos.z);

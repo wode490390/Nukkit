@@ -55,12 +55,12 @@ public class EntityEndCrystal extends Entity {
         }
 
         return true;
-	}
+    }
 
     @Override
-	public boolean canCollideWith(Entity entity) {
-		return false;
-	}
+    public boolean canCollideWith(Entity entity) {
+        return false;
+    }
 
     public boolean showBase() {
         return this.getDataFlag(DATA_FLAGS, DATA_FLAG_SHOWBASE);

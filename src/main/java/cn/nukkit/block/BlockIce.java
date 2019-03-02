@@ -4,7 +4,7 @@ package cn.nukkit.block;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.biome.EnumBiome;
+import cn.nukkit.level.biome.Biome;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.BlockColor;
 
@@ -58,7 +58,7 @@ public class BlockIce extends BlockTransparent {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (this.getLevel().getFullLight(this) > 11 && !EnumBiome.getBiome(this.getLevel().getBiomeId(this.getFloorX(), this.getFloorZ())).isFreezing()) {
+            if (this.getLevel().getFullLight(this) > 11 && !Biome.getBiome(this.getLevel().getBiomeId(this.getFloorX(), this.getFloorZ())).isFreezing()) {
                 this.getLevel().setBlock(this, new BlockWater(), true);
                 return Level.BLOCK_UPDATE_NORMAL;
             }

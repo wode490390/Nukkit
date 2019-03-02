@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class BlockEnderChest extends BlockTransparentMeta {
+public class BlockEnderChest extends BlockTransparentMeta implements BlockFaceable {
 
     private Set<Player> viewers = new HashSet<>();
 
@@ -191,5 +191,10 @@ public class BlockEnderChest extends BlockTransparentMeta {
     @Override
     public Item toItem() {
         return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

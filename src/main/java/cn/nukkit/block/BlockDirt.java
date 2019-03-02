@@ -66,8 +66,8 @@ public class BlockDirt extends BlockSolidMeta {
     @Override
     public Item[] getDrops(Item item) {
         return new Item[]{
-				new ItemBlock(get(DIRT))
-		};
+                new ItemBlock(get(DIRT))
+        };
     }
 
     @Override

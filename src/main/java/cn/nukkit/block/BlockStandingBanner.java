@@ -14,7 +14,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.IntTag;
 import cn.nukkit.nbt.tag.ListTag;
 
-public class BlockStandingBanner extends BlockTransparentMeta {
+public class BlockStandingBanner extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockStandingBanner() {
         this(0);
@@ -106,5 +106,10 @@ public class BlockStandingBanner extends BlockTransparentMeta {
             return Item.get(Item.BANNER, ((BlockEntityBanner) blockEntity).getBaseColor() & 0xf).setNamedTag(blockEntity.getCleanedNBT());
         }
         return Item.get(Item.BANNER);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

@@ -19,7 +19,7 @@ import cn.nukkit.utils.BlockColor;
  * Package cn.nukkit.block in project nukkit .
  * The name NetherPortalBlock comes from minecraft wiki.
  */
-public class BlockNetherPortal extends BlockFlowableMeta {
+public class BlockNetherPortal extends BlockFlowableMeta implements BlockFaceable {
 
     public BlockNetherPortal() {
         this(0);
@@ -61,7 +61,7 @@ public class BlockNetherPortal extends BlockFlowableMeta {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(new BlockAir());
+        return new ItemBlock(get(AIR));
     }
 
     @Override
@@ -104,6 +104,11 @@ public class BlockNetherPortal extends BlockFlowableMeta {
     }
 
     @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
+    }
+
+    @Override
     public void onEntityCollide(Entity entity) {
         if (entity instanceof Player) {
             Player p = (Player) entity;
@@ -138,9 +143,20 @@ public class BlockNetherPortal extends BlockFlowableMeta {
         }
     }
 
-    public static void spawnPortal(Position pos)   {
+    public static Position spawnPortal(Position pos)   {
         Level lvl = pos.level;
-        int x = pos.getFloorX(), y = pos.getFloorY(), z = pos.getFloorZ();
+        int x = pos.getFloorX();
+        int y = pos.getFloorY();
+        int z = pos.getFloorZ();
+
+        int maxY = lvl.getDimension() == Level.DIMENSION_NETHER ? 110 : 240;
+        while (y < maxY) {
+            if (lvl.getBlockIdAt(x, y, z) == 0) {
+                break;
+            }
+
+            y++;
+        }
 
         for (int xx = -1; xx < 4; xx++) {
             for (int yy = 1; yy < 4; yy++)  {
@@ -187,5 +203,7 @@ public class BlockNetherPortal extends BlockFlowableMeta {
         lvl.setBlockAt(x + 1, y, z, OBSIDIAN);
         lvl.setBlockAt(x + 2, y, z, OBSIDIAN);
         lvl.setBlockAt(x + 3, y, z, OBSIDIAN);
+
+        return new Position(x, y, z, lvl);
     }
 }

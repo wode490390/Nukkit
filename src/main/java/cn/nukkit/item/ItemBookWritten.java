@@ -34,9 +34,9 @@ public class ItemBookWritten extends Item {
 
     public String[] getPages() {
         ListTag<CompoundTag> tag = (ListTag<CompoundTag>) this.getNamedTag().getList("pages");
-		if (tag == null) {
-			return new String[0];
-		}
+        if (tag == null) {
+            return new String[0];
+        }
         String[] pages = new String[tag.size()];
         int i = 0;
         for (CompoundTag pageCompound : tag.getAll()) {

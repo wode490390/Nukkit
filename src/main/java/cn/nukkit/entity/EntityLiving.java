@@ -51,18 +51,6 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
     protected float movementSpeed = 0.1f;
 
-    //Optimization
-    protected boolean needLivingBaseTick = true;
-    protected boolean needCollidingWithRideable = true;
-
-    public boolean isNeedCollidingWithRideable() {
-        return needCollidingWithRideable;
-    }
-
-    public boolean isNeedLivingBaseTick() {
-        return needLivingBaseTick;
-    }
-
     @Override
     protected void initEntity() {
         super.initEntity();
@@ -104,16 +92,6 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
     public void collidingWith(Entity ent) { // can override (IronGolem|Bats)
         ent.applyEntityCollision(this);
-    }
-
-    @Override
-    public void heal(EntityRegainHealthEvent source) {
-        super.heal(source);
-        if (source.isCancelled()) {
-            return;
-        }
-
-        this.attackTime = 0;
     }
 
     @Override

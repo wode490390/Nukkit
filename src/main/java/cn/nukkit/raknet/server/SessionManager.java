@@ -112,7 +112,7 @@ public class SessionManager {
         this.lastMeasure = System.currentTimeMillis();
         while (!this.shutdown) {
             long start = System.currentTimeMillis();
-            int max = 5000;
+            int max = 1000;
             while (max > 0) {
                 try {
                     if (!this.receivePacket()) {
@@ -129,9 +129,9 @@ public class SessionManager {
             while (this.receiveStream()) ;
 
             long time = System.currentTimeMillis() - start;
-            if (time < 50) {
+            if (time < 10) {
                 try {
-                    Thread.sleep(50 - time);
+                    Thread.sleep(10 - time);
                 } catch (InterruptedException e) {
                     //ignore
                 }

@@ -44,10 +44,10 @@ public class ItemPotionSplash extends ProjectileItem {
     protected void correctNBT(CompoundTag nbt) {
         /*TODO: CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<CompoundTag>("CustomPotionEffects")
-				        .add(new CompoundTag()
-		                        .putByte("Id", id)//药水id
-		                        //.putByte("Amplifier", amplifier)//倍数
-		                        //.putInt("Duration", time)//时长tick
+                        .add(new CompoundTag()
+                                .putByte("Id", id)//药水id
+                                //.putByte("Amplifier", amplifier)//倍数
+                                //.putInt("Duration", time)//时长tick
                 .putString("Potion", name)//自定义名
                 .putInt("CustomPotionColor", color);//(R << 16) + (G << 8) + B*/
         nbt.putInt("PotionId", this.meta);

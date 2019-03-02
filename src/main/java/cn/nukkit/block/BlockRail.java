@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  * Created by Snake1999 on 2016/1/11.
  * Package cn.nukkit.block in project nukkit
  */
-public class BlockRail extends BlockFlowableMeta {
+public class BlockRail extends BlockFlowableMeta implements BlockFaceable {
 
     // 0x8: Set the block active
     // 0x7: Reset the block to normal
@@ -262,5 +262,10 @@ public class BlockRail extends BlockFlowableMeta {
         return new Item[]{
                 Item.get(Item.RAIL, 0, 1)
         };
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

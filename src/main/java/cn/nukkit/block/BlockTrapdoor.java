@@ -15,7 +15,7 @@ import cn.nukkit.utils.BlockColor;
 /**
  * Created by Pub4Game on 26.12.2015.
  */
-public class BlockTrapdoor extends BlockTransparentMeta {
+public class BlockTrapdoor extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockTrapdoor() {
         this(0);
@@ -213,25 +213,16 @@ public class BlockTrapdoor extends BlockTransparentMeta {
         return BlockColor.WOOD_BLOCK_COLOR;
     }
 
-    public BlockFace getFacing() {
-        switch (this.getDamage() & 0x3) {
-            case 0:
-                return BlockFace.NORTH;
-            case 1:
-                return BlockFace.SOUTH;
-            case 2:
-                return BlockFace.WEST;
-            case 3:
-            default:
-                return BlockFace.EAST;
-        }
-    }
-
     public boolean isOpen() {
         return (this.getDamage() & 0x8) != 0;
     }
 
     public boolean isTop() {
         return (this.getDamage() & 0x4) != 0;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

@@ -11,7 +11,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * @author Nukkit Project Team
  */
-public class BlockLever extends BlockFlowableMeta {
+public class BlockLever extends BlockFlowableMeta implements BlockFaceable {
 
     public BlockLever() {
         this(0);
@@ -115,6 +115,11 @@ public class BlockLever extends BlockFlowableMeta {
     @Override
     public boolean isPowerSource() {
         return true;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 
     public enum LeverOrientation {

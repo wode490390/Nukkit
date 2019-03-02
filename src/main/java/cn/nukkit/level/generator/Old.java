@@ -322,7 +322,7 @@ public class Old extends Generator {
             for (Populator populator : this.populators) {
                 populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
             }
-            EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
+            Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
         }
     }
 

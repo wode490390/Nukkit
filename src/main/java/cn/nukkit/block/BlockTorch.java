@@ -11,7 +11,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/2 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockTorch extends BlockFlowableMeta {
+public class BlockTorch extends BlockFlowableMeta implements BlockFaceable {
 
     public BlockTorch() {
         this(0);
@@ -98,11 +98,12 @@ public class BlockTorch extends BlockFlowableMeta {
         return BlockColor.AIR_BLOCK_COLOR;
     }
 
-    public BlockFace getFacing() {
-        return getFacing(this.getDamage());
+    @Override
+    public BlockFace getBlockFace() {
+        return this.getBlockFace(this.getDamage() & 0x07);
     }
 
-    public BlockFace getFacing(int meta) {
+    public BlockFace getBlockFace(int meta) {
         switch (meta) {
             case 1:
                 return BlockFace.EAST;
