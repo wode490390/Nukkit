@@ -2,9 +2,24 @@ package cn.nukkit.entity.projectile;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
+import cn.nukkit.event.entity.EntityDamageByChildEntityEvent;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.ProjectileHitEvent;
+import cn.nukkit.level.MovingObjectPosition;
+import cn.nukkit.level.Position;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.DoubleTag;
+import cn.nukkit.nbt.tag.FloatTag;
+import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
+
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -15,6 +30,8 @@ public class EntityThrownTrident extends EntityProjectile {
     public static final int NETWORK_ID = 73;
 
     public static final int DATA_SOURCE_ID = 17;
+
+    protected Item trident;
 
     @Override
     public int getNetworkId() {
@@ -66,7 +83,24 @@ public class EntityThrownTrident extends EntityProjectile {
         super.initEntity();
 
         this.damage = namedTag.contains("damage") ? namedTag.getDouble("damage") : 8;
+        this.trident = namedTag.contains("Trident") ? NBTIO.getItemHelper(namedTag.getCompound("Trident")) : Item.get(0);
+
         closeOnCollide = false;
+    }
+
+    @Override
+    public void saveNBT() {
+        super.saveNBT();
+
+        this.namedTag.put("Trident", NBTIO.putItemHelper(this.trident));
+    }
+
+    public Item getItem() {
+        return this.trident != null ? this.trident.clone() : Item.get(0);
+    }
+
+    public void setItem(Item item) {
+        this.trident = item.clone();
     }
 
     public void setCritical() {
@@ -105,6 +139,10 @@ public class EntityThrownTrident extends EntityProjectile {
 
         this.timing.startTiming();
 
+        if (this.isCollided && !this.hadCollision) {
+            this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_ITEM_TRIDENT_HIT_GROUND);
+        }
+
         boolean hasUpdate = super.onUpdate(currentTick);
 
         if (this.onGround || this.hadCollision) {
@@ -124,7 +162,7 @@ public class EntityThrownTrident extends EntityProjectile {
     @Override
     public void spawnTo(Player player) {
         AddEntityPacket pk = new AddEntityPacket();
-        pk.type = EntityThrownTrident.NETWORK_ID;
+        pk.type = NETWORK_ID;
         pk.entityUniqueId = this.getId();
         pk.entityRuntimeId = this.getId();
         pk.x = (float) this.x;
@@ -139,5 +177,45 @@ public class EntityThrownTrident extends EntityProjectile {
         player.dataPacket(pk);
 
         super.spawnTo(player);
+    }
+
+    @Override
+    public void onCollideWithEntity(Entity entity) {
+        this.server.getPluginManager().callEvent(new ProjectileHitEvent(this, MovingObjectPosition.fromEntity(entity)));
+        float damage = this.getResultDamage();
+
+        EntityDamageEvent ev;
+        if (this.shootingEntity == null) {
+            ev = new EntityDamageByEntityEvent(this, entity, DamageCause.PROJECTILE, damage);
+        } else {
+            ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, entity, DamageCause.PROJECTILE, damage);
+        }
+        entity.attack(ev);
+        this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_ITEM_TRIDENT_HIT);
+        this.hadCollision = true;
+        this.close();
+        Entity newTrident = create("ThrownTrident", this);
+        ((EntityThrownTrident) newTrident).setItem(this.trident);
+        newTrident.spawnToAll();
+    }
+
+    public Entity create(Object type, Position source, Object... args) {
+        FullChunk chunk = source.getLevel().getChunk((int) source.x >> 4, (int) source.z >> 4);
+        if (chunk == null) return null;
+
+        CompoundTag nbt = new CompoundTag()
+                .putList(new ListTag<DoubleTag>("Pos")
+                        .add(new DoubleTag("", source.x + 0.5))
+                        .add(new DoubleTag("", source.y))
+                        .add(new DoubleTag("", source.z + 0.5)))
+                .putList(new ListTag<DoubleTag>("Motion")
+                        .add(new DoubleTag("", 0))
+                        .add(new DoubleTag("", 0))
+                        .add(new DoubleTag("", 0)))
+                .putList(new ListTag<FloatTag>("Rotation")
+                        .add(new FloatTag("", new Random().nextFloat() * 360))
+                        .add(new FloatTag("", 0)));
+
+        return Entity.createEntity(type.toString(), chunk, nbt, args);
     }
 }

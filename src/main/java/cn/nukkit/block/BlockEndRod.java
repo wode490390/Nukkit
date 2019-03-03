@@ -2,15 +2,17 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.utils.Faceable;
 
 /**
  * http://minecraft.gamepedia.com/End_Rod
  *
  * @author PikyCZ
  */
-public class BlockEndRod extends BlockTransparentMeta {
+public class BlockEndRod extends BlockTransparentMeta implements Faceable {
 
     public BlockEndRod() {
         this(0);
@@ -82,6 +84,16 @@ public class BlockEndRod extends BlockTransparentMeta {
         this.getLevel().setBlock(block, this, true, true);
 
         return true;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 
 }

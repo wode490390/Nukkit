@@ -5,6 +5,7 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityChest;
 import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -12,6 +13,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.Faceable;
 
 import java.util.Map;
 
@@ -19,7 +21,7 @@ import java.util.Map;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockChest extends BlockTransparentMeta {
+public class BlockChest extends BlockTransparentMeta implements Faceable {
 
     public BlockChest() {
         this(0);
@@ -131,11 +133,11 @@ public class BlockChest extends BlockTransparentMeta {
             }
         }
 
-        BlockEntity blockEntity = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        BlockEntityChest blockEntity = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
 
         if (chest != null) {
-            chest.pairWith(((BlockEntityChest) blockEntity));
-            ((BlockEntityChest) blockEntity).pairWith(chest);
+            chest.pairWith(blockEntity);
+            blockEntity.pairWith(chest);
         }
 
         return true;
@@ -203,5 +205,15 @@ public class BlockChest extends BlockTransparentMeta {
         }
 
         return super.getComparatorInputOverride();
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

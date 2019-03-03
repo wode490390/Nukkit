@@ -4,15 +4,17 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityJukebox;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemRecord;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.utils.Faceable;
 
 /**
  * Created by CreeperFace on 7.8.2017.
  */
-public class BlockJukebox extends BlockSolid {
+public class BlockJukebox extends BlockSolid implements Faceable {
 
     public BlockJukebox() {
     }
@@ -33,9 +35,14 @@ public class BlockJukebox extends BlockSolid {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
     public boolean onActivate(Item item, Player player) {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity == null || !(blockEntity instanceof BlockEntityJukebox)) {
+        if (!(blockEntity instanceof BlockEntityJukebox)) {
             blockEntity = this.createBlockEntity();
         }
 
@@ -84,5 +91,10 @@ public class BlockJukebox extends BlockSolid {
                 .putInt("z", getFloorZ());
 
         return BlockEntity.createBlockEntity(BlockEntity.JUKEBOX, this.level.getChunk(getFloorX() >> 4, getFloorZ() >> 4), nbt);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 }

@@ -1,12 +1,15 @@
 package cn.nukkit.block;
 
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.utils.Faceable;
 
 /**
  * Created by CreeperFace on 15.4.2017.
  */
-public class BlockDispenser extends BlockSolidMeta {
+public class BlockDispenser extends BlockSolidMeta implements Faceable {
 
     public BlockDispenser() {
         this(0);
@@ -29,6 +32,11 @@ public class BlockDispenser extends BlockSolidMeta {
     @Override
     public int getId() {
         return DISPENSER;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
     }
 
     @Override
@@ -72,5 +80,10 @@ public class BlockDispenser extends BlockSolidMeta {
         double y = this.getY() + 0.7 * facing.getYOffset();
         double z = this.getZ() + 0.7 * facing.getZOffset();
         return new Vector3(x, y, z);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 }
