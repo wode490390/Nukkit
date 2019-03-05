@@ -2,10 +2,10 @@ package cn.nukkit.level.generator.populator.nether;
 
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.generator.populator.BlockPopulator;
+import cn.nukkit.level.generator.populator.PopulatorBlock;
 import cn.nukkit.math.NukkitRandom;
 
-public class PopulatorGlowstone extends BlockPopulator {
+public class PopulatorGlowstone extends PopulatorBlock {
 
     private boolean variableAmount;
     

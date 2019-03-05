@@ -39,7 +39,7 @@ import cn.nukkit.level.generator.Generator;
 import cn.nukkit.level.generator.Nether;
 import cn.nukkit.level.generator.Normal;
 import cn.nukkit.level.generator.Old;
-import cn.nukkit.level.generator.TheEnd;
+import cn.nukkit.level.generator.End;
 import cn.nukkit.math.NukkitMath;
 import cn.nukkit.metadata.EntityMetadataStore;
 import cn.nukkit.metadata.LevelMetadataStore;
@@ -351,7 +351,7 @@ public class Server {
 
         // Allow Nether? (determines if we create a nether world if one doesn't exist on startup)
         this.allowNether = this.properties.getBoolean("allow-nether", true);
-        // Allow TheEnd? (determines if we create the end world if one doesn't exist on startup)
+        // Allow End? (determines if we create the end world if one doesn't exist on startup)
         this.allowTheEnd = this.getVConfig("settings.the-end", true);
 
         this.allowExperimental = this.getVConfig("settings.experimental", false);
@@ -471,7 +471,7 @@ public class Server {
         Generator.addGenerator(Normal.class, "normal", Generator.TYPE_INFINITE);
         Generator.addGenerator(Normal.class, "default", Generator.TYPE_INFINITE);
         Generator.addGenerator(Nether.class, "nether", Generator.TYPE_NETHER);
-        Generator.addGenerator(TheEnd.class, "the_end", Generator.TYPE_THE_END);
+        Generator.addGenerator(End.class, "the_end", Generator.TYPE_THE_END);
 
         for (String name : this.getConfig("worlds", new HashMap<String, Object>()).keySet()) {
             if (!this.loadLevel(name)) {

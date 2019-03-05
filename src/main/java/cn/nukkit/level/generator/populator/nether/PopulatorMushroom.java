@@ -2,19 +2,16 @@ package cn.nukkit.level.generator.populator.nether;
 
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.generator.populator.BlockPopulator;
+import cn.nukkit.level.generator.populator.PopulatorBlock;
 import cn.nukkit.math.NukkitRandom;
-import java.util.Arrays;
 
-public class PopulatorMushroom extends BlockPopulator {
-
-    private static final int[] MATERIALS = {NETHERRACK, QUARTZ_ORE, SOUL_SAND, GRAVEL};
+public class PopulatorMushroom extends PopulatorBlock {
 
     private final int type;
 
     public PopulatorMushroom(int type) {
         if (type != BROWN_MUSHROOM && type != RED_MUSHROOM) {
-            throw new IllegalArgumentException("MushroomDecorator type must be BROWN_MUSHROOM or RED_MUSHROOM");
+            throw new IllegalArgumentException("PopulatorMushroom type must be BROWN_MUSHROOM or RED_MUSHROOM");
         }
         this.type = type;
     }
@@ -30,7 +27,10 @@ public class PopulatorMushroom extends BlockPopulator {
             int z = sourceZ + random.nextBoundedInt(8) - random.nextBoundedInt(8);
             int y = sourceY + random.nextBoundedInt(4) - random.nextBoundedInt(4);
 
-            if (y < 128 && level.getBlockIdAt(x, y, z) == AIR && Arrays.asList(MATERIALS).contains(level.getBlockIdAt(x, y - 1, z))) level.setBlockAt(x, y, z, this.type);
+            int below = level.getBlockIdAt(x, y - 1, z);
+            if (y < 128 && level.getBlockIdAt(x, y, z) == AIR && (below == NETHERRACK || below == QUARTZ_ORE || below == SOUL_SAND || below == GRAVEL)) {
+                level.setBlockAt(x, y, z, this.type);
+            }
         }
     }
 }

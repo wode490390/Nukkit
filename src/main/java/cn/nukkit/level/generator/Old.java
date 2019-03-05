@@ -1,5 +1,10 @@
 package cn.nukkit.level.generator;
 
+import cn.nukkit.level.generator.populator.overworld.PopulatorRavines;
+import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
+import cn.nukkit.level.generator.populator.overworld.PopulatorBedrock;
+import cn.nukkit.level.generator.populator.overworld.PopulatorGroundCover;
+import cn.nukkit.level.generator.populator.overworld.PopulatorCaves;
 import cn.nukkit.block.*;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
@@ -9,52 +14,50 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.noise.vanilla.f.NoiseGeneratorOctavesF;
 import cn.nukkit.level.generator.noise.vanilla.f.NoiseGeneratorPerlinF;
 import cn.nukkit.level.generator.object.ore.OreType;
-import cn.nukkit.level.generator.populator.impl.*;
-import cn.nukkit.level.generator.populator.type.Populator;
+import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.MathHelper;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-
 import java.util.*;
 
 public class Old extends Generator {
 
     public static final int WORLD_SIZE = 256;
 
-    private static final float[] biomeWeights = new float[25];
+    protected static final float[] biomeWeights = new float[25];
 
     static {
         for (int i = -2; i <= 2; ++i) {
             for (int j = -2; j <= 2; ++j) {
-                biomeWeights[i + 2 + (j + 2) * 5] = (float) (10.0F / Math.sqrt((float) (i * i + j * j) + 0.2F));
+                biomeWeights[i + 2 + (j + 2) * 5] = (float) (10f / Math.sqrt((float) (i * i + j * j) + 0.2f));
             }
         }
     }
 
-    private final List<Populator> populators = new ArrayList<Populator>();
-    private final List<Populator> generationPopulators = new ArrayList<Populator>();
+    protected final List<Populator> populators = new ArrayList<>();
+    protected final List<Populator> generationPopulators = new ArrayList<>();
     public static final int seaHeight = 64;
     public NoiseGeneratorOctavesF scaleNoise;
     public NoiseGeneratorOctavesF depthNoise;
-    private ChunkManager level;
-    private Random random;
-    private NukkitRandom nukkitRandom;
-    private long localSeed1;
-    private long localSeed2;
-    private BiomeSelector selector;
-    private ThreadLocal<Biome[]> biomes = ThreadLocal.withInitial(() -> new Biome[10 * 10]);
-    private ThreadLocal<float[]> depthRegion = ThreadLocal.withInitial(() -> null);
-    private ThreadLocal<float[]> mainNoiseRegion = ThreadLocal.withInitial(() -> null);
-    private ThreadLocal<float[]> minLimitRegion = ThreadLocal.withInitial(() -> null);
-    private ThreadLocal<float[]> maxLimitRegion = ThreadLocal.withInitial(() -> null);
-    private ThreadLocal<float[]> heightMap = ThreadLocal.withInitial(() -> new float[825]);
-    private NoiseGeneratorOctavesF minLimitPerlinNoise;
-    private NoiseGeneratorOctavesF maxLimitPerlinNoise;
-    private NoiseGeneratorOctavesF mainPerlinNoise;
-    private NoiseGeneratorPerlinF surfaceNoise;
+    protected ChunkManager level;
+    protected Random random;
+    protected NukkitRandom nukkitRandom;
+    protected long localSeed1;
+    protected long localSeed2;
+    protected BiomeSelector selector;
+    protected ThreadLocal<Biome[]> biomes = ThreadLocal.withInitial(() -> new Biome[10 * 10]);
+    protected ThreadLocal<float[]> depthRegion = ThreadLocal.withInitial(() -> null);
+    protected ThreadLocal<float[]> mainNoiseRegion = ThreadLocal.withInitial(() -> null);
+    protected ThreadLocal<float[]> minLimitRegion = ThreadLocal.withInitial(() -> null);
+    protected ThreadLocal<float[]> maxLimitRegion = ThreadLocal.withInitial(() -> null);
+    protected ThreadLocal<float[]> heightMap = ThreadLocal.withInitial(() -> new float[825]);
+    protected NoiseGeneratorOctavesF minLimitPerlinNoise;
+    protected NoiseGeneratorOctavesF maxLimitPerlinNoise;
+    protected NoiseGeneratorOctavesF mainPerlinNoise;
+    protected NoiseGeneratorPerlinF surfaceNoise;
 
     public Old() {
-        this(new HashMap<String, Object>());
+        this(new HashMap<>());
     }
 
     public Old(Map<String, Object> options) {
@@ -78,7 +81,7 @@ public class Old extends Generator {
 
     @Override
     public Map<String, Object> getSettings() {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     public Biome pickBiome(int x, int z) {
@@ -158,9 +161,9 @@ public class Old extends Generator {
             int vertCounter = 0;
             for (int xSeg = 0; xSeg < 5; ++xSeg) {
                 for (int zSeg = 0; zSeg < 5; ++zSeg) {
-                    float heightVariationSum = 0.0F;
-                    float baseHeightSum = 0.0F;
-                    float biomeWeightSum = 0.0F;
+                    float heightVariationSum = 0;
+                    float baseHeightSum = 0;
+                    float biomeWeightSum = 0;
                     Biome biome = pickBiome(baseX + (xSeg * 4), baseZ + (zSeg * 4));
 
                     for (int xSmooth = -2; xSmooth <= 2; ++xSmooth) {
@@ -169,10 +172,10 @@ public class Old extends Generator {
                             float baseHeight = biome1.getBaseHeight();
                             float heightVariation = biome1.getHeightVariation();
 
-                            float scaledWeight = biomeWeights[xSmooth + 2 + (zSmooth + 2) * 5] / (baseHeight + 2.0F);
+                            float scaledWeight = biomeWeights[xSmooth + 2 + (zSmooth + 2) * 5] / (baseHeight + 2f);
 
                             if (biome1.getBaseHeight() > biome.getBaseHeight()) {
-                                scaledWeight /= 2.0F;
+                                scaledWeight /= 2f;
                             }
 
                             heightVariationSum += heightVariation * scaledWeight;
@@ -183,55 +186,55 @@ public class Old extends Generator {
 
                     heightVariationSum = heightVariationSum / biomeWeightSum;
                     baseHeightSum = baseHeightSum / biomeWeightSum;
-                    heightVariationSum = heightVariationSum * 0.9F + 0.1F;
-                    baseHeightSum = (baseHeightSum * 4.0F - 1.0F) / 8.0F;
-                    float depthNoise = depthRegion[vertCounter] / 8000.0f;
+                    heightVariationSum = heightVariationSum * 0.9f + 0.1f;
+                    baseHeightSum = (baseHeightSum * 4f - 1f) / 8f;
+                    float depthNoise = depthRegion[vertCounter] / 8000f;
 
-                    if (depthNoise < 0.0f) {
+                    if (depthNoise < 0) {
                         depthNoise = -depthNoise * 0.3f;
                     }
 
-                    depthNoise = depthNoise * 3.0f - 2.0f;
+                    depthNoise = depthNoise * 3f - 2f;
 
-                    if (depthNoise < 0.0f) {
-                        depthNoise = depthNoise / 2.0f;
+                    if (depthNoise < 0) {
+                        depthNoise = depthNoise / 2f;
 
-                        if (depthNoise < -1.0f) {
-                            depthNoise = -1.0f;
+                        if (depthNoise < -1) {
+                            depthNoise = -1f;
                         }
 
                         depthNoise = depthNoise / 1.4f;
-                        depthNoise = depthNoise / 2.0f;
+                        depthNoise = depthNoise / 2f;
                     } else {
-                        if (depthNoise > 1.0f) {
-                            depthNoise = 1.0f;
+                        if (depthNoise > 1) {
+                            depthNoise = 1f;
                         }
 
-                        depthNoise = depthNoise / 8.0f;
+                        depthNoise = depthNoise / 8f;
                     }
 
                     ++vertCounter;
                     float baseHeightClone = baseHeightSum;
                     float heightVariationClone = heightVariationSum;
                     baseHeightClone = baseHeightClone + depthNoise * 0.2f;
-                    baseHeightClone = baseHeightClone * 8.5f / 8.0f;
-                    float baseHeightFactor = 8.5f + baseHeightClone * 4.0f;
+                    baseHeightClone = baseHeightClone * 8.5f / 8f;
+                    float baseHeightFactor = 8.5f + baseHeightClone * 4f;
 
                     for (int ySeg = 0; ySeg < 33; ++ySeg) {
-                        float baseScale = ((float) ySeg - baseHeightFactor) * 12f * 128.0f / 256.0f / heightVariationClone;
+                        float baseScale = ((float) ySeg - baseHeightFactor) * 12f * 128f / 256f / heightVariationClone;
 
-                        if (baseScale < 0.0f) {
-                            baseScale *= 4.0f;
+                        if (baseScale < 0) {
+                            baseScale *= 4f;
                         }
 
                         float minScaled = minLimitRegion[horizCounter] / 512f;
                         float maxScaled = maxLimitRegion[horizCounter] / 512f;
-                        float noiseScaled = (mainNoiseRegion[horizCounter] / 10.0f + 1.0f) / 2.0f;
+                        float noiseScaled = (mainNoiseRegion[horizCounter] / 10f + 1f) / 2f;
                         float clamp = MathHelper.denormalizeClamp(minScaled, maxScaled, noiseScaled) - baseScale;
 
                         if (ySeg > 29) {
-                            float yScaled = ((float) (ySeg - 29) / 3.0F);
-                            clamp = clamp * (1.0f - yScaled) + -10.0f * yScaled;
+                            float yScaled = ((float) (ySeg - 29) / 3f);
+                            clamp = clamp * (1f - yScaled) + -10f * yScaled;
                         }
 
                         heightMap[horizCounter] = clamp;
@@ -272,7 +275,7 @@ public class Old extends Generator {
                                 double scaleZ2 = baseIncr - scaleZ;
 
                                 for (int xIn = 0; xIn < 4; ++xIn) {
-                                    if ((scaleZ2 += scaleZ) > 0.0f) {
+                                    if ((scaleZ2 += scaleZ) > 0) {
                                         chunk.setBlockId(xSeg * 4 + zIn, ySeg * 8 + yIn, zSeg * 4 + xIn, STONE);
                                     } else if (ySeg * 8 + yIn <= seaHeight) {
                                         chunk.setBlockId(xSeg * 4 + zIn, ySeg * 8 + yIn, zSeg * 4 + xIn, STILL_WATER);

@@ -77,6 +77,21 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
         return source.getCause() == DamageCause.VOID && super.attack(source);
     }
 
+    @Override
+    public boolean isOnFire() {
+        return false;
+    }
+
+    @Override
+    public void setOnFire(int seconds) {
+
+    }
+
+    @Override
+    public boolean canBeMovedByCurrents() {
+        return false;
+    }
+
     protected void initEntity() {
         super.initEntity();
 

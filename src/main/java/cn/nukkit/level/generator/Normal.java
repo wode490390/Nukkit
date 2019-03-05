@@ -1,5 +1,8 @@
 package cn.nukkit.level.generator;
 
+import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
+import cn.nukkit.level.generator.populator.overworld.PopulatorGroundCover;
+import cn.nukkit.level.generator.populator.overworld.PopulatorCaves;
 import cn.nukkit.block.*;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
@@ -11,11 +14,9 @@ import cn.nukkit.level.generator.noise.PerlinOctaveGenerator;
 import cn.nukkit.level.generator.noise.SimplexOctaveGenerator;
 import cn.nukkit.level.generator.noise.bukkit.OctaveGenerator;
 import cn.nukkit.level.generator.object.ore.OreType;
-import cn.nukkit.level.generator.populator.impl.*;
-import cn.nukkit.level.generator.populator.type.Populator;
+import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-
 import java.util.*;
 
 public class Normal extends Generator {
@@ -23,26 +24,26 @@ public class Normal extends Generator {
     /**
      * The biome maps used to fill chunks biome grid and terrain generation.
      */
-    private MapLayer[] biomeGrid;
+    protected MapLayer[] biomeGrid;
 
-    private static final double[][] ELEVATION_WEIGHT = new double[5][5];
-    private static final Map<Integer, GroundGenerator> GROUND_MAP = new HashMap<Integer, GroundGenerator>();
-    private static final Map<Integer, BiomeHeight> HEIGHT_MAP = new HashMap<Integer, BiomeHeight>();
+    protected static final double[][] ELEVATION_WEIGHT = new double[5][5];
+    protected static final Map<Integer, GroundGenerator> GROUND_MAP = new HashMap<Integer, GroundGenerator>();
+    protected static final Map<Integer, BiomeHeight> HEIGHT_MAP = new HashMap<Integer, BiomeHeight>();
 
-    private static double coordinateScale = getConfig("overworld.coordinate-scale", 684.412d);
-    private static double heightScale = getConfig("overworld.height.scale", 684.412d);
-    private static double heightNoiseScaleX = getConfig("overworld.height.noise-scale.x", 200.0d); // depthNoiseScaleX
-    private static double heightNoiseScaleZ = getConfig("overworld.height.noise-scale.z", 200.0d); // depthNoiseScaleZ
-    private static double detailNoiseScaleX = getConfig("overworld.detail.noise-scale.x", 80.0d);  // mainNoiseScaleX
-    private static double detailNoiseScaleY = getConfig("overworld.detail.noise-scale.y", 160.0d); // mainNoiseScaleY
-    private static double detailNoiseScaleZ = getConfig("overworld.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
-    private static double surfaceScale = getConfig("overworld.surface-scale", 0.0625d);
-    private static double baseSize = getConfig("overworld.base-size", 8.5d);
-    private static double stretchY = getConfig("overworld.stretch-y", 12.0d);
-    private static double biomeHeightOffset = getConfig("overworld.biome.height-offset", 0.0d);    // biomeDepthOffset
-    private static double biomeHeightWeight = getConfig("overworld.biome.height-weight", 1.0d);    // biomeDepthWeight
-    private static double biomeScaleOffset = getConfig("overworld.biome.scale-offset", 0.0d);
-    private static double biomeScaleWeight = getConfig("overworld.biome.scale-weight", 1.0d);
+    protected static double coordinateScale = getConfig("overworld.coordinate-scale", 684.412d);
+    protected static double heightScale = getConfig("overworld.height.scale", 684.412d);
+    protected static double heightNoiseScaleX = getConfig("overworld.height.noise-scale.x", 200d); // depthNoiseScaleX
+    protected static double heightNoiseScaleZ = getConfig("overworld.height.noise-scale.z", 200d); // depthNoiseScaleZ
+    protected static double detailNoiseScaleX = getConfig("overworld.detail.noise-scale.x", 80d);  // mainNoiseScaleX
+    protected static double detailNoiseScaleY = getConfig("overworld.detail.noise-scale.y", 160d); // mainNoiseScaleY
+    protected static double detailNoiseScaleZ = getConfig("overworld.detail.noise-scale.z", 80d);  // mainNoiseScaleZ
+    protected static double surfaceScale = getConfig("overworld.surface-scale", 0.0625d);
+    protected static double baseSize = getConfig("overworld.base-size", 8.5d);
+    protected static double stretchY = getConfig("overworld.stretch-y", 12d);
+    protected static double biomeHeightOffset = getConfig("overworld.biome.height-offset", 0d);    // biomeDepthOffset
+    protected static double biomeHeightWeight = getConfig("overworld.biome.height-weight", 1d);    // biomeDepthWeight
+    protected static double biomeScaleOffset = getConfig("overworld.biome.scale-offset", 0d);
+    protected static double biomeScaleWeight = getConfig("overworld.biome.scale-weight", 1d);
 
     static {
         setBiomeSpecificGround(new GroundGeneratorSandy(), EnumBiome.BEACH.id, EnumBiome.COLD_BEACH.id, EnumBiome.DESERT.id, EnumBiome.DESERT_HILLS.id, EnumBiome.DESERT_M.id);
@@ -86,35 +87,35 @@ public class Normal extends Generator {
                 sqX *= sqX;
                 int sqZ = z - 2;
                 sqZ *= sqZ;
-                ELEVATION_WEIGHT[x][z] = 10.0D / Math.sqrt(sqX + sqZ + 0.2D);
+                ELEVATION_WEIGHT[x][z] = 10d / Math.sqrt(sqX + sqZ + 0.2d);
             }
         }
     }
 
-    private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
-    private final double[][][] density = new double[5][5][33];
-    private final GroundGenerator groundGen = new GroundGenerator();
-    private final BiomeHeight defaultHeight = BiomeHeight.DEFAULT;
+    protected final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
+    protected final double[][][] density = new double[5][5][33];
+    protected final GroundGenerator groundGen = new GroundGenerator();
+    protected final BiomeHeight defaultHeight = BiomeHeight.DEFAULT;
 
-    private static void setBiomeSpecificGround(GroundGenerator gen, int... biomes) {
+    protected static void setBiomeSpecificGround(GroundGenerator gen, int... biomes) {
         for (int biome : biomes) {
             GROUND_MAP.put(biome, gen);
         }
     }
 
-    private static void setBiomeHeight(BiomeHeight height, int... biomes) {
+    protected static void setBiomeHeight(BiomeHeight height, int... biomes) {
         for (int biome : biomes) {
             HEIGHT_MAP.put(biome, height);
         }
     }
 
-    private final List<Populator> populators = new ArrayList<Populator>();
-    private final List<Populator> generationPopulators = new ArrayList<Populator>();
-    private ChunkManager level;
-    private Random random;
-    private NukkitRandom nukkitRandom;
-    private long localSeed1;
-    private long localSeed2;
+    protected final List<Populator> populators = new ArrayList<Populator>();
+    protected final List<Populator> generationPopulators = new ArrayList<Populator>();
+    protected ChunkManager level;
+    protected Random random;
+    protected NukkitRandom nukkitRandom;
+    protected long localSeed1;
+    protected long localSeed2;
 
     public Normal() {
         this(new HashMap<String, Object>());
@@ -155,11 +156,8 @@ public class Normal extends Generator {
         this.nukkitRandom.setSeed(this.level.getSeed());
 
         //this should run before all other populators so that we don't do things like generate ground cover on bedrock or something
-        //PopulatorGroundCover cover = new PopulatorGroundCover();
-        //this.generationPopulators.add(cover);
-
-        //PopulatorBedrock bedrock = new PopulatorBedrock();
-        //this.generationPopulators.add(bedrock);
+        PopulatorGroundCover cover = new PopulatorGroundCover();
+        this.generationPopulators.add(cover);
 
         PopulatorOre ores = new PopulatorOre();
         ores.setOreTypes(new OreType[]{
@@ -177,11 +175,8 @@ public class Normal extends Generator {
         });
         this.populators.add(ores);
 
-        //PopulatorCaves caves = new PopulatorCaves();
-        //this.populators.add(caves);
-
-        //PopulatorRavines ravines = new PopulatorRavines();
-        //this.populators.add(ravines);
+        PopulatorCaves caves = new PopulatorCaves();
+        this.populators.add(caves);
 
         this.biomeGrid = MapLayer.initialize(level.getSeed(), this.getDimension(), this.getId());
     }
@@ -203,10 +198,10 @@ public class Normal extends Generator {
         int[] biomeGrid = this.biomeGrid[1].generateValues(x - 2, z - 2, 10, 10);
 
         Map<String, OctaveGenerator> octaves = getWorldOctaves();
-        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).getFractalBrownianMotion(x, z, 0.5D, 2.0D);
-        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
-        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
-        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).getFractalBrownianMotion(x, z, 0.5d, 2d);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).getFractalBrownianMotion(x, 0, z, 0.5d, 2d);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).getFractalBrownianMotion(x, 0, z, 0.5d, 2d);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).getFractalBrownianMotion(x, 0, z, 0.5d, 2d);
 
         int index = 0;
         int indexHeight = 0;
@@ -231,12 +226,12 @@ public class Normal extends Generator {
                         double heightBase = biomeHeightOffset + nearBiomeHeight.getHeight() * biomeHeightWeight;
                         double heightScale = biomeScaleOffset + nearBiomeHeight.getScale() * biomeScaleWeight;
                         if (this.getId() == TYPE_AMPLIFIED && heightBase > 0) {
-                            heightBase = 1.0D + heightBase * 2.0D;
-                            heightScale = 1.0D + heightScale * 4.0D;
+                            heightBase = 1d + heightBase * 2d;
+                            heightScale = 1d + heightScale * 4d;
                         }
-                        double weight = ELEVATION_WEIGHT[m][n] / (heightBase + 2.0D);
+                        double weight = ELEVATION_WEIGHT[m][n] / (heightBase + 2d);
                         if (nearBiomeHeight.getHeight() > biomeHeight.getHeight()) {
-                            weight *= 0.5D;
+                            weight *= 0.5d;
                         }
                         avgHeightScale += heightScale * weight;
                         avgHeightBase += heightBase * weight;
@@ -245,39 +240,39 @@ public class Normal extends Generator {
                 }
                 avgHeightScale /= totalWeight;
                 avgHeightBase /= totalWeight;
-                avgHeightScale = avgHeightScale * 0.9D + 0.1D;
-                avgHeightBase = (avgHeightBase * 4.0D - 1.0D) / 8.0D;
+                avgHeightScale = avgHeightScale * 0.9d + 0.1d;
+                avgHeightBase = (avgHeightBase * 4d - 1d) / 8d;
 
-                double noiseH = heightNoise[indexHeight++] / 8000.0D;
+                double noiseH = heightNoise[indexHeight++] / 8000d;
                 if (noiseH < 0) {
-                    noiseH = Math.abs(noiseH) * 0.3D;
+                    noiseH = Math.abs(noiseH) * 0.3d;
                 }
-                noiseH = noiseH * 3.0D - 2.0D;
+                noiseH = noiseH * 3d - 2d;
                 if (noiseH < 0) {
-                    noiseH = Math.max(noiseH * 0.5D, -1) / 1.4D * 0.5D;
+                    noiseH = Math.max(noiseH * 0.5d, -1) / 1.4d * 0.5d;
                 } else {
-                    noiseH = Math.min(noiseH, 1) / 8.0D;
+                    noiseH = Math.min(noiseH, 1) / 8d;
                 }
 
-                noiseH = (noiseH * 0.2D + avgHeightBase) * baseSize / 8.0D * 4.0D + baseSize;
+                noiseH = (noiseH * 0.2d + avgHeightBase) * baseSize / 8d * 4d + baseSize;
                 for (int k = 0; k < 33; k++) {
                     // density should be lower and lower as we climb up, this gets a height value to subtract from the noise.
-                    double nh = (k - noiseH) * stretchY * 128.0D / 256.0D / avgHeightScale;
-                    if (nh < 0.0D) {
-                        nh *= 4.0D;
+                    double nh = (k - noiseH) * stretchY * 128d / 256d / avgHeightScale;
+                    if (nh < 0) {
+                        nh *= 4d;
                     }
-                    double noiseR = roughnessNoise[index] / 512.0D;
-                    double noiseR2 = roughnessNoise2[index] / 512.0D;
-                    double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
+                    double noiseR = roughnessNoise[index] / 512d;
+                    double noiseR2 = roughnessNoise2[index] / 512d;
+                    double noiseD = (detailNoise[index] / 10d + 1d) / 2d;
                     // linear interpolation
                     double dens = noiseD < 0 ? noiseR
                             : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
                     dens -= nh;
                     index++;
                     if (k > 29) {
-                        double lowering = (k - 29) / 3.0D;
+                        double lowering = (k - 29) / 3d;
                         // linear interpolation
-                        dens = dens * (1.0D - lowering) + -10.0D * lowering;
+                        dens = dens * (1d - lowering) + -10d * lowering;
                     }
                     this.density[i][j][k] = dens;
                 }
@@ -289,7 +284,7 @@ public class Normal extends Generator {
         int fill = getConfig("overworld.density.fill.mode", 0);
         int afill = Math.abs(fill);
         int seaFill = getConfig("overworld.density.fill.sea-mode", 0);
-        double densityOffset = getConfig("overworld.density.fill.offset", 0.0d);
+        double densityOffset = getConfig("overworld.density.fill.offset", 0d);
 
         for (int i = 0; i < 5 - 1; i++) {
             for (int j = 0; j < 5 - 1; j++) {
@@ -363,7 +358,7 @@ public class Normal extends Generator {
         int sizeX = octaveGenerator.getSizeX();
         int sizeZ = octaveGenerator.getSizeZ();
 
-        double[] surfaceNoise = octaveGenerator.getFractalBrownianMotion(cx, cz, 0.5D, 0.5D);
+        double[] surfaceNoise = octaveGenerator.getFractalBrownianMotion(cx, cz, 0.5d, 0.5d);
         for (int sx = 0; sx < sizeX; sx++) {
             for (int sz = 0; sz < sizeZ; sz++) {
                 if (GROUND_MAP.containsKey(biomes.getBiome(sx, sz))) {
@@ -383,11 +378,12 @@ public class Normal extends Generator {
 
     @Override
     public void populateChunk(int chunkX, int chunkZ) {
-        BaseFullChunk chunk = level.getChunk(chunkX, chunkZ);
+        BaseFullChunk chunk = this.level.getChunk(chunkX, chunkZ);
         this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
         for (Populator populator : this.populators) {
             populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
         }
+        Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
     @Override
@@ -442,13 +438,13 @@ public class Normal extends Generator {
     /**
      * A BiomeGrid implementation for chunk generation.
      */
-    private static class BiomeGrid {
+    protected static class BiomeGrid {
 
         public final byte[] biomes = new byte[256];
 
         public int getBiome(int x, int z) {
             // upcasting is very important to get extended biomes
-            return Biome.biomes[biomes[x | z << 4] & 0xFF].getId();
+            return Biome.biomes[biomes[x | z << 4] & 0xff].getId();
         }
 
         public void setBiome(int x, int z, int bio) {
@@ -456,10 +452,10 @@ public class Normal extends Generator {
         }
     }
 
-    private static class BiomeHeight {
+    protected static class BiomeHeight {
 
         public static final BiomeHeight DEFAULT = new BiomeHeight(getConfig("overworld.biome.height.default", 0.1d), getConfig("overworld.biome.scale.default", 0.2d));
-        public static final BiomeHeight FLAT_SHORE = new BiomeHeight(getConfig("overworld.biome.height.flat-shore", 0.0d), getConfig("overworld.biome.scale.flat-shore", 0.025d));
+        public static final BiomeHeight FLAT_SHORE = new BiomeHeight(getConfig("overworld.biome.height.flat-shore", 0d), getConfig("overworld.biome.scale.flat-shore", 0.025d));
         public static final BiomeHeight HIGH_PLATEAU = new BiomeHeight(getConfig("overworld.biome.height.high-plateau", 1.5d), getConfig("overworld.biome.scale.high-plateau", 0.025d));
         public static final BiomeHeight FLATLANDS = new BiomeHeight(getConfig("overworld.biome.height.flatlands", 0.125d), getConfig("overworld.biome.scale.flatlands", 0.05d));
         public static final BiomeHeight SWAMPLAND = new BiomeHeight(getConfig("overworld.biome.height.swampland", -0.2d), getConfig("overworld.biome.scale.swampland", 0.1d));
@@ -473,16 +469,16 @@ public class Normal extends Generator {
         public static final BiomeHeight MID_HILLS = new BiomeHeight(getConfig("overworld.biome.height.mid-hills", 0.3d), getConfig("overworld.biome.scale.mid-hills", 0.4d));
         public static final BiomeHeight BIG_HILLS = new BiomeHeight(getConfig("overworld.biome.height.big-hills", 0.525d), getConfig("overworld.biome.scale.big-hills", 0.55d));
         public static final BiomeHeight BIG_HILLS2 = new BiomeHeight(getConfig("overworld.biome.height.big-hills2", 0.55d), getConfig("overworld.biome.scale.big-hills2", 0.5d));
-        public static final BiomeHeight EXTREME_HILLS = new BiomeHeight(getConfig("overworld.biome.height.extreme-hills", 1.0d), getConfig("overworld.biome.scale.extreme-hills", 0.5d));
+        public static final BiomeHeight EXTREME_HILLS = new BiomeHeight(getConfig("overworld.biome.height.extreme-hills", 1d), getConfig("overworld.biome.scale.extreme-hills", 0.5d));
         public static final BiomeHeight ROCKY_SHORE = new BiomeHeight(getConfig("overworld.biome.height.rocky-shore", 0.1d), getConfig("overworld.biome.scale.rocky-shore", 0.8d));
         public static final BiomeHeight LOW_SPIKES = new BiomeHeight(getConfig("overworld.biome.height.low-spikes", 0.4125d), getConfig("overworld.biome.scale.low-spikes", 1.325d));
         public static final BiomeHeight HIGH_SPIKES = new BiomeHeight(getConfig("overworld.biome.height.high-spikes", 1.1d), getConfig("overworld.biome.scale.high-spikes", 1.3125d));
-        public static final BiomeHeight RIVER = new BiomeHeight(getConfig("overworld.biome.height.river", -0.5d), getConfig("overworld.biome.scale.river", 0.0d));
-        public static final BiomeHeight OCEAN = new BiomeHeight(getConfig("overworld.biome.height.ocean", -1.0d), getConfig("overworld.biome.scale.ocean", 0.1d));
+        public static final BiomeHeight RIVER = new BiomeHeight(getConfig("overworld.biome.height.river", -0.5d), getConfig("overworld.biome.scale.river", 0d));
+        public static final BiomeHeight OCEAN = new BiomeHeight(getConfig("overworld.biome.height.ocean", -1d), getConfig("overworld.biome.scale.ocean", 0.1d));
         public static final BiomeHeight DEEP_OCEAN = new BiomeHeight(getConfig("overworld.biome.height.deep-ocean", -1.8d), getConfig("overworld.biome.scale.deep-ocean", 0.1d));
 
-        private final double height;
-        private final double scale;
+        protected final double height;
+        protected final double scale;
 
         BiomeHeight(double height, double scale){
             this.height = height;

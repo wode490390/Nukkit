@@ -6,11 +6,10 @@ import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.object.ore.OreType;
-import cn.nukkit.level.generator.populator.type.Populator;
-import cn.nukkit.level.generator.populator.impl.PopulatorOre;
+import cn.nukkit.level.generator.populator.Populator;
+import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,28 +22,22 @@ import java.util.regex.Pattern;
  */
 public class Flat extends Generator {
 
+    protected int[][] structure;
+    protected int floorLevel;
+    protected String preset;
+    protected int biome;
+
+    protected ChunkManager level;
+    protected NukkitRandom random;
+    protected final List<Populator> populators = new ArrayList<>();
+    protected final Map<String, Object> options;
+
+    protected boolean init = false;
+
     @Override
     public int getId() {
         return TYPE_FLAT;
     }
-
-    private ChunkManager level;
-
-    private NukkitRandom random;
-
-    private final List<Populator> populators = new ArrayList<>();
-
-    private int[][] structure;
-
-    private final Map<String, Object> options;
-
-    private int floorLevel;
-
-    private String preset;
-
-    private boolean init = false;
-
-    private int biome;
 
     @Override
     public ChunkManager getChunkManager() {
@@ -155,7 +148,7 @@ public class Flat extends Generator {
     @Override
     public void generateChunk(int chunkX, int chunkZ) {
         if (!this.init) {
-            init = true;
+            this.init = true;
             if (this.options.containsKey("preset") && !"".equals(this.options.get("preset"))) {
                 this.parsePreset((String) this.options.get("preset"), chunkX, chunkZ);
             } else {
@@ -165,7 +158,7 @@ public class Flat extends Generator {
         this.generateChunk(level.getChunk(chunkX, chunkZ));
     }
 
-    private void generateChunk(FullChunk chunk) {
+    protected void generateChunk(FullChunk chunk) {
         chunk.setGenerated();
 
         for (int Z = 0; Z < 16; ++Z) {

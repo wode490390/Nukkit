@@ -61,23 +61,19 @@ public enum EnumLevel {
             return NETHER.level;
         } else if (current == NETHER.level) {
             return OVERWORLD.level;
-        } else {
-            throw new IllegalArgumentException("Neither overworld nor nether given!");
         }
+        return null;
     }
 
     public static Position moveToNether(Position current)   {
-        if (NETHER.level == null) {
-            return null;
-        } else {
+        if (NETHER.level != null) {
             if (current.level == OVERWORLD.level) {
                 return new Position(mRound(current.getFloorX() >> 3, 128), mRound(current.getFloorY(), 32), mRound(current.getFloorZ() >> 3, 128), NETHER.level);
             } else if (current.level == NETHER.level) {
                 return new Position(mRound(current.getFloorX() << 3, 1024), mRound(current.getFloorY(), 32), mRound(current.getFloorZ() << 3, 1024), OVERWORLD.level);
-            } else {
-                throw new IllegalArgumentException("Neither overworld nor nether given!");
             }
         }
+        return null;
     }
 
     public static Level getOtherTheEndPair(Level current)   {
@@ -85,23 +81,19 @@ public enum EnumLevel {
             return THE_END.level;
         } else if (current == THE_END.level) {
             return OVERWORLD.level;
-        } else {
-            throw new IllegalArgumentException("Neither overworld nor the end given!");
         }
+        return null;
     }
 
     public static Position moveToTheEnd(Position current)   {
-        if (THE_END.level == null) {
-            return null;
-        } else {
+        if (THE_END.level != null) {
             if (current.level == OVERWORLD.level) {
-                return THE_END.level.getSpawnLocation();
+                return new Position(100.5, 49, 0.5, THE_END.level);
             } else if (current.level == THE_END.level) {
                 return OVERWORLD.level.getSpawnLocation();
-            } else {
-                throw new IllegalArgumentException("Neither overworld nor the end given!");
             }
         }
+        return null;
     }
 
     private static final int mRound(int value, int factor) {

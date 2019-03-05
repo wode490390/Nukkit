@@ -157,6 +157,21 @@ public class EntityFallingBlock extends Entity {
         return hasUpdate || !onGround || Math.abs(motionX) > 0.00001 || Math.abs(motionY) > 0.00001 || Math.abs(motionZ) > 0.00001;
     }
 
+    @Override
+    public boolean isOnFire() {
+        return false;
+    }
+
+    @Override
+    public void setOnFire(int seconds) {
+
+    }
+
+    @Override
+    public boolean canBeMovedByCurrents() {
+        return false;
+    }
+
     public int getBlock() {
         return blockId;
     }

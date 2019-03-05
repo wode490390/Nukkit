@@ -13,34 +13,34 @@ import cn.nukkit.level.generator.populator.nether.PopulatorFire;
 import cn.nukkit.level.generator.populator.nether.PopulatorGlowstone;
 import cn.nukkit.level.generator.populator.nether.PopulatorLava;
 import cn.nukkit.level.generator.populator.nether.PopulatorMushroom;
-import cn.nukkit.level.generator.populator.impl.PopulatorOre;
-import cn.nukkit.level.generator.populator.type.Populator;
+import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
+import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 import java.util.*;
 
 public class Nether extends Generator {
 
-    private static double coordinateScale = getConfig("nether.coordinate-scale", 684.412d);
-    private static double heightScale = getConfig("nether.height.scale", 2053.236d);
-    private static double heightNoiseScaleX = getConfig("nether.height.noise-scale.x", 100.0d); // depthNoiseScaleX
-    private static double heightNoiseScaleZ = getConfig("nether.height.noise-scale.x", 100.0d); // depthNoiseScaleZ
-    private static double detailNoiseScaleX = getConfig("nether.detail.noise-scale.x", 80.0d);  // mainNoiseScaleX
-    private static double detailNoiseScaleY = getConfig("nether.detail.noise-scale.y", 60.0d);  // mainNoiseScaleY
-    private static double detailNoiseScaleZ = getConfig("nether.detail.noise-scale.z", 80.0d);  // mainNoiseScaleZ
-    private static double surfaceScale = getConfig("nether.surface-scale", 0.0625d);
+    protected static double coordinateScale = getConfig("nether.coordinate-scale", 684.412d);
+    protected static double heightScale = getConfig("nether.height.scale", 2053.236d);
+    protected static double heightNoiseScaleX = getConfig("nether.height.noise-scale.x", 100d); // depthNoiseScaleX
+    protected static double heightNoiseScaleZ = getConfig("nether.height.noise-scale.x", 100d); // depthNoiseScaleZ
+    protected static double detailNoiseScaleX = getConfig("nether.detail.noise-scale.x", 80d);  // mainNoiseScaleX
+    protected static double detailNoiseScaleY = getConfig("nether.detail.noise-scale.y", 60d);  // mainNoiseScaleY
+    protected static double detailNoiseScaleZ = getConfig("nether.detail.noise-scale.z", 80d);  // mainNoiseScaleZ
+    protected static double surfaceScale = getConfig("nether.surface-scale", 0.0625d);
 
-    private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
-    private final double[][][] density = new double[5][5][17];
+    protected final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
+    protected final double[][][] density = new double[5][5][17];
 
-    private ChunkManager level;
-    private NukkitRandom nukkitRandom;
-    private Random random;
-    private final List<Populator> populators = new ArrayList<>();
-    private List<Populator> generationPopulators = new ArrayList<>();
+    protected ChunkManager level;
+    protected NukkitRandom nukkitRandom;
+    protected Random random;
+    protected final List<Populator> populators = new ArrayList<>();
+    protected List<Populator> generationPopulators = new ArrayList<>();
 
-    private long localSeed1;
-    private long localSeed2;
+    protected long localSeed1;
+    protected long localSeed2;
 
     public Nether() {
         this(new HashMap<>());
@@ -133,18 +133,18 @@ public class Nether extends Generator {
         int densityZ = chunkZ << 2;
 
         Map<String, OctaveGenerator> octaves = this.getWorldOctaves();
-        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).getFractalBrownianMotion(densityX, densityZ, 0.5D, 2.0D);
-        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5D, 2.0D);
-        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5D, 2.0D);
-        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5D, 2.0D);
+        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).getFractalBrownianMotion(densityX, densityZ, 0.5d, 2d);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5d, 2d);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5d, 2d);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).getFractalBrownianMotion(densityX, 0, densityZ, 0.5d, 2d);
 
         double[] nv = new double[17];
         for (int i = 0; i < 17; i++) {
-            nv[i] = Math.cos(i * Math.PI * 6.0D / 17.0D) * 2.0D;
+            nv[i] = Math.cos(i * Math.PI * 6d / 17d) * 2d;
             double nh = i > 17 / 2 ? 17 - 1 - i : i;
-            if (nh < 4.0D) {
-                nh = 4.0D - nh;
-                nv[i] -= nh * nh * nh * 10.0D;
+            if (nh < 4d) {
+                nh = 4d - nh;
+                nv[i] -= nh * nh * nh * 10d;
             }
         }
 
@@ -154,30 +154,30 @@ public class Nether extends Generator {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
 
-                double noiseH = heightNoise[indexHeight++] / 8000.0D;
+                double noiseH = heightNoise[indexHeight++] / 8000d;
                 if (noiseH < 0) {
                     noiseH = Math.abs(noiseH);
                 }
-                noiseH = noiseH * 3.0D - 3.0D;
+                noiseH = noiseH * 3d - 3d;
                 if (noiseH < 0) {
-                    noiseH = Math.max(noiseH * 0.5D, -1) / 1.4D * 0.5D;
+                    noiseH = Math.max(noiseH * 0.5d, -1) / 1.4d * 0.5d;
                 } else {
-                    noiseH = Math.min(noiseH, 1) / 6.0D;
+                    noiseH = Math.min(noiseH, 1) / 6d;
                 }
 
-                noiseH = noiseH * 17 / 16.0D;
+                noiseH = noiseH * 17 / 16d;
                 for (int k = 0; k < 17; k++) {
-                    double noiseR = roughnessNoise[index] / 512.0D;
-                    double noiseR2 = roughnessNoise2[index] / 512.0D;
-                    double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
+                    double noiseR = roughnessNoise[index] / 512d;
+                    double noiseR2 = roughnessNoise2[index] / 512d;
+                    double noiseD = (detailNoise[index] / 10d + 1d) / 2d;
                     double nh = nv[k];
                     // linear interpolation
                     double dens = noiseD < 0 ? noiseR : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
                     dens -= nh;
                     index++;
                     if (k > 13) {
-                        double lowering = (k - 13) / 3.0D;
-                        dens = dens * (1.0D - lowering) + lowering * -10.0D;
+                        double lowering = (k - 13) / 3d;
+                        dens = dens * (1d - lowering) + lowering * -10d;
                     }
                     this.density[i][j][k] = dens;
                 }
@@ -227,24 +227,24 @@ public class Nether extends Generator {
             }
         }
 
-        double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("surface")).getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
-        double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("soulsand")).getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
-        double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("gravel")).getFractalBrownianMotion(cx, 0, cz, 0.5D, 2.0D);
+        double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("surface")).getFractalBrownianMotion(cx, cz, 0, 0.5d, 2d);
+        double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("soulsand")).getFractalBrownianMotion(cx, cz, 0, 0.5d, 2d);
+        double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves().get("gravel")).getFractalBrownianMotion(cx, 0, cz, 0.5d, 2d);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 chunk.setBiomeId(x, z, EnumBiome.HELL.biome.getId());
 
-                int columnX = (cx + x) & 0xF;
-                int columnZ = (cz + z) & 0xF;
+                int columnX = (cx + x) & 0xf;
+                int columnZ = (cz + z) & 0xf;
 
                 int topMat = NETHERRACK;
                 int groundMat = NETHERRACK;
 
-                boolean soulSand = soulsandNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
-                boolean gravel = gravelNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2D > 0;
+                boolean soulSand = soulsandNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2d > 0;
+                boolean gravel = gravelNoise[x | z << 4] + this.nukkitRandom.nextDouble() * 0.2d > 0;
 
-                int surfaceHeight = (int) (surfaceNoise[x | z << 4] / 3.0D + 3.0D + this.nukkitRandom.nextDouble() * 0.25D);
+                int surfaceHeight = (int) (surfaceNoise[x | z << 4] / 3d + 3d + this.nukkitRandom.nextDouble() * 0.25d);
                 int deep = -1;
                 for (int y = 127; y >= 0; y--) {
                     if (y <= this.nukkitRandom.nextBoundedInt(5) || y >= 127 - this.nukkitRandom.nextBoundedInt(5)) {
@@ -346,13 +346,13 @@ public class Nether extends Generator {
             octaves.put("surface", gen);
 
             gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
-            gen.setXScale(surfaceScale / 2.0);
-            gen.setYScale(surfaceScale / 2.0);
+            gen.setXScale(surfaceScale / 2d);
+            gen.setYScale(surfaceScale / 2d);
             octaves.put("soulsand", gen);
 
             gen = new PerlinOctaveGenerator(seed, 4, 16, 1, 16);
-            gen.setXScale(surfaceScale / 2.0);
-            gen.setZScale(surfaceScale / 2.0);
+            gen.setXScale(surfaceScale / 2d);
+            gen.setZScale(surfaceScale / 2d);
             octaves.put("gravel", gen);
 
             this.octaveCache.put(this.getName(), octaves);

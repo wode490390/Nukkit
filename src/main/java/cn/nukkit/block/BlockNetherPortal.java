@@ -1,17 +1,11 @@
 package cn.nukkit.block;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityPortalEnterEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
-import cn.nukkit.level.EnumLevel;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
-import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -106,41 +100,6 @@ public class BlockNetherPortal extends BlockFlowableMeta implements BlockFaceabl
     @Override
     public BlockFace getBlockFace() {
         return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
-    }
-
-    @Override
-    public void onEntityCollide(Entity entity) {
-        if (entity instanceof Player) {
-            Player p = (Player) entity;
-            if (p.isCreative()) {
-                EntityPortalEnterEvent ev = new EntityPortalEnterEvent(p, EntityPortalEnterEvent.PortalType.NETHER);
-                p.getServer().getPluginManager().callEvent(ev);
-
-                if (!ev.isCancelled()) {
-                    Position newPos = EnumLevel.moveToNether(p);
-                    if (newPos != null) {
-                        for (int x = -1; x < 2; x++) {
-                            for (int z = -1; z < 2; z++) {
-                                int chunkX = (newPos.getFloorX() >> 4) + x, chunkZ = (newPos.getFloorZ() >> 4) + z;
-                                FullChunk chunk = newPos.level.getChunk(chunkX, chunkZ, false);
-                                if (chunk == null || !(chunk.isGenerated() || chunk.isPopulated())) {
-                                    newPos.level.generateChunk(chunkX, chunkZ, true);
-                                }
-                            }
-                        }
-                        p.teleport(newPos.add(1.5, 1, 0.5));
-                        p.getServer().getScheduler().scheduleDelayedTask(new Task() {
-                            @Override
-                            public void onRun(int currentTick) {
-                                // dirty hack to make sure chunks are loaded and generated before spawning player
-                                p.teleport(newPos.add(1.5, 1, 0.5));
-                                spawnPortal(newPos);
-                            }
-                        }, 20);
-                    }
-                }
-            }
-        }
     }
 
     public static Position spawnPortal(Position pos)   {

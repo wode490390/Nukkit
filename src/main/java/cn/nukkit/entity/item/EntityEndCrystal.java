@@ -2,6 +2,7 @@ package cn.nukkit.entity.item;
 
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.level.Explosion;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Position;
@@ -27,6 +28,7 @@ public class EntityEndCrystal extends Entity {
     @Override
     protected void initEntity() {
         super.initEntity();
+        this.setDataFlag(DATA_FLAGS, DATA_FLAG_FIRE_IMMUNE, true);
     }
 
     @Override
@@ -39,8 +41,9 @@ public class EntityEndCrystal extends Entity {
         return 0.98f;
     }
 
+    @Override
     public boolean attack(EntityDamageEvent source){
-        if (!super.attack(source)) {
+        if (source.getCause() == DamageCause.FIRE || source.getCause() == DamageCause.FIRE_TICK || source.getCause() == DamageCause.LAVA || !super.attack(source)) {
             return false;
         }
 
@@ -60,6 +63,16 @@ public class EntityEndCrystal extends Entity {
     @Override
     public boolean canCollideWith(Entity entity) {
         return false;
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return false;
+    }
+
+    @Override
+    public void setOnFire(int seconds) {
+
     }
 
     public boolean showBase() {

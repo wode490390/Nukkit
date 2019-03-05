@@ -3,10 +3,10 @@ package cn.nukkit.level.generator.populator.nether;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.generator.populator.BlockPopulator;
+import cn.nukkit.level.generator.populator.PopulatorBlock;
 import cn.nukkit.math.NukkitRandom;
 
-public class PopulatorLava extends BlockPopulator {
+public class PopulatorLava extends PopulatorBlock {
 
     private ChunkManager level;
     private NukkitRandom random;
@@ -31,7 +31,7 @@ public class PopulatorLava extends BlockPopulator {
 
         int sourceX = bx + random.nextBoundedInt(16);
         int sourceZ = bz + random.nextBoundedInt(16);
-        int sourceY = flowing ? 4 + random.nextBoundedInt(120) : 10 + random.nextBoundedInt(108);
+        int sourceY = this.flowing ? 4 + random.nextBoundedInt(120) : 10 + random.nextBoundedInt(108);
 
         int block = level.getBlockIdAt(sourceX, sourceY, sourceZ);
         if (block != NETHERRACK && block != 0 || level.getBlockIdAt(sourceX, sourceY + 1, sourceZ) != NETHERRACK) {
@@ -71,10 +71,10 @@ public class PopulatorLava extends BlockPopulator {
             airBlockCount++;
         }
 
-        if (netherrackBlockCount == 5 || flowing && airBlockCount == 1 && netherrackBlockCount == 4) {
+        if (netherrackBlockCount == 5 || this.flowing && airBlockCount == 1 && netherrackBlockCount == 4) {
             level.setBlockAt(sourceX, sourceY, sourceZ, LAVA);
             level.setBlockLightAt(sourceX, sourceY, sourceZ, Block.light[LAVA]);
-            this.lavaSpread(bx + sourceX, sourceY, bz + sourceZ);
+            this.lavaSpread(sourceX, sourceY, sourceZ);
         }
     }
 
@@ -107,7 +107,7 @@ public class PopulatorLava extends BlockPopulator {
                 if (topFlowDecay >= 8) {
                     k = topFlowDecay;
                 } else {
-                    k = topFlowDecay | 0x08;
+                    k = topFlowDecay | 0x8;
                 }
             }
             if (decay < 8 && k < 8 && k > 1 && this.random.nextRange(0, 4) != 0) {
@@ -128,7 +128,7 @@ public class PopulatorLava extends BlockPopulator {
             if (decay >= 8) {
                 this.flowIntoBlock(x, y - 1, z, decay);
             } else {
-                this.flowIntoBlock(x, y - 1, z, decay | 0x08);
+                this.flowIntoBlock(x, y - 1, z, decay | 0x8);
             }
         } else if (decay >= 0 && (decay == 0 || !this.canFlowInto(x, y - 1, z))) {
             boolean[] flags = this.getOptimalFlowDirections(x, y, z);

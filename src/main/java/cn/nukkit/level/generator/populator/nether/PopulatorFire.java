@@ -3,10 +3,10 @@ package cn.nukkit.level.generator.populator.nether;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.generator.populator.BlockPopulator;
+import cn.nukkit.level.generator.populator.PopulatorBlock;
 import cn.nukkit.math.NukkitRandom;
 
-public class PopulatorFire extends BlockPopulator {
+public class PopulatorFire extends PopulatorBlock {
 
     @Override
     public void decorate(ChunkManager level, int chunkX, int chunkZ, NukkitRandom random, FullChunk source) {

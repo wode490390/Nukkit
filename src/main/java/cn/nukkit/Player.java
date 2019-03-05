@@ -19,6 +19,8 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageModifier;
+import cn.nukkit.event.entity.EntityPortalEnterEvent;
+import cn.nukkit.event.entity.EntityPortalEnterEvent.PortalType;
 import cn.nukkit.event.entity.ProjectileLaunchEvent;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryPickupArrowEvent;
@@ -245,6 +247,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public int cachedExperienceChange = 0;
 
     public EntityFishingHook fishing;
+
+    protected boolean showingCredits = false;
 
     protected Map<UUID, ResourcePack> resourcePacks;
     protected Map<UUID, ResourcePack> behaviourPacks;
@@ -1441,10 +1445,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         for (Block block : this.getCollisionBlocks()) {
             int blockId = block.getId();
-            if (blockId == Block.END_PORTAL) {
-                this.inEndPortal = true;
-                continue;
-            }
             if (blockId == Block.NETHER_PORTAL) {
                 portal = true;
                 continue;
@@ -1454,7 +1454,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         if (portal) {
-            inPortalTicks++;
+            if (this.isCreative() && this.inPortalTicks < 80) {
+                this.inPortalTicks = 80;
+            } else {
+                this.inPortalTicks++;
+            }
         } else {
             this.inPortalTicks = 0;
         }
@@ -3321,6 +3325,25 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         });
                     }
                     break;
+                case ProtocolInfo.SHOW_CREDITS_PACKET:
+                    ShowCreditsPacket showCreditPacket = (ShowCreditsPacket) packet;
+
+                    if (showCreditPacket.status == ShowCreditsPacket.STATUS_END_CREDITS) {
+                        this.showingCredits = false;
+                        this.setDimension(Level.DIMENSION_OVERWORLD, true);
+
+                        Position respawnPos = this.getSpawn();
+
+                        RespawnPacket respawnPacket = new RespawnPacket();
+                        respawnPacket.position = respawnPos.asVector3f();
+                        this.dataPacket(respawnPacket);
+
+                        this.removeAllEffects();
+                        //this is a dirty hack to prevent dying in a different level than the respawn point from breaking everything
+                        this.teleportImmediate(new Location(respawnPos.x, -100, respawnPos.z, respawnPos.level));
+                        this.teleport(respawnPos, null);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -3900,14 +3923,13 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.server.broadcast(ev.getDeathMessage(), Server.BROADCAST_CHANNEL_USERS);
         }
 
-
         RespawnPacket pk = new RespawnPacket();
         Position pos = this.getSpawn();
         pk.position = pos.asVector3f();
 
         //this is a dirty hack to prevent dying in a different level than the respawn point from breaking everything
         if (this.level != pos.level)   {
-            this.teleportImmediate(new Location(0, -100, 0, pos.level)); //this.teleport(new Location(pos.x, -100, pos.z, pos.level), null);
+            this.teleportImmediate(new Location(pos.x, -100, pos.z, pos.level)); //this.teleport(new Location(pos.x, -100, pos.z, pos.level), null);
             this.teleport(new Location(pos.x, pos.y, pos.z, pos.level), null);
         }
 
@@ -4664,12 +4686,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     //todo a lot on dimension
 
-    private void setDimension(int dimension) {
+    public void setDimension(int dimension) {
         this.setDimension(dimension, false);
     }
 
-    private void setDimension(int dimension, boolean respawn) {
-        ChangeDimensionPacket pk = new ChangeDimensionPacket(); //BUG: Unable to remove switching-screen
+    public void setDimension(int dimension, boolean respawn) {
+        ChangeDimensionPacket pk = new ChangeDimensionPacket();
         pk.dimension = dimension;
         pk.position = this.asVector3f();
         pk.respawn = respawn;
@@ -4974,6 +4996,53 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         this.fishing = null;
+    }
+
+    @Override
+    protected void travelByEnd() {
+        EntityPortalEnterEvent ev = new EntityPortalEnterEvent(this, PortalType.THE_END);
+        this.getServer().getPluginManager().callEvent(ev);
+
+        if (!ev.isCancelled()) {
+            Position newPos = EnumLevel.moveToTheEnd(this);
+            if (newPos != null) {
+                for (int x = -2; x < 3; x++) {
+                    for (int z = -2; z < 3; z++) {
+                        int chunkX = (newPos.getFloorX() >> 4) + x;
+                        int chunkZ = (newPos.getFloorZ() >> 4) + z;
+                        FullChunk chunk = newPos.getLevel().getChunk(chunkX, chunkZ, false);
+                        if (chunk == null || !(chunk.isGenerated() || chunk.isPopulated())) {
+                            newPos.getLevel().generateChunk(chunkX, chunkZ, true);
+                        }
+                    }
+                }
+
+                if (newPos.getLevel().getDimension() == Level.DIMENSION_THE_END) {
+                    this.teleport(newPos);
+                    this.getServer().getScheduler().scheduleDelayedTask(new Task() {
+                        @Override
+                        public void onRun(int currentTick) {
+                            // dirty hack to make sure chunks are loaded and generated before spawning player
+                            BlockEndPortal.spawnPlatform(newPos);
+                            teleport(newPos);
+                        }
+                    }, 20);
+                } else {
+                    if (!this.showingCredits) {
+                        this.showingCredits = true;
+                        ShowCreditsPacket pk = new ShowCreditsPacket();
+                        pk.playerEid = this.getId();
+                        pk.status = ShowCreditsPacket.STATUS_START_CREDITS;
+                        this.dataPacket(pk);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isFireProof() {
+        return this.isCreative();
     }
 
     public Map<UUID, ResourcePack> getResourcePacks() {
