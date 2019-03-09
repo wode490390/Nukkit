@@ -3,15 +3,18 @@ package cn.nukkit.level.generator.object.tree;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockVine;
 import cn.nukkit.level.ChunkManager;
+import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.MathHelper;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 
 public class ObjectJungleBigTree extends HugeTreesGenerator {
+
     public ObjectJungleBigTree(int baseHeightIn, int extraRandomHeight, Block woodMetadata, Block leavesMetadata) {
         super(baseHeightIn, extraRandomHeight, woodMetadata, leavesMetadata);
     }
 
+    @Override
     public boolean generate(ChunkManager level, NukkitRandom rand, Vector3 position) {
         int height = this.getHeight(rand);
 
@@ -22,20 +25,19 @@ public class ObjectJungleBigTree extends HugeTreesGenerator {
 
             for (int j = (int) position.getY() + height - 2 - rand.nextBoundedInt(4); j > position.getY() + height / 2; j -= 2 + rand.nextBoundedInt(4)) {
                 float f = rand.nextFloat() * ((float) Math.PI * 2F);
-                int k = (int) (position.getX() + (0.5F + MathHelper.cos(f) * 4.0F));
-                int l = (int) (position.getZ() + (0.5F + MathHelper.sin(f) * 4.0F));
+                int k = (int) (position.getX() + (0.5f + MathHelper.cos(f) * 4f));
+                int l = (int) (position.getZ() + (0.5f + MathHelper.sin(f) * 4f));
 
                 for (int i1 = 0; i1 < 5; ++i1) {
-                    k = (int) (position.getX() + (1.5F + MathHelper.cos(f) * (float) i1));
-                    l = (int) (position.getZ() + (1.5F + MathHelper.sin(f) * (float) i1));
-                    this.setBlockAndNotifyAdequately(level, new Vector3(k, j - 3 + i1 / 2, l), this.woodMetadata);
+                    k = (int) (position.getX() + (1.5f + MathHelper.cos(f) * i1));
+                    l = (int) (position.getZ() + (1.5f + MathHelper.sin(f) * i1));
+                    this.setBlockAndNotifyAdequately(level, new BlockVector3(k, j - 3 + i1 / 2, l), this.woodMetadata);
                 }
 
                 int j2 = 1 + rand.nextBoundedInt(2);
-                int j1 = j;
 
-                for (int k1 = j - j2; k1 <= j1; ++k1) {
-                    int l1 = k1 - j1;
+                for (int k1 = j - j2; k1 <= j; ++k1) {
+                    int l1 = k1 - j;
                     this.growLeavesLayer(level, new Vector3(k, k1, l), 1 - l1);
                 }
             }

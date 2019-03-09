@@ -1,6 +1,5 @@
 package cn.nukkit.entity.item;
 
-import cn.nukkit.Server;
 import cn.nukkit.block.BlockTNT;
 import cn.nukkit.entity.EntityExplosive;
 import cn.nukkit.entity.data.IntEntityData;
@@ -11,9 +10,10 @@ import cn.nukkit.level.GameRule;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.MinecartType;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.extern.log4j.Log4j2;
 
-import java.util.Random;
-
+@Log4j2
 /**
  * Author: Adam Matthew [larryTheCoder]
  * <p>
@@ -21,7 +21,8 @@ import java.util.Random;
  */
 public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityExplosive {
 
-    public static final int NETWORK_ID = 97; //wtf?
+    public static final int NETWORK_ID = TNT_MINECART;
+
     private int fuse;
     private boolean activated = false;
 
@@ -67,12 +68,12 @@ public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityE
 
             if (isAlive() && fuse <= 0) {
                 if (level.getGameRules().getBoolean(GameRule.TNT_EXPLODES)) {
-                    explode(new Random().nextInt(5));
+                    explode(ThreadLocalRandom.current().nextInt(5));
                 }
                 kill();
             }
 
-            Server.getInstance().getLogger().info("Debug:" + fuse);
+            log.info("Debug:" + fuse);
         }
 
         this.timing.stopTiming();
@@ -97,7 +98,7 @@ public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityE
             root = 5.0D;
         }
 
-        EntityExplosionPrimeEvent event = new EntityExplosionPrimeEvent(this, (4.0D + new Random().nextDouble() * 1.5D * root));
+        EntityExplosionPrimeEvent event = new EntityExplosionPrimeEvent(this, (4.0D + ThreadLocalRandom.current().nextDouble() * 1.5D * root));
         server.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;

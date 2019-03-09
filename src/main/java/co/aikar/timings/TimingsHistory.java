@@ -39,11 +39,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 import static co.aikar.timings.Timings.fullServerTickTimer;
 import static co.aikar.timings.TimingsManager.MINUTE_REPORTS;
 
 public class TimingsHistory {
+
     public static long lastMinuteTime;
     public static long timedTicks;
     public static long playerTicks;
@@ -74,7 +74,7 @@ public class TimingsHistory {
             this.minuteReports = MINUTE_REPORTS.toArray(new MinuteReport[MINUTE_REPORTS.size() + 1]);
             this.minuteReports[this.minuteReports.length - 1] = new MinuteReport();
         } else {
-            this.minuteReports = MINUTE_REPORTS.toArray(new MinuteReport[MINUTE_REPORTS.size()]);
+            this.minuteReports = MINUTE_REPORTS.toArray(new MinuteReport[0]);
         }
 
         long ticks = 0;
@@ -103,16 +103,18 @@ public class TimingsHistory {
 
                 //count entities
                 for (Entity entity : chunk.getEntities().values()) {
-                    if (!entityCounts.containsKey(entity.getNetworkId()))
+                    if (!entityCounts.containsKey(entity.getNetworkId())) {
                         entityCounts.put(entity.getNetworkId(), new AtomicInteger(0));
+                    }
                     entityCounts.get(entity.getNetworkId()).incrementAndGet();
                     entityMap.put(entity.getNetworkId(), entity.getClass().getSimpleName());
                 }
 
                 //count block entities
                 for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-                    if (!blockEntityCounts.containsKey(blockEntity.getBlock().getId()))
+                    if (!blockEntityCounts.containsKey(blockEntity.getBlock().getId())) {
                         blockEntityCounts.put(blockEntity.getBlock().getId(), new AtomicInteger(0));
+                    }
                     blockEntityCounts.get(blockEntity.getBlock().getId()).incrementAndGet();
                     blockEntityMap.put(blockEntity.getBlock().getId(), blockEntity.getClass().getSimpleName());
                 }
@@ -129,7 +131,9 @@ public class TimingsHistory {
                 jsonLevel.add(jsonChunk);
             }
 
-            if (!levelMap.containsKey(level.getName())) levelMap.put(level.getName(), levelIdPool++);
+            if (!levelMap.containsKey(level.getName())) {
+                levelMap.put(level.getName(), levelIdPool++);
+            }
             levels.add(String.valueOf(levelMap.get(level.getName())), jsonLevel);
         }
     }
@@ -215,7 +219,7 @@ public class TimingsHistory {
                 totalPing += player.getPing();
             }
 
-            this.avg = onlinePlayers.isEmpty() ? 0 : totalPing / onlinePlayers.size();
+            this.avg = onlinePlayers.isEmpty() ? 0 : (float) totalPing / onlinePlayers.size();
         }
     }
 }

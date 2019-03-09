@@ -13,7 +13,6 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.LevelException;
 import cn.nukkit.utils.Utils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,8 +25,8 @@ class LevelProviderConverter {
 
     private LevelProvider provider;
     private Class<? extends LevelProvider> toClass;
-    private Level level;
-    private String path;
+    private final Level level;
+    private final String path;
 
     LevelProviderConverter(Level level, String path) {
         this.level = level;
@@ -83,10 +82,14 @@ class LevelProviderConverter {
                     try {
                         if (m.find()) {
                             regionX = Integer.parseInt(m.group());
-                        } else continue;
+                        } else {
+                            continue;
+                        }
                         if (m.find()) {
                             regionZ = Integer.parseInt(m.group());
-                        } else continue;
+                        } else {
+                            continue;
+                        }
                     } catch (NumberFormatException e) {
                         continue;
                     }
@@ -95,7 +98,9 @@ class LevelProviderConverter {
                         int chunkX = index & 0x1f;
                         int chunkZ = index >> 5;
                         BaseFullChunk old = region.readChunk(chunkX, chunkZ);
-                        if (old == null) continue;
+                        if (old == null) {
+                            continue;
+                        }
                         int x = (regionX << 5) | chunkX;
                         int z = (regionZ << 5) | chunkZ;
                         FullChunk chunk = new ChunkConverter(result)

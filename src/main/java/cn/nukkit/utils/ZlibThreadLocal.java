@@ -7,10 +7,13 @@ import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
 
 public final class ZlibThreadLocal implements ZlibProvider {
+
     @Override
     public byte[] deflate(byte[][] datas, int level) throws Exception {
         Deflater deflater = getDef(level);
-        if (deflater == null) throw new IllegalArgumentException("No deflate for level " + level + " !");
+        if (deflater == null) {
+            throw new IllegalArgumentException("No deflate for level " + level + " !");
+        }
         deflater.reset();
         FastByteArrayOutputStream bos = ThreadCache.fbaos.get();
         bos.reset();
@@ -35,7 +38,9 @@ public final class ZlibThreadLocal implements ZlibProvider {
     @Override
     public byte[] deflate(byte[] data, int level) throws Exception {
         Deflater deflater = getDef(level);
-        if (deflater == null) throw new IllegalArgumentException("No deflate for level " + level + " !");
+        if (deflater == null) {
+            throw new IllegalArgumentException("No deflate for level " + level + " !");
+        }
         deflater.reset();
         deflater.setInput(data);
         deflater.finish();
@@ -51,7 +56,6 @@ public final class ZlibThreadLocal implements ZlibProvider {
     }
 
     /* -=-=-=-=-=- Internal -=-=-=-=-=- Do NOT attempt to use in production -=-=-=-=-=- */
-
 
     public static final IterableThreadLocal<byte[]> buf = new IterableThreadLocal<byte[]>() {
         @Override

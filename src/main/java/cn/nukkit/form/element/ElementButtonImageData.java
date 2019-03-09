@@ -9,7 +9,9 @@ public class ElementButtonImageData {
     private String data;
 
     public ElementButtonImageData(String type, String data) {
-        if (!type.equals(IMAGE_DATA_TYPE_URL) && !type.equals(IMAGE_DATA_TYPE_PATH)) return;
+        if (!type.equals(IMAGE_DATA_TYPE_URL) && !type.equals(IMAGE_DATA_TYPE_PATH)) {
+            return;
+        }
         this.type = type;
         this.data = data;
     }

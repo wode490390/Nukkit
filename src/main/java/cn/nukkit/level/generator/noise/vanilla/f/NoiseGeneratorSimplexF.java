@@ -3,6 +3,7 @@ package cn.nukkit.level.generator.noise.vanilla.f;
 import cn.nukkit.math.NukkitRandom;
 
 public class NoiseGeneratorSimplexF {
+
     public static final float SQRT_3 = (float) Math.sqrt(3.0f);
     private static final int[][] grad3 = new int[][]{{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1}, {0, 1, -1}, {0, -1, -1}};
     private static final float F2 = 0.5f * (SQRT_3 - 1.0f);
@@ -40,7 +41,7 @@ public class NoiseGeneratorSimplexF {
     }
 
     private static float dot(int[] p_151604_0_, float p_151604_1_, float p_151604_3_) {
-        return (float) p_151604_0_[0] * p_151604_1_ + (float) p_151604_0_[1] * p_151604_3_;
+        return p_151604_0_[0] * p_151604_1_ + p_151604_0_[1] * p_151604_3_;
     }
 
     public float getValue(float p_151605_1_, float p_151605_3_) {
@@ -49,9 +50,9 @@ public class NoiseGeneratorSimplexF {
         int i = fastFloor(p_151605_1_ + d4);
         int j = fastFloor(p_151605_3_ + d4);
         float d5 = (3.0f - SQRT_3) / 6.0f;
-        float d6 = (float) (i + j) * d5;
-        float d7 = (float) i - d6;
-        float d8 = (float) j - d6;
+        float d6 = (i + j) * d5;
+        float d7 = i - d6;
+        float d8 = j - d6;
         float d9 = p_151605_1_ - d7;
         float d10 = p_151605_3_ - d8;
         int k;
@@ -65,8 +66,8 @@ public class NoiseGeneratorSimplexF {
             l = 1;
         }
 
-        float d11 = d9 - (float) k + d5;
-        float d12 = d10 - (float) l + d5;
+        float d11 = d9 - k + d5;
+        float d12 = d10 - l + d5;
         float d13 = d9 - 1.0f + 2.0f * d5;
         float d14 = d10 - 1.0f + 2.0f * d5;
         int i1 = i & 255;
@@ -80,7 +81,7 @@ public class NoiseGeneratorSimplexF {
         if (d15 < 0.0f) {
             d0 = 0.0f;
         } else {
-            d15 = d15 * d15;
+            d15 *= d15;
             d0 = d15 * d15 * dot(grad3[k1], d9, d10);
         }
 
@@ -90,7 +91,7 @@ public class NoiseGeneratorSimplexF {
         if (d16 < 0.0f) {
             d1 = 0.0f;
         } else {
-            d16 = d16 * d16;
+            d16 *= d16;
             d1 = d16 * d16 * dot(grad3[l1], d11, d12);
         }
 
@@ -100,7 +101,7 @@ public class NoiseGeneratorSimplexF {
         if (d17 < 0.0f) {
             d2 = 0.0f;
         } else {
-            d17 = d17 * d17;
+            d17 *= d17;
             d2 = d17 * d17 * dot(grad3[i2], d13, d14);
         }
 
@@ -111,16 +112,16 @@ public class NoiseGeneratorSimplexF {
         int i = 0;
 
         for (int j = 0; j < p_151606_7_; ++j) {
-            float d0 = (p_151606_4_ + (float) j) * p_151606_10_ + this.yo;
+            float d0 = (p_151606_4_ + j) * p_151606_10_ + this.yo;
 
             for (int k = 0; k < p_151606_6_; ++k) {
-                float d1 = (p_151606_2_ + (float) k) * p_151606_8_ + this.xo;
+                float d1 = (p_151606_2_ + k) * p_151606_8_ + this.xo;
                 float d5 = (d1 + d0) * F2;
                 int l = fastFloor(d1 + d5);
                 int i1 = fastFloor(d0 + d5);
-                float d6 = (float) (l + i1) * G2;
-                float d7 = (float) l - d6;
-                float d8 = (float) i1 - d6;
+                float d6 = (l + i1) * G2;
+                float d7 = l - d6;
+                float d8 = i1 - d6;
                 float d9 = d1 - d7;
                 float d10 = d0 - d8;
                 int j1;
@@ -134,8 +135,8 @@ public class NoiseGeneratorSimplexF {
                     k1 = 1;
                 }
 
-                float d11 = d9 - (float) j1 + G2;
-                float d12 = d10 - (float) k1 + G2;
+                float d11 = d9 - j1 + G2;
+                float d12 = d10 - k1 + G2;
                 float d13 = d9 - 1.0f + 2.0f * G2;
                 float d14 = d10 - 1.0f + 2.0f * G2;
                 int l1 = l & 255;
@@ -149,7 +150,7 @@ public class NoiseGeneratorSimplexF {
                 if (d15 < 0.0f) {
                     d2 = 0.0f;
                 } else {
-                    d15 = d15 * d15;
+                    d15 *= d15;
                     d2 = d15 * d15 * dot(grad3[j2], d9, d10);
                 }
 
@@ -159,7 +160,7 @@ public class NoiseGeneratorSimplexF {
                 if (d16 < 0.0f) {
                     d3 = 0.0f;
                 } else {
-                    d16 = d16 * d16;
+                    d16 *= d16;
                     d3 = d16 * d16 * dot(grad3[k2], d11, d12);
                 }
 
@@ -169,7 +170,7 @@ public class NoiseGeneratorSimplexF {
                 if (d17 < 0.0f) {
                     d4 = 0.0f;
                 } else {
-                    d17 = d17 * d17;
+                    d17 *= d17;
                     d4 = d17 * d17 * dot(grad3[l2], d13, d14);
                 }
 

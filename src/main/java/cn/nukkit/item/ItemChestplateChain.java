@@ -7,7 +7,7 @@ package cn.nukkit.item;
 public class ItemChestplateChain extends ItemArmor {
 
     public ItemChestplateChain() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemChestplateChain(Integer meta) {
@@ -15,7 +15,7 @@ public class ItemChestplateChain extends ItemArmor {
     }
 
     public ItemChestplateChain(Integer meta, int count) {
-        super(CHAIN_CHESTPLATE, meta, count, "Chain Chestplate");
+        super(CHAIN_CHESTPLATE, meta, 1, "Chain Chestplate");
     }
 
     @Override
@@ -35,6 +35,6 @@ public class ItemChestplateChain extends ItemArmor {
 
     @Override
     public int getMaxDurability() {
-        return 241;
+        return 240;
     }
 }

@@ -17,9 +17,14 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/8 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockTNT extends BlockSolid {
+public class BlockTNT extends BlockSolidMeta {
 
     public BlockTNT() {
+        this(0);
+    }
+
+    public BlockTNT(int meta) {
+        super(meta);
     }
 
     @Override
@@ -30,16 +35,6 @@ public class BlockTNT extends BlockSolid {
     @Override
     public int getId() {
         return TNT;
-    }
-
-    @Override
-    public double getHardness() {
-        return 0;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0;
     }
 
     @Override
@@ -106,7 +101,9 @@ public class BlockTNT extends BlockSolid {
             return true;
         }
         if (item.getId() == Item.FIRE_CHARGE) {
-            if (!player.isCreative()) player.getInventory().removeItem(Item.get(Item.FIRE_CHARGE, 0, 1));
+            if (!player.isCreative()) {
+                player.getInventory().removeItem(Item.get(Item.FIRE_CHARGE));
+            }
             this.level.addSound(player, Sound.MOB_GHAST_FIREBALL);
             this.prime(80, player);
             return true;

@@ -4,8 +4,8 @@ public class ElementSlider extends Element {
 
     private final String type = "slider"; //This variable is used for JSON import operations. Do NOT delete :) -- @Snake1999
     private String text = "";
-    private float min = 0f;
-    private float max = 100f;
+    private float min = 0;
+    private float max = 100;
     private int step;
     private float defaultValue;
 
@@ -19,10 +19,14 @@ public class ElementSlider extends Element {
 
     public ElementSlider(String text, float min, float max, int step, float defaultValue) {
         this.text = text;
-        this.min = min < 0f ? 0f : min;
+        this.min = min < 0 ? 0 : min;
         this.max = max > this.min ? max : this.min;
-        if (step != -1f && step > 0) this.step = step;
-        if (defaultValue != -1f) this.defaultValue = defaultValue;
+        if (step != -1 && step > 0) {
+            this.step = step;
+        }
+        if (defaultValue != -1) {
+            this.defaultValue = defaultValue;
+        }
     }
 
     public String getText() {

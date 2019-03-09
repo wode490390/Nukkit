@@ -19,6 +19,7 @@ public class EntitySalmon extends EntityAnimal {
         return NETWORK_ID;
     }
 
+    @Override
     public String getName() {
         return "Salmon";
     }

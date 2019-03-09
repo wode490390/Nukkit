@@ -10,14 +10,12 @@ import cn.nukkit.utils.LevelException;
  */
 public abstract class BlockThin extends BlockTransparent {
 
-    protected BlockThin() {
-    }
-
     @Override
     public boolean isSolid() {
         return false;
     }
 
+    @Override
     protected AxisAlignedBB recalculateBoundingBox() {
         double f = 0.4375;
         double f1 = 0.5625;
@@ -64,5 +62,4 @@ public abstract class BlockThin extends BlockTransparent {
     public boolean canConnect(Block block) {
         return block.isSolid() || block.getId() == this.getId() || block.getId() == GLASS_PANE || block.getId() == GLASS;
     }
-
 }

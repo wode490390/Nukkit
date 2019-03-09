@@ -229,7 +229,9 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
         } else {
             Entity damager = ((EntityDamageByEntityEvent) source).getDamager();
             boolean instantKill = damager instanceof Player && ((Player) damager).isCreative();
-            if (!instantKill) performHurtAnimation((int) source.getFinalDamage());
+            if (!instantKill) {
+                performHurtAnimation((int) source.getFinalDamage());
+            }
 
             if (instantKill || getDamage() > 40) {
                 if (linkedEntity != null) {
@@ -318,7 +320,7 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
                     double desinityX = mine.x - x;
                     double desinityZ = mine.z - z;
                     Vector3 vector = new Vector3(desinityX, 0, desinityZ).normalize();
-                    Vector3 vec = new Vector3((double) MathHelper.cos((float) yaw * 0.017453292F), 0, (double) MathHelper.sin((float) yaw * 0.017453292F)).normalize();
+                    Vector3 vec = new Vector3(MathHelper.cos((float) yaw * 0.017453292F), 0, MathHelper.sin((float) yaw * 0.017453292F)).normalize();
                     double desinityXZ = Math.abs(vector.dot(vec));
 
                     if (desinityXZ < 0.800000011920929D) {
@@ -407,7 +409,7 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
         fallDistance = 0.0F;
         Vector3 vector = getNextRail(x, y, z);
 
-        y = (double) dy;
+        y = dy;
         boolean isPowered = false;
         boolean isSlowed = false;
 
@@ -436,8 +438,8 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
         }
 
         int[][] facing = matrix[block.getRealMeta()];
-        double facing1 = (double) (facing[1][0] - facing[0][0]);
-        double facing2 = (double) (facing[1][2] - facing[0][2]);
+        double facing1 = facing[1][0] - facing[0][0];
+        double facing2 = facing[1][2] - facing[0][2];
         double speedOnTurns = Math.sqrt(facing1 * facing1 + facing2 * facing2);
         double realFacing = motionX * facing1 + motionZ * facing2;
 
@@ -489,10 +491,10 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
             }
         }
 
-        playerYawNeg = (double) dx + 0.5D + (double) facing[0][0] * 0.5D;
-        playerYawPos = (double) dz + 0.5D + (double) facing[0][2] * 0.5D;
-        motion = (double) dx + 0.5D + (double) facing[1][0] * 0.5D;
-        double wallOfFame = (double) dz + 0.5D + (double) facing[1][2] * 0.5D;
+        playerYawNeg = dx + 0.5D + facing[0][0] * 0.5D;
+        playerYawPos = dz + 0.5D + facing[0][2] * 0.5D;
+        motion = dx + 0.5D + facing[1][0] * 0.5D;
+        double wallOfFame = dz + 0.5D + facing[1][2] * 0.5D;
 
         facing1 = motion - playerYawNeg;
         facing2 = wallOfFame - playerYawPos;
@@ -500,11 +502,11 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
         double motZ;
 
         if (facing1 == 0) {
-            x = (double) dx + 0.5D;
-            expectedSpeed = z - (double) dz;
+            x = dx + 0.5D;
+            expectedSpeed = z - dz;
         } else if (facing2 == 0) {
-            z = (double) dz + 0.5D;
-            expectedSpeed = x - (double) dx;
+            z = dz + 0.5D;
+            expectedSpeed = x - dx;
         } else {
             motX = x - playerYawNeg;
             motZ = z - playerYawPos;
@@ -526,9 +528,9 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
 
         move(motX, 0, motZ);
         if (facing[0][1] != 0 && MathHelper.floor(x) - dx == facing[0][0] && MathHelper.floor(z) - dz == facing[0][2]) {
-            setPosition(new Vector3(x, y + (double) facing[0][1], z));
+            setPosition(new Vector3(x, y + facing[0][1], z));
         } else if (facing[1][1] != 0 && MathHelper.floor(x) - dx == facing[1][0] && MathHelper.floor(z) - dz == facing[1][2]) {
-            setPosition(new Vector3(x, y + (double) facing[1][1], z));
+            setPosition(new Vector3(x, y + facing[1][1], z));
         }
 
         applyDrag();
@@ -551,8 +553,8 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
 
         if (floorX != dx || floorZ != dz) {
             squareOfFame = Math.sqrt(motionX * motionX + motionZ * motionZ);
-            motionX = squareOfFame * (double) (floorX - dx);
-            motionZ = squareOfFame * (double) (floorZ - dz);
+            motionX = squareOfFame * (floorX - dx);
+            motionZ = squareOfFame * (floorZ - dz);
         }
 
         if (isPowered) {
@@ -607,20 +609,20 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
             int[][] facing = matrix[((BlockRail) block).getRealMeta()];
             double rail;
             // Genisys mistake (Doesn't check surrounding more exactly)
-            double nextOne = (double) checkX + 0.5D + (double) facing[0][0] * 0.5D;
-            double nextTwo = (double) checkY + 0.5D + (double) facing[0][1] * 0.5D;
-            double nextThree = (double) checkZ + 0.5D + (double) facing[0][2] * 0.5D;
-            double nextFour = (double) checkX + 0.5D + (double) facing[1][0] * 0.5D;
-            double nextFive = (double) checkY + 0.5D + (double) facing[1][1] * 0.5D;
-            double nextSix = (double) checkZ + 0.5D + (double) facing[1][2] * 0.5D;
+            double nextOne = checkX + 0.5D + facing[0][0] * 0.5D;
+            double nextTwo = checkY + 0.5D + facing[0][1] * 0.5D;
+            double nextThree = checkZ + 0.5D + facing[0][2] * 0.5D;
+            double nextFour = checkX + 0.5D + facing[1][0] * 0.5D;
+            double nextFive = checkY + 0.5D + facing[1][1] * 0.5D;
+            double nextSix = checkZ + 0.5D + facing[1][2] * 0.5D;
             double nextSeven = nextFour - nextOne;
             double nextEight = (nextFive - nextTwo) * 2;
             double nextMax = nextSix - nextThree;
 
             if (nextSeven == 0) {
-                rail = dz - (double) checkZ;
+                rail = dz - checkZ;
             } else if (nextMax == 0) {
-                rail = dx - (double) checkX;
+                rail = dx - checkX;
             } else {
                 double whatOne = dx - nextOne;
                 double whatTwo = dz - nextThree;
@@ -662,26 +664,26 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
             if (namedTag.getBoolean("CustomDisplayTile")) {
                 int display = namedTag.getInt("DisplayTile");
                 int offSet = namedTag.getInt("DisplayOffset");
-                setDataProperty(new ByteEntityData(DATA_HAS_DISPLAY, 1));
-                setDataProperty(new IntEntityData(DATA_DISPLAY_ITEM, display));
-                setDataProperty(new IntEntityData(DATA_DISPLAY_OFFSET, offSet));
+                setDataProperty(new ByteEntityData(DATA_MINECART_HAS_DISPLAY, 1));
+                setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_BLOCK, display));
+                setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_OFFSET, offSet));
             }
         } else {
             int display = blockInside == null ? 0
                     : blockInside.getId()
                     | blockInside.getDamage() << 16;
             if (display == 0) {
-                setDataProperty(new ByteEntityData(DATA_HAS_DISPLAY, 0));
+                setDataProperty(new ByteEntityData(DATA_MINECART_HAS_DISPLAY, 0));
                 return;
             }
-            setDataProperty(new ByteEntityData(DATA_HAS_DISPLAY, 1));
-            setDataProperty(new IntEntityData(DATA_DISPLAY_ITEM, display));
-            setDataProperty(new IntEntityData(DATA_DISPLAY_OFFSET, 6));
+            setDataProperty(new ByteEntityData(DATA_MINECART_HAS_DISPLAY, 1));
+            setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_BLOCK, display));
+            setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_OFFSET, 6));
         }
     }
 
     private void saveEntityData() {
-        boolean hasDisplay = super.getDataPropertyByte(DATA_HAS_DISPLAY) == 1
+        boolean hasDisplay = super.getDataPropertyByte(DATA_MINECART_HAS_DISPLAY) == 1
                 || blockInside != null;
         int display;
         int offSet;
@@ -689,7 +691,7 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
         if (hasDisplay) {
             display = blockInside.getId()
                     | blockInside.getDamage() << 16;
-            offSet = getDataPropertyInt(DATA_DISPLAY_OFFSET);
+            offSet = getDataPropertyInt(DATA_MINECART_DISPLAY_OFFSET);
             namedTag.putInt("DisplayTile", display);
             namedTag.putInt("DisplayOffset", offSet);
         }
@@ -727,15 +729,15 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
                 blockInside = block;
                 int display = blockInside.getId()
                         | blockInside.getDamage() << 16;
-                setDataProperty(new ByteEntityData(DATA_HAS_DISPLAY, 1));
-                setDataProperty(new IntEntityData(DATA_DISPLAY_ITEM, display));
+                setDataProperty(new ByteEntityData(DATA_MINECART_HAS_DISPLAY, 1));
+                setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_BLOCK, display));
                 setDisplayBlockOffset(6);
             }
         } else {
             // Set block to air (default).
             blockInside = null;
-            setDataProperty(new ByteEntityData(DATA_HAS_DISPLAY, 0));
-            setDataProperty(new IntEntityData(DATA_DISPLAY_ITEM, 0));
+            setDataProperty(new ByteEntityData(DATA_MINECART_HAS_DISPLAY, 0));
+            setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_BLOCK, 0));
             setDisplayBlockOffset(0);
         }
         return true;
@@ -758,7 +760,7 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
      */
     @API(usage = Usage.EXPERIMENTAL, definition = Definition.PLATFORM_NATIVE)
     public void setDisplayBlockOffset(int offset) {
-        setDataProperty(new IntEntityData(DATA_DISPLAY_OFFSET, offset));
+        setDataProperty(new IntEntityData(DATA_MINECART_DISPLAY_OFFSET, offset));
     }
 
     /**
@@ -768,7 +770,7 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
      */
     @API(usage = Usage.EXPERIMENTAL, definition = Definition.UNIVERSAL)
     public int getDisplayBlockOffset() {
-        return super.getDataPropertyInt(DATA_DISPLAY_OFFSET);
+        return super.getDataPropertyInt(DATA_MINECART_DISPLAY_OFFSET);
     }
 
     /**

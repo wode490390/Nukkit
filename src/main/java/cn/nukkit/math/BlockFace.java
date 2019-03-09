@@ -1,9 +1,9 @@
 package cn.nukkit.math;
 
 import com.google.common.collect.Iterators;
-
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 public enum BlockFace {
@@ -130,6 +130,14 @@ public enum BlockFace {
         return VALUES[rand.nextInt(VALUES.length)];
     }
 
+    public static BlockFace random(NukkitRandom rand) {
+        return VALUES[rand.nextBoundedInt(VALUES.length)];
+    }
+
+    public static BlockFace random() {
+        return VALUES[ThreadLocalRandom.current().nextInt(VALUES.length)];
+    }
+
     /**
      * Get the index of this BlockFace (0-5). The order is D-U-N-S-W-E
      *
@@ -154,7 +162,7 @@ public enum BlockFace {
      * @return horizontal angle
      */
     public float getHorizontalAngle() {
-        return (float) ((horizontalIndex & 3) * 90);
+        return (horizontalIndex & 3) * 90;
     }
 
     /**
@@ -269,6 +277,7 @@ public enum BlockFace {
         }
     }
 
+    @Override
     public String toString() {
         return name;
     }
@@ -308,10 +317,12 @@ public enum BlockFace {
             return name;
         }
 
+        @Override
         public boolean test(BlockFace face) {
             return face != null && face.getAxis() == this;
         }
 
+        @Override
         public String toString() {
             return name;
         }
@@ -333,6 +344,7 @@ public enum BlockFace {
             return offset;
         }
 
+        @Override
         public String toString() {
             return description;
         }
@@ -350,14 +362,24 @@ public enum BlockFace {
 
         private BlockFace[] faces;
 
-        public BlockFace random(NukkitRandom rand) { //todo Default Random?
+        public BlockFace random(NukkitRandom rand) {
             return faces[rand.nextBoundedInt(faces.length)];
         }
 
+        public BlockFace random(Random rand) {
+            return faces[rand.nextInt(faces.length)];
+        }
+
+        public BlockFace random() {
+            return faces[ThreadLocalRandom.current().nextInt(faces.length)];
+        }
+
+        @Override
         public boolean test(BlockFace face) {
             return face != null && face.getAxis().getPlane() == this;
         }
 
+        @Override
         public Iterator<BlockFace> iterator() {
             return Iterators.forArray(faces);
         }

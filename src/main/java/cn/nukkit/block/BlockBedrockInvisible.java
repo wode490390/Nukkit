@@ -1,14 +1,16 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.utils.BlockColor;
 
 /**
  * Created by Pub4Game on 03.01.2016.
  */
-public class BlockBedrockInvisible extends BlockSolid {
+public class BlockBedrockInvisible extends BlockTransparent {
 
     public BlockBedrockInvisible() {
+
     }
 
     @Override
@@ -28,7 +30,7 @@ public class BlockBedrockInvisible extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
@@ -44,5 +46,10 @@ public class BlockBedrockInvisible extends BlockSolid {
     @Override
     public boolean canBePushed() {
         return false;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockAir());
     }
 }

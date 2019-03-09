@@ -19,9 +19,10 @@ import it.unimi.dsi.fastutil.longs.LongSet;
  * Nukkit Project
  */
 public class BlockLeaves extends BlockTransparentMeta {
+
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
-    public static final int BRICH = 2;
+    public static final int BIRCH = 2;
     public static final int JUNGLE = 3;
     public static final int ACACIA = 4;
     public static final int DARK_OAK = 5;
@@ -42,6 +43,11 @@ public class BlockLeaves extends BlockTransparentMeta {
     @Override
     public double getHardness() {
         return 0.2;
+    }
+
+    @Override
+    public double getResistance() {
+        return 1;
     }
 
     @Override
@@ -134,52 +140,45 @@ public class BlockLeaves extends BlockTransparentMeta {
     private Boolean findLog(Block pos, LongSet visited, Integer distance, Integer check, BlockFace fromSide) {
         ++check;
         long index = Hash.hashBlock((int) pos.x, (int) pos.y, (int) pos.z);
-        if (visited.contains(index)) return false;
-        if (pos.getId() == Block.WOOD) return true;
+        if (visited.contains(index)) {
+            return false;
+        }
+        if (pos.getId() == Block.WOOD) {
+            return true;
+        }
         if (pos.getId() == Block.LEAVES && distance < 4) {
             visited.add(index);
-            Integer down = pos.down().getId();
+            int down = pos.down().getId();
             if (down == Item.WOOD) {
                 return true;
             }
             if (fromSide == null) {
                 //North, East, South, West
-                for (Integer side = 2; side <= 5; ++side) {
-                    if (this.findLog(pos.getSide(BlockFace.fromIndex(side)), visited, distance + 1, check, BlockFace.fromIndex(side)))
+                for (int side = 2; side <= 5; ++side) {
+                    if (this.findLog(pos.getSide(BlockFace.fromIndex(side)), visited, distance + 1, check, BlockFace.fromIndex(side))) {
                         return true;
+                    }
                 }
             } else { //No more loops
                 switch (fromSide) {
                     case NORTH:
-                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                         break;
                     case SOUTH:
-                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                         break;
                     case WEST:
-                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                     case EAST:
-                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                         break;
                 }
             }
@@ -202,6 +201,11 @@ public class BlockLeaves extends BlockTransparentMeta {
 
     @Override
     public boolean canSilkTouch() {
+        return true;
+    }
+
+    @Override
+    public boolean diffusesSkyLight() {
         return true;
     }
 }

@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.Player;
+import cn.nukkit.network.protocol.types.PlayerPermissions;
 
 /**
  * @author Nukkit Project Team
@@ -14,7 +14,7 @@ public class AdventureSettingsPacket extends DataPacket {
     public static final int PERMISSION_HOST = 2;
     public static final int PERMISSION_AUTOMATION = 3;
     public static final int PERMISSION_ADMIN = 4;
-    //TODO: check level 3
+
     /**
      * This constant is used to identify flags that should be set on the second field. In a sensible world, these
      * flags would all be set on the same packet field, but as of MCPE 1.2, the new abilities flags have for some
@@ -24,12 +24,14 @@ public class AdventureSettingsPacket extends DataPacket {
 
     public static final int WORLD_IMMUTABLE = 0x01;
     public static final int NO_PVP = 0x02;
+
     public static final int AUTO_JUMP = 0x20;
     public static final int ALLOW_FLIGHT = 0x40;
     public static final int NO_CLIP = 0x80;
     public static final int WORLD_BUILDER = 0x100;
     public static final int FLYING = 0x200;
     public static final int MUTED = 0x400;
+
     public static final int BUILD_AND_MINE = 0x01 | BITFLAG_SECOND_SET;
     public static final int DOORS_AND_SWITCHES = 0x02 | BITFLAG_SECOND_SET;
     public static final int OPEN_CONTAINERS = 0x04 | BITFLAG_SECOND_SET;
@@ -44,12 +46,13 @@ public class AdventureSettingsPacket extends DataPacket {
 
     public long flags2 = -1;
 
-    public long playerPermission = Player.PERMISSION_MEMBER;
+    public long playerPermission = PlayerPermissions.MEMBER;
 
-    public long customFlags; //...
+    public long customFlags = 0; //...
 
     public long entityUniqueId; //This is a little-endian long, NOT a var-long. (WTF Mojang)
 
+    @Override
     public void decode() {
         this.flags = getUnsignedVarInt();
         this.commandPermission = getUnsignedVarInt();
@@ -59,6 +62,7 @@ public class AdventureSettingsPacket extends DataPacket {
         this.entityUniqueId = getLLong();
     }
 
+    @Override
     public void encode() {
         this.reset();
         this.putUnsignedVarInt(this.flags);
@@ -73,6 +77,7 @@ public class AdventureSettingsPacket extends DataPacket {
         if ((flag & BITFLAG_SECOND_SET) != 0) {
             return (this.flags2 & flag) != 0;
         }
+
         return (this.flags & flag) != 0;
     }
 

@@ -9,14 +9,19 @@ import cn.nukkit.plugin.PluginDescription;
 import cn.nukkit.utils.Binary;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class QueryRegenerateEvent extends ServerEvent {
-    //alot todo
+
+    //a lot todo
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -51,15 +56,15 @@ public class QueryRegenerateEvent extends ServerEvent {
     public QueryRegenerateEvent(Server server, int timeout) {
         this.timeout = timeout;
         this.serverName = server.getMotd();
-        this.listPlugins = (boolean) server.getConfig("settings.query-plugins", true);
-        this.plugins = server.getPluginManager().getPlugins().values().toArray(new Plugin[server.getPluginManager().getPlugins().values().size()]);
+        this.listPlugins = server.getConfig("settings.query-plugins", true);
+        this.plugins = server.getPluginManager().getPlugins().values().toArray(new Plugin[0]);
         List<Player> players = new ArrayList<>();
         for (Player player : server.getOnlinePlayers().values()) {
             if (player.isOnline()) {
                 players.add(player);
             }
         }
-        this.players = players.toArray(new Player[players.size()]);
+        this.players = players.toArray(new Player[0]);
 
         this.gameType = (server.getGamemode() & 0x01) == 0 ? "SMP" : "CMP";
         this.version = server.getVersion();
@@ -145,7 +150,9 @@ public class QueryRegenerateEvent extends ServerEvent {
     }
 
     public byte[] getLongQuery(byte[] buffer) {
-        if (buffer == null) buffer = new byte[Character.MAX_VALUE];
+        if (buffer == null) {
+            buffer = new byte[Character.MAX_VALUE];
+        }
         FastByteArrayOutputStream query = new FastByteArrayOutputStream(buffer);
         try {
             String plist = this.server_engine;
@@ -201,7 +208,9 @@ public class QueryRegenerateEvent extends ServerEvent {
     }
 
     public byte[] getShortQuery(byte[] buffer) {
-        if (buffer == null) buffer = new byte[Character.MAX_VALUE];
+        if (buffer == null) {
+            buffer = new byte[Character.MAX_VALUE];
+        }
         FastByteArrayOutputStream query = new FastByteArrayOutputStream(buffer);
         try {
             query.write(this.serverName.getBytes(StandardCharsets.UTF_8));
@@ -222,5 +231,4 @@ public class QueryRegenerateEvent extends ServerEvent {
         }
         return query.toByteArray();
     }
-
 }

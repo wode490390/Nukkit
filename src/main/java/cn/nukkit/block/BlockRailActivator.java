@@ -153,7 +153,7 @@ public class BlockRailActivator extends BlockRail {
             return false;
         }
 
-        Rail.Orientation base = ((BlockRailActivator) block).getOrientation();
+        Rail.Orientation base = ((BlockRail) block).getOrientation();
 
         return (state != Rail.Orientation.STRAIGHT_EAST_WEST
                 || base != Rail.Orientation.STRAIGHT_NORTH_SOUTH

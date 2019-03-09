@@ -25,16 +25,18 @@ public class ElementStepSlider extends Element {
     }
 
     public int getDefaultStepIndex() {
-        return defaultStepIndex;
+        return this.defaultStepIndex;
     }
 
     public void setDefaultOptionIndex(int index) {
-        if (index >= steps.size()) return;
+        if (index >= this.steps.size()) {
+            return;
+        }
         this.defaultStepIndex = index;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
 
     public void setText(String text) {
@@ -42,16 +44,17 @@ public class ElementStepSlider extends Element {
     }
 
     public List<String> getSteps() {
-        return steps;
+        return this.steps;
     }
 
     public void addStep(String step) {
-        addStep(step, false);
+        this.addStep(step, false);
     }
 
     public void addStep(String step, boolean isDefault) {
-        steps.add(step);
-        if (isDefault) this.defaultStepIndex = steps.size() - 1;
+        this.steps.add(step);
+        if (isDefault) {
+            this.defaultStepIndex = this.steps.size() - 1;
+        }
     }
-
 }

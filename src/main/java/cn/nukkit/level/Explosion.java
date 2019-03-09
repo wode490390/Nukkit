@@ -14,11 +14,16 @@ import cn.nukkit.event.entity.EntityExplodeEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.particle.HugeExplodeSeedParticle;
-import cn.nukkit.math.*;
+import cn.nukkit.math.AxisAlignedBB;
+import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.NukkitMath;
+import cn.nukkit.math.SimpleAxisAlignedBB;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 import cn.nukkit.network.protocol.ExplodePacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.utils.Hash;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -73,7 +78,7 @@ public class Explosion {
             for (int j = 0; j < this.rays; ++j) {
                 for (int k = 0; k < this.rays; ++k) {
                     if (i == 0 || i == mRays || j == 0 || j == mRays || k == 0 || k == mRays) {
-                        vector.setComponents((double) i / (double) mRays * 2d - 1, (double) j / (double) mRays * 2d - 1, (double) k / (double) mRays * 2d - 1);
+                        vector.setComponents(i / (double) mRays * 2d - 1, j / (double) mRays * 2d - 1, k / (double) mRays * 2d - 1);
                         double len = vector.length();
                         vector.setComponents((vector.x / len) * this.stepLen, (vector.y / len) * this.stepLen, (vector.z / len) * this.stepLen);
                         double pointerX = this.source.x;
@@ -169,7 +174,7 @@ public class Explosion {
         for (Block block : this.affectedBlocks) {
             //Block block = (Block) ((HashMap.Entry) iter.next()).getValue();
             if (block.getId() == Block.TNT) {
-                ((BlockTNT) block).prime(new NukkitRandom().nextRange(10, 30), this.what instanceof Entity ? (Entity) this.what : null);
+                ((BlockTNT) block).prime(ThreadLocalRandom.current().nextInt(10, 30), this.what instanceof Entity ? (Entity) this.what : null);
             } else if (Math.random() * 100 < yield) {
                 for (Item drop : block.getDrops(air)) {
                     this.level.dropItem(block.add(0.5, 0.5, 0.5), drop);
@@ -195,18 +200,20 @@ public class Explosion {
             send.add(new Vector3(block.x - source.x, block.y - source.y, block.z - source.z));
         }
 
+        Vector3f[] records = new Vector3f[send.size()];
+        for (int i = 0; i < send.size(); i++) {
+            records[i] = send.get(i).asVector3f();
+        }
+
         ExplodePacket pk = new ExplodePacket();
-        pk.x = (float) this.source.x;
-        pk.y = (float) this.source.y;
-        pk.z = (float) this.source.z;
+        pk.position = this.source.asVector3f();
         pk.radius = (float) this.size;
-        pk.records = send.toArray(new Vector3[0]);
+        pk.records = records;
 
         this.level.addChunkPacket((int) source.x >> 4, (int) source.z >> 4, pk);
         this.level.addParticle(new HugeExplodeSeedParticle(this.source));
-        this.level.addSound(new Vector3(this.source.x, this.source.y, this.source.z), Sound.RANDOM_EXPLODE);
+        this.level.addLevelSoundEvent(source, LevelSoundEventPacket.SOUND_EXPLODE);
 
         return true;
     }
-
 }

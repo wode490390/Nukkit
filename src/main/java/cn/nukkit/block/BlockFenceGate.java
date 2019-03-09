@@ -13,7 +13,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/11/23 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockFenceGate extends BlockTransparentMeta {
+public class BlockFenceGate extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockFenceGate() {
         this(0);
@@ -196,5 +196,10 @@ public class BlockFenceGate extends BlockTransparentMeta {
     @Override
     public Item toItem() {
         return Item.get(Item.FENCE_GATE, 0, 1);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

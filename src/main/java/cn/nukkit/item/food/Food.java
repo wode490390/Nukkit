@@ -4,10 +4,14 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.player.PlayerEatFoodEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Snake1999 on 2016/1/13.
@@ -107,11 +111,15 @@ public abstract class Food {
     public static Food getByRelative(int relativeID, int meta) {
         final Food[] result = {null};
         registryCustom.forEach((n, f) -> {
-            if (n.id == relativeID && n.meta == meta && n.plugin.isEnabled()) result[0] = f;
+            if (n.id == relativeID && n.meta == meta && n.plugin.isEnabled()) {
+                result[0] = f;
+            }
         });
         if (result[0] == null) {
             registryDefault.forEach((n, f) -> {
-                if (n.id == relativeID && n.meta == meta) result[0] = f;
+                if (n.id == relativeID && n.meta == meta) {
+                    result[0] = f;
+                }
             });
         }
         return result[0];
@@ -124,7 +132,10 @@ public abstract class Food {
     public final boolean eatenBy(Player player) {
         PlayerEatFoodEvent event = new PlayerEatFoodEvent(player, this);
         player.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled()) return false;
+        if (event.isCancelled()) {
+            return false;
+        }
+        player.getLevel().addLevelSoundEvent(player, LevelSoundEventPacket.SOUND_BURP);
         return event.getFood().onEatenBy(player);
     }
 
@@ -143,12 +154,14 @@ public abstract class Food {
     }
 
     private Food addRelative(NodeIDMeta node) {
-        if (!relativeIDs.contains(node)) relativeIDs.add(node);
+        if (!this.relativeIDs.contains(node)) {
+            this.relativeIDs.add(node);
+        }
         return this;
     }
 
     public int getRestoreFood() {
-        return restoreFood;
+        return this.restoreFood;
     }
 
     public Food setRestoreFood(int restoreFood) {
@@ -157,7 +170,7 @@ public abstract class Food {
     }
 
     public float getRestoreSaturation() {
-        return restoreSaturation;
+        return this.restoreSaturation;
     }
 
     public Food setRestoreSaturation(float restoreSaturation) {
@@ -183,5 +196,4 @@ public abstract class Food {
             this.plugin = plugin;
         }
     }
-
 }

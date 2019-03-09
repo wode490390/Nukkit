@@ -1,7 +1,6 @@
 package cn.nukkit.utils;
 
 import cn.nukkit.api.API;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +12,7 @@ import java.util.Map;
  */
 @API(usage = API.Usage.STABLE, definition = API.Definition.INTERNAL)
 public enum MinecartType {
+
     /**
      * Represents an empty vehicle.
      */
@@ -52,10 +52,7 @@ public enum MinecartType {
     private static final Map<Integer, MinecartType> TYPES = new HashMap<>();
 
     static {
-        MinecartType[] types = values();
-        int var1 = types.length;
-        for (int var2 = 0; var2 < var1; var2++) {
-            MinecartType var3 = types[var2];
+        for (MinecartType var3 : values()) {
             TYPES.put(var3.getId(), var3);
         }
     }

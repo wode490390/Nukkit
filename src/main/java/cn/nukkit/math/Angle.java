@@ -52,42 +52,66 @@ public final class Angle implements Comparable<Angle> {
 
     public float asFloatRadian() {
         if (isOriginDouble) {
-            if (isDegree) return (float) (doubleValue * PI / 180.0);
-            else return (float) doubleValue;
+            if (isDegree) {
+                return (float) (doubleValue * PI / 180.0);
+            } else {
+                return (float) doubleValue;
+            }
         } else {
-            if (isDegree) return floatValue * (float) PI / 180.0f;
-            else return floatValue;
-    }
+            if (isDegree) {
+                return floatValue * (float) PI / 180.0f;
+            } else {
+                return floatValue;
+            }
+        }
     }
 
     public double asDoubleRadian() {
         if (isOriginDouble) {
-            if (isDegree) return doubleValue * PI / 180.0;
-            else return doubleValue;
+            if (isDegree) {
+                return doubleValue * PI / 180.0;
+            } else {
+                return doubleValue;
+            }
         } else {
-            if (isDegree) return floatValue * PI / 180.0;
-            else return floatValue;
-    }
+            if (isDegree) {
+                return floatValue * PI / 180.0;
+            } else {
+                return floatValue;
+            }
+        }
     }
 
     public float asFloatDegree() {
         if (isOriginDouble) {
-            if (isDegree) return (float) doubleValue;
-            else return (float) (doubleValue * 180.0 / PI);
+            if (isDegree) {
+                return (float) doubleValue;
+            } else {
+                return (float) (doubleValue * 180.0 / PI);
+            }
         } else {
-            if (isDegree) return floatValue;
-            else return floatValue * 180.0f / (float) PI;
-    }
+            if (isDegree) {
+                return floatValue;
+            } else {
+                return floatValue * 180.0f / (float) PI;
+            }
+        }
     }
 
     public double asDoubleDegree() {
         if (isOriginDouble) {
-            if (isDegree) return doubleValue;
-            else return doubleValue * 180.0 / PI;
+            if (isDegree) {
+                return doubleValue;
+            } else {
+                return doubleValue * 180.0 / PI;
+            }
         } else {
-            if (isDegree) return floatValue;
-            else return floatValue * 180.0 / PI;
-    }
+            if (isDegree) {
+                return floatValue;
+            } else {
+                return floatValue * 180.0 / PI;
+            }
+        }
     }
 
     public static int compare(Angle a, Angle b) {
@@ -123,9 +147,14 @@ public final class Angle implements Comparable<Angle> {
     @Override
     public int hashCode() {
         int hash;
-        if (isOriginDouble) hash = Double.hashCode(doubleValue);
-        else hash = Float.hashCode(floatValue);
-        if (isDegree) hash = hash ^ 0xABCD1234;
+        if (isOriginDouble) {
+            hash = Double.hashCode(doubleValue);
+        } else {
+            hash = Float.hashCode(floatValue);
+        }
+        if (isDegree) {
+            hash ^= 0xABCD1234;
+        }
         return hash;
     }
 

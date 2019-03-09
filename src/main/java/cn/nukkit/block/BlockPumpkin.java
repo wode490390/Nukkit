@@ -2,6 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
@@ -10,7 +11,8 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/8 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockPumpkin extends BlockSolidMeta {
+public class BlockPumpkin extends BlockSolidMeta implements BlockFaceable {
+
     public BlockPumpkin() {
         this(0);
     }
@@ -45,6 +47,11 @@ public class BlockPumpkin extends BlockSolidMeta {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         this.setDamage(player != null ? player.getDirection().getOpposite().getHorizontalIndex() : 0);
         this.getLevel().setBlock(block, this, true, true);
@@ -59,5 +66,10 @@ public class BlockPumpkin extends BlockSolidMeta {
     @Override
     public boolean canBePushed() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

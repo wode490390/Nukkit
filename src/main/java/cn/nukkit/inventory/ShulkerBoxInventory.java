@@ -3,8 +3,8 @@ package cn.nukkit.inventory;
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntityShulkerBox;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.BlockEventPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 
 /**
  * Created by PetteriM1
@@ -29,12 +29,12 @@ public class ShulkerBoxInventory extends ContainerInventory {
             pk.x = (int) this.getHolder().getX();
             pk.y = (int) this.getHolder().getY();
             pk.z = (int) this.getHolder().getZ();
-            pk.case1 = 1;
-            pk.case2 = 2;
+            pk.eventType = 1;
+            pk.eventData = 2;
 
             Level level = this.getHolder().getLevel();
             if (level != null) {
-                level.addSound(this.getHolder().add(0.5, 0.5, 0.5), Sound.RANDOM_SHULKERBOXOPEN);
+                level.addLevelSoundEvent(this.getHolder().add(0.5, 0.5, 0.5), LevelSoundEventPacket.SOUND_SHULKERBOX_OPEN);
                 level.addChunkPacket((int) this.getHolder().getX() >> 4, (int) this.getHolder().getZ() >> 4, pk);
             }
         }
@@ -47,12 +47,12 @@ public class ShulkerBoxInventory extends ContainerInventory {
             pk.x = (int) this.getHolder().getX();
             pk.y = (int) this.getHolder().getY();
             pk.z = (int) this.getHolder().getZ();
-            pk.case1 = 1;
-            pk.case2 = 0;
+            pk.eventType = 1;
+            pk.eventData = 0;
 
             Level level = this.getHolder().getLevel();
             if (level != null) {
-                level.addSound(this.getHolder().add(0.5, 0.5, 0.5), Sound.RANDOM_SHULKERBOXCLOSED);
+                level.addLevelSoundEvent(this.getHolder().add(0.5, 0.5, 0.5), LevelSoundEventPacket.SOUND_SHULKERBOX_CLOSED);
                 level.addChunkPacket((int) this.getHolder().getX() >> 4, (int) this.getHolder().getZ() >> 4, pk);
             }
         }

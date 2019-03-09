@@ -7,6 +7,7 @@ import cn.nukkit.item.Item;
  * Nukkit Project
  */
 public class InventorySlotPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.INVENTORY_SLOT_PACKET;
 
     @Override
@@ -14,22 +15,22 @@ public class InventorySlotPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public int inventoryId;
-    public int slot;
+    public int windowId;
+    public int inventorySlot;
     public Item item;
 
     @Override
     public void decode() {
-        this.inventoryId = (int) this.getUnsignedVarInt();
-        this.slot = (int) this.getUnsignedVarInt();
+        this.windowId = (int) this.getUnsignedVarInt();
+        this.inventorySlot = (int) this.getUnsignedVarInt();
         this.item = this.getSlot();
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putUnsignedVarInt((byte) this.inventoryId);
-        this.putUnsignedVarInt(this.slot);
+        this.putUnsignedVarInt((byte) this.windowId);
+        this.putUnsignedVarInt(this.inventorySlot);
         this.putSlot(this.item);
     }
 }

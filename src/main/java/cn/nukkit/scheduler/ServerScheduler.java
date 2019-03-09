@@ -4,17 +4,18 @@ import cn.nukkit.Server;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.utils.PluginException;
 import cn.nukkit.utils.Utils;
-
 import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Nukkit Project Team
  */
+@Log4j2
 public class ServerScheduler {
 
     public static int WORKERS = 4;
@@ -41,6 +42,10 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleTask(Plugin, Runnable)}
      */
     @Deprecated
@@ -53,6 +58,11 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param asynchronous
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleTask(Plugin, Runnable, boolean)}
      */
     @Deprecated
@@ -65,6 +75,10 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleAsyncTask(Plugin, AsyncTask)}
      */
     @Deprecated
@@ -98,6 +112,11 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param delay
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleDelayedTask(Plugin, Runnable, int)}
      */
     @Deprecated
@@ -110,6 +129,12 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param delay
+     * @param asynchronous
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleDelayedTask(Plugin, Runnable, int, boolean)}
      */
     @Deprecated
@@ -122,6 +147,11 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param period
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleRepeatingTask(Plugin, Runnable, int)}
      */
     @Deprecated
@@ -134,6 +164,12 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param period
+     * @param asynchronous
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleRepeatingTask(Plugin, Runnable, int, boolean)}
      */
     @Deprecated
@@ -162,6 +198,12 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param delay
+     * @param period
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleDelayedRepeatingTask(Plugin, Runnable, int, int)}
      */
     @Deprecated
@@ -174,6 +216,13 @@ public class ServerScheduler {
     }
 
     /**
+     * @param task
+     * @param delay
+     * @param period
+     * @param asynchronous
+     * 
+     * @return TaskHandler
+     * 
      * @deprecated Use {@link #scheduleDelayedRepeatingTask(Plugin, Runnable, int, int, boolean)}
      */
     @Deprecated
@@ -190,7 +239,7 @@ public class ServerScheduler {
             try {
                 taskMap.remove(taskId).cancel();
             } catch (RuntimeException ex) {
-                Server.getInstance().getLogger().critical("Exception while invoking onCancel", ex);
+                log.error("Exception while invoking onCancel", ex);
             }
         }
     }
@@ -207,7 +256,7 @@ public class ServerScheduler {
                 try {
                     taskHandler.cancel(); /* It will remove from task map automatic in next main heartbeat. */
                 } catch (RuntimeException ex) {
-                    Server.getInstance().getLogger().critical("Exception while invoking onCancel", ex);
+                    log.error("Exception while invoking onCancel", ex);
                 }
             }
         }
@@ -218,7 +267,7 @@ public class ServerScheduler {
             try {
                 entry.getValue().cancel();
             } catch (RuntimeException ex) {
-                Server.getInstance().getLogger().critical("Exception while invoking onCancel", ex);
+                log.error("Exception while invoking onCancel", ex);
             }
         }
         this.taskMap.clear();
@@ -295,8 +344,8 @@ public class ServerScheduler {
                     try {
                         taskHandler.run(currentTick);
                     } catch (Throwable e) {
-                        Server.getInstance().getLogger().critical("Could not execute taskHandler " + taskHandler.getTaskId() + ": " + e.getMessage());
-                        Server.getInstance().getLogger().logException(e instanceof Exception ? (Exception) e : new RuntimeException(e));
+                        log.error("Could not execute taskHandler " + taskHandler.getTaskId() + ": " + e.getMessage());
+                        log.throwing(e instanceof Exception ? (Exception) e : new RuntimeException(e));
                     }
                     taskHandler.timing.stopTiming();
                 }
@@ -306,9 +355,11 @@ public class ServerScheduler {
                 } else {
                     try {
                         TaskHandler removed = taskMap.remove(taskHandler.getTaskId());
-                        if (removed != null) removed.cancel();
+                        if (removed != null) {
+                            removed.cancel();
+                        }
                     } catch (RuntimeException ex) {
-                        Server.getInstance().getLogger().critical("Exception while invoking onCancel", ex);
+                        log.error("Exception while invoking onCancel", ex);
                     }
                 }
             }
@@ -326,5 +377,4 @@ public class ServerScheduler {
     private int nextTaskId() {
         return currentTaskId.incrementAndGet();
     }
-
 }

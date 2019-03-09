@@ -1,21 +1,22 @@
 package cn.nukkit.permission;
 
-import cn.nukkit.Server;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class BanEntry {
+
     public static final String format = "yyyy-MM-dd hh:mm:ss Z";
 
     private final String name;
@@ -30,11 +31,11 @@ public class BanEntry {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Date getCreationDate() {
-        return creationDate;
+        return this.creationDate;
     }
 
     public void setCreationDate(Date creationDate) {
@@ -42,7 +43,7 @@ public class BanEntry {
     }
 
     public String getSource() {
-        return source;
+        return this.source;
     }
 
     public void setSource(String source) {
@@ -50,7 +51,7 @@ public class BanEntry {
     }
 
     public Date getExpirationDate() {
-        return expirationDate;
+        return this.expirationDate;
     }
 
     public void setExpirationDate(Date expirationDate) {
@@ -63,7 +64,7 @@ public class BanEntry {
     }
 
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     public void setReason(String reason) {
@@ -86,7 +87,7 @@ public class BanEntry {
             banEntry.setCreationDate(new SimpleDateFormat(format).parse(map.get("creationDate")));
             banEntry.setExpirationDate(!map.get("expireDate").equals("Forever") ? new SimpleDateFormat(format).parse(map.get("expireDate")) : null);
         } catch (ParseException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
         banEntry.setSource(map.get("source"));
         banEntry.setReason(map.get("reason"));
@@ -105,11 +106,10 @@ public class BanEntry {
             banEntry.setCreationDate(new SimpleDateFormat(format).parse(map.get("creationDate")));
             banEntry.setExpirationDate(!map.get("expireDate").equals("Forever") ? new SimpleDateFormat(format).parse(map.get("expireDate")) : null);
         } catch (ParseException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
         banEntry.setSource(map.get("source"));
         banEntry.setReason(map.get("reason"));
         return banEntry;
     }
-
 }

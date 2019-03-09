@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityFurnace;
 import cn.nukkit.inventory.ContainerInventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
@@ -12,14 +13,13 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
-
 import java.util.Map;
 
 /**
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockFurnaceBurning extends BlockSolidMeta {
+public class BlockFurnaceBurning extends BlockSolidMeta implements BlockFaceable {
 
     public BlockFurnaceBurning() {
         this(0);
@@ -60,13 +60,18 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public int getLightLevel() {
         return 13;
     }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
+        int[] faces = {2, 5, 3, 4};
         this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
         this.getLevel().setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag()
@@ -128,16 +133,21 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     }
 
     @Override
-    public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
-            return new Item[]{
-                    new ItemBlock(new BlockFurnace())
-            };
-        } else {
-            return new Item[0];
-        }
+    public Item toItem() {
+        return new ItemBlock(new BlockFurnace());
     }
 
+    @Override
+    public Item[] getDrops(Item item) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
+            return new Item[]{
+                    this.toItem()
+            };
+        }
+        return new Item[0];
+    }
+
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }
@@ -147,7 +157,7 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityFurnace) {
-            return ContainerInventory.calculateRedstone(((BlockEntityFurnace) blockEntity).getInventory());
+            return ContainerInventory.calculateRedstone(((InventoryHolder) blockEntity).getInventory());
         }
 
         return super.getComparatorInputOverride();
@@ -156,5 +166,10 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

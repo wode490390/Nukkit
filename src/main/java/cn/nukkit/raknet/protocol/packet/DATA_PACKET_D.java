@@ -1,13 +1,14 @@
 package cn.nukkit.raknet.protocol.packet;
 
-import cn.nukkit.raknet.protocol.DataPacket;
+import cn.nukkit.raknet.protocol.Datagram;
 import cn.nukkit.raknet.protocol.Packet;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class DATA_PACKET_D extends DataPacket {
+public class DATA_PACKET_D extends Datagram {
+
     public static final byte ID = (byte) 0x8d;
 
     @Override

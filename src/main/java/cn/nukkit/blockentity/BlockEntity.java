@@ -7,46 +7,48 @@ import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.ChunkException;
-import cn.nukkit.utils.MainLogger;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author MagicDroidX
  */
+@Log4j2
 public abstract class BlockEntity extends Position {
-    //WARNING: DO NOT CHANGE ANY NAME HERE, OR THE CLIENT WILL CRASH
-    public static final String CHEST = "Chest";
-    public static final String ENDER_CHEST = "EnderChest";
-    public static final String FURNACE = "Furnace";
-    public static final String SIGN = "Sign";
-    public static final String MOB_SPAWNER = "MobSpawner";
-    public static final String ENCHANT_TABLE = "EnchantTable";
-    public static final String SKULL = "Skull";
-    public static final String FLOWER_POT = "FlowerPot";
-    public static final String BREWING_STAND = "BrewingStand";
-    public static final String DAYLIGHT_DETECTOR = "DaylightDetector";
-    public static final String MUSIC = "Music";
-    public static final String ITEM_FRAME = "ItemFrame";
-    public static final String CAULDRON = "Cauldron";
-    public static final String BEACON = "Beacon";
-    public static final String PISTON_ARM = "PistonArm";
-    public static final String MOVING_BLOCK = "MovingBlock";
-    public static final String COMPARATOR = "Comparator";
-    public static final String HOPPER = "Hopper";
-    public static final String BED = "Bed";
-    public static final String JUKEBOX = "Jukebox";
-    public static final String SHULKER_BOX = "ShulkerBox";
 
+    //WARNING: DO NOT CHANGE ANY NAME HERE, OR THE CLIENT WILL CRASH
+    public static final String BANNER = "Banner";
+    public static final String BEACON = "Beacon";
+    public static final String BED = "Bed";
+    public static final String BREWING_STAND = "BrewingStand";
+    public static final String CAULDRON = "Cauldron";
+    public static final String CHEST = "Chest";
+    public static final String COMPARATOR = "Comparator";
+    public static final String DAYLIGHT_DETECTOR = "DaylightDetector";
+    public static final String DISPENSER = "Dispenser";
+    public static final String DROPPER = "Dropper";
+    public static final String ENCHANT_TABLE = "EnchantTable";
+    public static final String ENDER_CHEST = "EnderChest";
+    public static final String FLOWER_POT = "FlowerPot";
+    public static final String FURNACE = "Furnace";
+    public static final String HOPPER = "Hopper";
+    public static final String ITEM_FRAME = "ItemFrame";
+    public static final String JUKEBOX = "Jukebox";
+    public static final String MOB_SPAWNER = "MobSpawner";
+    public static final String MOVING_BLOCK = "MovingBlock";
+    public static final String MUSIC = "Music";
+    public static final String PISTON_ARM = "PistonArm";
+    public static final String SHULKER_BOX = "ShulkerBox";
+    public static final String SIGN = "Sign";
+    public static final String SKULL = "Skull";
 
     public static long count = 1;
 
-    private static final Map<String, Class<? extends BlockEntity>> knownBlockEntities = new HashMap<>();
-    private static final Map<String, String> shortNames = new HashMap<>();
+    private static final BiMap<String, Class<? extends BlockEntity>> knownBlockEntities = HashBiMap.create(21);
 
     public FullChunk chunk;
     public String name;
@@ -121,7 +123,7 @@ public abstract class BlockEntity extends Position {
 
                     }
                 } catch (Exception e) {
-                    MainLogger.getLogger().logException(e);
+                    log.throwing(e);
                 }
 
             }
@@ -136,18 +138,19 @@ public abstract class BlockEntity extends Position {
         }
 
         knownBlockEntities.put(name, c);
-        shortNames.put(c.getSimpleName(), name);
         return true;
     }
 
     public final String getSaveId() {
-        String simpleName = getClass().getName();
-        simpleName = simpleName.substring(22, simpleName.length());
-        return shortNames.getOrDefault(simpleName, "");
+        return knownBlockEntities.inverse().get(getClass());
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setDirty() {
+        chunk.setChanged();
     }
 
     public void saveNBT() {
@@ -194,6 +197,10 @@ public abstract class BlockEntity extends Position {
             }
             this.level = null;
         }
+    }
+
+    public void onBreak() {
+
     }
 
     public String getName() {

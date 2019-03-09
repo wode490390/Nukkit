@@ -1,6 +1,5 @@
 package cn.nukkit.plugin.service;
 
-
 import cn.nukkit.plugin.Plugin;
 
 /**
@@ -8,10 +7,10 @@ import cn.nukkit.plugin.Plugin;
  */
 public class RegisteredServiceProvider<T> implements Comparable<RegisteredServiceProvider<T>> {
 
-    private Plugin plugin;
-    private ServicePriority priority;
-    private Class<T> service;
-    private T provider;
+    private final Plugin plugin;
+    private final ServicePriority priority;
+    private final Class<T> service;
+    private final T provider;
 
     RegisteredServiceProvider(Class<T> service, T provider, ServicePriority priority, Plugin plugin) {
         this.plugin = plugin;
@@ -54,8 +53,12 @@ public class RegisteredServiceProvider<T> implements Comparable<RegisteredServic
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         RegisteredServiceProvider<?> that = (RegisteredServiceProvider<?>) o;
 
@@ -67,8 +70,8 @@ public class RegisteredServiceProvider<T> implements Comparable<RegisteredServic
         return provider.hashCode();
     }
 
+    @Override
     public int compareTo(RegisteredServiceProvider<T> other) {
         return other.priority.ordinal() - priority.ordinal();
     }
-
 }

@@ -165,7 +165,7 @@ public class BlockRailPowered extends BlockRail {
         }
 
         // Sometimes the rails are diffrent orientation
-        Rail.Orientation base = ((BlockRailPowered) block).getOrientation();
+        Rail.Orientation base = ((BlockRail) block).getOrientation();
 
         // Possible way how to know when the rail is activated is rail were directly powered
         // OR recheck the surrounding... Which will returns here =w=        

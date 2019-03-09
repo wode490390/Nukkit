@@ -4,7 +4,11 @@ import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.generator.object.BasicGenerator;
-import cn.nukkit.level.generator.object.tree.*;
+import cn.nukkit.level.generator.object.tree.NewJungleTree;
+import cn.nukkit.level.generator.object.tree.ObjectDarkOakTree;
+import cn.nukkit.level.generator.object.tree.ObjectJungleBigTree;
+import cn.nukkit.level.generator.object.tree.ObjectSavannaTree;
+import cn.nukkit.level.generator.object.tree.ObjectTree;
 import cn.nukkit.level.particle.BoneMealParticle;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.NukkitRandom;
@@ -16,17 +20,18 @@ import java.util.concurrent.ThreadLocalRandom;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockSapling extends BlockFlowable {
+public class BlockSapling extends BlockFlowableMeta {
+
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
     public static final int BIRCH = 2;
+    public static final int JUNGLE = 3;
+    public static final int ACACIA = 4;
+    public static final int DARK_OAK = 5;
     /**
      * placeholder
      */
     public static final int BIRCH_TALL = 8 | BIRCH;
-    public static final int JUNGLE = 3;
-    public static final int ACACIA = 4;
-    public static final int DARK_OAK = 5;
 
     public BlockSapling() {
         this(0);
@@ -57,6 +62,16 @@ public class BlockSapling extends BlockFlowable {
     }
 
     @Override
+    public double getHardness() {
+        return 0;
+    }
+
+    @Override
+    public double getResistance() {
+        return 0;
+    }
+
+    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
         if (down.getId() == Block.GRASS || down.getId() == Block.DIRT || down.getId() == Block.FARMLAND || down.getId() == Block.PODZOL) {
@@ -72,6 +87,7 @@ public class BlockSapling extends BlockFlowable {
         return true;
     }
 
+    @Override
     public boolean onActivate(Item item, Player player) {
         if (item.getId() == Item.DYE && item.getDamage() == 0x0F) { //BoneMeal
             if ((player.gamemode & 0x01) == 0) {
@@ -158,6 +174,7 @@ public class BlockSapling extends BlockFlowable {
         return false;
     }
 
+    @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.down().isTransparent()) {

@@ -11,7 +11,7 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class BlockStairs extends BlockTransparentMeta {
+public abstract class BlockStairs extends BlockTransparentMeta implements BlockFaceable {
 
     protected BlockStairs(int meta) {
         super(meta);
@@ -27,11 +27,6 @@ public abstract class BlockStairs extends BlockTransparentMeta {
     public double getMaxY() {
         // TODO: this seems wrong
         return this.y + ((getDamage() & 0x04) > 0 ? 1 : 0.5);
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     @Override
@@ -91,52 +86,64 @@ public abstract class BlockStairs extends BlockTransparentMeta {
         }
 
 
-        if (side == 0) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x + 0.5,
-                    this.y + f2,
-                    this.z,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 1
-            ))) {
-                return true;
-            }
-        } else if (side == 1) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z,
-                    this.x + 0.5,
-                    this.y + f3,
-                    this.z + 1
-            ))) {
-                return true;
-            }
-        } else if (side == 2) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z + 0.5,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 1
-            ))) {
-                return true;
-            }
-        } else if (side == 3) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 0.5
-            ))) {
-                return true;
-            }
+        switch (side) {
+            case 0:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x + 0.5,
+                        this.y + f2,
+                        this.z,
+                        this.x + 1,
+                        this.y + f3,
+                        this.z + 1
+                ))) {
+                    return true;
+                }
+                break;
+            case 1:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x,
+                        this.y + f2,
+                        this.z,
+                        this.x + 0.5,
+                        this.y + f3,
+                        this.z + 1
+                ))) {
+                    return true;
+                }
+                break;
+            case 2:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x,
+                        this.y + f2,
+                        this.z + 0.5,
+                        this.x + 1,
+                        this.y + f3,
+                        this.z + 1
+                ))) {
+                    return true;
+                }
+                break;
+            case 3:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x,
+                        this.y + f2,
+                        this.z,
+                        this.x + 1,
+                        this.y + f3,
+                        this.z + 0.5
+                ))) {
+                    return true;
+                }
+                break;
+            default:
+                break;
         }
 
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

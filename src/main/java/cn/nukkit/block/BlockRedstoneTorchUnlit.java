@@ -1,6 +1,8 @@
 package cn.nukkit.block;
 
 import cn.nukkit.event.redstone.RedstoneUpdateEvent;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
@@ -30,7 +32,7 @@ public class BlockRedstoneTorchUnlit extends BlockTorch {
 
     @Override
     public int getLightLevel() {
-        return 7;
+        return 0;
     }
 
     @Override
@@ -44,11 +46,18 @@ public class BlockRedstoneTorchUnlit extends BlockTorch {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockRedstoneTorch());
+    }
+
+    @Override
     public int onUpdate(int type) {
         if (super.onUpdate(type) == 0) {
             if (type == Level.BLOCK_UPDATE_NORMAL || type == Level.BLOCK_UPDATE_REDSTONE) {
+                this.level.scheduleUpdate(this, tickRate());
+            } else if (type == Level.BLOCK_UPDATE_SCHEDULED) {
                 RedstoneUpdateEvent ev = new RedstoneUpdateEvent(this);
-                getLevel().getServer().getPluginManager().callEvent(ev);
+                this.getLevel().getServer().getPluginManager().callEvent(ev);
                 if (ev.isCancelled()) {
                     return 0;
                 }
@@ -63,7 +72,7 @@ public class BlockRedstoneTorchUnlit extends BlockTorch {
     }
 
     protected boolean checkState() {
-        BlockFace face = getFacing().getOpposite();
+        BlockFace face = this.getBlockFace().getOpposite();
         Vector3 pos = getLocation();
 
         if (!this.level.isSidePowered(pos.getSide(face), face)) {
@@ -80,5 +89,10 @@ public class BlockRedstoneTorchUnlit extends BlockTorch {
         }
 
         return false;
+    }
+
+    @Override
+    public int tickRate() {
+        return 2;
     }
 }

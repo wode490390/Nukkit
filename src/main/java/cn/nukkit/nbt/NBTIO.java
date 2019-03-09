@@ -8,8 +8,14 @@ import cn.nukkit.nbt.stream.PGZIPOutputStream;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.ThreadCache;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -69,7 +75,9 @@ public class NBTIO {
     }
 
     public static CompoundTag read(File file, ByteOrder endianness) throws IOException {
-        if (!file.exists()) return null;
+        if (!file.exists()) {
+            return null;
+        }
         return read(new FileInputStream(file), endianness);
     }
 

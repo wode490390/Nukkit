@@ -10,6 +10,7 @@ import cn.nukkit.item.ItemTool;
 public class BlockEndStone extends BlockSolid {
 
     public BlockEndStone() {
+
     }
 
     @Override
@@ -28,24 +29,23 @@ public class BlockEndStone extends BlockSolid {
     }
 
     @Override
-    public double getResistance() {
-        return 45;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    toItem()
+                    this.toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override

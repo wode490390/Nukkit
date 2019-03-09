@@ -12,7 +12,6 @@ import cn.nukkit.utils.BlockColor;
  */
 public class BlockWater extends BlockLiquid {
 
-
     public BlockWater() {
         this(0);
     }
@@ -29,11 +28,6 @@ public class BlockWater extends BlockLiquid {
     @Override
     public String getName() {
         return "Water";
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     @Override
@@ -66,5 +60,10 @@ public class BlockWater extends BlockLiquid {
     @Override
     public int tickRate() {
         return 5;
+    }
+
+    @Override
+    public int getLightFilter() {
+        return 2;
     }
 }

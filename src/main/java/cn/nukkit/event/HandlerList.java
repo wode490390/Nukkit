@@ -2,15 +2,19 @@ package cn.nukkit.event;
 
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.RegisteredListener;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Created by Nukkit Team.
  */
 public class HandlerList {
 
-    private volatile RegisteredListener[] handlers = null;
+    private volatile RegisteredListener[] handlers;
 
     private final EnumMap<EventPriority, ArrayList<RegisteredListener>> handlerslots;
 
@@ -64,8 +68,9 @@ public class HandlerList {
     }
 
     public synchronized void register(RegisteredListener listener) {
-        if (handlerslots.get(listener.getPriority()).contains(listener))
+        if (handlerslots.get(listener.getPriority()).contains(listener)) {
             throw new IllegalStateException("This listener is already registered to priority " + listener.getPriority().toString());
+        }
         handlers = null;
         handlerslots.get(listener.getPriority()).add(listener);
     }
@@ -92,7 +97,9 @@ public class HandlerList {
                 }
             }
         }
-        if (changed) handlers = null;
+        if (changed) {
+            handlers = null;
+        }
     }
 
     public synchronized void unregister(Listener listener) {
@@ -105,16 +112,20 @@ public class HandlerList {
                 }
             }
         }
-        if (changed) handlers = null;
+        if (changed) {
+            handlers = null;
+        }
     }
 
     public synchronized void bake() {
-        if (handlers != null) return; // don't re-bake when still valid
+        if (handlers != null) {
+            return; // don't re-bake when still valid
+        }
         List<RegisteredListener> entries = new ArrayList<>();
         for (Map.Entry<EventPriority, ArrayList<RegisteredListener>> entry : handlerslots.entrySet()) {
             entries.addAll(entry.getValue());
         }
-        handlers = entries.toArray(new RegisteredListener[entries.size()]);
+        handlers = entries.toArray(new RegisteredListener[0]);
     }
 
     public RegisteredListener[] getRegisteredListeners() {
@@ -149,5 +160,4 @@ public class HandlerList {
             return new ArrayList<>(allLists);
         }
     }
-
 }

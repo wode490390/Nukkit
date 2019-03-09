@@ -11,19 +11,10 @@ import cn.nukkit.math.Vector3;
 /**
  * Created by CreeperFace on 27. 11. 2016.
  */
-public abstract class BlockButton extends BlockFlowable {
+public abstract class BlockButton extends BlockFlowableMeta implements BlockFaceable {
 
-    public BlockButton() {
-        this(0);
-    }
-
-    public BlockButton(int meta) {
+    protected BlockButton(int meta) {
         super(meta);
-    }
-
-    @Override
-    public double getResistance() {
-        return 2.5;
     }
 
     @Override
@@ -54,7 +45,7 @@ public abstract class BlockButton extends BlockFlowable {
         }
 
         this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, 0, 15));
-        this.setDamage(this.getDamage() ^ 0x08);
+        this.setDamage(this.getDamage() ^ 0x8);
         this.level.setBlock(this, this, true, false);
         this.level.addSound(this.add(0.5, 0.5, 0.5), Sound.RANDOM_CLICK);
         this.level.scheduleUpdate(this, 30);
@@ -76,7 +67,7 @@ public abstract class BlockButton extends BlockFlowable {
             if (this.isActivated()) {
                 this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, 15, 0));
 
-                this.setDamage(this.getDamage() ^ 0x08);
+                this.setDamage(this.getDamage() ^ 0x8);
                 this.level.setBlock(this, this, true, false);
                 this.level.addSound(this.add(0.5, 0.5, 0.5), Sound.RANDOM_CLICK);
 
@@ -92,7 +83,7 @@ public abstract class BlockButton extends BlockFlowable {
     }
 
     public boolean isActivated() {
-        return ((this.getDamage() & 0x08) == 0x08);
+        return ((this.getDamage() & 0x8) == 0x8);
     }
 
     @Override
@@ -100,16 +91,18 @@ public abstract class BlockButton extends BlockFlowable {
         return true;
     }
 
+    @Override
     public int getWeakPower(BlockFace side) {
         return isActivated() ? 15 : 0;
     }
 
+    @Override
     public int getStrongPower(BlockFace side) {
         return !isActivated() ? 0 : (getFacing() == side ? 15 : 0);
     }
 
     public BlockFace getFacing() {
-        int side = isActivated() ? getDamage() ^ 0x08 : getDamage();
+        int side = isActivated() ? getDamage() ^ 0x8 : getDamage();
         return BlockFace.fromIndex(side);
     }
 
@@ -125,5 +118,10 @@ public abstract class BlockButton extends BlockFlowable {
     @Override
     public Item toItem() {
         return Item.get(this.getId(), 0, 1);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

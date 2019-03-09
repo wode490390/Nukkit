@@ -5,15 +5,16 @@ import cn.nukkit.item.ItemGlowstoneDust;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.math.MathHelper;
 import cn.nukkit.utils.BlockColor;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created on 2015/12/6 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
 public class BlockGlowstone extends BlockTransparent {
+
     public BlockGlowstone() {
+
     }
 
     @Override
@@ -43,12 +44,11 @@ public class BlockGlowstone extends BlockTransparent {
 
     @Override
     public Item[] getDrops(Item item) {
-        Random random = new Random();
-        int count = 2 + random.nextInt(3);
+        int count = 2 + ThreadLocalRandom.current().nextInt(3);
 
         Enchantment fortune = item.getEnchantment(Enchantment.ID_FORTUNE_DIGGING);
         if (fortune != null && fortune.getLevel() >= 1) {
-            count += random.nextInt(fortune.getLevel() + 1);
+            count += ThreadLocalRandom.current().nextInt(fortune.getLevel() + 1);
         }
 
         return new Item[]{

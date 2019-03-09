@@ -1,7 +1,6 @@
 package cn.nukkit;
 
 import cn.nukkit.network.protocol.AdventureSettingsPacket;
-
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ public class AdventureSettings implements Cloneable {
     public static final int PERMISSION_AUTOMATION = 3;
     public static final int PERMISSION_ADMIN = 4;
 
-    private Map<Type, Boolean> values = new EnumMap<>(Type.class);
+    private final Map<Type, Boolean> values = new EnumMap<>(Type.class);
 
     private Player player;
 

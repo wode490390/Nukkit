@@ -10,13 +10,14 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/2 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockDandelion extends BlockFlowable {
+public class BlockDandelion extends BlockFlowableMeta {
+
     public BlockDandelion() {
         this(0);
     }
 
     public BlockDandelion(int meta) {
-        super(0);
+        super(meta);
     }
 
     @Override

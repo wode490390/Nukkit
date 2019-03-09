@@ -7,6 +7,7 @@ import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
 
 public class ZlibSingleThreadLowMem implements ZlibProvider {
+
     static final int BUFFER_SIZE = 8192;
     Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
     byte[] buffer = new byte[BUFFER_SIZE];
@@ -14,9 +15,11 @@ public class ZlibSingleThreadLowMem implements ZlibProvider {
     @Override
     public synchronized byte[] deflate(byte[][] datas, int level) throws Exception {
         Deflater deflater = this.deflater;
-        if (deflater == null) throw new IllegalArgumentException("No deflate for level " + level + " !");
+        if (deflater == null) {
+            throw new IllegalArgumentException("No deflate for level " + level + " !");
+        }
         deflater.reset();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(datas.length);;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(datas.length);
         for (byte[] data : datas) {
             deflater.setInput(data);
             while (!deflater.needsInput()) {

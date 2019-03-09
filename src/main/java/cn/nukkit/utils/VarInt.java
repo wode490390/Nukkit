@@ -26,15 +26,17 @@ public final class VarInt {
 
     /**
      * @param v Signed int
+     * 
      * @return Unsigned encoded int
      */
     public static long encodeZigZag32(int v) {
         // Note:  the right-shift must be arithmetic
-        return (long) ((v << 1) ^ (v >> 31));
+        return (v << 1) ^ (v >> 31);
     }
 
     /**
      * @param v Unsigned encoded int
+     * 
      * @return Signed decoded int
      */
     public static int decodeZigZag32(long v) {
@@ -43,6 +45,7 @@ public final class VarInt {
 
     /**
      * @param v Signed long
+     * 
      * @return Unsigned encoded long
      */
     public static long encodeZigZag64(long v) {
@@ -51,6 +54,7 @@ public final class VarInt {
 
     /**
      * @param v Signed encoded long
+     * 
      * @return Unsigned decoded long
      */
     public static long decodeZigZag64(long v) {
@@ -87,6 +91,7 @@ public final class VarInt {
 
     /**
      * @param stream BinaryStream
+     * 
      * @return Signed int
      */
     public static int readVarInt(BinaryStream stream) {
@@ -95,7 +100,10 @@ public final class VarInt {
 
     /**
      * @param stream InputStream
+     * 
      * @return Signed int
+     * 
+     * @throws IOException
      */
     public static int readVarInt(InputStream stream) throws IOException {
         return decodeZigZag32(readUnsignedVarInt(stream));
@@ -103,6 +111,7 @@ public final class VarInt {
 
     /**
      * @param stream BinaryStream
+     * 
      * @return Unsigned int
      */
     public static long readUnsignedVarInt(BinaryStream stream) {
@@ -111,7 +120,10 @@ public final class VarInt {
 
     /**
      * @param stream InputStream
+     * 
      * @return Unsigned int
+     * 
+     * @throws IOException
      */
     public static long readUnsignedVarInt(InputStream stream) throws IOException {
         return read(stream, 5);
@@ -119,6 +131,7 @@ public final class VarInt {
 
     /**
      * @param stream BinaryStream
+     * 
      * @return Signed long
      */
     public static long readVarLong(BinaryStream stream) {
@@ -127,7 +140,10 @@ public final class VarInt {
 
     /**
      * @param stream InputStream
+     * 
      * @return Signed long
+     * 
+     * @throws IOException
      */
     public static long readVarLong(InputStream stream) throws IOException {
         return decodeZigZag64(readUnsignedVarLong(stream));
@@ -135,6 +151,7 @@ public final class VarInt {
 
     /**
      * @param stream BinaryStream
+     * 
      * @return Unsigned long
      */
     public static long readUnsignedVarLong(BinaryStream stream) {
@@ -143,7 +160,10 @@ public final class VarInt {
 
     /**
      * @param stream InputStream
+     * 
      * @return Unsigned long
+     * 
+     * @throws IOException
      */
     public static long readUnsignedVarLong(InputStream stream) throws IOException {
         return read(stream, 10);
@@ -184,6 +204,8 @@ public final class VarInt {
     /**
      * @param stream OutputStream
      * @param value  Signed int
+     * 
+     * @throws IOException
      */
     public static void writeVarInt(OutputStream stream, int value) throws IOException {
         writeUnsignedVarInt(stream, encodeZigZag32(value));
@@ -200,6 +222,8 @@ public final class VarInt {
     /**
      * @param stream OutputStream
      * @param value  Unsigned int
+     * 
+     * @throws IOException
      */
     public static void writeUnsignedVarInt(OutputStream stream, long value) throws IOException {
         write(stream, value);
@@ -216,6 +240,8 @@ public final class VarInt {
     /**
      * @param stream OutputStream
      * @param value  Signed long
+     * 
+     * @throws IOException
      */
     public static void writeVarLong(OutputStream stream, long value) throws IOException {
         writeUnsignedVarLong(stream, encodeZigZag64(value));
@@ -232,6 +258,8 @@ public final class VarInt {
     /**
      * @param stream OutputStream
      * @param value  Unsigned long
+     * 
+     * @throws IOException
      */
     public static void writeUnsignedVarLong(OutputStream stream, long value) throws IOException {
         write(stream, value);

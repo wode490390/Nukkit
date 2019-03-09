@@ -35,12 +35,7 @@ public class BlockVine extends BlockTransparentMeta {
 
     @Override
     public double getHardness() {
-        return 0.2;
-    }
-
-    @Override
-    public double getResistance() {
-        return 1;
+        return 0.20000000298023224;
     }
 
     @Override
@@ -130,19 +125,12 @@ public class BlockVine extends BlockTransparentMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target.isSolid()) {
-            int[] faces = new int[]{
-                    0,
-                    0,
-                    1,
-                    4,
-                    8,
-                    2
-            };
-            this.setDamage(faces[face.getIndex()]);
+        if (target.isSolid() && face.getHorizontalIndex() != -1) {
+            this.setDamage(getMetaFromFace(face.getOpposite()));
             this.getLevel().setBlock(block, this, true, true);
             return true;
         }
+
         return false;
     }
 
@@ -165,26 +153,44 @@ public class BlockVine extends BlockTransparentMeta {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            BlockFace[] faces = {
-                    BlockFace.DOWN,
-                    BlockFace.SOUTH,
-                    BlockFace.WEST,
-                    BlockFace.DOWN,
-                    BlockFace.NORTH,
-                    BlockFace.DOWN,
-                    BlockFace.DOWN,
-                    BlockFace.DOWN,
-                    BlockFace.EAST
-            };
-            if (!this.getSide(faces[this.getDamage()]).isSolid()) {
+            if (!this.getSide(getFace()).isSolid()) {
                 Block up = this.up();
                 if (up.getId() != this.getId() || up.getDamage() != this.getDamage()) {
-                    this.getLevel().useBreakOn(this);
+                    this.getLevel().useBreakOn(this, null, null, true);
                     return Level.BLOCK_UPDATE_NORMAL;
                 }
             }
         }
         return 0;
+    }
+
+    private BlockFace getFace() {
+        int meta = this.getDamage();
+        if ((meta & 1) > 0) {
+            return BlockFace.SOUTH;
+        } else if ((meta & 2) > 0) {
+            return BlockFace.WEST;
+        } else if ((meta & 4) > 0) {
+            return BlockFace.NORTH;
+        } else if ((meta & 8) > 0) {
+            return BlockFace.EAST;
+        }
+
+        return BlockFace.SOUTH;
+    }
+
+    private int getMetaFromFace(BlockFace face) {
+        switch (face) {
+            case SOUTH:
+            default:
+                return 0x01;
+            case WEST:
+                return 0x02;
+            case NORTH:
+                return 0x04;
+            case EAST:
+                return 0x08;
+        }
     }
 
     @Override
