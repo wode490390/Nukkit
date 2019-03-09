@@ -1,6 +1,6 @@
 package cn.nukkit.level.generator;
 
-import cn.nukkit.block.*;
+import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.biome.Biome;
@@ -9,15 +9,19 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.noise.PerlinOctaveGenerator;
 import cn.nukkit.level.generator.noise.bukkit.OctaveGenerator;
 import cn.nukkit.level.generator.object.ore.OreType;
+import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.level.generator.populator.nether.PopulatorFire;
 import cn.nukkit.level.generator.populator.nether.PopulatorGlowstone;
 import cn.nukkit.level.generator.populator.nether.PopulatorLava;
 import cn.nukkit.level.generator.populator.nether.PopulatorMushroom;
 import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
-import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Nether extends Generator {
 
@@ -114,9 +118,9 @@ public class Nether extends Generator {
 
         PopulatorOre ores = new PopulatorOre(NETHERRACK);
         ores.setOreTypes(new OreType[]{
-                new OreType(new BlockLava(), 32, 1, 0, 32, NETHERRACK),
-                new OreType(new BlockOreQuartz(), 13, 16, 10, 118, NETHERRACK),
-                new OreType(new BlockMagma(), 32, 16, 26, 37, NETHERRACK),
+                new OreType(Block.get(LAVA), 32, 1, 0, 32, NETHERRACK),
+                new OreType(Block.get(QUARTZ_ORE), 13, 16, 10, 118, NETHERRACK),
+                new OreType(Block.get(MAGMA), 32, 16, 26, 37, NETHERRACK),
         });
         this.populators.add(ores);
     }
@@ -149,12 +153,11 @@ public class Nether extends Generator {
         }
 
         int index = 0;
-        int indexHeight = 0;
+        //int indexHeight = 0;
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-
-                double noiseH = heightNoise[indexHeight++] / 8000d;
+                /*double noiseH = heightNoise[indexHeight++] / 8000d;
                 if (noiseH < 0) {
                     noiseH = Math.abs(noiseH);
                 }
@@ -165,7 +168,7 @@ public class Nether extends Generator {
                     noiseH = Math.min(noiseH, 1) / 6d;
                 }
 
-                noiseH = noiseH * 17 / 16d;
+                noiseH = noiseH * 17 / 16d;*/
                 for (int k = 0; k < 17; k++) {
                     double noiseR = roughnessNoise[index] / 512d;
                     double noiseR2 = roughnessNoise2[index] / 512d;

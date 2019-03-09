@@ -44,16 +44,19 @@ public class XpCommand extends Command {
             playerName = args[1];
             player = sender.getServer().getPlayer(playerName);
         } else {
-            if (args.length == 1) {
-                amountString = args[0];
-                player = (Player) sender;
-            } else if (args.length == 2) {
-                amountString = args[0];
-                playerName = args[1];
-                player = sender.getServer().getPlayer(playerName);
-            } else {
-                sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
-                return true;
+            switch (args.length) {
+                case 1:
+                    amountString = args[0];
+                    player = (Player) sender;
+                    break;
+                case 2:
+                    amountString = args[0];
+                    playerName = args[1];
+                    player = sender.getServer().getPlayer(playerName);
+                    break;
+                default:
+                    sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
+                    return true;
             }
         }
 
@@ -79,7 +82,9 @@ public class XpCommand extends Command {
         if (isLevel) {
             int newLevel = player.getExperienceLevel();
             newLevel += amount;
-            if (newLevel > 24791) newLevel = 24791;
+            if (newLevel > 24791) {
+                newLevel = 24791;
+            }
             if (newLevel < 0) {
                 player.setExperience(0, 0);
             } else {

@@ -3,7 +3,13 @@ package cn.nukkit.inventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.Utils;
 import io.netty.util.collection.CharObjectHashMap;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.UUID;
 
 /**
  * author: MagicDroidX
@@ -12,7 +18,7 @@ import java.util.*;
 public class ShapedRecipe implements CraftingRecipe {
 
     private Item primaryResult;
-    private List<Item> extraResults = new ArrayList<>();
+    private final List<Item> extraResults = new ArrayList<>();
 
     private long least,most;
 
@@ -46,8 +52,6 @@ public class ShapedRecipe implements CraftingRecipe {
             throw new RuntimeException("Shaped recipes may only have 1, 2 or 3 columns, not " + columnCount);
         }
 
-
-        //for($shape as $y => $row) {
         for (String row : shape) {
 
             if (row.length() != columnCount) {

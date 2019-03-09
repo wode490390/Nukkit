@@ -22,7 +22,7 @@ import java.util.Set;
 public class BlockRedstoneWire extends BlockFlowableMeta {
 
     private boolean canProvidePower = true;
-    private final Set<Vector3> blocksNeedingUpdate = new HashSet<Vector3>();
+    private final Set<Vector3> blocksNeedingUpdate = new HashSet<>();
 
     public BlockRedstoneWire() {
         this(0);
@@ -219,10 +219,12 @@ public class BlockRedstoneWire extends BlockFlowableMeta {
         return b.isSolid() && !b.isTransparent() && b.getId() != Block.GLOWSTONE;
     }
 
+    @Override
     public int getStrongPower(BlockFace side) {
         return !this.canProvidePower ? 0 : getWeakPower(side);
     }
 
+    @Override
     public int getWeakPower(BlockFace side) {
         if (!this.canProvidePower) {
             return 0;

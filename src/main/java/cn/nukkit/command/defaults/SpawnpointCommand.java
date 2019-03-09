@@ -61,8 +61,12 @@ public class SpawnpointCommand extends VanillaCommand {
                     sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
                     return true;
                 }
-                if (y < 0) y = 0;
-                if (y > 256) y = 256;
+                if (y < 0) {
+                    y = 0;
+                }
+                if (y > 255) {
+                    y = 255;
+                }
                 target.setSpawn(new Position(x, y, z, level));
                 Command.broadcastCommandMessage(sender, new TranslationContainer("commands.spawnpoint.success",
                         target.getName(),

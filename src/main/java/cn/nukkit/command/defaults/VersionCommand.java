@@ -15,11 +15,7 @@ import java.util.List;
 public class VersionCommand extends VanillaCommand {
 
     public VersionCommand(String name) {
-        super(name,
-                "%nukkit.command.version.description",
-                "%nukkit.command.version.usage",
-                new String[]{"ver", "about"}
-        );
+        super(name, "%nukkit.command.version.description", "%nukkit.command.version.usage", new String[]{"ver", "about"});
         this.setPermission("nukkit.command.version");
         this.commandParameters.clear();
     }
@@ -40,7 +36,9 @@ public class VersionCommand extends VanillaCommand {
             );
         } else {
             String pluginName = "";
-            for (String arg : args) pluginName += arg + " ";
+            for (String arg : args) {
+                pluginName += arg + " ";
+            }
             pluginName = pluginName.trim();
             final boolean[] found = {false};
             final Plugin[] exactPlugin = {sender.getServer().getPluginManager().getPlugin(pluginName)};

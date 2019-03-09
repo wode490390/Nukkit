@@ -126,6 +126,7 @@ public class CraftingTransaction extends InventoryTransaction {
         return reindexed;
     }
 
+    @Override
     public boolean canExecute() {
         Item[][] inputs = reindexInputs();
 
@@ -134,6 +135,7 @@ public class CraftingTransaction extends InventoryTransaction {
         return this.recipe != null && super.canExecute();
     }
 
+    @Override
     protected boolean callExecuteEvent() {
         CraftItemEvent ev;
 
@@ -141,6 +143,7 @@ public class CraftingTransaction extends InventoryTransaction {
         return !ev.isCancelled();
     }
 
+    @Override
     protected void sendInventories() {
         super.sendInventories();
 
@@ -162,6 +165,7 @@ public class CraftingTransaction extends InventoryTransaction {
         this.source.resetCraftingGridType();
     }
 
+    @Override
     public boolean execute() {
         if (super.execute()) {
             switch (this.primaryOutput.getId()) {

@@ -9,6 +9,7 @@ import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 
 public class BigMushroom extends BasicGenerator {
+
     public static final int NORTH_WEST = 1;
     public static final int NORTH = 2;
     public static final int NORTH_EAST = 3;
@@ -28,16 +29,17 @@ public class BigMushroom extends BasicGenerator {
     /**
      * The mushroom type. 0 for brown, 1 for red.
      */
-    private int mushroomType;
+    private final int mushroomType;
+
+    public BigMushroom() {
+        this(-1);
+    }
 
     public BigMushroom(int mushroomType) {
         this.mushroomType = mushroomType;
     }
 
-    public BigMushroom() {
-        this.mushroomType = -1;
-    }
-
+    @Override
     public boolean generate(ChunkManager level, NukkitRandom rand, Vector3 position) {
         int block = this.mushroomType;
         if (block < 0) {

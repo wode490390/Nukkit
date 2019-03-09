@@ -47,7 +47,7 @@ public abstract class Datagram extends Packet {
 
     @Override
     public void decode() {
-        this.headerFlags = (byte) this.getByte();
+        this.headerFlags = this.getByte();
         this.seqNumber = this.getLTriad();
 
         while (!this.feof()) {

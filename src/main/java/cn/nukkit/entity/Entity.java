@@ -2,8 +2,21 @@ package cn.nukkit.entity;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.block.*;
-import cn.nukkit.entity.data.*;
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockEndPortal;
+import cn.nukkit.block.BlockFire;
+import cn.nukkit.block.BlockLiquid;
+import cn.nukkit.block.BlockNetherPortal;
+import cn.nukkit.block.BlockWater;
+import cn.nukkit.entity.data.ByteEntityData;
+import cn.nukkit.entity.data.EntityData;
+import cn.nukkit.entity.data.EntityMetadata;
+import cn.nukkit.entity.data.FloatEntityData;
+import cn.nukkit.entity.data.IntEntityData;
+import cn.nukkit.entity.data.LongEntityData;
+import cn.nukkit.entity.data.ShortEntityData;
+import cn.nukkit.entity.data.StringEntityData;
+import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.event.Event;
 import cn.nukkit.event.entity.*;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -17,30 +30,52 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.math.*;
+import cn.nukkit.math.AxisAlignedBB;
+import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.MathHelper;
+import cn.nukkit.math.NukkitMath;
+import cn.nukkit.math.SimpleAxisAlignedBB;
+import cn.nukkit.math.Vector2;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.math.Vector3f;
 import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.network.protocol.*;
+import cn.nukkit.network.protocol.AddEntityPacket;
+import cn.nukkit.network.protocol.AnimatePacket;
+import cn.nukkit.network.protocol.DataPacket;
+import cn.nukkit.network.protocol.EntityEventPacket;
+import cn.nukkit.network.protocol.MobEffectPacket;
+import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.network.protocol.SetEntityDataPacket;
+import cn.nukkit.network.protocol.SetEntityLinkPacket;
+import cn.nukkit.network.protocol.SetEntityMotionPacket;
 import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.ChunkException;
-import cn.nukkit.utils.MainLogger;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
 import co.aikar.timings.TimingsHistory;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author MagicDroidX
  */
+@Log4j2
 public abstract class Entity extends Location implements Metadatable, EntityID {
 
     public static final int NETWORK_ID = -1;
@@ -865,7 +900,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
                     }
                 } catch (Exception e) {
-                    MainLogger.getLogger().logException(e);
+                    log.throwing(e);
                 }
 
             }
@@ -920,7 +955,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public void saveNBT() {
         if (!(this instanceof Player)) {
             this.namedTag.putString("id", this.getSaveId());
-            if (!this.getNameTag().equals("")) {
+            if (!this.getNameTag().isEmpty()) {
                 this.namedTag.putString("CustomName", this.getNameTag());
                 this.namedTag.putBoolean("CustomNameVisible", this.isNameTagVisible());
             } else {
@@ -1136,7 +1171,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
                 direction = 5;
             }
 
-            double force = new Random().nextDouble() * 0.2 + 0.1;
+            double force = ThreadLocalRandom.current().nextDouble() * 0.2 + 0.1;
 
             if (direction == 0) {
                 this.motionX = -force;
@@ -1224,7 +1259,9 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         if (this.y <= -16 && this.isAlive()) {
             if (this instanceof Player) {
                 Player player = (Player) this;
-                if (player.getGamemode() != 1) this.attack(new EntityDamageEvent(this, DamageCause.VOID, 10));
+                if (player.getGamemode() != 1) {
+                    this.attack(new EntityDamageEvent(this, DamageCause.VOID, 10));
+                }
             } else {
                 this.attack(new EntityDamageEvent(this, DamageCause.VOID, 10));
                 hasUpdate = true;
@@ -1359,6 +1396,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         this.level.addChunkPacket(chunkX, chunkZ, pk);
     }
 
+    @Override
     public Vector3 getDirectionVector() {
         Vector3 vector = super.getDirectionVector();
         return this.temporalVector.setComponents(vector.x, vector.y, vector.z);
@@ -1451,7 +1489,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
     public final void scheduleUpdate() {
         //if (!this.server.isPrimaryThread()) {
-        //    MainLogger.getLogger().logException(new NullPointerException("Another thread"));
+        //    log.throwing(new NullPointerException("Another thread"));
         //}
         if (!this.isClosed()) {
             this.getLevel().updateEntities.put(this.id, this);
@@ -1525,7 +1563,9 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public void setAbsorption(float absorption) {
         if (absorption != this.absorption) {
             this.absorption = absorption;
-            if (this instanceof Player) ((Player) this).setAttribute(Attribute.getAttribute(Attribute.ABSORPTION).setValue(absorption));
+            if (this instanceof Player) {
+                ((Player) this).setAttribute(Attribute.getAttribute(Attribute.ABSORPTION).setValue(absorption));
+            }
         }
     }
 
@@ -1591,7 +1631,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
                 if (ev.isCancelled()) {
                     return;
                 }
-                this.level.setBlock(down, new BlockDirt(), false, true);
+                this.level.setBlock(down, Block.get(Block.DIRT), false, true);
             }
         }
     }
@@ -1643,7 +1683,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
                 dx *= 0.05000000074505806D;
                 dy *= 0.05000000074505806D;
                 dx *= 1.0F + entityCollisionReduction;
-                dz *= 1.0F + entityCollisionReduction;
+                //dz *= 1.0F + entityCollisionReduction;
                 if (this.riding == null) {
                     motionX -= dx;
                     motionZ -= dy;
@@ -1694,6 +1734,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         return new Position(this.x, this.y, this.z, this.level);
     }
 
+    @Override
     public Location getLocation() {
         return new Location(this.x, this.y, this.z, this.yaw, this.pitch, this.level);
     }
@@ -1707,7 +1748,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         Block block = this.level.getBlock(this.temporalVector.setComponents(NukkitMath.floorDouble(this.x), NukkitMath.floorDouble(y), NukkitMath.floorDouble(this.z)));
 
         if (block instanceof BlockWater) {
-            double f = (block.y + 1) - (((BlockWater) block).getFluidHeightPercent() - 0.1111111);
+            double f = (block.y + 1) - (((BlockLiquid) block).getFluidHeightPercent() - 0.1111111);
             return y < f;
         }
 

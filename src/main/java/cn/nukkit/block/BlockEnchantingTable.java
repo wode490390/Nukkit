@@ -37,6 +37,7 @@ public class BlockEnchantingTable extends BlockTransparent {
         return ItemTool.TYPE_PICKAXE;
     }
 
+    @Override
     public int getToolHarvestLevel() {
         return ItemTool.TIER_WOODEN;
     }

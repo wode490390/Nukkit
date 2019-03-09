@@ -1,6 +1,5 @@
 package cn.nukkit.level.biome;
 
-import cn.nukkit.level.biome.CoveredBiome;
 import cn.nukkit.block.BlockDoublePlant;
 import cn.nukkit.level.generator.populator.overworld.PopulatorDoublePlant;
 import cn.nukkit.level.generator.populator.overworld.PopulatorGrass;
@@ -10,6 +9,7 @@ import cn.nukkit.level.generator.populator.overworld.PopulatorGrass;
  * Nukkit Project
  */
 public abstract class GrassyBiome extends CoveredBiome {
+
     public GrassyBiome() {
         PopulatorGrass grass = new PopulatorGrass();
         grass.setBaseAmount(30);

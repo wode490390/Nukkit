@@ -73,48 +73,28 @@ public abstract class BlockDoor extends BlockTransparentMeta implements BlockFac
         boolean isOpen = ((damage & 0x04) > 0);
         boolean isRight = ((damage & 0x10) > 0);
 
-        if (j == 0) {
-            if (isOpen) {
-                if (!isRight) {
-                    bb.setBounds(
-                            this.x,
-                            this.y,
-                            this.z,
-                            this.x + 1,
-                            this.y + 1,
-                            this.z + f
-                    );
-                } else {
-                    bb.setBounds(
-                            this.x,
-                            this.y,
-                            this.z + 1 - f,
-                            this.x + 1,
-                            this.y + 1,
-                            this.z + 1
-                    );
-                }
-            } else {
-                bb.setBounds(
-                        this.x,
-                        this.y,
-                        this.z,
-                        this.x + f,
-                        this.y + 1,
-                        this.z + 1
-                );
-            }
-        } else if (j == 1) {
-            if (isOpen) {
-                if (!isRight) {
-                    bb.setBounds(
-                            this.x + 1 - f,
-                            this.y,
-                            this.z,
-                            this.x + 1,
-                            this.y + 1,
-                            this.z + 1
-                    );
+        switch (j) {
+            case 0:
+                if (isOpen) {
+                    if (!isRight) {
+                        bb.setBounds(
+                                this.x,
+                                this.y,
+                                this.z,
+                                this.x + 1,
+                                this.y + 1,
+                                this.z + f
+                        );
+                    } else {
+                        bb.setBounds(
+                                this.x,
+                                this.y,
+                                this.z + 1 - f,
+                                this.x + 1,
+                                this.y + 1,
+                                this.z + 1
+                        );
+                    }
                 } else {
                     bb.setBounds(
                             this.x,
@@ -125,27 +105,28 @@ public abstract class BlockDoor extends BlockTransparentMeta implements BlockFac
                             this.z + 1
                     );
                 }
-            } else {
-                bb.setBounds(
-                        this.x,
-                        this.y,
-                        this.z,
-                        this.x + 1,
-                        this.y + 1,
-                        this.z + f
-                );
-            }
-        } else if (j == 2) {
-            if (isOpen) {
-                if (!isRight) {
-                    bb.setBounds(
-                            this.x,
-                            this.y,
-                            this.z + 1 - f,
-                            this.x + 1,
-                            this.y + 1,
-                            this.z + 1
-                    );
+                break;
+            case 1:
+                if (isOpen) {
+                    if (!isRight) {
+                        bb.setBounds(
+                                this.x + 1 - f,
+                                this.y,
+                                this.z,
+                                this.x + 1,
+                                this.y + 1,
+                                this.z + 1
+                        );
+                    } else {
+                        bb.setBounds(
+                                this.x,
+                                this.y,
+                                this.z,
+                                this.x + f,
+                                this.y + 1,
+                                this.z + 1
+                        );
+                    }
                 } else {
                     bb.setBounds(
                             this.x,
@@ -156,27 +137,28 @@ public abstract class BlockDoor extends BlockTransparentMeta implements BlockFac
                             this.z + f
                     );
                 }
-            } else {
-                bb.setBounds(
-                        this.x + 1 - f,
-                        this.y,
-                        this.z,
-                        this.x + 1,
-                        this.y + 1,
-                        this.z + 1
-                );
-            }
-        } else if (j == 3) {
-            if (isOpen) {
-                if (!isRight) {
-                    bb.setBounds(
-                            this.x,
-                            this.y,
-                            this.z,
-                            this.x + f,
-                            this.y + 1,
-                            this.z + 1
-                    );
+                break;
+            case 2:
+                if (isOpen) {
+                    if (!isRight) {
+                        bb.setBounds(
+                                this.x,
+                                this.y,
+                                this.z + 1 - f,
+                                this.x + 1,
+                                this.y + 1,
+                                this.z + 1
+                        );
+                    } else {
+                        bb.setBounds(
+                                this.x,
+                                this.y,
+                                this.z,
+                                this.x + 1,
+                                this.y + 1,
+                                this.z + f
+                        );
+                    }
                 } else {
                     bb.setBounds(
                             this.x + 1 - f,
@@ -187,16 +169,41 @@ public abstract class BlockDoor extends BlockTransparentMeta implements BlockFac
                             this.z + 1
                     );
                 }
-            } else {
-                bb.setBounds(
-                        this.x,
-                        this.y,
-                        this.z + 1 - f,
-                        this.x + 1,
-                        this.y + 1,
-                        this.z + 1
-                );
-            }
+                break;
+            case 3:
+                if (isOpen) {
+                    if (!isRight) {
+                        bb.setBounds(
+                                this.x,
+                                this.y,
+                                this.z,
+                                this.x + f,
+                                this.y + 1,
+                                this.z + 1
+                        );
+                    } else {
+                        bb.setBounds(
+                                this.x + 1 - f,
+                                this.y,
+                                this.z,
+                                this.x + 1,
+                                this.y + 1,
+                                this.z + 1
+                        );
+                    }
+                } else {
+                    bb.setBounds(
+                            this.x,
+                            this.y,
+                            this.z + 1 - f,
+                            this.x + 1,
+                            this.y + 1,
+                            this.z + 1
+                    );
+                }
+                break;
+            default:
+                break;
         }
 
         return bb;
@@ -229,13 +236,10 @@ public abstract class BlockDoor extends BlockTransparentMeta implements BlockFac
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (this.y > 254) return false;
+        if (this.y > 254) {
+            return false;
+        }
         if (face == BlockFace.UP) {
             Block blockUp = this.up();
             Block blockDown = this.down();

@@ -53,10 +53,7 @@ public class PopulatorChorusPlant extends Populator {
         if (face != 2 && this.level.getBlockIdAt(x, y, z - 1) != AIR) {
             return false;
         }
-        if (face != 3 && this.level.getBlockIdAt(x, y, z + 1) != AIR) {
-            return false;
-        }
-        return true;
+        return !(face != 3 && this.level.getBlockIdAt(x, y, z + 1) != AIR);
     }
 
     private void grow(int targetX, int targetY, int targetZ, int sourceX, int sourceY, int sourceZ, int maxDistance, int age) {

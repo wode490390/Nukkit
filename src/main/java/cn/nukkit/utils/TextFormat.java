@@ -262,6 +262,8 @@ public enum TextFormat {
 
     /**
      * Checks if this code is a format code as opposed to a color code.
+     * 
+     * @return boolean
      */
     public boolean isFormat() {
         return isFormat;
@@ -269,6 +271,8 @@ public enum TextFormat {
 
     /**
      * Checks if this code is a color code as opposed to a format code.
+     * 
+     * @return boolean
      */
     public boolean isColor() {
         return !isFormat && this != RESET;

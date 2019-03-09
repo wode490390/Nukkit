@@ -1,11 +1,10 @@
 package cn.nukkit.level.generator.populator.overworld;
 
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
 import cn.nukkit.level.generator.populator.util.EnsureCover;
 import cn.nukkit.level.generator.populator.util.EnsureGrassBelow;
-import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
 import cn.nukkit.math.NukkitRandom;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,6 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * </p>
  */
 public class PopulatorFlower extends PopulatorSurfaceBlock {
+
     private final List<int[]> flowerTypes = new ArrayList<>();
 
     public void addType(int a, int b) {
@@ -32,7 +32,7 @@ public class PopulatorFlower extends PopulatorSurfaceBlock {
 
     @Override
     protected void placeBlock(int x, int y, int z, int id, FullChunk chunk, NukkitRandom random) {
-        if (flowerTypes.size() != 0) {
+        if (!flowerTypes.isEmpty()) {
             int[] type = flowerTypes.get(ThreadLocalRandom.current().nextInt(flowerTypes.size()));
             chunk.setFullBlockId(x, y, z, (type[0] << 4) | type[1]);
             if (type[0] == DOUBLE_PLANT) {

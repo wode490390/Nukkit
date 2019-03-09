@@ -6,7 +6,8 @@ import java.util.Arrays;
  * @author https://github.com/boy0001/
  */
 public class CharPalette {
-    private static char[] CHAR0 = new char[0];
+
+    private static final char[] CHAR0 = new char[0];
     private char[] keys = CHAR0;
     private char lastIndex = Character.MAX_VALUE;
 
@@ -57,7 +58,9 @@ public class CharPalette {
         int index;
         if (hasLast) {
             char lastKey = keys[lastTmp];
-            if (lastKey == key) return lastTmp;
+            if (lastKey == key) {
+                return lastTmp;
+            }
             if (lastKey > key) {
                 index = binarySearch0(0, lastTmp, key);
             } else {
@@ -81,12 +84,13 @@ public class CharPalette {
             int mid = (low + high) >>> 1;
             char midVal = keys[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }

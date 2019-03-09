@@ -24,6 +24,7 @@ public class IcePlainsBiome extends SnowyBiome {
         this.setHeightVariation(0.05f);
     }
 
+    @Override
     public String getName() {
         return "Ice Plains";
     }

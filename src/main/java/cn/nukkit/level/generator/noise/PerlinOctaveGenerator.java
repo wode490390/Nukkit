@@ -85,9 +85,9 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         double freq = 1;
         double amp = 1;
 
-        x = x * xScale;
-        y = y * yScale;
-        z = z * zScale;
+        x *= xScale;
+        y *= yScale;
+        z *= zScale;
 
         // fBm
         // the noise have to be periodic over x and z axis: otherwise it can go crazy with high

@@ -1,11 +1,11 @@
 package cn.nukkit.level.generator.biomegrid;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class MapLayerWhittaker extends MapLayer {
 
-    private static final Map<ClimateType, Climate> MAP = new HashMap<ClimateType, Climate>();
+    private static final Map<ClimateType, Climate> MAP = new EnumMap<ClimateType, Climate>(ClimateType.class);
 
     static {
         MAP.put(ClimateType.WARM_WET, new Climate(2, new int[]{3, 1}, 4));

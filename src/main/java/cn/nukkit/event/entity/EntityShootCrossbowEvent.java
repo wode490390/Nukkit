@@ -45,7 +45,7 @@ public class EntityShootCrossbowEvent extends EntityEvent implements Cancellable
 
     public void setProjectile(Entity projectile) {
         if (projectile != this.projectile) {
-            if (this.projectile.getViewers().size() == 0) {
+            if (this.projectile.getViewers().isEmpty()) {
                 this.projectile.kill();
                 this.projectile.close();
             }

@@ -8,10 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ResourcePackManager {
 
-    private ResourcePack[] resourcePacks;
+    private final ResourcePack[] resourcePacks;
     private final Map<UUID, ResourcePack> resourcePacksById = new HashMap<>();
 
     public ResourcePackManager(File path) {
@@ -33,7 +35,7 @@ public class ResourcePackManager {
                             resourcePack = new ZippedResourcePack(pack);
                             break;
                         default:
-                            Server.getInstance().getLogger().warning(Server.getInstance().getLanguage().translateString("nukkit.resources.unknown-format", pack.getName()));
+                            log.warn(Server.getInstance().getLanguage().translateString("nukkit.resources.unknown-format", pack.getName()));
                             break;
                     }
                 }
@@ -43,12 +45,12 @@ public class ResourcePackManager {
                     this.resourcePacksById.put(resourcePack.getPackId(), resourcePack);
                 }
             } catch (IllegalArgumentException e) {
-                Server.getInstance().getLogger().warning(Server.getInstance().getLanguage().translateString("nukkit.resources.fail", pack.getName(), e.getMessage()));
+                log.warn(Server.getInstance().getLanguage().translateString("nukkit.resources.fail", pack.getName(), e.getMessage()));
             }
         }
 
         this.resourcePacks = loadedResourcePacks.toArray(new ResourcePack[0]);
-        Server.getInstance().getLogger().info(Server.getInstance().getLanguage().translateString("nukkit.resources.success", String.valueOf(this.resourcePacks.length)));
+        log.info(Server.getInstance().getLanguage().translateString("nukkit.resources.success", String.valueOf(this.resourcePacks.length)));
     }
 
     public ResourcePack[] getResourceStack() {

@@ -1,7 +1,5 @@
 package cn.nukkit.level.biome;
 
-import cn.nukkit.level.biome.Biome;
-
 /**
  * author: DaPorkchop_
  * Nukkit Project
@@ -10,6 +8,7 @@ import cn.nukkit.level.biome.Biome;
  * </p>
  */
 public abstract class CoveredBiome extends Biome {
+
     public final Object synchronizeCover = new Object();
 
     /**

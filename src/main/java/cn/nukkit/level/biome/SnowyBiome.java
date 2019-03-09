@@ -1,15 +1,13 @@
 package cn.nukkit.level.biome;
 
-//import cn.nukkit.level.generator.populator.impl.WaterIcePopulator;
-
-import cn.nukkit.level.biome.GrassyBiome;
-
+//import cn.nukkit.level.generator.populator.overworld.WaterIcePopulator;
 
 /**
  * author: DaPorkchop_
  * Nukkit Project
  */
 public abstract class SnowyBiome extends GrassyBiome {
+
     public SnowyBiome() {
         super();
 

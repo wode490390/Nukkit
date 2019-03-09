@@ -94,6 +94,7 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
 
     /**
      * Sets the color of the banner base.
+     * @param color
      */
     public void setBaseColor(int color) {
         this.namedTag.putInt("Base", color & 0x0f);
@@ -107,6 +108,9 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
     /**
      * Applies a new pattern on the banner with the given color.
      *
+     * @param pattern
+     * @param color
+     * 
      * @return int ID of pattern.
      */
     public int addPattern(String pattern, int color) {
@@ -123,15 +127,23 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
 
     /**
      * Returns whether a pattern with the given ID exists on the banner or not.
+     * 
+     * @param patternId
+     * 
+     * @return 
      */
     public boolean patternExists(int patternId) {
-        ListTag list = this.namedTag.getList("Patterns");
+        ListTag<?> list = this.namedTag.getList("Patterns");
 
         return list.size() > patternId && list.get(patternId) != null;
     }
 
     /**
      * Returns the data of a pattern with the given ID.
+     * 
+     * @param patternId
+     * 
+     * @return 
      */
     public Pattern getPatternData(int patternId) {
         if (!this.patternExists(patternId)) {
@@ -147,6 +159,10 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
     /**
      * Changes the pattern of a previously existing pattern.
      *
+     * @param patternId
+     * @param pattern
+     * @param color
+     * 
      * @return bool indicating success.
      */
     public boolean changePattern(int patternId, String pattern, int color) {
@@ -164,6 +180,8 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
     /**
      * Deletes a pattern from the banner with the given ID.
      *
+     * @param patternId
+     * 
      * @return bool indicating whether the pattern existed or not.
      */
     public boolean deletePattern(int patternId) {
@@ -182,7 +200,7 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
      * @return bool indicating whether the banner was empty or not.
      */
     public boolean deleteTopPattern() {
-        ListTag list = this.namedTag.getList("Patterns");
+        ListTag<?> list = this.namedTag.getList("Patterns");
 
         if (list.size() <= 0) {
             return false;
@@ -200,7 +218,7 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
      * @return bool indicating whether the banner was empty or not.
      */
     public boolean deleteBottomPattern() {
-        ListTag list = this.namedTag.getList("Patterns");
+        ListTag<?> list = this.namedTag.getList("Patterns");
 
         if (list.size() <= 0) {
             return false;

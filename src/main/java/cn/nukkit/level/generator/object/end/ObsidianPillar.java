@@ -62,6 +62,7 @@ public class ObsidianPillar {
 
         }
 
+        @Override
         public ObsidianPillar[] load(Long key) throws Exception {
             List<Integer> list = Lists.newArrayList(ContiguousSet.create(Range.closedOpen(0, 10), DiscreteDomain.integers()));
             Collections.shuffle(list, new Random(key));

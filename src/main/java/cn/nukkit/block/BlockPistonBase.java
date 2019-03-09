@@ -231,7 +231,9 @@ public abstract class BlockPistonBase extends BlockSolidMeta implements BlockFac
                 if (block instanceof BlockFlowable) {
                     return destroyBlocks;
                 }
-            } else return !((BlockPistonBase) block).isExtended();
+            } else {
+                return !((BlockPistonBase) block).isExtended();
+            }
             return true;
         }
         return false;

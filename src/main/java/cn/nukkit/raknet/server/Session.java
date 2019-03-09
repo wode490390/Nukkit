@@ -2,22 +2,41 @@ package cn.nukkit.raknet.server;
 
 import cn.nukkit.math.NukkitMath;
 import cn.nukkit.raknet.RakNet;
+import cn.nukkit.raknet.protocol.AcknowledgePacket;
 import cn.nukkit.raknet.protocol.Datagram;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
 import cn.nukkit.raknet.protocol.Packet;
 import cn.nukkit.raknet.protocol.PacketReliability;
-import cn.nukkit.raknet.protocol.packet.*;
+import cn.nukkit.raknet.protocol.packet.ACK;
+import cn.nukkit.raknet.protocol.packet.ConnectedPing;
+import cn.nukkit.raknet.protocol.packet.ConnectedPong;
+import cn.nukkit.raknet.protocol.packet.ConnectionRequest;
+import cn.nukkit.raknet.protocol.packet.ConnectionRequestAccepted;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_0;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_4;
+import cn.nukkit.raknet.protocol.packet.DisconnectionNotification;
+import cn.nukkit.raknet.protocol.packet.NACK;
+import cn.nukkit.raknet.protocol.packet.NewIncomingConnection;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionReply1;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionReply2;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest1;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest2;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.BinaryStream;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Session {
 
     public final static int STATE_CONNECTING = 0;
@@ -36,7 +55,7 @@ public class Session {
     private static final short MIN_MTU_SIZE = 400;
 
     private int messageIndex = 0;
-    private final Map<Integer, Integer> channelIndex = new ConcurrentHashMap<Integer, Integer>();
+    private final Map<Integer, Integer> channelIndex = new ConcurrentHashMap<>();
 
     private SessionManager sessionManager;
     private final String address;
@@ -56,29 +75,29 @@ public class Session {
 
     private boolean isTemporal = true;
 
-    private final List<Datagram> packetToSend = new ArrayList<Datagram>();
+    private final List<Datagram> packetToSend = new ArrayList<>();
 
     private boolean isActive = false;
 
-    private Map<Integer, Integer> ACKQueue = new HashMap<Integer, Integer>();
-    private Map<Integer, Integer> NACKQueue = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> ACKQueue = new HashMap<>();
+    private Map<Integer, Integer> NACKQueue = new HashMap<>();
 
-    private final Map<Integer, Datagram> recoveryQueue = new TreeMap<Integer, Datagram>();
+    private final Map<Integer, Datagram> recoveryQueue = new TreeMap<>();
 
-    private final Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new HashMap<Integer, Map<Integer, EncapsulatedPacket>>();
+    private final Map<Integer, Map<Integer, EncapsulatedPacket>> splitPackets = new HashMap<>();
 
-    private final Map<Integer, Map<Integer, Integer>> needACK = new TreeMap<Integer, Map<Integer, Integer>>();
+    private final Map<Integer, Map<Integer, Integer>> needACK = new TreeMap<>();
 
     private Datagram sendQueue;
 
     private int windowStart;
-    private final Map<Integer, Integer> receivedWindow = new TreeMap<Integer, Integer>();
+    private final Map<Integer, Integer> receivedWindow = new TreeMap<>();
     private int windowEnd;
     private int highestSeqNumberThisTick = -1;
 
     private int reliableWindowStart;
     private int reliableWindowEnd;
-    private final Map<Integer, EncapsulatedPacket> reliableWindow = new TreeMap<Integer, EncapsulatedPacket>();
+    private final Map<Integer, EncapsulatedPacket> reliableWindow = new TreeMap<>();
     private int lastReliableIndex = -1;
 
     private long lastPingTime = -1;
@@ -136,9 +155,9 @@ public class Session {
 
         if (!this.NACKQueue.isEmpty()) {
             NACK pk = new NACK();
-            pk.packets = new TreeMap<Integer, Integer>(this.NACKQueue);
+            pk.packets = new TreeMap<>(this.NACKQueue);
             this.sendPacket(pk);
-            this.NACKQueue = new HashMap<Integer, Integer>();
+            this.NACKQueue = new HashMap<>();
         }
 
         if (!this.packetToSend.isEmpty()) {
@@ -555,7 +574,7 @@ public class Session {
             } else {
                 if (packet instanceof ACK) {
                     packet.decode();
-                    for (int seq : new ArrayList<>(((ACK) packet).packets.values())) {
+                    for (int seq : new ArrayList<>(((AcknowledgePacket) packet).packets.values())) {
                         if (this.recoveryQueue.containsKey(seq)) {
                             for (Object pk : this.recoveryQueue.get(seq).packets) {
                                 if (pk instanceof EncapsulatedPacket && ((EncapsulatedPacket) pk).needACK && ((EncapsulatedPacket) pk).messageIndex != null) {
@@ -569,7 +588,7 @@ public class Session {
                     }
                 } else if (packet instanceof NACK) {
                     packet.decode();
-                    for (int seq : new ArrayList<>(((NACK) packet).packets.values())) {
+                    for (int seq : new ArrayList<>(((AcknowledgePacket) packet).packets.values())) {
                         if (this.recoveryQueue.containsKey(seq)) {
                             Datagram pk = this.recoveryQueue.get(seq);
                             pk.seqNumber = this.sendSeqNumber++;
@@ -616,7 +635,7 @@ public class Session {
             //TODO: the client will send an ACK for this, but we aren't handling it (debug spam)
             this.queueConnectedPacket(new DisconnectionNotification(), PacketReliability.RELIABLE_ORDERED, 0, RakNet.PRIORITY_IMMEDIATE);
 
-            this.sessionManager.getLogger().debug("Closed session for " + this.address + ":" + this.port);
+            log.debug("Closed session for " + this.address + ":" + this.port);
             this.sessionManager.removeSessionInternal(this);
             this.sessionManager = null;
         }

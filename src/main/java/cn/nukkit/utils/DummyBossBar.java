@@ -6,8 +6,12 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.mob.EntityCreeper;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.network.protocol.*;
-
+import cn.nukkit.network.protocol.AddEntityPacket;
+import cn.nukkit.network.protocol.BossEventPacket;
+import cn.nukkit.network.protocol.MoveEntityAbsolutePacket;
+import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.network.protocol.SetEntityDataPacket;
+import cn.nukkit.network.protocol.UpdateAttributesPacket;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -53,7 +57,9 @@ public class DummyBossBar {
         }
 
         public Builder length(float length) {
-            if (length >= 0 && length <= 100) this.length = length;
+            if (length >= 0 && length <= 100) {
+                this.length = length;
+            }
             return this;
         }
 
@@ -216,7 +222,9 @@ public class DummyBossBar {
         sendAttributes();
         updateBossEntityNameTag();
         sendShowBossBar();
-        if (color != null) this.sendSetBossBarTexture();
+        if (color != null) {
+            this.sendSetBossBarTexture();
+        }
     }
 
     /**

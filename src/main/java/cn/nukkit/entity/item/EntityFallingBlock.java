@@ -88,6 +88,7 @@ public class EntityFallingBlock extends Entity {
         setDataProperty(new IntEntityData(DATA_VARIANT, GlobalBlockPalette.getOrCreateRuntimeId(this.getBlock(), this.getDamage())));
     }
 
+    @Override
     public boolean canCollideWith(Entity entity) {
         return false;
     }

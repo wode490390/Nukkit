@@ -5,7 +5,6 @@ import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.CoveredBiome;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.generator.Normal;
 import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.NukkitRandom;
 
@@ -45,7 +44,9 @@ public class PopulatorGroundCover extends Populator {
                                             realY = y - i;
                                             if (chunk.getFullBlock(x, realY, z) == STONE) {
                                                 chunk.setFullBlockId(x, realY, z, (biome.getSurfaceBlock(realY) << 4) | biome.getSurfaceMeta(realY));
-                                            } else break COVER;
+                                            } else {
+                                                break COVER;
+                                            }
                                         }
                                         y -= surfaceDepth;
                                     }
@@ -54,7 +55,9 @@ public class PopulatorGroundCover extends Populator {
                                         realY = y - i;
                                         if (chunk.getFullBlock(x, realY, z) == STONE) {
                                             chunk.setFullBlockId(x, realY, z, (biome.getGroundBlock(realY) << 4) | biome.getGroundMeta(realY));
-                                        } else break COVER;
+                                        } else {
+                                            break COVER;
+                                        }
                                     }
                                     //don't take all of groundDepth away because we do y-- in the loop
                                     y -= groundDepth - 1;

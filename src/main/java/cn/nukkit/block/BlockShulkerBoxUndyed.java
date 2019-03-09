@@ -63,10 +63,11 @@ public class BlockShulkerBoxUndyed extends BlockTransparent {
             if (!i.isEmpty()) {
 
                 CompoundTag nbt = item.getNamedTag();
-                if (nbt == null)
+                if (nbt == null) {
                     nbt = new CompoundTag("");
+                }
 
-                ListTag<CompoundTag> items = new ListTag<CompoundTag>();
+                ListTag<CompoundTag> items = new ListTag<>();
 
                 for (int it = 0; it < i.getSize(); it++) {
                     if (i.getItem(it).getId() != Item.AIR) {

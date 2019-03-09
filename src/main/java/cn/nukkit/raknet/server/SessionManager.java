@@ -2,11 +2,34 @@ package cn.nukkit.raknet.server;
 
 import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
-//import cn.nukkit.raknet.protocol.OfflineMessage;
 import cn.nukkit.raknet.protocol.Packet;
-import cn.nukkit.raknet.protocol.packet.*;
+import cn.nukkit.raknet.protocol.packet.ACK;
+import cn.nukkit.raknet.protocol.packet.AdvertiseSystem;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_0;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_1;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_2;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_3;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_4;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_5;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_6;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_7;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_8;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_9;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_A;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_B;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_C;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_D;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_E;
+import cn.nukkit.raknet.protocol.packet.DATA_PACKET_F;
+import cn.nukkit.raknet.protocol.packet.NACK;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionReply1;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionReply2;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest1;
+import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest2;
+import cn.nukkit.raknet.protocol.packet.UnconnectedPing;
+import cn.nukkit.raknet.protocol.packet.UnconnectedPingOpenConnections;
+import cn.nukkit.raknet.protocol.packet.UnconnectedPong;
 import cn.nukkit.utils.Binary;
-import cn.nukkit.utils.ThreadedLogger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.socket.DatagramPacket;
 import java.io.IOException;
@@ -14,16 +37,18 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class SessionManager {
 
     protected final Packet.PacketFactory[] packetPool = new Packet.PacketFactory[256];
@@ -34,7 +59,7 @@ public class SessionManager {
     protected int receiveBytes = 0;
     protected int sendBytes = 0;
 
-    protected final Map<String, Session> sessions = new HashMap<String, Session>();
+    protected final Map<String, Session> sessions = new HashMap<>();
 
     protected OfflineMessageHandler offlineMessageHandler;
     protected String name = "";
@@ -46,8 +71,8 @@ public class SessionManager {
     protected long ticks = 0;
     protected long lastMeasure;
 
-    protected final Map<String, Long> block = new HashMap<String, Long>();
-    protected final Map<String, Integer> ipSec = new HashMap<String, Integer>();
+    protected final Map<String, Long> block = new HashMap<>();
+    protected final Map<String, Integer> ipSec = new HashMap<>();
     protected Pattern rawPacketFilters;
 
     public boolean portChecking = true;
@@ -98,10 +123,6 @@ public class SessionManager {
 
     public int getProtocolVersion() {
         return this.server.getProtocolVersion();
-    }
-
-    public ThreadedLogger getLogger() {
-        return this.server.getLogger();
     }
 
     public void run() throws Exception {
@@ -167,7 +188,7 @@ public class SessionManager {
                     long timeout = this.block.get(address);
                     if (timeout <= now) {
                         this.block.remove(address);
-                        this.getLogger().notice("Unblocked " + address);
+                        log.info("Unblocked " + address);
                     } else {
                         break;
                     }
@@ -432,7 +453,7 @@ public class SessionManager {
                     this.shutdown = true;
                     break;
                 default:
-                    this.getLogger().debug("Unknown RakNet internal packet (ID " + id + ") received from main thread");
+                    log.debug("Unknown RakNet internal packet (ID " + id + ") received from main thread");
                     return false;
             }
             return true;
@@ -451,7 +472,7 @@ public class SessionManager {
             if (timeout == -1) {
                 finalTime = Long.MAX_VALUE;
             } else {
-                this.getLogger().notice("Blocked " + address + " for " + timeout + " seconds");
+                log.info("Blocked " + address + " for " + timeout + " seconds");
             }
             this.block.put(address, finalTime);
         } else if (this.block.get(address) < finalTime) {
@@ -461,7 +482,7 @@ public class SessionManager {
 
     public void unblockAddress(String address) {
         this.block.remove(address);
-        this.getLogger().debug("Unblocked " + address);
+        log.debug("Unblocked " + address);
     }
 
     public Session getSession(String ip, int port) {
@@ -487,7 +508,7 @@ public class SessionManager {
         this.checkSessions();
         Session session = new Session(this, ip, port, clientId, mtuSize);
         this.sessions.put(id, session);
-        this.getLogger().debug("Created session for " + id + " with MTU size " + mtuSize);
+        log.debug("Created session for " + id + " with MTU size " + mtuSize);
         return session;
     }
 
@@ -516,7 +537,7 @@ public class SessionManager {
     private void checkSessions() {
         int size = this.sessions.size();
         if (size > 4096) {
-            List<String> keyToRemove = new ArrayList<String>();
+            List<String> keyToRemove = new ArrayList<>();
             for (String i : this.sessions.keySet()) {
                 Session s = this.sessions.get(i);
                 if (s.isTemporal()) {

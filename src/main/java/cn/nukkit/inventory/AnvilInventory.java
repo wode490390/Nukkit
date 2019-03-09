@@ -81,9 +81,9 @@ public class AnvilInventory extends ContainerInventory {
                         boolean another = false;
 
                         for (Enchantment baseEnchant : baseEnchants) {
-                            if (baseEnchant.getId() == enchantment.getId())
+                            if (baseEnchant.getId() == enchantment.getId()) {
                                 same = true;
-                            else {
+                            } else {
                                 another = true;
                             }
                         }
@@ -98,8 +98,9 @@ public class AnvilInventory extends ContainerInventory {
                     if (localEnchantment != null) {
                         int level = Math.max(localEnchantment.getLevel(), enchantment.getLevel());
 
-                        if (localEnchantment.getLevel() == enchantment.getLevel())
+                        if (localEnchantment.getLevel() == enchantment.getLevel()) {
                             level++;
+                        }
 
                         enchantment.setLevel(level);
                         result.addEnchantment(enchantment);

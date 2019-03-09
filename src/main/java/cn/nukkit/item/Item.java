@@ -18,7 +18,6 @@ import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.Config;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import java.io.File;
 import java.io.IOException;
@@ -28,11 +27,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Item implements Cloneable, BlockID, ItemID {
 
     protected static String UNKNOWN_STR = "Unknown";
@@ -345,7 +346,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             try {
                 Utils.writeFile(path, Server.class.getClassLoader().getResourceAsStream("creativeitems.json"));
             } catch (IOException e) {
-                MainLogger.getLogger().logException(e);
+                log.throwing(e);
                 return;
             }
         }
@@ -367,7 +368,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
                 addCreativeItem(Item.get(id, damage, 1, nbt));
             } catch (Exception e) {
-                MainLogger.getLogger().logException(e);
+                log.throwing(e);
             }
         }
     }
@@ -474,8 +475,10 @@ public class Item implements Cloneable, BlockID, ItemID {
             }
         }
 
-        id = id & 0xffff;
-        if (b.length != 1) meta = Integer.valueOf(b[1]) & 0xffff;
+        id &= 0xffff;
+        if (b.length != 1) {
+            meta = Integer.valueOf(b[1]) & 0xffff;
+        }
 
         return get(id, meta);
     }
@@ -496,7 +499,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param CompoundTag tag
+     * @param tag CompoundTag
      *
      * @return Item
      */
@@ -506,7 +509,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param byte[] tags
+     * @param tags byte[]
      *
      * @return Item
      */
@@ -561,7 +564,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param CompoundTag compound
+     * @param compoundTag CompoundTag
      *
      * @return Item
      */
@@ -624,8 +627,8 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param int id
-     * @param int level
+     * @param id int
+     * @param level int
      *
      * @return boolean
      */
@@ -647,7 +650,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param int id
+     * @param id int
      *
      * @return Enchantment
      */
@@ -682,8 +685,8 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param int id
-     * @param int level
+     * @param id int
+     * @param level int
      *
      * @return Item
      */
@@ -735,7 +738,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param Enchantment... enchantments
+     * @param enchantments Enchantment...
      *
      * @return Item
      */
@@ -808,7 +811,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Returns the level of the enchantment on this item with the specified ID, or 0 if the item does not have the enchantment.
      *
-     * @param int enchantmentId
+     * @param enchantmentId int
      *
      * @return int
      */
@@ -860,12 +863,12 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param String name
+     * @param name String
      *
      * @return Item
      */
     public Item setCustomName(String name) {
-        if (name == null || name.equals("")) {
+        if (name == null || name.isEmpty()) {
             this.clearCustomName();
         }
 
@@ -930,7 +933,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param String... lines
+     * @param lines String...
      *
      * @return Item
      */
@@ -958,7 +961,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param String name
+     * @param name String
      *
      * @return Tag
      */
@@ -1010,7 +1013,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Sets the Item's NBT from the supplied CompoundTag object.
      *
-     * @param CompoundTag tag
+     * @param tag CompoundTag
      *
      * @return Item
      */
@@ -1060,7 +1063,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     }
 
     /**
-     * @param int count
+     * @param count int
      *
      * @return Item
      */
@@ -1299,14 +1302,14 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Called when a player uses this item on a block.
      *
-     * @param Level level
-     * @param Player player
-     * @param Block block
-     * @param Block target
-     * @param BlockFace face
-     * @param double fx
-     * @param double fy
-     * @param double fz
+     * @param level Level
+     * @param player Player
+     * @param block Block
+     * @param target Block
+     * @param face BlockFace
+     * @param fx double
+     * @param fy double
+     * @param fz double
      *
      * @return boolean
      */
@@ -1331,7 +1334,7 @@ public class Item implements Cloneable, BlockID, ItemID {
      * Called when a player is using this item and releases it. Used to handle bow shoot actions.
      * Returns whether the item was changed, for example count decrease or durability change.
      *
-     * @param Player player
+     * @param player Player
      *
      * @return boolean
      */
@@ -1342,7 +1345,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Called when this item is used to destroy a block. Usually used to update durability.
      *
-     * @param Block block
+     * @param block Block
      *
      * @return boolean
      */
@@ -1353,7 +1356,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Called when this item is used to attack an entity. Usually used to update durability.
      *
-     * @param Entity victim
+     * @param victim Entity
      *
      * @return boolean
      */
@@ -1390,9 +1393,9 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Compares an Item to this Item and check if they match.
      *
-     * @param Item $item
-     * @param bool $checkDamage Whether to verify that the damage values match.
-     * @param bool $checkCompound Whether to verify that the items' NBT match.
+     * @param item Item
+     * @param checkDamage Whether to verify that the damage values match.
+     * @param checkCompound Whether to verify that the items' NBT match.
      *
      * @return bool
      */
@@ -1415,7 +1418,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Returns whether the specified item stack has the same ID, damage, NBT and count as this item stack.
      *
-     * @param Item other
+     * @param other Item
      *
      * @return boolean equal
      */

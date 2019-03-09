@@ -33,6 +33,7 @@ public class ItemBlock extends Item {
         this.block = block;
     }
 
+    @Override
     public void setDamage(Integer meta) {
         if (meta != null) {
             this.meta = meta & 0xffff;
@@ -49,6 +50,7 @@ public class ItemBlock extends Item {
         return block;
     }
 
+    @Override
     public Block getBlock() {
         return this.block;
     }

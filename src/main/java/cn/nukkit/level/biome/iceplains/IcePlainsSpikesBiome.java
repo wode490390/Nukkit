@@ -23,6 +23,7 @@ public class IcePlainsSpikesBiome extends IcePlainsBiome {
         return SNOW_BLOCK;
     }
 
+    @Override
     public String getName() {
         return "Ice Plains Spikes";
     }

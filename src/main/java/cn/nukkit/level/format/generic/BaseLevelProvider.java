@@ -258,8 +258,9 @@ public abstract class BaseLevelProvider implements LevelProvider {
     public GameRules getGamerules() {
         GameRules rules = GameRules.getDefault();
 
-        if (this.levelData.contains("GameRules"))
+        if (this.levelData.contains("GameRules")) {
             rules.readNBT(this.levelData.getCompound("GameRules"));
+        }
 
         return rules;
     }
@@ -320,6 +321,7 @@ public abstract class BaseLevelProvider implements LevelProvider {
         }
     }
 
+    @Override
     public void updateLevelName(String name) {
         if (!this.getName().equals(name)) {
             this.levelData.putString("LevelName", name);

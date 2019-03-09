@@ -78,7 +78,9 @@ public class BlockCocoa extends BlockTransparentMeta implements BlockFaceable {
             this.setDamage(damage = 11);
         }
         AxisAlignedBB boundingBox = ALL[damage];
-        if (boundingBox != null) return boundingBox;
+        if (boundingBox != null) {
+            return boundingBox;
+        }
 
         AxisAlignedBB[] bbs;
 
@@ -109,11 +111,6 @@ public class BlockCocoa extends BlockTransparentMeta implements BlockFaceable {
         }
 
         return ALL[damage] = bbs[this.getDamage() >> 2];
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     @Override

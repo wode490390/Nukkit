@@ -72,7 +72,7 @@ public class BlockWeightedPressurePlateHeavy extends BlockPressurePlateBase {
         int count = Math.min(this.level.getCollidingEntities(getCollisionBoundingBox()).length, this.getMaxWeight());
 
         if (count > 0) {
-            float f = (float) Math.min(this.getMaxWeight(), count) / (float) this.getMaxWeight();
+            float f = Math.min(this.getMaxWeight(), count) / (float) this.getMaxWeight();
             return Math.max(1, NukkitMath.ceilFloat(f * 15.0F));
         } else {
             return 0;

@@ -81,7 +81,9 @@ abstract public class BaseRegionLoader {
     public abstract void writeChunk(FullChunk chunk) throws Exception;
 
     public void close() throws IOException {
-        if (randomAccessFile != null) randomAccessFile.close();
+        if (randomAccessFile != null) {
+            randomAccessFile.close();
+        }
     }
 
     protected abstract void loadLocationTable() throws IOException;

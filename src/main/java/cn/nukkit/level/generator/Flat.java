@@ -1,7 +1,6 @@
 package cn.nukkit.level.generator;
 
-import cn.nukkit.Server;
-import cn.nukkit.block.*;
+import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.generic.BaseFullChunk;
@@ -15,11 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Flat extends Generator {
 
     protected int[][] structure;
@@ -65,14 +66,14 @@ public class Flat extends Generator {
         if (this.options.containsKey("decoration")) {
             PopulatorOre ores = new PopulatorOre();
             ores.setOreTypes(new OreType[]{
-                    new OreType(new BlockOreCoal(), 20, 16, 0, 128),
-                    new OreType(new BlockOreIron(), 20, 8, 0, 64),
-                    new OreType(new BlockOreRedstone(), 8, 7, 0, 16),
-                    new OreType(new BlockOreLapis(), 1, 6, 0, 32),
-                    new OreType(new BlockOreGold(), 2, 8, 0, 32),
-                    new OreType(new BlockOreDiamond(), 1, 7, 0, 16),
-                    new OreType(new BlockDirt(), 20, 32, 0, 128),
-                    new OreType(new BlockGravel(), 20, 16, 0, 128),
+                    new OreType(Block.get(COAL_ORE), 20, 16, 0, 128),
+                    new OreType(Block.get(IRON_ORE), 20, 8, 0, 64),
+                    new OreType(Block.get(REDSTONE_ORE), 8, 7, 0, 16),
+                    new OreType(Block.get(LAPIS_ORE), 1, 6, 0, 32),
+                    new OreType(Block.get(GOLD_ORE), 2, 8, 0, 32),
+                    new OreType(Block.get(DIAMOND_ORE), 1, 7, 0, 16),
+                    new OreType(Block.get(DIRT), 20, 32, 0, 128),
+                    new OreType(Block.get(GRAVEL), 20, 16, 0, 128),
             });
             this.populators.add(ores);
         }
@@ -123,8 +124,8 @@ public class Flat extends Generator {
                 if (Pattern.matches("^[0-9a-z_]+$", option)) {
                     this.options.put(option, true);
                 } else if (Pattern.matches("^[0-9a-z_]+\\([0-9a-z_ =]+\\)$", option)) {
-                    String name = option.substring(0, option.indexOf("("));
-                    String extra = option.substring(option.indexOf("(") + 1, option.indexOf(")"));
+                    String name = option.substring(0, option.indexOf('('));
+                    String extra = option.substring(option.indexOf('(') + 1, option.indexOf(')'));
                     Map<String, Float> map = new HashMap<>();
                     for (String kv : extra.split(" ")) {
                         String[] data = kv.split("=");
@@ -133,8 +134,8 @@ public class Flat extends Generator {
                     this.options.put(name, map);
                 }
             }
-        } catch (Exception e) {
-            Server.getInstance().getLogger().error("error while parsing the preset", e);
+        } catch (NumberFormatException e) {
+            log.error("error while parsing the preset", e);
             throw new RuntimeException(e);
         }
     }

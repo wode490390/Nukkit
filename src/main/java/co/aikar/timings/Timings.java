@@ -35,18 +35,20 @@ import cn.nukkit.plugin.MethodEventExecutor;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.scheduler.PluginTask;
 import cn.nukkit.scheduler.TaskHandler;
-
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 import static co.aikar.timings.TimingIdentifier.DEFAULT_GROUP;
 
+@Log4j2
 public final class Timings {
+
     private static boolean timingsEnabled = false;
     private static boolean verboseEnabled = false;
     private static boolean privacy = false;
-    private static Set<String> ignoredConfigSections = new HashSet<>();
+    private static final Set<String> ignoredConfigSections = new HashSet<>();
 
     private static final int MAX_HISTORY_FRAMES = 12;
     private static int historyInterval = -1;
@@ -92,7 +94,7 @@ public final class Timings {
         privacy = Server.getInstance().getConfig("timings.privacy", false);
         ignoredConfigSections.addAll(Server.getInstance().getConfig().getStringList("timings.ignore"));
 
-        Server.getInstance().getLogger().debug("Timings: \n" +
+        log.debug("Timings: \n" +
                 "Enabled - " + isTimingsEnabled() + "\n" +
                 "Verbose - " + isVerboseEnabled() + "\n" +
                 "History Interval - " + getHistoryInterval() + "\n" +
@@ -187,7 +189,7 @@ public final class Timings {
         Queue<TimingsHistory> oldQueue = TimingsManager.HISTORY;
         int frames = (getHistoryLength() / getHistoryInterval());
         if (length > maxLength) {
-            Server.getInstance().getLogger().warning(
+            log.warn(
                     "Timings Length too high. Requested " + length + ", max is " + maxLength
                             + ". To get longer history, you must increase your interval. Set Interval to "
                             + Math.ceil((float) length / MAX_HISTORY_FRAMES)

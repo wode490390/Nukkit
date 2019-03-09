@@ -1,24 +1,18 @@
 package cn.nukkit.level.generator.populator.overworld;
 
-import cn.nukkit.block.Block;
-import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
 import cn.nukkit.level.generator.populator.util.EnsureCover;
 import cn.nukkit.level.generator.populator.util.EnsureGrassBelow;
-import cn.nukkit.level.generator.populator.Populator;
-import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
-import cn.nukkit.math.NukkitMath;
 import cn.nukkit.math.NukkitRandom;
-
-import static cn.nukkit.block.BlockDoublePlant.TOP_HALF_BITMASK;
-import static cn.nukkit.block.BlockID.DOUBLE_PLANT;
 
 /**
  * author: DaPorkchop_
  * Nukkit Project
  */
 public class PopulatorDoublePlant extends PopulatorSurfaceBlock {
-    private int type;
+
+    private final int type;
 
     public PopulatorDoublePlant(int type)    {
         this.type = type;

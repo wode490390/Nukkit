@@ -42,6 +42,7 @@ public class ItemBow extends ItemTool {
         return 1;
     }
 
+    @Override
     public boolean onReleaseUsing(Player player) {
         Item itemArrow = Item.get(Item.ARROW, 0, 1);
 
@@ -98,8 +99,9 @@ public class ItemBow extends ItemTool {
             if (player.isSurvival()) {
                 Enchantment infinity;
 
-                if (!this.hasEnchantments() || (infinity = this.getEnchantment(Enchantment.ID_BOW_INFINITY)) == null || infinity.getLevel() <= 0)
+                if (!this.hasEnchantments() || (infinity = this.getEnchantment(Enchantment.ID_BOW_INFINITY)) == null || infinity.getLevel() <= 0) {
                     player.getInventory().removeItem(itemArrow);
+                }
                 if (!this.isUnbreakable()) {
                     Enchantment durability = this.getEnchantment(Enchantment.ID_DURABILITY);
                     if (!(durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= ThreadLocalRandom.current().nextInt(100))) {

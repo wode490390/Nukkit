@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityHopper;
 import cn.nukkit.inventory.ContainerInventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
@@ -78,7 +79,7 @@ public class BlockHopper extends BlockTransparentMeta implements BlockFaceable {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityHopper) {
-            return player.addWindow(((BlockEntityHopper) blockEntity).getInventory()) != -1;
+            return player.addWindow(((InventoryHolder) blockEntity).getInventory()) != -1;
         }
 
         return false;
@@ -89,6 +90,7 @@ public class BlockHopper extends BlockTransparentMeta implements BlockFaceable {
         return true;
     }
 
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }
@@ -98,7 +100,7 @@ public class BlockHopper extends BlockTransparentMeta implements BlockFaceable {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityHopper) {
-            return ContainerInventory.calculateRedstone(((BlockEntityHopper) blockEntity).getInventory());
+            return ContainerInventory.calculateRedstone(((InventoryHolder) blockEntity).getInventory());
         }
 
         return super.getComparatorInputOverride();

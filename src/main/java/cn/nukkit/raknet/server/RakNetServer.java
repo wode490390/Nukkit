@@ -1,22 +1,19 @@
 package cn.nukkit.raknet.server;
 
-import cn.nukkit.Server;
 import cn.nukkit.raknet.RakNet;
-import cn.nukkit.utils.ThreadedLogger;
-
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class RakNetServer extends Thread {
 
     protected final int port;
     protected String interfaz;
-
-    protected ThreadedLogger logger;
 
     protected boolean shutdown;
 
@@ -27,29 +24,27 @@ public class RakNetServer extends Thread {
     protected short maxMtuSize;
     protected int protocolVersion;
 
-    public RakNetServer(ThreadedLogger logger, int port) {
-        this(logger, port, "0.0.0.0");
+    public RakNetServer(int port) {
+        this(port, "0.0.0.0");
     }
 
-    public RakNetServer(ThreadedLogger logger, int port, String interfaz) {
-        this(logger, port, interfaz, (short) 1492);
+    public RakNetServer(int port, String interfaz) {
+        this(port, interfaz, (short) 1492);
     }
 
-    public RakNetServer(ThreadedLogger logger, int port, String interfaz, short maxMtuSize) {
-        this(logger, port, interfaz, maxMtuSize, RakNet.PROTOCOL);//RakNet.DEFAULT_PROTOCOL_VERSION
+    public RakNetServer(int port, String interfaz, short maxMtuSize) {
+        this(port, interfaz, maxMtuSize, RakNet.PROTOCOL);//RakNet.DEFAULT_PROTOCOL_VERSION
     }
 
-    public RakNetServer(ThreadedLogger logger, int port, String interfaz, short maxMtuSize, int overrideProtocolVersion) {
+    public RakNetServer(int port, String interfaz, short maxMtuSize, int overrideProtocolVersion) {
         this.port = port;
         if (port < 1 || port > 65536) {
             throw new IllegalArgumentException("Invalid port range");
         }
         this.interfaz = interfaz;
-        
-        this.serverId = new Random().nextLong();
-        this.maxMtuSize = maxMtuSize;
 
-        this.logger = logger;
+        this.serverId = ThreadLocalRandom.current().nextLong();
+        this.maxMtuSize = maxMtuSize;
 
         this.externalQueue = new ConcurrentLinkedQueue<>();
         this.internalQueue = new ConcurrentLinkedQueue<>();
@@ -83,10 +78,6 @@ public class RakNetServer extends Thread {
         return this.protocolVersion;
     }
 
-    public ThreadedLogger getLogger() {
-        return logger;
-    }
-
     public ConcurrentLinkedQueue<byte[]> getExternalQueue() {
         return this.externalQueue;
     }
@@ -115,7 +106,7 @@ public class RakNetServer extends Thread {
         @Override
         public void run() {
             if (!shutdown) {
-                logger.emergency("RakNet crashed!");
+                log.fatal("RakNet crashed!");
             }
         }
     }
@@ -124,11 +115,11 @@ public class RakNetServer extends Thread {
     public void run() {
         this.setName("RakNet Thread #" + Thread.currentThread().getId());
         Runtime.getRuntime().addShutdownHook(new ShutdownHandler());
-        UDPServerSocket socket = new UDPServerSocket(this.getLogger(), this.port, this.interfaz);
+        UDPServerSocket socket = new UDPServerSocket(this.port, this.interfaz);
         try {
             new SessionManager(this, socket, this.maxMtuSize);
         } catch (Exception e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
     }
 }

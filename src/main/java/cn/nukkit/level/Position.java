@@ -64,10 +64,12 @@ public class Position extends Vector3 {
         return false;
     }
 
+    @Override
     public Position getSide(BlockFace face) {
         return this.getSide(face, 1);
     }
 
+    @Override
     public Position getSide(BlockFace face, int step) {
         if (!this.isValid()) {
             throw new LevelException("Undefined Level reference");
@@ -89,13 +91,19 @@ public class Position extends Vector3 {
     }
 
     public Block getLevelBlock() {
-        if (this.isValid()) return this.level.getBlock(this);
-        else throw new LevelException("Undefined Level reference");
+        if (this.isValid()) {
+            return this.level.getBlock(this);
+        } else {
+            throw new LevelException("Undefined Level reference");
+        }
     }
 
     public Location getLocation() {
-        if (this.isValid()) return new Location(this.x, this.y, this.z, 0, 0, this.level);
-        else throw new LevelException("Undefined Level reference");
+        if (this.isValid()) {
+            return new Location(this.x, this.y, this.z, 0, 0, this.level);
+        } else {
+            throw new LevelException("Undefined Level reference");
+        }
     }
 
     @Override

@@ -2,8 +2,6 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.network.protocol.types.CommandOriginData;
 
-import java.util.UUID;
-
 /**
  * author: MagicDroidX
  * Nukkit Project

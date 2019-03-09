@@ -1,16 +1,13 @@
 package cn.nukkit.level.biome;
 
-import cn.nukkit.level.biome.Biome;
-import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.generator.noise.bukkit.SimplexOctaveGenerator;
 import cn.nukkit.math.NukkitRandom;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class BiomeClimate {
 
-    private static final Map<Integer, Climate> CLIMATE_MAP = new HashMap<Integer, Climate>();
+    private static final Map<Integer, Climate> CLIMATE_MAP = new HashMap<>();
     private static final SimplexOctaveGenerator noiseGen;
 
     static {

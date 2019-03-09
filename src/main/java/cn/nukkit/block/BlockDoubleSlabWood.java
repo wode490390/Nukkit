@@ -49,6 +49,7 @@ public class BlockDoubleSlabWood extends BlockDoubleSlab {
         return new ItemBlock(new BlockSlabWood(), this.getDamage() & 0x7);
     }
 
+    @Override
     public Item[] getDrops(Item item) {
         return new Item[]{
                 Item.get(Item.WOOD_SLAB, this.getDamage() & 0x7, 2)

@@ -19,9 +19,9 @@ public class IPv6Converter {
     public static String buildKey(String ipAddress) {  
         String Key = "";  
         // ipv4标识 。判断是否是ipv4地址  
-        int dotFlag = ipAddress.indexOf(".");  
+        int dotFlag = ipAddress.indexOf('.');  
         // ipv6标识 。判断是否是ipv6地址  
-        int colonFlag = ipAddress.indexOf(":");  
+        int colonFlag = ipAddress.indexOf(':');  
         // ipv6标识 。判断是否是简写的ipv6地址  
         int dColonFlag = ipAddress.indexOf("::");  
         // 将v6或v4的分隔符用&代替  
@@ -189,7 +189,7 @@ public class IPv6Converter {
     public static String splitKey(String key) {  
         String IPV6Address = "";  
         String IPAddress = "";  
-        String strKey = "";  
+        String strKey;  
         String ip1 = key.substring(0, 24);  
         String tIP1 = ip1.replace("0000", "").trim();  
         if (!"".equals(tIP1) && !"FFFF".equals(tIP1)) {  
@@ -227,7 +227,7 @@ public class IPv6Converter {
         byte[] ip6Byte = new byte[16];  
   
         // 将数组中的每两位取存到长度为16的字符串数组中  
-        for (int j = 0, i = 0; i < ip6Str.length; j = j + 2, i++) {  
+        for (int j = 0, i = 0; i < ip6Str.length; j += 2, i++) {  
             ipStr[j] = ip6Str[i].substring(0, 2);  
             ipStr[j + 1] = ip6Str[i].substring(2, 4);  
         }  

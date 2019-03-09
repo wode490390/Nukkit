@@ -68,8 +68,9 @@ public class BlockShulkerBox extends BlockTransparentMeta {
             if (!i.isEmpty()) {
 
                 CompoundTag nbt = item.getNamedTag();
-                if (nbt == null)
+                if (nbt == null) {
                     nbt = new CompoundTag("");
+                }
 
                 ListTag<CompoundTag> items = new ListTag<>();
 

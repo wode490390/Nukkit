@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayDeque;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ public abstract class LightUpdate {
 
     protected ChunkManager level;
 
-    protected Object2IntOpenHashMap<BlockVector3> updateNodes = new Object2IntOpenHashMap<BlockVector3>();
+    protected Object2IntOpenHashMap<BlockVector3> updateNodes = new Object2IntOpenHashMap<>();
 
     protected Queue<BlockVector3> spreadQueue;
 

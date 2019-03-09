@@ -10,7 +10,7 @@ public class ChunkConverter {
 
     private BaseFullChunk chunk;
     private Class<? extends FullChunk> toClass;
-    private LevelProvider provider;
+    private final LevelProvider provider;
 
     public ChunkConverter(LevelProvider provider) {
         this.provider = provider;
@@ -50,9 +50,13 @@ public class ChunkConverter {
                                 break;
                             }
                         }
-                        if (!empty) break;
+                        if (!empty) {
+                            break;
+                        }
                     }
-                    if (!empty) break;
+                    if (!empty) {
+                        break;
+                    }
                 }
                 if (!empty) {
                     ChunkSection section = new ChunkSection(Y);

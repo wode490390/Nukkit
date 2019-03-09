@@ -5,19 +5,27 @@ import cn.nukkit.scheduler.FileWriteTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
+import lombok.extern.log4j.Log4j2;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * author: MagicDroidX
  * Nukkit
  */
+@Log4j2
 public class Config {
 
     public static final int DETECT = -1; //Detect by file extension
@@ -110,9 +118,10 @@ public class Config {
         this.config.clear();
         this.correct = false;
         //this.load(this.file.toString());
-        if (this.file == null) throw new IllegalStateException("Failed to reload Config. File object is undefined.");
+        if (this.file == null) {
+            throw new IllegalStateException("Failed to reload Config. File object is undefined.");
+        }
         this.load(this.file.toString(), this.type);
-
     }
 
     public boolean load(String file) {
@@ -133,15 +142,15 @@ public class Config {
                 this.file.getParentFile().mkdirs();
                 this.file.createNewFile();
             } catch (IOException e) {
-                MainLogger.getLogger().error("Could not create Config " + this.file.toString(), e);
+                log.error("Could not create Config " + this.file.toString(), e);
             }
             this.config = defaultMap;
             this.save();
         } else {
             if (this.type == Config.DETECT) {
                 String extension = "";
-                if (this.file.getName().lastIndexOf(".") != -1 && this.file.getName().lastIndexOf(".") != 0) {
-                    extension = this.file.getName().substring(this.file.getName().lastIndexOf(".") + 1);
+                if (this.file.getName().lastIndexOf('.') != -1 && this.file.getName().lastIndexOf('.') != 0) {
+                    extension = this.file.getName().substring(this.file.getName().lastIndexOf('.') + 1);
                 }
                 if (format.containsKey(extension)) {
                     this.type = format.get(extension);
@@ -154,10 +163,12 @@ public class Config {
                 try {
                     content = Utils.readFile(this.file);
                 } catch (IOException e) {
-                    Server.getInstance().getLogger().logException(e);
+                    log.throwing(e);
                 }
                 this.parseContent(content);
-                if (!this.correct) return false;
+                if (!this.correct) {
+                    return false;
+                }
                 if (this.setDefault(defaultMap) > 0) {
                     this.save();
                 }
@@ -169,13 +180,15 @@ public class Config {
     }
 
     public boolean load(InputStream inputStream) {
-        if (inputStream == null) return false;
+        if (inputStream == null) {
+            return false;
+        }
         if (this.correct) {
             String content;
             try {
                 content = Utils.readFile(inputStream);
             } catch (IOException e) {
-                Server.getInstance().getLogger().logException(e);
+                log.throwing(e);
                 return false;
             }
             this.parseContent(content);
@@ -213,7 +226,9 @@ public class Config {
     }
 
     public boolean save(Boolean async) {
-        if (this.file == null) throw new IllegalStateException("Failed to save Config. File object is undefined.");
+        if (this.file == null) {
+            throw new IllegalStateException("Failed to save Config. File object is undefined.");
+        }
         if (this.correct) {
             String content = "";
             switch (this.type) {
@@ -243,7 +258,7 @@ public class Config {
                 try {
                     Utils.writeFile(this.file, content);
                 } catch (IOException e) {
-                    Server.getInstance().getLogger().logException(e);
+                    log.throwing(e);
                 }
             }
             return true;
@@ -270,7 +285,7 @@ public class Config {
     }
 
     public boolean isSection(String key) {
-        return config.isSection(key);
+        return this.config.isSection(key);
     }
 
     public ConfigSection getSections(String key) {
@@ -290,7 +305,7 @@ public class Config {
     }
 
     public boolean isInt(String key) {
-        return config.isInt(key);
+        return this.config.isInt(key);
     }
 
     public long getLong(String key) {
@@ -302,7 +317,7 @@ public class Config {
     }
 
     public boolean isLong(String key) {
-        return config.isLong(key);
+        return this.config.isLong(key);
     }
 
     public double getDouble(String key) {
@@ -314,7 +329,7 @@ public class Config {
     }
 
     public boolean isDouble(String key) {
-        return config.isDouble(key);
+        return this.config.isDouble(key);
     }
 
     public String getString(String key) {
@@ -326,7 +341,7 @@ public class Config {
     }
 
     public boolean isString(String key) {
-        return config.isString(key);
+        return this.config.isString(key);
     }
 
     public boolean getBoolean(String key) {
@@ -338,7 +353,7 @@ public class Config {
     }
 
     public boolean isBoolean(String key) {
-        return config.isBoolean(key);
+        return this.config.isBoolean(key);
     }
 
     public List getList(String key) {
@@ -350,47 +365,47 @@ public class Config {
     }
 
     public boolean isList(String key) {
-        return config.isList(key);
+        return this.config.isList(key);
     }
 
     public List<String> getStringList(String key) {
-        return config.getStringList(key);
+        return this.config.getStringList(key);
     }
 
     public List<Integer> getIntegerList(String key) {
-        return config.getIntegerList(key);
+        return this.config.getIntegerList(key);
     }
 
     public List<Boolean> getBooleanList(String key) {
-        return config.getBooleanList(key);
+        return this.config.getBooleanList(key);
     }
 
     public List<Double> getDoubleList(String key) {
-        return config.getDoubleList(key);
+        return this.config.getDoubleList(key);
     }
 
     public List<Float> getFloatList(String key) {
-        return config.getFloatList(key);
+        return this.config.getFloatList(key);
     }
 
     public List<Long> getLongList(String key) {
-        return config.getLongList(key);
+        return this.config.getLongList(key);
     }
 
     public List<Byte> getByteList(String key) {
-        return config.getByteList(key);
+        return this.config.getByteList(key);
     }
 
     public List<Character> getCharacterList(String key) {
-        return config.getCharacterList(key);
+        return this.config.getCharacterList(key);
     }
 
     public List<Short> getShortList(String key) {
-        return config.getShortList(key);
+        return this.config.getShortList(key);
     }
 
     public List<Map> getMapList(String key) {
-        return config.getMapList(key);
+        return this.config.getMapList(key);
     }
 
     public void setAll(LinkedHashMap<String, Object> map) {
@@ -402,15 +417,15 @@ public class Config {
     }
 
     public boolean exists(String key) {
-        return config.exists(key);
+        return this.config.exists(key);
     }
 
     public boolean exists(String key, boolean ignoreCase) {
-        return config.exists(key, ignoreCase);
+        return this.config.exists(key, ignoreCase);
     }
 
     public void remove(String key) {
-        config.remove(key);
+        this.config.remove(key);
     }
 
     public Map<String, Object> getAll() {
@@ -423,7 +438,7 @@ public class Config {
      * @return
      */
     public ConfigSection getRootSection() {
-        return config;
+        return this.config;
     }
 
     public int setDefault(LinkedHashMap<String, Object> map) {
@@ -452,7 +467,7 @@ public class Config {
             if (v.trim().isEmpty()) {
                 continue;
             }
-            config.put(v, true);
+            this.config.put(v, true);
         }
     }
 
@@ -478,7 +493,7 @@ public class Config {
                 String v = b[1].trim();
                 String v_lower = v.toLowerCase();
                 if (this.config.containsKey(k)) {
-                    MainLogger.getLogger().debug("[Config] Repeated property " + k + " on file " + this.file.toString());
+                    log.debug("[Config] Repeated property " + k + " on file " + this.file.toString());
                 }
                 switch (v_lower) {
                     case "on":
@@ -500,6 +515,10 @@ public class Config {
     }
 
     /**
+     * @param key
+     * 
+     * @return Object
+     * 
      * @deprecated use {@link #get(String)} instead
      */
     @Deprecated
@@ -508,6 +527,11 @@ public class Config {
     }
 
     /**
+     * @param key
+     * @param defaultValue
+     * 
+     * @return T
+     * 
      * @deprecated use {@link #get(String, Object)} instead
      */
     @Deprecated
@@ -516,6 +540,11 @@ public class Config {
     }
 
     /**
+     * @param key
+     * @param type
+     * 
+     * @return T
+     * 
      * @deprecated use {@link #get(String)} instead
      */
     @Deprecated
@@ -525,6 +554,8 @@ public class Config {
     }
 
     /**
+     * @param key
+     * 
      * @deprecated use {@link #remove(String)} instead
      */
     @Deprecated
@@ -559,12 +590,16 @@ public class Config {
     }
 
     public Set<String> getKeys() {
-        if (this.correct) return config.getKeys();
+        if (this.correct) {
+            return this.config.getKeys();
+        }
         return new HashSet<>();
     }
 
     public Set<String> getKeys(boolean child) {
-        if (this.correct) return config.getKeys(child);
+        if (this.correct) {
+            return this.config.getKeys(child);
+        }
         return new HashSet<>();
     }
 }

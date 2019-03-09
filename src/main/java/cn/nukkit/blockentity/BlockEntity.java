@@ -7,17 +7,19 @@ import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.ChunkException;
-import cn.nukkit.utils.MainLogger;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.lang.reflect.Constructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author MagicDroidX
  */
+@Log4j2
 public abstract class BlockEntity extends Position {
+
     //WARNING: DO NOT CHANGE ANY NAME HERE, OR THE CLIENT WILL CRASH
     public static final String BANNER = "Banner";
     public static final String BEACON = "Beacon";
@@ -121,7 +123,7 @@ public abstract class BlockEntity extends Position {
 
                     }
                 } catch (Exception e) {
-                    MainLogger.getLogger().logException(e);
+                    log.throwing(e);
                 }
 
             }

@@ -213,6 +213,7 @@ public final class BlockDataPalette implements Cloneable {
         return false;
     }
 
+    @Override
     public synchronized BlockDataPalette clone() {
         char[] raw = getRaw();
         return new BlockDataPalette(raw.clone());

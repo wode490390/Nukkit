@@ -38,6 +38,7 @@ public class ItemCrossbow extends ItemTool {
         return 1;
     }
 
+    @Override
     public boolean onReleaseUsing(Player player) {
         Item itemArrow = Item.get(Item.ARROW, 0, 1);
 

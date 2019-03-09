@@ -9,15 +9,19 @@ import cn.nukkit.level.generator.noise.PerlinOctaveGenerator;
 import cn.nukkit.level.generator.noise.SimplexNoise;
 import cn.nukkit.level.generator.noise.bukkit.OctaveGenerator;
 import cn.nukkit.level.generator.object.end.ObsidianPillar;
+import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.level.generator.populator.end.PopulatorChorusPlant;
 import cn.nukkit.level.generator.populator.end.PopulatorEndGateway;
 import cn.nukkit.level.generator.populator.end.PopulatorEndIsland;
 import cn.nukkit.level.generator.populator.end.PopulatorObsidianPillar;
 import cn.nukkit.level.generator.populator.end.PopulatorPodium;
-import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class End extends Generator {
 
@@ -254,7 +258,7 @@ public class End extends Generator {
                 long x = chunkX + i;
                 long z = chunkZ + j;
 
-                if (Math.pow(x, 2) + Math.pow(z, 2) > 4096 && this.islandNoise.noise((double) x, (double) z) < -0.8999999761581421) {
+                if (Math.pow(x, 2) + Math.pow(z, 2) > 4096 && this.islandNoise.noise(x, z) < -0.8999999761581421) {
                     f0 = 1 - (i << 1);
                     f1 = 1 - (j << 1);
                     float t = (float) (100 - Math.sqrt(Math.pow(f0, 2) + Math.pow(f1, 2)) * ((Math.abs(x) * 3439 + Math.abs(z) * 147) % 13 + 9));

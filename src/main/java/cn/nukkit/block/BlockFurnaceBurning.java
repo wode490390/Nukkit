@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityFurnace;
 import cn.nukkit.inventory.ContainerInventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
@@ -146,6 +147,7 @@ public class BlockFurnaceBurning extends BlockSolidMeta implements BlockFaceable
         return new Item[0];
     }
 
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }
@@ -155,7 +157,7 @@ public class BlockFurnaceBurning extends BlockSolidMeta implements BlockFaceable
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityFurnace) {
-            return ContainerInventory.calculateRedstone(((BlockEntityFurnace) blockEntity).getInventory());
+            return ContainerInventory.calculateRedstone(((InventoryHolder) blockEntity).getInventory());
         }
 
         return super.getComparatorInputOverride();

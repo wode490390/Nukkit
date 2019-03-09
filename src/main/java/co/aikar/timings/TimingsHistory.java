@@ -103,16 +103,18 @@ public class TimingsHistory {
 
                 //count entities
                 for (Entity entity : chunk.getEntities().values()) {
-                    if (!entityCounts.containsKey(entity.getNetworkId()))
+                    if (!entityCounts.containsKey(entity.getNetworkId())) {
                         entityCounts.put(entity.getNetworkId(), new AtomicInteger(0));
+                    }
                     entityCounts.get(entity.getNetworkId()).incrementAndGet();
                     entityMap.put(entity.getNetworkId(), entity.getClass().getSimpleName());
                 }
 
                 //count block entities
                 for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-                    if (!blockEntityCounts.containsKey(blockEntity.getBlock().getId()))
+                    if (!blockEntityCounts.containsKey(blockEntity.getBlock().getId())) {
                         blockEntityCounts.put(blockEntity.getBlock().getId(), new AtomicInteger(0));
+                    }
                     blockEntityCounts.get(blockEntity.getBlock().getId()).incrementAndGet();
                     blockEntityMap.put(blockEntity.getBlock().getId(), blockEntity.getClass().getSimpleName());
                 }
@@ -129,7 +131,9 @@ public class TimingsHistory {
                 jsonLevel.add(jsonChunk);
             }
 
-            if (!levelMap.containsKey(level.getName())) levelMap.put(level.getName(), levelIdPool++);
+            if (!levelMap.containsKey(level.getName())) {
+                levelMap.put(level.getName(), levelIdPool++);
+            }
             levels.add(String.valueOf(levelMap.get(level.getName())), jsonLevel);
         }
     }

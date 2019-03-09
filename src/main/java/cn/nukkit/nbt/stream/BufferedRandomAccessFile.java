@@ -39,7 +39,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
 
     static final int LogBuffSz_ = 16; // 64K buffer
     public static final int BuffSz_ = (1 << LogBuffSz_);
-    static final long BuffMask_ = ~(((long) BuffSz_) - 1L);
+    static final long BuffMask_ = ~(BuffSz_ - 1l);
 
     /*
      * This implementation is based on the buffer implementation in Modula-3's
@@ -111,6 +111,11 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
      * Open a new <code>BufferedRandomAccessFile</code> on <code>file</code>
      * in mode <code>mode</code>, which should be "r" for reading only, or
      * "rw" for reading and writing.
+     * 
+     * @param file
+     * @param mode
+     * 
+     * @throws java.io.IOException
      */
     public BufferedRandomAccessFile(File file, String mode) throws IOException {
         super(file, mode);
@@ -126,6 +131,11 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
      * Open a new <code>BufferedRandomAccessFile</code> on the file named
      * <code>name</code> in mode <code>mode</code>, which should be "r" for
      * reading only, or "rw" for reading and writing.
+     * 
+     * @param name
+     * @param mode
+     * 
+     * @throws java.io.IOException
      */
     public BufferedRandomAccessFile(String name, String mode) throws IOException {
         super(name, mode);
@@ -141,7 +151,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
         this.dirty_ = this.closed_ = false;
         this.lo_ = this.curr_ = this.hi_ = 0;
         this.buff_ = (size > BuffSz_) ? new byte[size] : new byte[BuffSz_];
-        this.maxHi_ = (long) BuffSz_;
+        this.maxHi_ = BuffSz_;
         this.hitEOF_ = false;
         this.diskPos_ = 0L;
     }
@@ -155,7 +165,9 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
 
     /**
      * Flush any bytes in the file's buffer that have not yet been written to
-     * disk. If the file was created read-only, this method is a no-op.
+     * disk.If the file was created read-only, this method is a no-op.
+     * 
+     * @throws java.io.IOException
      */
     public void flush() throws IOException {
         this.flushBuffer();
@@ -213,13 +225,12 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
             // seeking outside of current buffer -- flush and read
             this.flushBuffer();
             this.lo_ = pos & BuffMask_; // start at BuffSz boundary
-            this.maxHi_ = this.lo_ + (long) this.buff_.length;
+            this.maxHi_ = this.lo_ + this.buff_.length;
             if (this.diskPos_ != this.lo_) {
                 super.seek(this.lo_);
                 this.diskPos_ = this.lo_;
             }
-            int n = this.fillBuffer();
-            this.hi_ = this.lo_ + (long) n;
+            this.hi_ = this.lo_ + this.fillBuffer();
         } else {
             // seeking inside current buffer -- no read required
             if (pos < this.curr_) {
@@ -236,94 +247,88 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
      * @param pos
      * @throws IOException
      */
-    public void seekUnsafe(long pos) throws IOException
-    {
-        if (pos >= this.hi_ || pos < this.lo_)
-        {
+    public void seekUnsafe(long pos) throws IOException {
+        if (pos >= this.hi_ || pos < this.lo_) {
             // seeking outside of current buffer -- flush and read
             this.flushBuffer();
             this.lo_ = pos & BuffMask_; // start at BuffSz boundary
-            this.maxHi_ = this.lo_ + (long) this.buff_.length;
-            if (this.diskPos_ != this.lo_)
-            {
+            this.maxHi_ = this.lo_ + this.buff_.length;
+            if (this.diskPos_ != this.lo_) {
                 super.seek(this.lo_);
                 this.diskPos_ = this.lo_;
             }
-            int n = this.fillBuffer();
-            this.hi_ = this.lo_ + (long) n;
+            this.hi_ = this.lo_ + this.fillBuffer();
         }
         this.curr_ = pos;
     }
 
     @Override
-    public long getFilePointer()
-    {
+    public long getFilePointer() {
         return this.curr_;
     }
 
     @Override
-    public long length() throws IOException
-    {
+    public long length() throws IOException {
         return Math.max(this.curr_, super.length());
     }
 
     @Override
-    public int read() throws IOException
-    {
-        if (this.curr_ >= this.hi_)
-        {
+    public int read() throws IOException {
+        if (this.curr_ >= this.hi_) {
             // test for EOF
             // if (this.hi < this.maxHi) return -1;
-            if (this.hitEOF_)
+            if (this.hitEOF_) {
                 return -1;
+            }
 
             // slow path -- read another buffer
             this.seek(this.curr_);
-            if (this.curr_ == this.hi_)
+            if (this.curr_ == this.hi_) {
                 return -1;
+            }
         }
         byte res = this.buff_[(int) (this.curr_ - this.lo_)];
         this.curr_++;
-        return ((int) res) & 0xFF; // convert byte -> int
+        return ((int) res) & 0xff; // convert byte -> int
     }
 
     public byte read1() throws IOException {
-        if (this.curr_ >= this.hi_)
-        {
+        if (this.curr_ >= this.hi_) {
             // test for EOF
             // if (this.hi < this.maxHi) return -1;
-            if (this.hitEOF_)
+            if (this.hitEOF_) {
                 return -1;
+            }
 
             // slow path -- read another buffer
             this.seek(this.curr_);
-            if (this.curr_ == this.hi_)
+            if (this.curr_ == this.hi_) {
                 return -1;
+            }
         }
         byte res = this.buff_[(int) (this.curr_++ - this.lo_)];
         return res;
     }
 
     @Override
-    public int read(byte[] b) throws IOException
-    {
+    public int read(byte[] b) throws IOException {
         return this.read(b, 0, b.length);
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException
-    {
-        if (this.curr_ >= this.hi_)
-        {
+    public int read(byte[] b, int off, int len) throws IOException {
+        if (this.curr_ >= this.hi_) {
             // test for EOF
             // if (this.hi < this.maxHi) return -1;
-            if (this.hitEOF_)
+            if (this.hitEOF_) {
                 return -1;
+            }
 
             // slow path -- read another buffer
             this.seek(this.curr_);
-            if (this.curr_ == this.hi_)
+            if (this.curr_ == this.hi_) {
                 return -1;
+            }
         }
         len = Math.min(len, (int) (this.hi_ - this.curr_));
         int buffOff = (int) (this.curr_ - this.lo_);

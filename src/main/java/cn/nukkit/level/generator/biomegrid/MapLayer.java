@@ -10,7 +10,7 @@ import cn.nukkit.network.protocol.types.DimensionIds;
 public abstract class MapLayer {
 
     private final NukkitRandom random = new NukkitRandom();
-    private long seed;
+    private final long seed;
 
     public MapLayer(long seed) {
         this.seed = seed;

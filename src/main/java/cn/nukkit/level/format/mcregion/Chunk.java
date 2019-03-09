@@ -130,7 +130,9 @@ public class Chunk extends BaseFullChunk {
             }
         }
 
-        if (!extraData.isEmpty()) this.extraData = extraData;
+        if (!extraData.isEmpty()) {
+            this.extraData = extraData;
+        }
 
         this.NBTentities = ((ListTag<CompoundTag>) this.nbt.getList("Entities")).getAll();
         this.NBTtiles = ((ListTag<CompoundTag>) this.nbt.getList("TileEntities")).getAll();

@@ -1,6 +1,18 @@
 package cn.nukkit.utils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.nio.channels.FileChannel;
@@ -101,10 +113,18 @@ public class Utils {
             out = fo.getChannel();
             in.transferTo(0, in.size(), out);
         } finally {
-            if (fi != null) fi.close();
-            if (in != null) in.close();
-            if (fo != null) fo.close();
-            if (out != null) out.close();
+            if (fi != null) {
+                fi.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+            if (fo != null) {
+                fo.close();
+            }
+            if (out != null) {
+                out.close();
+            }
         }
     }
 
@@ -262,16 +282,18 @@ public class Utils {
         final int len = s.length();
 
         // "111" is not a valid hex encoding.
-        if(len % 2 != 0)
+        if(len % 2 != 0) {
             throw new IllegalArgumentException("hexBinary needs to be even-length: " + s);
+        }
 
         byte[] out = new byte[len / 2];
 
         for(int i = 0; i < len; i += 2) {
             int h = hexToBin(s.charAt(i));
             int l = hexToBin(s.charAt(i + 1));
-            if(h == -1 || l == -1)
+            if(h == -1 || l == -1) {
                 throw new IllegalArgumentException("contains illegal character for hexBinary: " + s);
+            }
 
             out[i / 2] = (byte)(h * 16 + l);
         }
@@ -280,9 +302,15 @@ public class Utils {
     }
 
     private static int hexToBin( char ch ) {
-        if('0' <= ch && ch <= '9')    return ch - '0';
-        if('A' <= ch && ch <= 'F')    return ch - 'A' + 10;
-        if('a' <= ch && ch <= 'f')    return ch - 'a' + 10;
+        if('0' <= ch && ch <= '9') {
+            return ch - '0';
+        }
+        if('A' <= ch && ch <= 'F') {
+            return ch - 'A' + 10;
+        }
+        if('a' <= ch && ch <= 'f') {
+            return ch - 'a' + 10;
+        }
         return -1;
     }
 }

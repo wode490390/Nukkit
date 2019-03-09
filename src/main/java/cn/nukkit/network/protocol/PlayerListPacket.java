@@ -1,9 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.entity.data.Skin;
 import cn.nukkit.network.protocol.types.PlayerListEntry;
-
-import java.util.UUID;
 
 /**
  * @author Nukkit Project Team

@@ -113,8 +113,9 @@ public class Timing implements AutoCloseable {
         if (TimingsManager.CURRENT == this) {
             TimingsManager.CURRENT = this.parent;
             if (this.parent != null) {
-                if (!this.parent.children.containsKey(this.id))
+                if (!this.parent.children.containsKey(this.id)) {
                     this.parent.children.put(this.id, new TimingData(this.id));
+                }
                 this.parent.children.get(this.id).add(diff);
             }
         }
@@ -129,8 +130,9 @@ public class Timing implements AutoCloseable {
         if (this.groupTiming != null) {
             this.groupTiming.addDiff(diff);
 
-            if (!this.groupTiming.children.containsKey(this.id))
+            if (!this.groupTiming.children.containsKey(this.id)) {
                 this.groupTiming.children.put(this.id, new TimingData(this.id));
+            }
             this.groupTiming.children.get(this.id).add(diff);
         }
     }

@@ -23,8 +23,6 @@ public class StartGamePacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    private static String runtimeIdTable = null;
-
     public long entityUniqueId = 0;
     public long entityRuntimeId = 0;
     public int playerGamemode = 0;
@@ -133,22 +131,8 @@ public class StartGamePacket extends DataPacket {
         this.putLLong(this.currentTick);
 
         this.putVarInt(this.enchantmentSeed);
-/* TODO:
-        if (this.runtimeIdTable == null) {
-            //this is a really nasty hack, but it'll do for now
-            stream = new NetworkBinaryStream();
-            data = json_decode(file_get_contents("\RESOURCE_PATH\" . "runtimeid_table.json"), true);
-            stream.putUnsignedVarInt(data.count);
-            for (Object v : data){
-                stream.putString(v["name"]);
-                stream.putLShort(v["data"]);
-            }
-            this.runtimeIdTable = stream.buffer;
-        }
-        this->put(self::$runtimeIdTable);*/
 
         this.put(GlobalBlockPalette.getCompiledTable());
         this.putString(this.multiplayerCorrelationId);
     }
-
 }

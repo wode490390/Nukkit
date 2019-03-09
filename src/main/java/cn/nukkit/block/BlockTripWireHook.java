@@ -131,8 +131,8 @@ public class BlockTripWireHook extends BlockFlowableMeta {
             }
         }
 
-        canConnect = canConnect & distance > 1;
-        nextPowered = nextPowered & canConnect;
+        canConnect &= distance > 1;
+        nextPowered &= canConnect;
         BlockTripWireHook hook = new BlockTripWireHook();
         hook.setAttached(canConnect);
         hook.setPowered(nextPowered);

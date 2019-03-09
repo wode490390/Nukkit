@@ -24,7 +24,9 @@ public class FoodChorusFruit extends FoodNormal {
         super.onEatenBy(player);
 
         Level level = player.getLevel();
-        if (level == null) return false;
+        if (level == null) {
+            return false;
+        }
 
         int minX = player.getFloorX() - 8;
         int minY = Math.min(player.getFloorY(), 255) - 8; //level.getWorldHeight()

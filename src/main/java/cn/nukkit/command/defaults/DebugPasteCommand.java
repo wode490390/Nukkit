@@ -7,12 +7,13 @@ import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginDescription;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.HastebinUtility;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DebugPasteCommand extends VanillaCommand {
 
     public DebugPasteCommand(String name) {
@@ -34,7 +35,7 @@ public class DebugPasteCommand extends VanillaCommand {
                     String dataPath = server.getDataPath();
                     String nukkitYML = HastebinUtility.upload(new File(dataPath, "nukkit.yml"));
                     String serverProperties = HastebinUtility.upload(new File(dataPath, "server.properties"));
-                    String latestLog = HastebinUtility.upload(new File(dataPath, "server.log"));
+                    String latestLog = HastebinUtility.upload(new File(dataPath, "/logs/server.log"));
                     String threadDump = HastebinUtility.upload(Utils.getAllThreadDumps());
 
                     StringBuilder b = new StringBuilder();
@@ -80,7 +81,7 @@ public class DebugPasteCommand extends VanillaCommand {
                     String link = HastebinUtility.upload(b.toString());
                     sender.sendMessage(link);
                 } catch (IOException e) {
-                    MainLogger.getLogger().logException(e);
+                    log.throwing(e);
                 }
             }
         });

@@ -123,6 +123,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         return chunkPacket;
     }
 
+    @Override
     public void initChunk() {
         if (this.getProvider() != null && !this.isInit) {
             boolean changed = false;
@@ -133,7 +134,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
                         this.setChanged();
                         continue;
                     }
-                    ListTag pos = nbt.getList("Pos");
+                    ListTag<?> pos = nbt.getList("Pos");
                     if ((((NumberTag) pos.get(0)).getData().intValue() >> 4) != this.getX() || ((((NumberTag) pos.get(2)).getData().intValue() >> 4) != this.getZ())) {
                         changed = true;
                         continue;
@@ -197,11 +198,13 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         this.hash = Level.chunkHash(x, z);
     }
 
+    @Override
     public final void setX(int x) {
         this.x = x;
         this.hash = Level.chunkHash(x, getZ());
     }
 
+    @Override
     public final void setZ(int z) {
         this.z = z;
         this.hash = Level.chunkHash(getX(), z);
@@ -251,6 +254,9 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     }
 
     /**
+     * @param x
+     * @param z
+     * 
      * @return int New calculated heightmap value (0-256 inclusive)
      */
     public int recalculateHeightMapColumn(int x, int z) {
@@ -614,7 +620,9 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
 
     @Override
     public BaseFullChunk getChunk(int chunkX, int chunkZ) {
-        if (chunkX == getX() && chunkZ == getZ()) return this;
+        if (chunkX == getX() && chunkZ == getZ()) {
+            return this;
+        }
         return null;
     }
 

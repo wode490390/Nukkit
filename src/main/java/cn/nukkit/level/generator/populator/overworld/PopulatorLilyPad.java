@@ -1,13 +1,9 @@
 package cn.nukkit.level.generator.populator.overworld;
 
-import cn.nukkit.block.Block;
-import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
 import cn.nukkit.level.generator.populator.util.EnsureBelow;
 import cn.nukkit.level.generator.populator.util.EnsureCover;
-import cn.nukkit.level.generator.populator.Populator;
-import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
-import cn.nukkit.math.NukkitMath;
 import cn.nukkit.math.NukkitRandom;
 
 /**

@@ -3,10 +3,10 @@ package cn.nukkit.level.generator.populator.overworld;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
 import cn.nukkit.level.generator.populator.util.EnsureBelow;
 import cn.nukkit.level.generator.populator.util.EnsureCover;
 import cn.nukkit.level.generator.populator.util.EnsureGrassBelow;
-import cn.nukkit.level.generator.populator.PopulatorSurfaceBlock;
 import cn.nukkit.math.NukkitRandom;
 
 /**

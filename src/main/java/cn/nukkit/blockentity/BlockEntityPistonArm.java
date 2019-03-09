@@ -9,6 +9,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.IntTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.NumberTag;
 
 /**
  * @author CreeperFace
@@ -42,7 +43,7 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         }
 
         if (namedTag.contains("LastProgress")) {
-            this.lastProgress = (float) namedTag.getInt("LastProgress");
+            this.lastProgress = namedTag.getInt("LastProgress");
         }
 
         if (namedTag.contains("Sticky")) {
@@ -58,9 +59,9 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         }
 
         if (namedTag.contains("AttachedBlocks")) {
-            ListTag blocks = namedTag.getList("AttachedBlocks", IntTag.class);
+            ListTag<?> blocks = namedTag.getList("AttachedBlocks", IntTag.class);
             if (blocks != null && blocks.size() > 0) {
-                this.attachedBlock = new Vector3((double) ((IntTag) blocks.get(0)).getData(), (double) ((IntTag) blocks.get(1)).getData(), (double) ((IntTag) blocks.get(2)).getData());
+                this.attachedBlock = new Vector3((double) ((NumberTag<Integer>) blocks.get(0)).getData(), (double) ((NumberTag<Integer>) blocks.get(1)).getData(), (double) ((NumberTag<Integer>) blocks.get(2)).getData());
             }
         } else {
             namedTag.putList(new ListTag("AttachedBlocks"));
@@ -71,9 +72,9 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
 
     private void pushEntities() {
         float lastProgress = this.getExtendedProgress(this.lastProgress);
-        double x = (double) (lastProgress * (float) this.facing.getXOffset());
-        double y = (double) (lastProgress * (float) this.facing.getYOffset());
-        double z = (double) (lastProgress * (float) this.facing.getZOffset());
+        double x = lastProgress * this.facing.getXOffset();
+        double y = lastProgress * this.facing.getYOffset();
+        double z = lastProgress * this.facing.getZOffset();
         AxisAlignedBB bb = new SimpleAxisAlignedBB(x, y, z, x + 1.0d, y + 1.0d, z + 1.0d);
         Entity[] entities = this.level.getCollidingEntities(bb);
         if (entities.length != 0) {
@@ -85,10 +86,12 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         return this.extending ? progress - 1.0f : 1.0f - progress;
     }
 
+    @Override
     public boolean isBlockEntityValid() {
         return true;
     }
 
+    @Override
     public void saveNBT() {
         super.saveNBT();
         this.namedTag.putBoolean("isMovable", this.isMovable);
@@ -99,6 +102,7 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         this.namedTag.putBoolean("powered", this.powered);
     }
 
+    @Override
     public CompoundTag getSpawnCompound() {
         return getDefaultCompound(this, PISTON_ARM)
                 .putFloat("Progress", this.progress)

@@ -1,11 +1,7 @@
 package cn.nukkit.level.generator;
 
-import cn.nukkit.level.generator.populator.overworld.PopulatorRavines;
-import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
-import cn.nukkit.level.generator.populator.overworld.PopulatorBedrock;
-import cn.nukkit.level.generator.populator.overworld.PopulatorGroundCover;
-import cn.nukkit.level.generator.populator.overworld.PopulatorCaves;
-import cn.nukkit.block.*;
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockStone;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.BiomeSelector;
@@ -15,10 +11,19 @@ import cn.nukkit.level.generator.noise.vanilla.f.NoiseGeneratorOctavesF;
 import cn.nukkit.level.generator.noise.vanilla.f.NoiseGeneratorPerlinF;
 import cn.nukkit.level.generator.object.ore.OreType;
 import cn.nukkit.level.generator.populator.Populator;
+import cn.nukkit.level.generator.populator.overworld.PopulatorBedrock;
+import cn.nukkit.level.generator.populator.overworld.PopulatorCaves;
+import cn.nukkit.level.generator.populator.overworld.PopulatorGroundCover;
+import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
+import cn.nukkit.level.generator.populator.overworld.PopulatorRavines;
 import cn.nukkit.math.MathHelper;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Old extends Generator {
 
@@ -29,7 +34,7 @@ public class Old extends Generator {
     static {
         for (int i = -2; i <= 2; ++i) {
             for (int j = -2; j <= 2; ++j) {
-                biomeWeights[i + 2 + (j + 2) * 5] = (float) (10f / Math.sqrt((float) (i * i + j * j) + 0.2f));
+                biomeWeights[i + 2 + (j + 2) * 5] = (float) (10f / Math.sqrt(i * i + j * j + 0.2f));
             }
         }
     }
@@ -115,17 +120,17 @@ public class Old extends Generator {
 
         PopulatorOre ores = new PopulatorOre();
         ores.setOreTypes(new OreType[]{
-                new OreType(new BlockOreCoal(), 20, 17, 0, 128),
-                new OreType(new BlockOreIron(), 20, 9, 0, 64),
-                new OreType(new BlockOreRedstone(), 8, 8, 0, 16),
-                new OreType(new BlockOreLapis(), 1, 7, 0, 16),
-                new OreType(new BlockOreGold(), 2, 9, 0, 32),
-                new OreType(new BlockOreDiamond(), 1, 8, 0, 16),
-                new OreType(new BlockDirt(), 10, 33, 0, 128),
-                new OreType(new BlockGravel(), 8, 33, 0, 128),
-                new OreType(new BlockStone(BlockStone.GRANITE), 10, 33, 0, 80),
-                new OreType(new BlockStone(BlockStone.DIORITE), 10, 33, 0, 80),
-                new OreType(new BlockStone(BlockStone.ANDESITE), 10, 33, 0, 80)
+                new OreType(Block.get(COAL_ORE), 20, 17, 0, 128),
+                new OreType(Block.get(IRON_ORE), 20, 9, 0, 64),
+                new OreType(Block.get(REDSTONE_ORE), 8, 8, 0, 16),
+                new OreType(Block.get(LAPIS_ORE), 1, 7, 0, 16),
+                new OreType(Block.get(GOLD_ORE), 2, 9, 0, 32),
+                new OreType(Block.get(DIAMOND_ORE), 1, 8, 0, 16),
+                new OreType(Block.get(DIRT), 10, 33, 0, 128),
+                new OreType(Block.get(GRAVEL), 8, 33, 0, 128),
+                new OreType(Block.get(STONE, BlockStone.GRANITE), 10, 33, 0, 80),
+                new OreType(Block.get(STONE, BlockStone.DIORITE), 10, 33, 0, 80),
+                new OreType(Block.get(STONE, BlockStone.ANDESITE), 10, 33, 0, 80)
         });
         this.populators.add(ores);
 
@@ -184,8 +189,8 @@ public class Old extends Generator {
                         }
                     }
 
-                    heightVariationSum = heightVariationSum / biomeWeightSum;
-                    baseHeightSum = baseHeightSum / biomeWeightSum;
+                    heightVariationSum /= biomeWeightSum;
+                    baseHeightSum /= biomeWeightSum;
                     heightVariationSum = heightVariationSum * 0.9f + 0.1f;
                     baseHeightSum = (baseHeightSum * 4f - 1f) / 8f;
                     float depthNoise = depthRegion[vertCounter] / 8000f;
@@ -197,31 +202,31 @@ public class Old extends Generator {
                     depthNoise = depthNoise * 3f - 2f;
 
                     if (depthNoise < 0) {
-                        depthNoise = depthNoise / 2f;
+                        depthNoise /= 2f;
 
                         if (depthNoise < -1) {
                             depthNoise = -1f;
                         }
 
-                        depthNoise = depthNoise / 1.4f;
-                        depthNoise = depthNoise / 2f;
+                        depthNoise /= 1.4f;
+                        depthNoise /= 2f;
                     } else {
                         if (depthNoise > 1) {
                             depthNoise = 1f;
                         }
 
-                        depthNoise = depthNoise / 8f;
+                        depthNoise /= 8f;
                     }
 
                     ++vertCounter;
                     float baseHeightClone = baseHeightSum;
                     float heightVariationClone = heightVariationSum;
-                    baseHeightClone = baseHeightClone + depthNoise * 0.2f;
+                    baseHeightClone += depthNoise * 0.2f;
                     baseHeightClone = baseHeightClone * 8.5f / 8f;
                     float baseHeightFactor = 8.5f + baseHeightClone * 4f;
 
                     for (int ySeg = 0; ySeg < 33; ++ySeg) {
-                        float baseScale = ((float) ySeg - baseHeightFactor) * 12f * 128f / 256f / heightVariationClone;
+                        float baseScale = (ySeg - baseHeightFactor) * 12f * 128f / 256f / heightVariationClone;
 
                         if (baseScale < 0) {
                             baseScale *= 4f;
@@ -233,7 +238,7 @@ public class Old extends Generator {
                         float clamp = MathHelper.denormalizeClamp(minScaled, maxScaled, noiseScaled) - baseScale;
 
                         if (ySeg > 29) {
-                            float yScaled = ((float) (ySeg - 29) / 3f);
+                            float yScaled = ((ySeg - 29) / 3f);
                             clamp = clamp * (1f - yScaled) + -10f * yScaled;
                         }
 
@@ -329,6 +334,7 @@ public class Old extends Generator {
         }
     }
 
+    @Override
     public Vector3 getSpawn() {
         return new Vector3(128.5, 256, 128.5);
     }

@@ -38,7 +38,7 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
 
         // fBm
         for (NoiseGenerator octave : octaves) {
-            noise = ((SimplexNoise) octave).getNoise(noise, x, y, z, sizeX, sizeY, sizeZ, xScale * freq, yScale * freq, zScale * freq, 0.55D / amp);
+            noise = ((PerlinNoise) octave).getNoise(noise, x, y, z, sizeX, sizeY, sizeZ, xScale * freq, yScale * freq, zScale * freq, 0.55D / amp);
             freq *= lacunarity;
             amp *= persistence;
         }

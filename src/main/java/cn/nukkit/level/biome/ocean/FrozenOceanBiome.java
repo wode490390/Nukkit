@@ -1,6 +1,6 @@
 package cn.nukkit.level.biome.ocean;
 
-//import cn.nukkit.level.generator.populator.impl.WaterIcePopulator;
+//import cn.nukkit.level.generator.populator.overworld.WaterIcePopulator;
 
 /**
  * author: DaPorkchop_
@@ -9,6 +9,7 @@ package cn.nukkit.level.biome.ocean;
  * This biome does not generate naturally
  */
 public class FrozenOceanBiome extends OceanBiome {
+
     public FrozenOceanBiome() {
         super();
 

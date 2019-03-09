@@ -4,12 +4,17 @@ import cn.nukkit.Server;
 import cn.nukkit.plugin.Plugin;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 16-11-20.
  */
-public class NKServiceManager implements ServiceManager {
+public class SimpleServiceManager implements ServiceManager {
 
     private final Map<Class<?>, List<RegisteredServiceProvider<?>>> handle = new HashMap<>();
 
@@ -35,7 +40,9 @@ public class NKServiceManager implements ServiceManager {
 
             int position = Collections.binarySearch(list, registered);
 
-            if (position > -1) return false;
+            if (position > -1) {
+                return false;
+            }
 
             list.add(-(position + 1), registered);
         }
@@ -93,7 +100,9 @@ public class NKServiceManager implements ServiceManager {
     public <T> RegisteredServiceProvider<T> getProvider(Class<T> service) {
         synchronized (handle) {
             List<RegisteredServiceProvider<?>> list = handle.get(service);
-            if (list == null || list.isEmpty()) return null;
+            if (list == null || list.isEmpty()) {
+                return null;
+            }
             return (RegisteredServiceProvider<T>) list.get(0);
         }
     }

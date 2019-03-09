@@ -5,7 +5,7 @@ public abstract class OfflineMessage extends Packet {
     /**
      * Magic bytes used to distinguish offline messages from loose garbage.
      */
-    private byte[] MAGIC = new byte[]{
+    private final byte[] MAGIC = new byte[]{
             (byte) 0x00, (byte) 0xff, (byte) 0xff, (byte) 0x00,
             (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe,
             (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd,

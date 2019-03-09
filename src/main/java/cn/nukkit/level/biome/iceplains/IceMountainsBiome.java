@@ -22,6 +22,7 @@ public class IceMountainsBiome extends SnowyBiome {
         this.setHeightVariation(0.5f);
     }
 
+    @Override
     public String getName() {
         return "Ice Mountains";
     }

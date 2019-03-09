@@ -1,7 +1,17 @@
 package cn.nukkit.utils;
 
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.*;
+import cn.nukkit.entity.data.ByteEntityData;
+import cn.nukkit.entity.data.EntityData;
+import cn.nukkit.entity.data.EntityMetadata;
+import cn.nukkit.entity.data.FloatEntityData;
+import cn.nukkit.entity.data.IntEntityData;
+import cn.nukkit.entity.data.IntPositionEntityData;
+import cn.nukkit.entity.data.LongEntityData;
+import cn.nukkit.entity.data.ShortEntityData;
+import cn.nukkit.entity.data.SlotEntityData;
+import cn.nukkit.entity.data.StringEntityData;
+import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.NukkitMath;
@@ -187,7 +197,9 @@ public class Binary {
                     value = new Vector3fEntityData(key, stream.getVector3());
                     break;
             }
-            if (value != null) m.put(value);
+            if (value != null) {
+                m.put(value);
+            }
         }
         return m;
     }
@@ -414,7 +426,7 @@ public class Binary {
     }
 
     public static byte[] hexStringToBytes(String hexString) {
-        if (hexString == null || hexString.equals("")) {
+        if (hexString == null || hexString.isEmpty()) {
             return null;
         }
         String str = "0123456789ABCDEF";

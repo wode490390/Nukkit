@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class CommandEnum {
 
-    private String name;
-    private List<String> values;
+    private final String name;
+    private final List<String> values;
 
     public CommandEnum(String name, List<String> values) {
         this.name = name;
@@ -23,6 +23,7 @@ public class CommandEnum {
         return values;
     }
 
+    @Override
     public int hashCode() {
         return name.hashCode();
     }

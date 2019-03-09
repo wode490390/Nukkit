@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityDispenser;
 import cn.nukkit.inventory.ContainerInventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
@@ -68,7 +69,7 @@ public class BlockDispenser extends BlockSolidMeta implements BlockFaceable {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityDispenser) {
-            return ContainerInventory.calculateRedstone(((BlockEntityDispenser) blockEntity).getInventory());
+            return ContainerInventory.calculateRedstone(((InventoryHolder) blockEntity).getInventory());
         }
 
         return super.getComparatorInputOverride();

@@ -47,10 +47,11 @@ public class BlockEntitySign extends BlockEntitySpawnable {
             String[] lines = namedTag.getString("Text").split("\n", 4);
 
             for (int i = 0; i < text.length; i++) {
-                if (i < lines.length)
+                if (i < lines.length) {
                     text[i] = lines[i];
-                else
+                } else {
                     text[i] = "";
+                }
             }
         }
 
@@ -71,10 +72,11 @@ public class BlockEntitySign extends BlockEntitySpawnable {
 
     public boolean setText(String... lines) {
         for (int i = 0; i < text.length; i++) {
-            if (i < lines.length)
+            if (i < lines.length) {
                 text[i] = lines[i];
-            else
+            } else {
                 text[i] = "";
+            }
         }
 
         this.namedTag.putString("Text", String.join("\n", text));

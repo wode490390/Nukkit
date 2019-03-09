@@ -80,7 +80,7 @@ public class StatusCommand extends VanillaCommand {
 
 
         TextFormat playerColor = TextFormat.GREEN;
-        if (((float) server.getOnlinePlayers().size() / (float) server.getMaxPlayers()) > 0.85) {
+        if ((server.getOnlinePlayers().size() / (float) server.getMaxPlayers()) > 0.85) {
             playerColor = TextFormat.GOLD;
         }
 

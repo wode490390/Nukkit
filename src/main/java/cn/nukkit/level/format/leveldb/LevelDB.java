@@ -18,13 +18,26 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.AsyncTask;
-import cn.nukkit.utils.*;
+import cn.nukkit.utils.Binary;
+import cn.nukkit.utils.BinaryStream;
+import cn.nukkit.utils.ChunkException;
+import cn.nukkit.utils.LevelException;
+import cn.nukkit.utils.ThreadCache;
+import cn.nukkit.utils.Utils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.Options;
 import org.iq80.leveldb.impl.Iq80DBFactory;
-import java.io.*;
-import java.nio.ByteOrder;
-import java.util.*;
 
 /**
  * author: MagicDroidX
@@ -111,13 +124,13 @@ public class LevelDB implements LevelProvider {
                 .putLong("LastPlayed", System.currentTimeMillis() / 1000)
                 .putString("LevelName", name)
                 .putFloat("lightningLevel", 0)
-                .putInt("lightningTime", new Random().nextInt())
+                .putInt("lightningTime", ThreadLocalRandom.current().nextInt())
                 .putInt("limitedWorldOriginX", 128)
                 .putInt("limitedWorldOriginY", 70)
                 .putInt("limitedWorldOriginZ", 128)
                 .putInt("Platform", 0)
                 .putFloat("rainLevel", 0)
-                .putInt("rainTime", new Random().nextInt())
+                .putInt("rainTime", ThreadLocalRandom.current().nextInt())
                 .putLong("RandomSeed", seed)
                 .putByte("spawnMobs", 0)
                 .putInt("SpawnX", 128)
@@ -537,8 +550,9 @@ public class LevelDB implements LevelProvider {
     public GameRules getGamerules() {
         GameRules rules = GameRules.getDefault();
 
-        if (this.levelData.contains("GameRules"))
+        if (this.levelData.contains("GameRules")) {
             rules.readNBT(this.levelData.getCompound("GameRules"));
+        }
 
         return rules;
     }
@@ -557,6 +571,7 @@ public class LevelDB implements LevelProvider {
         return levelData;
     }
 
+    @Override
     public void updateLevelName(String name) {
         if (!this.getName().equals(name)) {
             this.levelData.putString("LevelName", name);

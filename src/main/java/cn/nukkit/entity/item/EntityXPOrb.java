@@ -137,13 +137,13 @@ public class EntityXPOrb extends Entity {
 
             if (this.closestPlayer != null) {
                 double dX = (this.closestPlayer.x - this.x) / 8.0D;
-                double dY = (this.closestPlayer.y + (double) this.closestPlayer.getEyeHeight() / 2.0D - this.y) / 8.0D;
+                double dY = (this.closestPlayer.y + this.closestPlayer.getEyeHeight() / 2.0D - this.y) / 8.0D;
                 double dZ = (this.closestPlayer.z - this.z) / 8.0D;
                 double d = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
                 double diff = 1.0D - d;
 
                 if (diff > 0.0D) {
-                    diff = diff * diff;
+                    diff *= diff;
                     this.motionX += dX / d * diff * 0.1D;
                     this.motionY += dY / d * diff * 0.1D;
                     this.motionZ += dZ / d * diff * 0.1D;

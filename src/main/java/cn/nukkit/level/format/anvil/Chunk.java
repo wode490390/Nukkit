@@ -1,7 +1,6 @@
 package cn.nukkit.level.format.anvil;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
@@ -32,11 +31,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Chunk extends BaseChunk {
 
     protected long inhabitedTime;
@@ -134,12 +135,18 @@ public class Chunk extends BaseChunk {
             }
         }
 
-        if (!extraData.isEmpty()) this.extraData = extraData;
+        if (!extraData.isEmpty()) {
+            this.extraData = extraData;
+        }
 
         this.NBTentities = nbt.getList("Entities", CompoundTag.class).getAll();
         this.NBTtiles = nbt.getList("TileEntities", CompoundTag.class).getAll();
-        if (this.NBTentities.isEmpty()) this.NBTentities = null;
-        if (this.NBTtiles.isEmpty()) this.NBTtiles = null;
+        if (this.NBTentities.isEmpty()) {
+            this.NBTentities = null;
+        }
+        if (this.NBTtiles.isEmpty()) {
+            this.NBTtiles = null;
+        }
 
         ListTag<CompoundTag> updateEntries = nbt.getList("TileTicks", CompoundTag.class);
 
@@ -244,11 +251,10 @@ public class Chunk extends BaseChunk {
 
             return new Chunk(provider, chunk.getCompound("Level"));
         } catch (Exception e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
             return null;
         }
     }
-
 
     public static Chunk fromFastBinary(byte[] data) {
         return fromFastBinary(data, null);
@@ -266,7 +272,6 @@ public class Chunk extends BaseChunk {
             return null;
         }
     }
-
 
     @Override
     public byte[] toFastBinary() {

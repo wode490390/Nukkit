@@ -26,7 +26,7 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
     private final byte BLOCKED = -1;
     public int adjacentSources = 0;
     protected Vector3 flowVector;
-    private Long2ByteMap flowCostVisited = new Long2ByteOpenHashMap();
+    private final Long2ByteMap flowCostVisited = new Long2ByteOpenHashMap();
 
     protected BlockLiquid(int meta) {
         super(meta);
@@ -83,7 +83,7 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
     }
 
     public float getFluidHeightPercent() {
-        float d = (float) this.getDamage();
+        float d = this.getDamage();
         if (d >= 8) {
             d = 0;
         }
@@ -292,14 +292,21 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
             int x = blockX;
             int y = blockY;
             int z = blockZ;
-            if (j == 0) {
-                --x;
-            } else if (j == 1) {
-                ++x;
-            } else if (j == 2) {
-                --z;
-            } else if (j == 3) {
-                ++z;
+            switch (j) {
+                case 0:
+                    --x;
+                    break;
+                case 1:
+                    ++x;
+                    break;
+                case 2:
+                    --z;
+                    break;
+                case 3:
+                    ++z;
+                    break;
+                default:
+                    break;
             }
             long hash = Level.blockHash(x, y, z);
             if (!this.flowCostVisited.containsKey(hash)) {
@@ -351,14 +358,19 @@ public abstract class BlockLiquid extends BlockTransparentMeta {
             int x = this.getFloorX();
             int y = this.getFloorY();
             int z = this.getFloorZ();
-            if (j == 0) {
-                --x;
-            } else if (j == 1) {
-                ++x;
-            } else if (j == 2) {
-                --z;
-            } else {
-                ++z;
+            switch (j) {
+                case 0:
+                    --x;
+                    break;
+                case 1:
+                    ++x;
+                    break;
+                case 2:
+                    --z;
+                    break;
+                default:
+                    ++z;
+                    break;
             }
             Block block = this.level.getBlock(x, y, z);
             if (!this.canFlowInto(block)) {

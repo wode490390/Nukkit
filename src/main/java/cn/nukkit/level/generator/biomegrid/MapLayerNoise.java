@@ -17,7 +17,7 @@ public class MapLayerNoise extends MapLayer {
         for (int i = 0; i < sizeZ; i++) {
             for (int j = 0; j < sizeX; j++) {
                 double noise = this.noiseGen.noise(x + j, z + i, 0.175D, 0.8D, true) * 4.0D;
-                int val = 0;
+                int val;
                 if (noise >= 0.05D) {
                     val = noise <= 0.2D ? 3 : 2;
                 } else {

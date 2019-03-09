@@ -4,17 +4,16 @@ import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.noise.bukkit.SimplexOctaveGenerator;
 import cn.nukkit.math.NukkitRandom;
-
 import java.util.Arrays;
 
 public class GroundGeneratorMesa extends GroundGenerator {
 
     private final MesaType type;
     private final int[] colorLayer = new int[64];
-    private int topMaterial = SAND;
-    private int topData = 1;
-    private int groundMaterial = STAINED_HARDENED_CLAY;
-    private int groundData = 1;
+    private final int topMaterial = SAND;
+    private final int topData = 1;
+    private final int groundMaterial = STAINED_HARDENED_CLAY;
+    private final int groundData = 1;
     private SimplexOctaveGenerator colorNoise;
     private SimplexOctaveGenerator canyonHeightNoise;
     private SimplexOctaveGenerator canyonScaleNoise;
@@ -55,7 +54,7 @@ public class GroundGeneratorMesa extends GroundGenerator {
 
         int seaLevel = 64;
 
-        int topMat = this.topMaterial;
+        int topMat;// = this.topMaterial
         int groundMat = this.groundMaterial;
 
         int surfaceHeight = Math.max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);

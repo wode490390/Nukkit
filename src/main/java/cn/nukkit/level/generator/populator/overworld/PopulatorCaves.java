@@ -8,7 +8,6 @@ import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.MathHelper;
 import cn.nukkit.math.NukkitRandom;
-
 import java.util.Random;
 
 /**
@@ -43,13 +42,14 @@ public class PopulatorCaves extends Populator {
 
         int size = this.checkAreaSize;
 
-        for (int x = chunkX - size; x <= chunkX + size; x++)
+        for (int x = chunkX - size; x <= chunkX + size; x++) {
             for (int z = chunkZ - size; z <= chunkZ + size; z++) {
                 long randomX = x * worldLong1;
                 long randomZ = z * worldLong2;
                 this.random.setSeed(randomX ^ randomZ ^ level.getSeed());
                 generateChunk(x, z, chunk);
             }
+        }
     }
 
     protected void generateLargeCaveNode(long seed, FullChunk chunk, double x, double y, double z) {
@@ -92,9 +92,9 @@ public class PopulatorCaves extends Populator {
             y += sin;
             z += MathHelper.sin(angelOffset) * cos;
 
-            if (bigAngel)
+            if (bigAngel) {
                 angel *= 0.92F;
-            else {
+            } else {
                 angel *= 0.7F;
             }
             angel += f2 * 0.1F;
@@ -124,9 +124,9 @@ public class PopulatorCaves extends Populator {
             }
 
             //Boundaries check.
-            if ((x < realX - 16.0D - offsetXZ * 2.0D) || (z < realZ - 16.0D - offsetXZ * 2.0D) || (x > realX + 16.0D + offsetXZ * 2.0D) || (z > realZ + 16.0D + offsetXZ * 2.0D))
+            if ((x < realX - 16.0D - offsetXZ * 2.0D) || (z < realZ - 16.0D - offsetXZ * 2.0D) || (x > realX + 16.0D + offsetXZ * 2.0D) || (z > realZ + 16.0D + offsetXZ * 2.0D)) {
                 continue;
-
+            }
 
             int xFrom = MathHelper.floor(x - offsetXZ) - chunkX * 16 - 1;
             int xTo = MathHelper.floor(x + offsetXZ) - chunkX * 16 + 1;
@@ -137,20 +137,25 @@ public class PopulatorCaves extends Populator {
             int zFrom = MathHelper.floor(z - offsetXZ) - chunkZ * 16 - 1;
             int zTo = MathHelper.floor(z + offsetXZ) - chunkZ * 16 + 1;
 
-            if (xFrom < 0)
+            if (xFrom < 0) {
                 xFrom = 0;
-            if (xTo > 16)
+            }
+            if (xTo > 16) {
                 xTo = 16;
+            }
 
-            if (yFrom < 1)
+            if (yFrom < 1) {
                 yFrom = 1;
+            }
             if (yTo > this.worldHeightCap - 8) {
                 yTo = this.worldHeightCap - 8;
             }
-            if (zFrom < 0)
+            if (zFrom < 0) {
                 zFrom = 0;
-            if (zTo > 16)
+            }
+            if (zTo > 16) {
                 zTo = 16;
+            }
 
             // Search for water
             boolean waterFound = false;
@@ -162,8 +167,9 @@ public class PopulatorCaves extends Populator {
                             if (block == Block.WATER || block == Block.STILL_WATER) {
                                 waterFound = true;
                             }
-                            if ((yy != yFrom - 1) && (xx != xFrom) && (xx != xTo - 1) && (zz != zFrom) && (zz != zTo - 1))
+                            if ((yy != yFrom - 1) && (xx != xFrom) && (xx != xTo - 1) && (zz != zFrom) && (zz != zTo - 1)) {
                                 yy = yFrom;
+                            }
                         }
                     }
                 }
@@ -223,20 +229,23 @@ public class PopulatorCaves extends Populator {
 
     protected void generateChunk(int chunkX, int chunkZ, FullChunk generatingChunkBuffer) {
         int i = this.random.nextInt(this.random.nextInt(this.random.nextInt(caveFrequency) + 1) + 1);
-        if (evenCaveDistribution)
+        if (evenCaveDistribution) {
             i = caveFrequency;
-        if (this.random.nextInt(100) >= caveRarity)
+        }
+        if (this.random.nextInt(100) >= caveRarity) {
             i = 0;
+        }
 
         for (int j = 0; j < i; j++) {
             double x = chunkX * 16 + this.random.nextInt(16);
 
             double y;
 
-            if (evenCaveDistribution)
+            if (evenCaveDistribution) {
                 y = numberInRange(random, caveMinAltitude, caveMaxAltitude);
-            else
+            } else {
                 y = this.random.nextInt(this.random.nextInt(caveMaxAltitude - caveMinAltitude + 1) + 1) + caveMinAltitude;
+            }
 
             double z = chunkZ * 16 + this.random.nextInt(16);
 

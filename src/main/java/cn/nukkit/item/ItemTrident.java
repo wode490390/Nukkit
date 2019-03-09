@@ -45,6 +45,7 @@ public class ItemTrident extends ItemTool {
         return 9;
     }
     
+    @Override
     public boolean onReleaseUsing(Player player) {
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<DoubleTag>("Pos")

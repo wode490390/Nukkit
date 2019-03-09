@@ -2,6 +2,7 @@ package cn.nukkit.potion;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityLiving;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityRegainHealthEvent;
@@ -266,7 +267,9 @@ public class Effect implements Cloneable {
 
         if (this.id == Effect.ABSORPTION) {
             int add = (this.amplifier + 1) * 4;
-            if (add > entity.getAbsorption()) entity.setAbsorption(add);
+            if (add > entity.getAbsorption()) {
+                entity.setAbsorption(add);
+            }
         }
     }
 
@@ -280,10 +283,10 @@ public class Effect implements Cloneable {
             ((Player) entity).dataPacket(pk);
 
             if (this.id == Effect.SPEED) {
-                ((Player) entity).setMovementSpeed(((Player) entity).getMovementSpeed() / (1 + 0.2f * (this.amplifier + 1)));
+                ((EntityLiving) entity).setMovementSpeed(((EntityLiving) entity).getMovementSpeed() / (1 + 0.2f * (this.amplifier + 1)));
             }
             if (this.id == Effect.SLOWNESS) {
-                ((Player) entity).setMovementSpeed(((Player) entity).getMovementSpeed() / (1 - 0.15f * (this.amplifier + 1)));
+                ((EntityLiving) entity).setMovementSpeed(((EntityLiving) entity).getMovementSpeed() / (1 - 0.15f * (this.amplifier + 1)));
             }
         }
 

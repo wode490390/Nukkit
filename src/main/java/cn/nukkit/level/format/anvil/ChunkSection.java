@@ -130,6 +130,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         }
     }
 
+    @Override
     public Block getAndSetBlock(int x, int y, int z, Block block) {
         synchronized (storage) {
             int fullId = storage.getAndSetFullBlock(x, y, z, block.getFullId());
@@ -188,7 +189,9 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
 
     @Override
     public int getBlockLight(int x, int y, int z) {
-        if (blockLight == null && !hasBlockLight) return 0;
+        if (blockLight == null && !hasBlockLight) {
+            return 0;
+        }
         this.blockLight = getLightArray();
         int l = blockLight[(y << 7) | (z << 3) | (x >> 1)] & 0xff;
         if ((x & 1) == 0) {
@@ -251,7 +254,9 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
 
     @Override
     public byte[] getSkyLightArray() {
-        if (this.skyLight != null) return skyLight;
+        if (this.skyLight != null) {
+            return skyLight;
+        }
         if (hasSkyLight) {
             if (compressedLight != null) {
                 inflate();
@@ -296,7 +301,9 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
 
     @Override
     public byte[] getLightArray() {
-        if (this.blockLight != null) return blockLight;
+        if (this.blockLight != null) {
+            return blockLight;
+        }
         if (hasBlockLight) {
             inflate();
             return this.blockLight;
@@ -374,6 +381,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         return false;
     }
 
+    @Override
     public ChunkSection copy() {
         return new ChunkSection(
                 this.y,

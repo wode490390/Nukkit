@@ -1,15 +1,14 @@
 package cn.nukkit.level.generator.populator.overworld;
 
+import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.generator.populator.Populator;
 import cn.nukkit.math.NukkitRandom;
 
-import static cn.nukkit.block.BlockID.ICE;
-import static cn.nukkit.block.BlockID.STILL_WATER;
-
 public class WaterIcePopulator extends Populator {
+
     @Override
     public void populate(ChunkManager level, int chunkX, int chunkZ, NukkitRandom random, FullChunk chunk) {
         for (int x = 0; x < 16; x++) {
@@ -17,8 +16,8 @@ public class WaterIcePopulator extends Populator {
                 Biome biome = Biome.getBiome(chunk.getBiomeId(x, z));
                 if (biome.isFreezing()) {
                     int topBlock = chunk.getHighestBlockAt(x, z);
-                    if (chunk.getBlockId(x, topBlock, z) == STILL_WATER)     {
-                        chunk.setBlockId(x, topBlock, z, ICE);
+                    if (chunk.getBlockId(x, topBlock, z) == Block.STILL_WATER)     {
+                        chunk.setBlockId(x, topBlock, z, Block.ICE);
                     }
                 }
             }

@@ -15,19 +15,19 @@ import cn.nukkit.raknet.server.RakNetServer;
 import cn.nukkit.raknet.server.ServerHandler;
 import cn.nukkit.raknet.server.ServerInstance;
 import cn.nukkit.utils.Binary;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import cn.nukkit.utils.Zlib;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class RakNetInterface implements ServerInstance, AdvancedSourceInterface {
 
     /**
@@ -42,22 +42,22 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
 
     private final RakNetServer raknet;
 
-    private final Map<String, Player> players = new ConcurrentHashMap<String, Player>();
+    private final Map<String, Player> players = new ConcurrentHashMap<>();
 
-    private final Map<String, Integer> networkLatency = new ConcurrentHashMap<String, Integer>();
+    private final Map<String, Integer> networkLatency = new ConcurrentHashMap<>();
 
-    private final Map<Integer, String> identifiers = new ConcurrentHashMap<Integer, String>();
+    private final Map<Integer, String> identifiers = new ConcurrentHashMap<>();
 
-    private final Map<String, Integer> identifiersACK = new ConcurrentHashMap<String, Integer>();
+    private final Map<String, Integer> identifiersACK = new ConcurrentHashMap<>();
 
     private final ServerHandler handler;
 
-    private int[] channelCounts = new int[256];
+    private final int[] channelCounts = new int[256];
 
     public RakNetInterface(Server server) {
         this.server = server;
 
-        this.raknet = new RakNetServer(this.server.getLogger(), this.server.getPort(), this.server.getIp().equals("") ? "0.0.0.0" : this.server.getIp());
+        this.raknet = new RakNetServer(this.server.getPort(), this.server.getIp().isEmpty() ? "0.0.0.0" : this.server.getIp());
         this.handler = new ServerHandler(this.raknet, this);
     }
 
@@ -138,7 +138,7 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
             this.identifiers.put(player.rawHashCode(), identifier);
             this.server.addPlayer(identifier, player);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
     }
 
@@ -164,13 +164,9 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
                     }
                 }
             } catch (Exception e) {
-                this.server.getLogger().logException(e);
+                log.throwing(e);
                 if (Nukkit.DEBUG > 1 && pk != null) {
-                    MainLogger logger = this.server.getLogger();
-//                    if (logger != null) {
-                    logger.debug("Packet " + pk.getClass().getName() + " 0x" + Binary.bytesToHexString(packet.buffer));
-                    //logger.logException(e);
-//                    }
+                    log.debug("Packet " + pk.getClass().getName() + " 0x" + Binary.bytesToHexString(packet.buffer));
                 }
 
                 if (this.players.containsKey(identifier)) {

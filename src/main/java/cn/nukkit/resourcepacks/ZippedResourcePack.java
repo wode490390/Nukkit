@@ -12,7 +12,9 @@ import java.security.MessageDigest;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ZippedResourcePack extends AbstractResourcePack {
 
     private File file;
@@ -33,7 +35,7 @@ public class ZippedResourcePack extends AbstractResourcePack {
                 this.manifest = new JsonParser().parse(new InputStreamReader(zip.getInputStream(entry), StandardCharsets.UTF_8)).getAsJsonObject();
             }
         } catch (IOException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
 
         if (this.manifest == null || !this.verifyManifest()) {
@@ -52,7 +54,7 @@ public class ZippedResourcePack extends AbstractResourcePack {
             try {
                 this.sha256 = MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(this.file.toPath()));
             } catch (Exception e) {
-                Server.getInstance().getLogger().logException(e);
+                log.throwing(e);
             }
         }
 
@@ -72,7 +74,7 @@ public class ZippedResourcePack extends AbstractResourcePack {
             fis.skip(off);
             fis.read(chunk);
         } catch (Exception e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
 
         return chunk;

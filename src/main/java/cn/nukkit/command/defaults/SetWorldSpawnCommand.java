@@ -7,6 +7,7 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import java.text.DecimalFormat;
 
@@ -32,25 +33,28 @@ public class SetWorldSpawnCommand extends VanillaCommand {
         }
         Level level;
         Vector3 pos;
-        if (args.length == 0) {
-            if (sender instanceof Player) {
-                level = ((Player) sender).getLevel();
-                pos = ((Player) sender).round();
-            } else {
-                sender.sendMessage(new TranslationContainer("commands.generic.ingame"));
-                return true;
-            }
-        } else if (args.length == 3) {
-            level = sender.getServer().getDefaultLevel();
-            try {
-                pos = new Vector3(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-            } catch (NumberFormatException e1) {
+        switch (args.length) {
+            case 0:
+                if (sender instanceof Player) {
+                    level = ((Position) sender).getLevel();
+                    pos = ((Vector3) sender).round();
+                } else {
+                    sender.sendMessage(new TranslationContainer("commands.generic.ingame"));
+                    return true;
+                }
+                break;
+            case 3:
+                level = sender.getServer().getDefaultLevel();
+                try {
+                    pos = new Vector3(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                } catch (NumberFormatException e1) {
+                    sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
+                    return true;
+                }
+                break;
+            default:
                 sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
                 return true;
-            }
-        } else {
-            sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
-            return true;
         }
         level.setSpawnLocation(pos);
         DecimalFormat round2 = new DecimalFormat("##0.00");

@@ -1,6 +1,5 @@
 package cn.nukkit.level.biome;
 
-import cn.nukkit.level.biome.CoveredBiome;
 import cn.nukkit.block.Block;
 
 /**

@@ -5,7 +5,10 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityCauldron;
 import cn.nukkit.event.player.PlayerBucketEmptyEvent;
 import cn.nukkit.event.player.PlayerBucketFillEvent;
-import cn.nukkit.item.*;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
+import cn.nukkit.item.ItemBucket;
+import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -32,6 +35,7 @@ public class BlockCauldron extends BlockTransparentMeta {
         return CAULDRON_BLOCK;
     }
 
+    @Override
     public String getName() {
         return "Cauldron Block";
     }
@@ -170,8 +174,9 @@ public class BlockCauldron extends BlockTransparentMeta {
                     break;
                 }
                 this.setDamage(this.getDamage() + 1);
-                if (this.getDamage() > 0x6)
+                if (this.getDamage() > 0x6) {
                     this.setDamage(0x6);
+                }
 
                 if (item.getCount() == 1) {
                     player.getInventory().setItemInHand(new ItemBlock(new BlockAir()));
@@ -179,7 +184,7 @@ public class BlockCauldron extends BlockTransparentMeta {
                     item.setCount(item.getCount() - 1);
                     player.getInventory().setItemInHand(item);
 
-                    Item bottle = new ItemGlassBottle();
+                    Item bottle = Item.get(Item.GLASS_BOTTLE);
                     if (player.getInventory().canAddItem(bottle)) {
                         player.getInventory().addItem(bottle);
                     } else {
@@ -195,16 +200,17 @@ public class BlockCauldron extends BlockTransparentMeta {
                 }
 
                 this.setDamage(this.getDamage() - 1);
-                if (this.getDamage() < 0)
+                if (this.getDamage() < 0) {
                     this.setDamage(0);
+                }
 
                 if (item.getCount() == 1) {
-                    player.getInventory().setItemInHand(new ItemPotion());
+                    player.getInventory().setItemInHand(Item.get(Item.POTION));
                 } else if (item.getCount() > 1) {
                     item.setCount(item.getCount() - 1);
                     player.getInventory().setItemInHand(item);
 
-                    Item potion = new ItemPotion();
+                    Item potion = Item.get(Item.POTION);
                     if (player.getInventory().canAddItem(potion)) {
                         player.getInventory().addItem(potion);
                     } else {
@@ -247,21 +253,24 @@ public class BlockCauldron extends BlockTransparentMeta {
     @Override
     public Item[] getDrops(Item item) {
         if (item.getTier() >= this.getToolHarvestLevel()) {
-            return new Item[]{new ItemCauldron()};
+            return new Item[]{
+                    this.toItem()
+            };
         }
-
         return new Item[0];
     }
 
     @Override
     public Item toItem() {
-        return new ItemCauldron();
+        return Item.get(Item.CAULDRON);
     }
 
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }
 
+    @Override
     public int getComparatorInputOverride() {
         return this.getDamage();
     }

@@ -1,12 +1,13 @@
 package cn.nukkit.level.biome.taiga;
 
-//import cn.nukkit.level.generator.populator.impl.WaterIcePopulator;
+//import cn.nukkit.level.generator.populator.overworld.WaterIcePopulator;
 
 /**
  * author: DaPorkchop_
  * Nukkit Project
  */
 public class ColdTaigaBiome extends TaigaBiome {
+
     public ColdTaigaBiome() {
         super();
 

@@ -8,9 +8,10 @@ import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest1;
 import cn.nukkit.raknet.protocol.packet.OpenConnectionRequest2;
 import cn.nukkit.raknet.protocol.packet.UnconnectedPing;
 import cn.nukkit.raknet.protocol.packet.UnconnectedPong;
-
 import java.io.IOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class OfflineMessageHandler {
 
     private final SessionManager sessionManager;
@@ -28,8 +29,8 @@ public class OfflineMessageHandler {
                 pk1.serverName = this.sessionManager.getName();
                 try {
                     this.sessionManager.sendPacket(pk1, address, port);
-                } catch (IOException e) {
-                    //ignore
+                } catch (IOException ignore) {
+
                 }
                 return true;
             case OpenConnectionRequest1.ID:
@@ -40,18 +41,18 @@ public class OfflineMessageHandler {
                     pk2.serverId = this.sessionManager.getID();
                     try {
                         this.sessionManager.sendPacket(pk2, address, port);
-                    } catch (IOException e) {
-                        //ignore
+                    } catch (IOException ignore) {
+
                     }
-                    this.sessionManager.getLogger().notice("Refused connection from address due to incompatible RakNet protocol version (expected " + serverProtocol + ", got " + ((OpenConnectionRequest1) packet).protocol + ")");
+                    log.info("Refused connection from address due to incompatible RakNet protocol version (expected " + serverProtocol + ", got " + ((OpenConnectionRequest1) packet).protocol + ")");
                 } else {
                     OpenConnectionReply1 pk3 = new OpenConnectionReply1();
                     pk3.mtuSize = (short) (((OpenConnectionRequest1) packet).mtuSize + 28); //IP header size (20 bytes) + UDP header size (8 bytes)
                     pk3.serverID = this.sessionManager.getID();
                     try {
                         this.sessionManager.sendPacket(pk3, address, port);
-                    } catch (IOException e) {
-                        //ignore
+                    } catch (IOException ignore) {
+
                     }
                 }
                 return true;
@@ -65,12 +66,12 @@ public class OfflineMessageHandler {
                     pk.clientPort = port;
                     try {
                         this.sessionManager.sendPacket(pk, address, port);
-                    } catch (IOException e) {
-                        //ignore
+                    } catch (IOException ignore) {
+
                     }
                     this.sessionManager.createSession(address, port, ((OpenConnectionRequest2) packet).clientID, mtuSize);
                 } else {
-                    this.sessionManager.getLogger().debug("Not creating session for address due to mismatched port, expected " + this.sessionManager.getPort() + ", got " + ((OpenConnectionRequest2) packet).serverPort);
+                    log.debug("Not creating session for address due to mismatched port, expected " + this.sessionManager.getPort() + ", got " + ((OpenConnectionRequest2) packet).serverPort);
                 }
                 return true;
         }

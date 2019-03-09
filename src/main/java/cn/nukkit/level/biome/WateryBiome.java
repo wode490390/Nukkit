@@ -1,12 +1,11 @@
 package cn.nukkit.level.biome;
 
-import cn.nukkit.level.biome.CoveredBiome;
-
 /**
  * author: DaPorkchop_
  * Nukkit Project
  */
 public abstract class WateryBiome extends CoveredBiome {
+
     @Override
     public int getSurfaceDepth(int y) {
         return 0;

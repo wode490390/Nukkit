@@ -1,6 +1,5 @@
 package cn.nukkit.network.rcon;
 
-import cn.nukkit.Server;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.BufferUnderflowException;
@@ -12,13 +11,21 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Thread that performs all RCON network work. A server.
  *
  * @author Tee7even
  */
+@Log4j2
 public class RCONServer extends Thread {
 
     private static final int SERVERDATA_AUTH = 3;
@@ -28,10 +35,10 @@ public class RCONServer extends Thread {
 
     private volatile boolean running;
 
-    private ServerSocketChannel serverChannel;
-    private Selector selector;
+    private final ServerSocketChannel serverChannel;
+    private final Selector selector;
 
-    private String password;
+    private final String password;
     private final Set<SocketChannel> rconSessions = new HashSet<>();
 
     private final List<RCONCommand> receiveQueue = new ArrayList<>();
@@ -72,6 +79,7 @@ public class RCONServer extends Thread {
         this.selector.wakeup();
     }
 
+    @Override
     public void run() {
         while (this.running) {
             try {
@@ -103,8 +111,8 @@ public class RCONServer extends Thread {
                 }
             } catch (BufferUnderflowException exception) {
                 //Corrupted packet, ignore
-            } catch (Exception exception) {
-                Server.getInstance().getLogger().logException(exception);
+            } catch (IOException exception) {
+                log.throwing(exception);
             }
         }
 
@@ -113,7 +121,7 @@ public class RCONServer extends Thread {
             this.serverChannel.close();
             this.selector.close();
         } catch (IOException exception) {
-            Server.getInstance().getLogger().logException(exception);
+            log.throwing(exception);
         }
 
         synchronized (this) {

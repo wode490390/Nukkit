@@ -51,12 +51,7 @@ public class BlockQuartz extends BlockSolidMeta {
                 "Quartz Pillar"
         };
 
-        return names[this.getDamage() & 0x03];
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
+        return names[this.getDamage() & 0x3];
     }
 
     @Override
@@ -71,7 +66,7 @@ public class BlockQuartz extends BlockSolidMeta {
                     0b0100
             };
 
-            this.setDamage(((this.getDamage() & 0x03) | faces[face.getIndex()]));
+            this.setDamage(((this.getDamage() & 0x3) | faces[face.getIndex()]));
         }
         this.getLevel().setBlock(block, this, true, true);
 
@@ -84,14 +79,13 @@ public class BlockQuartz extends BlockSolidMeta {
             return new Item[]{
                     toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override
     public Item toItem() {
-        return new ItemBlock(new BlockQuartz(), this.getDamage() & 0x03, 1);
+        return new ItemBlock(new BlockQuartz(), this.getDamage() & 0x3, 1);
     }
 
     @Override

@@ -180,22 +180,32 @@ public class Anvil extends BaseLevelProvider {
     public void doGarbageCollection(long time) {
         long start = System.currentTimeMillis();
         int maxIterations = size();
-        if (lastPosition > maxIterations) lastPosition = 0;
+        if (lastPosition > maxIterations) {
+            lastPosition = 0;
+        }
         int i;
         synchronized (chunks) {
             ObjectIterator<BaseFullChunk> iter = chunks.values().iterator();
-            if (lastPosition != 0) iter.skip(lastPosition);
+            if (lastPosition != 0) {
+                iter.skip(lastPosition);
+            }
             for (i = 0; i < maxIterations; i++) {
                 if (!iter.hasNext()) {
                     iter = chunks.values().iterator();
                 }
-                if (!iter.hasNext()) break;
+                if (!iter.hasNext()) {
+                    break;
+                }
                 BaseFullChunk chunk = iter.next();
-                if (chunk == null) continue;
+                if (chunk == null) {
+                    continue;
+                }
                 if (chunk.isGenerated() && chunk.isPopulated() && chunk instanceof Chunk) {
                     Chunk anvilChunk = (Chunk) chunk;
                     chunk.compress();
-                    if (System.currentTimeMillis() - start >= time) break;
+                    if (System.currentTimeMillis() - start >= time) {
+                        break;
+                    }
                 }
             }
         }

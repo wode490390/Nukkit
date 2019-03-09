@@ -78,7 +78,7 @@ public abstract class Packet implements Cloneable {
     }
 
     protected InetSocketAddress getAddress() {
-        byte version = (byte) this.getByte();
+        byte version = this.getByte();
         if (version == 4) {
             String addr = ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff);
             int port = this.getShort();
@@ -197,6 +197,8 @@ public abstract class Packet implements Cloneable {
     public interface PacketFactory {
         /**
          * Creates the packet
+         * 
+         * @return Packet
          */
         Packet create();
     }

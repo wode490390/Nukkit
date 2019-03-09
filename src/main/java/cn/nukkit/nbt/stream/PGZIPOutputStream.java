@@ -8,7 +8,12 @@ import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -32,7 +37,7 @@ public class PGZIPOutputStream extends FilterOutputStream {
 
     // todo: remove after block guessing is implemented
     // array list that contains the block sizes
-    private IntList blockSizes = new IntArrayList();
+    private final IntList blockSizes = new IntArrayList();
 
     private int level = Deflater.BEST_SPEED;
     private int strategy = Deflater.DEFAULT_STRATEGY;
@@ -71,7 +76,7 @@ public class PGZIPOutputStream extends FilterOutputStream {
         super(out);
         this.executor = executor;
         this.nthreads = nthreads;
-        this.emitQueue = new ArrayBlockingQueue<Future<byte[]>>(nthreads);
+        this.emitQueue = new ArrayBlockingQueue<>(nthreads);
         writeHeader();
     }
 
@@ -80,6 +85,8 @@ public class PGZIPOutputStream extends FilterOutputStream {
      * using {@link PGZIPOutputStream#getSharedThreadPool()}.
      *
      * @param out the eventual output stream for the compressed data.
+     * @param nthreads
+     * 
      * @throws java.io.IOException if it all goes wrong.
      */
     public PGZIPOutputStream(OutputStream out, int nthreads) throws IOException {
@@ -166,10 +173,12 @@ public class PGZIPOutputStream extends FilterOutputStream {
         for (; ; ) {
             Future<byte[]> future = emitQueue.peek();
             // LOG.info("Peeked future " + future);
-            if (future == null)
+            if (future == null) {
                 return;
-            if (!future.isDone())
+            }
+            if (!future.isDone()) {
                 return;
+            }
             // It's an ordered queue. This MUST be the same element as above.
             emitQueue.remove();
             byte[] toWrite = future.get();
@@ -206,8 +215,9 @@ public class PGZIPOutputStream extends FilterOutputStream {
     @Override
     public void flush() throws IOException {
         // LOG.info("Flush: " + block);
-        if (block.in_length > 0)
+        if (block.in_length > 0) {
             submit();
+        }
         emitUntil(0);
         super.flush();
     }

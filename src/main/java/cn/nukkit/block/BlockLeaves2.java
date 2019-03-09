@@ -18,6 +18,7 @@ public class BlockLeaves2 extends BlockLeaves {
         super(meta);
     }
 
+    @Override
     public String getName() {
         String[] names = new String[]{
                 "Oak Leaves",

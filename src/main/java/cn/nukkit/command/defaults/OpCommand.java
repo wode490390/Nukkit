@@ -39,7 +39,7 @@ public class OpCommand extends VanillaCommand {
 
         Command.broadcastCommandMessage(sender, new TranslationContainer("commands.op.success", player.getName()));
         if (player instanceof Player) {
-            ((Player) player).sendMessage(new TranslationContainer(TextFormat.GRAY + "%commands.op.message"));
+            ((CommandSender) player).sendMessage(new TranslationContainer(TextFormat.GRAY + "%commands.op.message"));
         }
 
         player.setOp(true);

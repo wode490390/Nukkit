@@ -27,7 +27,9 @@ public class PopulatorGlowstone extends PopulatorBlock {
             int sourceY = 4 + random.nextBoundedInt(120);
 
             int block = level.getBlockIdAt(sourceX, sourceY, sourceZ);
-            if (block != AIR || level.getBlockIdAt(sourceX, sourceY + 1, sourceZ) != NETHERRACK) continue;
+            if (block != AIR || level.getBlockIdAt(sourceX, sourceY + 1, sourceZ) != NETHERRACK) {
+                continue;
+            }
             level.setBlockAt(sourceX, sourceY, sourceZ, GLOWSTONE);
 
             for (int j = 0; j < 1500; j++) {
@@ -35,15 +37,31 @@ public class PopulatorGlowstone extends PopulatorBlock {
                 int z = sourceZ + random.nextBoundedInt(8) - random.nextBoundedInt(8);
                 int y = sourceY - random.nextBoundedInt(12);
                 block = level.getBlockIdAt(x, y, z);
-                if (block != AIR) continue;
+                if (block != AIR) {
+                    continue;
+                }
                 int glowstoneBlockCount = 0;
-                if (level.getBlockIdAt(x + 1, y, z) == GLOWSTONE) glowstoneBlockCount++;
-                if (level.getBlockIdAt(x, y + 1, z) == GLOWSTONE) glowstoneBlockCount++;
-                if (level.getBlockIdAt(x, y, z + 1) == GLOWSTONE) glowstoneBlockCount++;
-                if (level.getBlockIdAt(x - 1, y, z) == GLOWSTONE) glowstoneBlockCount++;
-                if (level.getBlockIdAt(x, y - 1, z) == GLOWSTONE) glowstoneBlockCount++;
-                if (level.getBlockIdAt(x, y, z - 1) == GLOWSTONE) glowstoneBlockCount++;
-                if (glowstoneBlockCount == 1) level.setBlockAt(x, y, z, GLOWSTONE);
+                if (level.getBlockIdAt(x + 1, y, z) == GLOWSTONE) {
+                    glowstoneBlockCount++;
+                }
+                if (level.getBlockIdAt(x, y + 1, z) == GLOWSTONE) {
+                    glowstoneBlockCount++;
+                }
+                if (level.getBlockIdAt(x, y, z + 1) == GLOWSTONE) {
+                    glowstoneBlockCount++;
+                }
+                if (level.getBlockIdAt(x - 1, y, z) == GLOWSTONE) {
+                    glowstoneBlockCount++;
+                }
+                if (level.getBlockIdAt(x, y - 1, z) == GLOWSTONE) {
+                    glowstoneBlockCount++;
+                }
+                if (level.getBlockIdAt(x, y, z - 1) == GLOWSTONE) {
+                    glowstoneBlockCount++;
+                }
+                if (glowstoneBlockCount == 1) {
+                    level.setBlockAt(x, y, z, GLOWSTONE);
+                }
             }
         }
     }

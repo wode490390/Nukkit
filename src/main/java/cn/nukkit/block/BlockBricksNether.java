@@ -45,9 +45,8 @@ public class BlockBricksNether extends BlockSolid {
             return new Item[]{
                     Item.get(Item.NETHER_BRICKS)
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override

@@ -25,8 +25,8 @@ public class GroundGenerator implements BlockID {
      * @param chunkData the affected chunk
      * @param world the affected world
      * @param random the PRNG to use
-     * @param x the chunk X coordinate
-     * @param z the chunk Z coordinate
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
      * @param biome the biome this column is in
      * @param surfaceNoise the amplitude of random variation in surface height
      */

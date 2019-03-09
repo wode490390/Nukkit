@@ -22,8 +22,7 @@ public class KillCommand extends VanillaCommand {
 
     public KillCommand(String name) {
         super(name, "%nukkit.command.kill.description", "%nukkit.command.kill.usage", new String[]{"suicide"});
-        this.setPermission("nukkit.command.kill.self;"
-                + "nukkit.command.kill.other");
+        this.setPermission("nukkit.command.kill.self;nukkit.command.kill.other");
         this.commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
                 new CommandParameter("player", CommandParamType.TARGET, true)
@@ -71,13 +70,13 @@ public class KillCommand extends VanillaCommand {
                     sender.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.permission"));
                     return true;
                 }
-                EntityDamageEvent ev = new EntityDamageEvent((Player) sender, DamageCause.SUICIDE, 1000);
+                EntityDamageEvent ev = new EntityDamageEvent((Entity) sender, DamageCause.SUICIDE, 1000);
                 sender.getServer().getPluginManager().callEvent(ev);
                 if (ev.isCancelled()) {
                     return true;
                 }
-                ((Player) sender).setLastDamageCause(ev);
-                ((Player) sender).setHealth(0);
+                ((Entity) sender).setLastDamageCause(ev);
+                ((Entity) sender).setHealth(0);
                 sender.sendMessage(new TranslationContainer("commands.kill.successful", sender.getName()));
             } else if (args[0].equals("@a")) {
                 if (!sender.hasPermission("nukkit.command.kill.other")) {
@@ -102,13 +101,13 @@ public class KillCommand extends VanillaCommand {
                 sender.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.permission"));
                 return true;
             }
-            EntityDamageEvent ev = new EntityDamageEvent((Player) sender, DamageCause.SUICIDE, 1000);
+            EntityDamageEvent ev = new EntityDamageEvent((Entity) sender, DamageCause.SUICIDE, 1000);
             sender.getServer().getPluginManager().callEvent(ev);
             if (ev.isCancelled()) {
                 return true;
             }
-            ((Player) sender).setLastDamageCause(ev);
-            ((Player) sender).setHealth(0);
+            ((Entity) sender).setLastDamageCause(ev);
+            ((Entity) sender).setHealth(0);
             sender.sendMessage(new TranslationContainer("commands.kill.successful", sender.getName()));
         } else {
             sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));

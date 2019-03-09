@@ -26,12 +26,17 @@ public class ListTag<T extends Tag> extends Tag {
 
     @Override
     void write(NBTOutputStream dos) throws IOException {
-        if (list.size() > 0) type = list.get(0).getId();
-        else type = 1;
+        if (list.size() > 0) {
+            type = list.get(0).getId();
+        } else {
+            type = 1;
+        }
 
         dos.writeByte(type);
         dos.writeInt(list.size());
-        for (T aList : list) aList.write(dos);
+        for (T aList : list) {
+            aList.write(dos);
+        }
     }
 
     @Override
@@ -60,13 +65,16 @@ public class ListTag<T extends Tag> extends Tag {
         return "ListTag '" + this.getName() + "' (" + list.size() + " entries of type " + Tag.getTagName(type) + ") {\n\t" + joiner.toString() + "\n}";
     }
 
+    @Override
     public void print(String prefix, PrintStream out) {
         super.print(prefix, out);
 
         out.println(prefix + "{");
         String orgPrefix = prefix;
         prefix += "   ";
-        for (T aList : list) aList.print(prefix, out);
+        for (T aList : list) {
+            aList.print(prefix, out);
+        }
         out.println(orgPrefix + "}");
     }
 
@@ -138,5 +146,4 @@ public class ListTag<T extends Tag> extends Tag {
         }
         return false;
     }
-
 }

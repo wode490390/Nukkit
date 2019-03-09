@@ -1,23 +1,37 @@
 package cn.nukkit.level.generator;
 
-import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
-import cn.nukkit.level.generator.populator.overworld.PopulatorGroundCover;
-import cn.nukkit.level.generator.populator.overworld.PopulatorCaves;
-import cn.nukkit.block.*;
+import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockStone;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.biomegrid.MapLayer;
-import cn.nukkit.level.generator.ground.*;
+import cn.nukkit.level.generator.ground.GroundGenerator;
+import cn.nukkit.level.generator.ground.GroundGeneratorMesa;
+import cn.nukkit.level.generator.ground.GroundGeneratorMycel;
+import cn.nukkit.level.generator.ground.GroundGeneratorPatchDirt;
+import cn.nukkit.level.generator.ground.GroundGeneratorPatchDirtAndStone;
+import cn.nukkit.level.generator.ground.GroundGeneratorPatchGravel;
+import cn.nukkit.level.generator.ground.GroundGeneratorPatchStone;
+import cn.nukkit.level.generator.ground.GroundGeneratorRocky;
+import cn.nukkit.level.generator.ground.GroundGeneratorSandy;
+import cn.nukkit.level.generator.ground.GroundGeneratorSnowy;
 import cn.nukkit.level.generator.noise.PerlinOctaveGenerator;
 import cn.nukkit.level.generator.noise.SimplexOctaveGenerator;
 import cn.nukkit.level.generator.noise.bukkit.OctaveGenerator;
 import cn.nukkit.level.generator.object.ore.OreType;
 import cn.nukkit.level.generator.populator.Populator;
+import cn.nukkit.level.generator.populator.overworld.PopulatorCaves;
+import cn.nukkit.level.generator.populator.overworld.PopulatorGroundCover;
+import cn.nukkit.level.generator.populator.overworld.PopulatorOre;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Normal extends Generator {
 
@@ -92,7 +106,7 @@ public class Normal extends Generator {
         }
     }
 
-    protected final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<String, Map<String, OctaveGenerator>>();
+    protected final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
     protected final double[][][] density = new double[5][5][33];
     protected final GroundGenerator groundGen = new GroundGenerator();
     protected final BiomeHeight defaultHeight = BiomeHeight.DEFAULT;
@@ -109,8 +123,8 @@ public class Normal extends Generator {
         }
     }
 
-    protected final List<Populator> populators = new ArrayList<Populator>();
-    protected final List<Populator> generationPopulators = new ArrayList<Populator>();
+    protected final List<Populator> populators = new ArrayList<>();
+    protected final List<Populator> generationPopulators = new ArrayList<>();
     protected ChunkManager level;
     protected Random random;
     protected NukkitRandom nukkitRandom;
@@ -142,7 +156,7 @@ public class Normal extends Generator {
 
     @Override
     public Map<String, Object> getSettings() {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     @Override
@@ -155,28 +169,23 @@ public class Normal extends Generator {
         this.localSeed2 = this.random.nextLong();
         this.nukkitRandom.setSeed(this.level.getSeed());
 
-        //this should run before all other populators so that we don't do things like generate ground cover on bedrock or something
-        PopulatorGroundCover cover = new PopulatorGroundCover();
-        this.generationPopulators.add(cover);
-
         PopulatorOre ores = new PopulatorOre();
         ores.setOreTypes(new OreType[]{
-                new OreType(new BlockOreCoal(), 20, 17, 0, 128),
-                new OreType(new BlockOreIron(), 20, 9, 0, 64),
-                new OreType(new BlockOreRedstone(), 8, 8, 0, 16),
-                new OreType(new BlockOreLapis(), 1, 7, 0, 16),
-                new OreType(new BlockOreGold(), 2, 9, 0, 32),
-                new OreType(new BlockOreDiamond(), 1, 8, 0, 16),
-                new OreType(new BlockDirt(), 10, 33, 0, 128),
-                new OreType(new BlockGravel(), 8, 33, 0, 128),
-                new OreType(new BlockStone(BlockStone.GRANITE), 10, 33, 0, 80),
-                new OreType(new BlockStone(BlockStone.DIORITE), 10, 33, 0, 80),
-                new OreType(new BlockStone(BlockStone.ANDESITE), 10, 33, 0, 80)
+                new OreType(Block.get(COAL_ORE), 20, 17, 0, 128),
+                new OreType(Block.get(IRON_ORE), 20, 9, 0, 64),
+                new OreType(Block.get(REDSTONE_ORE), 8, 8, 0, 16),
+                new OreType(Block.get(LAPIS_ORE), 1, 7, 0, 16),
+                new OreType(Block.get(GOLD_ORE), 2, 9, 0, 32),
+                new OreType(Block.get(DIAMOND_ORE), 1, 8, 0, 16),
+                new OreType(Block.get(DIRT), 10, 33, 0, 128),
+                new OreType(Block.get(GRAVEL), 8, 33, 0, 128),
+                new OreType(Block.get(STONE, BlockStone.GRANITE), 10, 33, 0, 80),
+                new OreType(Block.get(STONE, BlockStone.DIORITE), 10, 33, 0, 80),
+                new OreType(Block.get(STONE, BlockStone.ANDESITE), 10, 33, 0, 80)
         });
         this.populators.add(ores);
 
-        PopulatorCaves caves = new PopulatorCaves();
-        this.populators.add(caves);
+        this.populators.add(new PopulatorCaves());
 
         this.biomeGrid = MapLayer.initialize(level.getSeed(), this.getDimension(), this.getId());
     }
@@ -399,7 +408,7 @@ public class Normal extends Generator {
      */
     protected final Map<String, OctaveGenerator> getWorldOctaves() {
         if (this.octaveCache.get(this.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = new HashMap<String, OctaveGenerator>();
+            Map<String, OctaveGenerator> octaves = new HashMap<>();
             NukkitRandom seed = new NukkitRandom(this.level.getSeed());
 
             OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);

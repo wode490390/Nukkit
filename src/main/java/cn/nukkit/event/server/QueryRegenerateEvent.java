@@ -9,14 +9,19 @@ import cn.nukkit.plugin.PluginDescription;
 import cn.nukkit.utils.Binary;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class QueryRegenerateEvent extends ServerEvent {
-    //alot todo
+
+    //a lot todo
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -145,7 +150,9 @@ public class QueryRegenerateEvent extends ServerEvent {
     }
 
     public byte[] getLongQuery(byte[] buffer) {
-        if (buffer == null) buffer = new byte[Character.MAX_VALUE];
+        if (buffer == null) {
+            buffer = new byte[Character.MAX_VALUE];
+        }
         FastByteArrayOutputStream query = new FastByteArrayOutputStream(buffer);
         try {
             String plist = this.server_engine;
@@ -201,7 +208,9 @@ public class QueryRegenerateEvent extends ServerEvent {
     }
 
     public byte[] getShortQuery(byte[] buffer) {
-        if (buffer == null) buffer = new byte[Character.MAX_VALUE];
+        if (buffer == null) {
+            buffer = new byte[Character.MAX_VALUE];
+        }
         FastByteArrayOutputStream query = new FastByteArrayOutputStream(buffer);
         try {
             query.write(this.serverName.getBytes(StandardCharsets.UTF_8));

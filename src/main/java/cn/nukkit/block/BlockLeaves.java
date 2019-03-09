@@ -140,8 +140,12 @@ public class BlockLeaves extends BlockTransparentMeta {
     private Boolean findLog(Block pos, LongSet visited, Integer distance, Integer check, BlockFace fromSide) {
         ++check;
         long index = Hash.hashBlock((int) pos.x, (int) pos.y, (int) pos.z);
-        if (visited.contains(index)) return false;
-        if (pos.getId() == Block.WOOD) return true;
+        if (visited.contains(index)) {
+            return false;
+        }
+        if (pos.getId() == Block.WOOD) {
+            return true;
+        }
         if (pos.getId() == Block.LEAVES && distance < 4) {
             visited.add(index);
             int down = pos.down().getId();
@@ -151,41 +155,30 @@ public class BlockLeaves extends BlockTransparentMeta {
             if (fromSide == null) {
                 //North, East, South, West
                 for (int side = 2; side <= 5; ++side) {
-                    if (this.findLog(pos.getSide(BlockFace.fromIndex(side)), visited, distance + 1, check, BlockFace.fromIndex(side)))
+                    if (this.findLog(pos.getSide(BlockFace.fromIndex(side)), visited, distance + 1, check, BlockFace.fromIndex(side))) {
                         return true;
+                    }
                 }
             } else { //No more loops
                 switch (fromSide) {
                     case NORTH:
-                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                         break;
                     case SOUTH:
-                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                         break;
                     case WEST:
-                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.WEST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                     case EAST:
-                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide))
+                        if (this.findLog(pos.getSide(BlockFace.NORTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide) || this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide)) {
                             return true;
-                        if (this.findLog(pos.getSide(BlockFace.SOUTH), visited, distance + 1, check, fromSide))
-                            return true;
-                        if (this.findLog(pos.getSide(BlockFace.EAST), visited, distance + 1, check, fromSide))
-                            return true;
+                        }
                         break;
                 }
             }

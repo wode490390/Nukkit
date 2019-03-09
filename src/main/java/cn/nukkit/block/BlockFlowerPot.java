@@ -3,8 +3,8 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityFlowerPot;
+import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemFlowerPot;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -61,7 +61,9 @@ public class BlockFlowerPot extends BlockFlowableMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (face != BlockFace.UP) return false;
+        if (face != BlockFace.UP) {
+            return false;
+        }
         CompoundTag nbt = new CompoundTag()
                 .putString("id", BlockEntity.FLOWER_POT)
                 .putInt("x", (int) this.x)
@@ -93,8 +95,9 @@ public class BlockFlowerPot extends BlockFlowableMeta {
     @Override
     public boolean onActivate(Item item, Player player) {
         BlockEntity blockEntity = getLevel().getBlockEntity(this);
-        if (!(blockEntity instanceof BlockEntityFlowerPot)) return false;
-        if (blockEntity.namedTag.getShort("item") != 0 || blockEntity.namedTag.getInt("mData") != 0) return false;
+        if (!(blockEntity instanceof BlockEntityFlowerPot) || blockEntity.namedTag.getShort("item") != 0 || blockEntity.namedTag.getInt("mData") != 0) {
+            return false;
+        }
         int itemID;
         int itemMeta;
         if (!canPlaceIntoFlowerPot(item.getId())) {
@@ -112,7 +115,7 @@ public class BlockFlowerPot extends BlockFlowableMeta {
 
         this.setDamage(1);
         this.getLevel().setBlock(this, this, true);
-        ((BlockEntityFlowerPot) blockEntity).spawnToAll();
+        ((BlockEntitySpawnable) blockEntity).spawnToAll();
 
         if (player.isSurvival()) {
             item.setCount(item.getCount() - 1);

@@ -13,18 +13,22 @@ public class PlayerOffhandInventory extends BaseInventory {
         super(holder, InventoryType.OFFHAND);
     }
 
+    @Override
     public String getName() {
         return "Offhand";
     }
 
+    @Override
     public int getSize() {
         return 1;
     }
 
+    @Override
     public void setSize(int size) {
         throw new RuntimeException("Offhand can only carry one item at a time");
     }
 
+    @Override
     public void sendSlot(int index, Player... target) {
         InventorySlotPacket pk = new InventorySlotPacket();
         pk.inventorySlot = index;
@@ -52,6 +56,7 @@ public class PlayerOffhandInventory extends BaseInventory {
      *
      * @return Player
      */
+    @Override
     public Player getHolder() {
         return (Player) this.holder;
     }

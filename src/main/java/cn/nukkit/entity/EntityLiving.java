@@ -6,8 +6,11 @@ import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockMagma;
 import cn.nukkit.entity.data.ShortEntityData;
 import cn.nukkit.entity.passive.EntityWaterAnimal;
-import cn.nukkit.event.entity.*;
+import cn.nukkit.event.entity.EntityDamageByChildEntityEvent;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
+import cn.nukkit.event.entity.EntityDeathEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.format.FullChunk;
@@ -259,7 +262,9 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
 
         // Used to check collisions with magma blocks
         Block block = this.level.getBlock((int) x, (int) y - 1, (int) z);
-        if (block instanceof BlockMagma) block.onEntityCollide(this);
+        if (block instanceof BlockMagma) {
+            block.onEntityCollide(this);
+        }
 
         Timings.livingEntityBaseTickTimer.stopTiming();
 

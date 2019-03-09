@@ -72,13 +72,17 @@ public class FastByteArrayOutputStream extends OutputStream {
         this.array = a;
     }
 
-    /** Marks this array output stream as empty. */
+    /** Marks this array output stream as empty.
+     * 
+     * @return FastByteArrayOutputStream
+     */
     public FastByteArrayOutputStream reset() {
         this.length = 0;
         this.position = 0;
         return this;
     }
 
+    @Override
     public void write(final int b) {
         if (this.position == this.length) {
             this.length++;
@@ -121,6 +125,7 @@ public class FastByteArrayOutputStream extends OutputStream {
         return array;
     }
 
+    @Override
     public void write(final byte[] b, final int off, final int len) throws IOException {
         if (this.position + len > this.array.length) {
             this.array = grow(this.array, this.position + len, this.position);

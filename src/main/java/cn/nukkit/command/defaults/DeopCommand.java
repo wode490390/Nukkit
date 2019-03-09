@@ -40,7 +40,7 @@ public class DeopCommand extends VanillaCommand {
         player.setOp(false);
 
         if (player instanceof Player) {
-            ((Player) player).sendMessage(new TranslationContainer(TextFormat.GRAY + "%commands.deop.message"));
+            ((CommandSender) player).sendMessage(new TranslationContainer(TextFormat.GRAY + "%commands.deop.message"));
         }
 
         Command.broadcastCommandMessage(sender, new TranslationContainer("commands.deop.success", new String[]{player.getName()}));

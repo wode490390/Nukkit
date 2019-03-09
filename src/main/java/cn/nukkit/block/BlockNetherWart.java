@@ -7,7 +7,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -21,11 +20,6 @@ public class BlockNetherWart extends BlockFlowableMeta {
 
     public BlockNetherWart(int meta) {
         super(meta);
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     @Override
@@ -100,5 +94,3 @@ public class BlockNetherWart extends BlockFlowableMeta {
         return Item.get(Item.NETHER_WART);
     }
 }
-
-

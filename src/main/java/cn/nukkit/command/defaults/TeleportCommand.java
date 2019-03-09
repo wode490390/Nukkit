@@ -5,10 +5,13 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.player.PlayerTeleportEvent;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.math.NukkitMath;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 
 /**
@@ -78,7 +81,7 @@ public class TeleportCommand extends VanillaCommand {
             }
         }
         if (args.length < 3) {
-            ((Player) origin).teleport((Player) target, PlayerTeleportEvent.TeleportCause.COMMAND);
+            ((Entity) origin).teleport((Location) target, PlayerTeleportEvent.TeleportCause.COMMAND);
             Command.broadcastCommandMessage(sender, new TranslationContainer("commands.tp.success", origin.getName(), target.getName()));
             return true;
         } else if (((Player) target).getLevel() != null) {
@@ -94,22 +97,26 @@ public class TeleportCommand extends VanillaCommand {
             double yaw;
             double pitch;
             try {
-                x = Double.parseDouble(args[pos++].replace("~", "" + ((Player) target).x));
-                y = Double.parseDouble(args[pos++].replace("~", "" + ((Player) target).y));
-                z = Double.parseDouble(args[pos++].replace("~", "" + ((Player) target).z));
-                yaw = ((Player) target).getYaw();
-                pitch = ((Player) target).getPitch();
+                x = Double.parseDouble(args[pos++].replace("~", "" + ((Vector3) target).x));
+                y = Double.parseDouble(args[pos++].replace("~", "" + ((Vector3) target).y));
+                z = Double.parseDouble(args[pos++].replace("~", "" + ((Vector3) target).z));
+                yaw = ((Location) target).getYaw();
+                pitch = ((Location) target).getPitch();
             } catch (NumberFormatException e1) {
                 sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
                 return true;
             }
-            if (y < 0) y = 0;
-            if (y > 256) y = 256;
+            if (y < 0) {
+                y = 0;
+            }
+            if (y > 256) {
+                y = 256;
+            }
             if (args.length == 6 || (args.length == 5 && pos == 3)) {
                 yaw = Integer.parseInt(args[pos++]);
                 pitch = Integer.parseInt(args[pos++]);
             }
-            ((Player) target).teleport(new Location(x, y, z, yaw, pitch, ((Player) target).getLevel()), PlayerTeleportEvent.TeleportCause.COMMAND);
+            ((Entity) target).teleport(new Location(x, y, z, yaw, pitch, ((Position) target).getLevel()), PlayerTeleportEvent.TeleportCause.COMMAND);
             Command.broadcastCommandMessage(sender, new TranslationContainer("commands.tp.success.coordinates", target.getName(), String.valueOf(NukkitMath.round(x, 2)), String.valueOf(NukkitMath.round(y, 2)), String.valueOf(NukkitMath.round(z, 2))));
             return true;
         }

@@ -7,7 +7,11 @@ import cn.nukkit.item.Item;
 import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Snake1999 on 2016/1/13.
@@ -107,11 +111,15 @@ public abstract class Food {
     public static Food getByRelative(int relativeID, int meta) {
         final Food[] result = {null};
         registryCustom.forEach((n, f) -> {
-            if (n.id == relativeID && n.meta == meta && n.plugin.isEnabled()) result[0] = f;
+            if (n.id == relativeID && n.meta == meta && n.plugin.isEnabled()) {
+                result[0] = f;
+            }
         });
         if (result[0] == null) {
             registryDefault.forEach((n, f) -> {
-                if (n.id == relativeID && n.meta == meta) result[0] = f;
+                if (n.id == relativeID && n.meta == meta) {
+                    result[0] = f;
+                }
             });
         }
         return result[0];

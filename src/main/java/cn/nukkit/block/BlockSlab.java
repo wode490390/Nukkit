@@ -20,12 +20,12 @@ public abstract class BlockSlab extends BlockTransparentMeta {
 
     @Override
     public double getMinY() {
-        return ((this.getDamage() & 0x08) > 0) ? this.y + 0.5 : this.y;
+        return ((this.getDamage() & 0x8) > 0) ? this.y + 0.5 : this.y;
     }
 
     @Override
     public double getMaxY() {
-        return ((this.getDamage() & 0x08) > 0) ? this.y + 1 : this.y + 0.5;
+        return ((this.getDamage() & 0x8) > 0) ? this.y + 1 : this.y + 0.5;
     }
 
     @Override
@@ -39,53 +39,53 @@ public abstract class BlockSlab extends BlockTransparentMeta {
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         this.setDamage(this.getDamage() & 0x07);
-        if (face == BlockFace.DOWN) {
-            if (target instanceof BlockSlab && (target.getDamage() & 0x08) == 0x08 && (target.getDamage() & 0x07) == (this.getDamage() & 0x07)) {
-                this.getLevel().setBlock(target, Block.get(doubleSlab, this.getDamage()), true);
+        switch (face) {
+            case DOWN:
+                if (target instanceof BlockSlab && (target.getDamage() & 0x8) == 0x8 && (target.getDamage() & 0x7) == (this.getDamage() & 0x7)) {
+                    this.getLevel().setBlock(target, Block.get(doubleSlab, this.getDamage()), true);
 
-                return true;
-            } else if (block instanceof BlockSlab && (block.getDamage() & 0x07) == (this.getDamage() & 0x07)) {
-                this.getLevel().setBlock(block, Block.get(doubleSlab, this.getDamage()), true);
+                    return true;
+                } else if (block instanceof BlockSlab && (block.getDamage() & 0x7) == (this.getDamage() & 0x7)) {
+                    this.getLevel().setBlock(block, Block.get(doubleSlab, this.getDamage()), true);
 
-                return true;
-            } else {
-                this.setDamage(this.getDamage() | 0x08);
-            }
-        } else if (face == BlockFace.UP) {
-            if (target instanceof BlockSlab && (target.getDamage() & 0x08) == 0 && (target.getDamage() & 0x07) == (this.getDamage() & 0x07)) {
-                this.getLevel().setBlock(target, Block.get(doubleSlab, this.getDamage()), true);
+                    return true;
+                } else {
+                    this.setDamage(this.getDamage() | 0x8);
+                }
+                break;
+            case UP:
+                if (target instanceof BlockSlab && (target.getDamage() & 0x8) == 0 && (target.getDamage() & 0x7) == (this.getDamage() & 0x7)) {
+                    this.getLevel().setBlock(target, Block.get(doubleSlab, this.getDamage()), true);
 
-                return true;
-            } else if (block instanceof BlockSlab && (block.getDamage() & 0x07) == (this.getDamage() & 0x07)) {
-                this.getLevel().setBlock(block, Block.get(doubleSlab, this.getDamage()), true);
-
-                return true;
-            }
-            //TODO: check for collision
-        } else {
-            if (block instanceof BlockSlab) {
-                if ((block.getDamage() & 0x07) == (this.getDamage() & 0x07)) {
+                    return true;
+                } else if (block instanceof BlockSlab && (block.getDamage() & 0x7) == (this.getDamage() & 0x7)) {
                     this.getLevel().setBlock(block, Block.get(doubleSlab, this.getDamage()), true);
 
                     return true;
                 }
+            
+                //TODO: check for collision
+                break;
+            default:
+                if (block instanceof BlockSlab) {
+                    if ((block.getDamage() & 0x07) == (this.getDamage() & 0x7)) {
+                        this.getLevel().setBlock(block, Block.get(doubleSlab, this.getDamage()), true);
 
-                return false;
-            } else {
-                if (fy > 0.5) {
-                    this.setDamage(this.getDamage() | 0x08);
+                        return true;
+                    }
+
+                    return false;
+                } else {
+                    if (fy > 0.5) {
+                        this.setDamage(this.getDamage() | 0x8);
+                    }
                 }
-            }
+                break;
         }
 
-        if (block instanceof BlockSlab && (target.getDamage() & 0x07) != (this.getDamage() & 0x07)) {
+        if (block instanceof BlockSlab && (target.getDamage() & 0x7) != (this.getDamage() & 0x7)) {
             return false;
         }
         this.getLevel().setBlock(block, this, true, true);

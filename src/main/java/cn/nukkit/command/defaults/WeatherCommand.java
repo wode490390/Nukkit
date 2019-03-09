@@ -7,14 +7,13 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 
 /**
  * author: Angelic47
  * Nukkit Project
  */
 public class WeatherCommand extends VanillaCommand {
-
-    private java.util.Random rand = new java.util.Random();
 
     public WeatherCommand(String name) {
         super(name, "%nukkit.command.weather.description", "%commands.weather.usage");
@@ -42,7 +41,7 @@ public class WeatherCommand extends VanillaCommand {
         if (args.length > 1) {
             try {
                 seconds = Integer.parseInt(args[1]);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
                 return true;
             }
@@ -51,7 +50,7 @@ public class WeatherCommand extends VanillaCommand {
         }
 
         if (sender instanceof Player) {
-            level = ((Player) sender).getLevel();
+            level = ((Position) sender).getLevel();
         } else {
             level = sender.getServer().getDefaultLevel();
         }
@@ -82,6 +81,5 @@ public class WeatherCommand extends VanillaCommand {
                 sender.sendMessage(new TranslationContainer("commands.weather.usage", this.usageMessage));
                 return false;
         }
-
     }
 }

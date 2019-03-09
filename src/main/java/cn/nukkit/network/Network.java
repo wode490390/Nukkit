@@ -7,16 +7,17 @@ import cn.nukkit.network.protocol.*;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.Zlib;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Network {
 
     public static final byte CHANNEL_NONE = 0;
@@ -76,12 +77,12 @@ public class Network {
                 interfaz.process();
             } catch (Exception e) {
                 if (Nukkit.DEBUG > 1) {
-                    this.server.getLogger().logException(e);
+                    log.throwing(e);
                 }
 
                 interfaz.emergencyShutdown();
                 this.unregisterInterface(interfaz);
-                this.server.getLogger().critical(this.server.getLanguage().translateString("nukkit.server.networkError", new String[]{interfaz.getClass().getName(), e.getMessage()}));
+                log.error(this.server.getLanguage().translateString("nukkit.server.networkError", new String[]{interfaz.getClass().getName(), e.getMessage()}));
             }
         }
     }
@@ -162,8 +163,8 @@ public class Network {
 
         } catch (Exception e) {
             if (Nukkit.DEBUG > 0) {
-                this.server.getLogger().debug("BatchPacket 0x" + Binary.bytesToHexString(packet.payload));
-                this.server.getLogger().logException(e);
+                log.debug("BatchPacket 0x" + Binary.bytesToHexString(packet.payload));
+                log.throwing(e);
             }
         }
     }
@@ -172,10 +173,13 @@ public class Network {
      * Process packets obtained from batch packets
      * Required to perform additional analyses and filter unnecessary packets
      *
+     * @param player
      * @param packets
      */
     public void processPackets(Player player, List<DataPacket> packets) {
-        if (packets.isEmpty()) return;
+        if (packets.isEmpty()) {
+            return;
+        }
         packets.forEach(player::handleDataPacket);
     }
 
@@ -186,7 +190,7 @@ public class Network {
             try {
                 return clazz.newInstance();
             } catch (Exception e) {
-                Server.getInstance().getLogger().logException(e);
+                log.throwing(e);
             }
         }
         return null;

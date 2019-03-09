@@ -4,7 +4,6 @@ import cn.nukkit.entity.data.Skin;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
@@ -80,40 +79,70 @@ public class LoginPacket extends DataPacket {
         this.chainData = new Gson().fromJson(new String(this.get(this.getLInt()), StandardCharsets.UTF_8),
                 new TypeToken<Map<String, List<String>>>() {
                 }.getType());
-        if (this.chainData.isEmpty() || !this.chainData.containsKey("chain") || this.chainData.get("chain").isEmpty()) return;
+        if (this.chainData.isEmpty() || !this.chainData.containsKey("chain") || this.chainData.get("chain").isEmpty()) {
+            return;
+        }
         for (String chain : this.chainData.get("chain")) {
             JsonObject webtoken = this.decodeToken(chain);
-            if (webtoken == null) continue;
+            if (webtoken == null) {
+                continue;
+            }
             if (webtoken.has("extraData")) {
                 JsonObject extra = webtoken.get("extraData").getAsJsonObject();
-                if (extra.has("displayName")) this.username = extra.get("displayName").getAsString();
-                if (extra.has("identity")) this.clientUUID = UUID.fromString(extra.get("identity").getAsString());
-                if (extra.has("XUID")) this.xuid = extra.get("XUID").getAsString();
+                if (extra.has("displayName")) {
+                    this.username = extra.get("displayName").getAsString();
+                }
+                if (extra.has("identity")) {
+                    this.clientUUID = UUID.fromString(extra.get("identity").getAsString());
+                }
+                if (extra.has("XUID")) {
+                    this.xuid = extra.get("XUID").getAsString();
+                }
             }
 
-            if (webtoken.has("identityPublicKey")) this.identityPublicKey = webtoken.get("identityPublicKey").getAsString();
+            if (webtoken.has("identityPublicKey")) {
+                this.identityPublicKey = webtoken.get("identityPublicKey").getAsString();
+            }
         }
 
         this.clientDataJwt = new String(this.get(this.getLInt()));
         this.clientData = this.decodeToken(this.clientDataJwt);
 
-        if (this.clientData.has("ClientRandomId")) this.clientId = this.clientData.get("ClientRandomId").getAsLong();
-        if (this.clientData.has("ServerAddress")) this.serverAddress = this.clientData.get("ServerAddress").getAsString();
+        if (this.clientData.has("ClientRandomId")) {
+            this.clientId = this.clientData.get("ClientRandomId").getAsLong();
+        }
+        if (this.clientData.has("ServerAddress")) {
+            this.serverAddress = this.clientData.get("ServerAddress").getAsString();
+        }
 
-        if (this.clientData.has("LanguageCode")) this.locale = this.clientData.get("LanguageCode").getAsString();
+        if (this.clientData.has("LanguageCode")) {
+            this.locale = this.clientData.get("LanguageCode").getAsString();
+        }
 
         this.skin = new Skin();
 
-        if (this.clientData.has("SkinId")) this.skin.setSkinId(this.clientData.get("SkinId").getAsString());
-        if (this.clientData.has("SkinData")) this.skin.setSkinData(Base64.getDecoder().decode(this.clientData.get("SkinData").getAsString()));
-        if (this.clientData.has("CapeData")) this.skin.setCapeData(Base64.getDecoder().decode(this.clientData.get("CapeData").getAsString()));
-        if (this.clientData.has("SkinGeometryName")) this.skin.setGeometryName(this.clientData.get("SkinGeometryName").getAsString());
-        if (this.clientData.has("SkinGeometry")) this.skin.setGeometryData(new String(Base64.getDecoder().decode(this.clientData.get("SkinGeometry").getAsString()), StandardCharsets.UTF_8));
+        if (this.clientData.has("SkinId")) {
+            this.skin.setSkinId(this.clientData.get("SkinId").getAsString());
+        }
+        if (this.clientData.has("SkinData")) {
+            this.skin.setSkinData(Base64.getDecoder().decode(this.clientData.get("SkinData").getAsString()));
+        }
+        if (this.clientData.has("CapeData")) {
+            this.skin.setCapeData(Base64.getDecoder().decode(this.clientData.get("CapeData").getAsString()));
+        }
+        if (this.clientData.has("SkinGeometryName")) {
+            this.skin.setGeometryName(this.clientData.get("SkinGeometryName").getAsString());
+        }
+        if (this.clientData.has("SkinGeometry")) {
+            this.skin.setGeometryData(new String(Base64.getDecoder().decode(this.clientData.get("SkinGeometry").getAsString()), StandardCharsets.UTF_8));
+        }
     }
 
     private JsonObject decodeToken(String token) {
         String[] base = token.split("\\.");
-        if (base.length < 2) return null;
+        if (base.length < 2) {
+            return null;
+        }
         return new Gson().fromJson(new String(Base64.getDecoder().decode(base[1]), StandardCharsets.UTF_8), JsonObject.class);
     }
 }

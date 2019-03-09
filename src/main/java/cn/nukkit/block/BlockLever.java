@@ -108,6 +108,7 @@ public class BlockLever extends BlockFlowableMeta implements BlockFaceable {
         return isPowerOn() ? 15 : 0;
     }
 
+    @Override
     public int getStrongPower(BlockFace side) {
         return !isPowerOn() ? 0 : LeverOrientation.byMetadata(this.isPowerOn() ? this.getDamage() ^ 0x08 : this.getDamage()).getFacing() == side ? 15 : 0;
     }
@@ -151,6 +152,7 @@ public class BlockLever extends BlockFlowableMeta implements BlockFaceable {
             return this.facing;
         }
 
+        @Override
         public String toString() {
             return this.name;
         }

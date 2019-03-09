@@ -57,7 +57,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                     inventoryList.remove(item);
                 } else if (slot >= 100 && slot < 104) {
                     this.inventory.setItem(this.inventory.getSize() + slot - 100, NBTIO.getItemHelper(item));
-                } else if (slot == -106) {
+                } else if (slot == 106) {
                     this.offhandInventory.setItem(0, NBTIO.getItemHelper(item));
                 } else {
                     this.inventory.setItem(slot - 9, NBTIO.getItemHelper(item));
@@ -109,7 +109,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
         if (this.offhandInventory != null) {
             Item item = this.offhandInventory.getItem(0);
             if (item != null && item.getId() != Item.AIR) {
-                this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, -106));
+                this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, 106));
             }
         }
 
@@ -151,7 +151,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
 
             float originalDamage = source.getDamage();
 
-            float finalDamage = (float) (originalDamage * (1 - Math.max((float) points / 5f, points - originalDamage / (2 + (float) toughness / 4f)) / 25) * (1 - /*0.75 */ epf * 0.04));
+            float finalDamage = (float) (originalDamage * (1 - Math.max(points / 5f, points - originalDamage / (2 + toughness / 4f)) / 25) * (1 - /*0.75 */ epf * 0.04));
 
             source.setDamage(finalDamage - originalDamage, DamageModifier.ARMOR);
             //source.setDamage(source.getDamage(DamageModifier.ARMOR_ENCHANTMENTS) - (originalDamage - originalDamage * (1 - epf / 25)), DamageModifier.ARMOR_ENCHANTMENTS);
@@ -168,7 +168,9 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                 Item armor = this.inventory.getArmorItem(slot);
 
                 Tag tag = armor.getNamedTagEntry("Unbreakable");
-                if (tag != null && tag instanceof ByteTag && ((ByteTag) tag).data > 0) continue;
+                if (tag != null && tag instanceof ByteTag && ((ByteTag) tag).data > 0) {
+                    continue;
+                }
 
                 if (armor.hasEnchantments()) {
                     if (damager != null) {
@@ -178,8 +180,9 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                     }
 
                     Enchantment durability = armor.getEnchantment(Enchantment.ID_DURABILITY);
-                    if (durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= ThreadLocalRandom.current().nextInt(100))
+                    if (durability != null && durability.getLevel() > 0 && (100 / (durability.getLevel() + 1)) <= ThreadLocalRandom.current().nextInt(100)) {
                         continue;
+                    }
                 }
                 armor.setDamage(armor.getDamage() + 1);
 

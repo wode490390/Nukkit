@@ -30,11 +30,6 @@ public abstract class BlockStairs extends BlockTransparentMeta implements BlockF
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         int[] faces = new int[]{2, 1, 3, 0};
         this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
@@ -91,50 +86,57 @@ public abstract class BlockStairs extends BlockTransparentMeta implements BlockF
         }
 
 
-        if (side == 0) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x + 0.5,
-                    this.y + f2,
-                    this.z,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 1
-            ))) {
-                return true;
-            }
-        } else if (side == 1) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z,
-                    this.x + 0.5,
-                    this.y + f3,
-                    this.z + 1
-            ))) {
-                return true;
-            }
-        } else if (side == 2) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z + 0.5,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 1
-            ))) {
-                return true;
-            }
-        } else if (side == 3) {
-            if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 0.5
-            ))) {
-                return true;
-            }
+        switch (side) {
+            case 0:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x + 0.5,
+                        this.y + f2,
+                        this.z,
+                        this.x + 1,
+                        this.y + f3,
+                        this.z + 1
+                ))) {
+                    return true;
+                }
+                break;
+            case 1:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x,
+                        this.y + f2,
+                        this.z,
+                        this.x + 0.5,
+                        this.y + f3,
+                        this.z + 1
+                ))) {
+                    return true;
+                }
+                break;
+            case 2:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x,
+                        this.y + f2,
+                        this.z + 0.5,
+                        this.x + 1,
+                        this.y + f3,
+                        this.z + 1
+                ))) {
+                    return true;
+                }
+                break;
+            case 3:
+                if (bb.intersectsWith(new SimpleAxisAlignedBB(
+                        this.x,
+                        this.y + f2,
+                        this.z,
+                        this.x + 1,
+                        this.y + f3,
+                        this.z + 0.5
+                ))) {
+                    return true;
+                }
+                break;
+            default:
+                break;
         }
 
         return false;

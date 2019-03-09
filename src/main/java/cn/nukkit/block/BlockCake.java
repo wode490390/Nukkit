@@ -107,7 +107,9 @@ public class BlockCake extends BlockTransparentMeta {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (player != null && player.getFoodData().getLevel() < player.getFoodData().getMaxLevel()) {
-            if (getDamage() <= 0x6) setDamage(getDamage() + 1);
+            if (getDamage() <= 0x6) {
+                this.setDamage(getDamage() + 1);
+            }
             if (getDamage() >= 0x6) {
                 getLevel().setBlock(this, new BlockAir(), true);
             } else {
@@ -124,10 +126,12 @@ public class BlockCake extends BlockTransparentMeta {
         return BlockColor.AIR_BLOCK_COLOR;
     }
 
+    @Override
     public int getComparatorInputOverride() {
         return (7 - this.getDamage()) * 2;
     }
 
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }

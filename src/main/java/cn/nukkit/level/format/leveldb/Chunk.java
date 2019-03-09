@@ -1,7 +1,6 @@
 package cn.nukkit.level.format.leveldb;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
@@ -27,11 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Chunk extends BaseFullChunk {
 
     public static final int DATA_LENGTH = 16384 * (2 + 1 + 1 + 1) + 256 + 1024;
@@ -413,7 +414,7 @@ public class Chunk extends BaseFullChunk {
                 return chunk;
             }
         } catch (Exception e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
         return null;
     }
@@ -442,7 +443,7 @@ public class Chunk extends BaseFullChunk {
 
             if (saveExtra && provider instanceof LevelDB) {
 
-                List<CompoundTag> entities = new ArrayList<CompoundTag>();
+                List<CompoundTag> entities = new ArrayList<>();
 
                 for (Entity entity : this.getEntities().values()) {
                     if (!(entity instanceof Player) && !entity.closed) {
@@ -458,7 +459,7 @@ public class Chunk extends BaseFullChunk {
                     ((LevelDB) provider).getDatabase().delete(entitiesKey.toArray());
                 }
 
-                List<CompoundTag> tiles = new ArrayList<CompoundTag>();
+                List<CompoundTag> tiles = new ArrayList<>();
 
                 for (BlockEntity blockEntity : this.getBlockEntities().values()) {
                     if (!blockEntity.closed) {

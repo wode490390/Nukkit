@@ -7,9 +7,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
-import cn.nukkit.level.particle.NoteParticle;
 import cn.nukkit.math.BlockFace;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.BlockEventPacket;
 
 /**
@@ -236,7 +234,6 @@ public class BlockNoteblock extends BlockSolid {
         this.getLevel().addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
 
         this.getLevel().addSound(this, instrument.getSound(), 1, (float) Math.pow(2d, (this.getStrength() - 12d) / 12d));
-        //this.getLevel().addParticle(new NoteParticle(new Vector3(this.getFloorX() + 0.5d, this.getFloorY() + 1.2d, this.getFloorZ() + 0.5d)));
     }
 
     @Override

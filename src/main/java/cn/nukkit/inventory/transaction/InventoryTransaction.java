@@ -8,13 +8,20 @@ import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
-import cn.nukkit.utils.MainLogger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author CreeperFace
  */
+@Log4j2
 public class InventoryTransaction {
 
     private long creationTime;
@@ -200,13 +207,15 @@ public class InventoryTransaction {
                     else if (actionSource.equals(lastTargetItem)) {
                         lastTargetItem.count -= actionSource.count;
                         list.remove(i);
-                        if (lastTargetItem.count == 0) sortedThisLoop++;
+                        if (lastTargetItem.count == 0) {
+                            sortedThisLoop++;
+                        }
                     }
                 }
             } while (sortedThisLoop > 0);
 
             if (list.size() > 0) { //couldn't chain all the actions together
-                MainLogger.getLogger().debug("Failed to compact " + originalList.size() + " actions for " + this.source.getName());
+                log.debug("Failed to compact " + originalList.size() + " actions for " + this.source.getName());
                 return false;
             }
 
@@ -216,7 +225,7 @@ public class InventoryTransaction {
 
             this.addAction(new SlotChangeAction(originalAction.getInventory(), originalAction.getSlot(), originalAction.getSourceItem(), lastTargetItem));
 
-            MainLogger.getLogger().debug("Successfully compacted " + originalList.size() + " actions for " + this.source.getName());
+            log.debug("Successfully compacted " + originalList.size() + " actions for " + this.source.getName());
         }
 
         return true;
@@ -227,7 +236,7 @@ public class InventoryTransaction {
 
         List<Item> haveItems = new ArrayList<>();
         List<Item> needItems = new ArrayList<>();
-        return matchItems(needItems, haveItems) && this.actions.size() > 0 && haveItems.size() == 0 && needItems.size() == 0;
+        return matchItems(needItems, haveItems) && this.actions.size() > 0 && haveItems.isEmpty() && needItems.isEmpty();
     }
 
     protected boolean callExecuteEvent() {

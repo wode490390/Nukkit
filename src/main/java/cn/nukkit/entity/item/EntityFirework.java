@@ -10,7 +10,6 @@ import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFirework;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
@@ -25,7 +24,7 @@ public class EntityFirework extends Entity {
     public static final int NETWORK_ID = FIREWORKS_ROCKET;
 
     private int fireworkAge;
-    private int lifetime;
+    private final int lifetime;
     private Item firework;
 
     public EntityFirework(FullChunk chunk, CompoundTag nbt) {
@@ -88,7 +87,7 @@ public class EntityFirework extends Entity {
             float f = (float) Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.yaw = (float) (Math.atan2(this.motionX, this.motionZ) * (180d / Math.PI));
 
-            this.pitch = (float) (Math.atan2(this.motionY, (double) f) * (180d / Math.PI));
+            this.pitch = (float) (Math.atan2(this.motionY, f) * (180d / Math.PI));
 
 
             if (this.fireworkAge == 0) {

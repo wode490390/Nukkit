@@ -11,7 +11,7 @@ import cn.nukkit.math.Vector3;
 
 public class PopulatorObsidianPillar extends PopulatorBlock {
 
-    private ObsidianPillar obsidianPillar;
+    private final ObsidianPillar obsidianPillar;
 
     public PopulatorObsidianPillar(ObsidianPillar obsidianPillar) {
         this.obsidianPillar = obsidianPillar;

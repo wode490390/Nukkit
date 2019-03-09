@@ -17,10 +17,12 @@ public class UpdateAttributesPacket extends DataPacket {
         return NETWORK_ID;
     }
 
+    @Override
     public void decode() {
 
     }
 
+    @Override
     public void encode() {
         this.reset();
         this.putEntityRuntimeId(this.entityRuntimeId);

@@ -10,12 +10,17 @@ import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.types.*;
+import cn.nukkit.network.protocol.types.CommandOriginData;
+import cn.nukkit.network.protocol.types.EntityLink;
 import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * author: MagicDroidX
@@ -216,6 +221,8 @@ public class BinaryStream {
      * Reads a list of Attributes from the stream.
      *
      * @return Attribute[]
+     * 
+     * @throws Exception
      */
     public Attribute[] getAttributeList() throws Exception {
         List<Attribute> list = new ArrayList<>();
@@ -246,6 +253,8 @@ public class BinaryStream {
 
     /**
      * Writes a list of Attributes to the packet buffer using the standard format.
+     * 
+     * @param attributes
      */
     public void putAttributeList(Attribute[] attributes) {
         this.putUnsignedVarInt(attributes.length);
@@ -464,6 +473,8 @@ public class BinaryStream {
 
     /**
      * Writes an EntityUniqueID
+     * 
+     * @param eid
      */
     public void putEntityUniqueId(long eid) {
         this.putVarLong(eid);
@@ -471,6 +482,8 @@ public class BinaryStream {
 
     /**
      * Reads and returns an EntityRuntimeID
+     * 
+     * @return long
      */
     public long getEntityRuntimeId() {
         return this.getUnsignedVarLong();
@@ -478,6 +491,8 @@ public class BinaryStream {
 
     /**
      * Writes an EntityUniqueID
+     * 
+     * @param eid
      */
     public void putEntityRuntimeId(long eid) {
         this.putUnsignedVarLong(eid);

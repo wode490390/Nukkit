@@ -2,7 +2,9 @@ package cn.nukkit.level;
 
 import cn.nukkit.Server;
 import cn.nukkit.level.generator.Generator;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public enum EnumLevel {
     OVERWORLD,
     NETHER,
@@ -23,7 +25,7 @@ public enum EnumLevel {
         if (Server.getInstance().isNetherAllowed() && !Server.getInstance().loadLevel("nether")) {
 
             // Nether is allowed, and not found, create the default nether world
-            Server.getInstance().getLogger().info("No level called \"nether\" found, creating default nether level.");
+            log.info("No level called \"nether\" found, creating default nether level.");
 
             Class<? extends Generator> generator = Generator.getGenerator("nether");
 
@@ -41,11 +43,11 @@ public enum EnumLevel {
 
         if (NETHER.level == null) {
             // Nether is not found or disabled
-            Server.getInstance().getLogger().alert("No level called \"nether\" found or nether is disabled in server properties! Nether functionality will be disabled.");
+            log.warn("No level called \"nether\" found or nether is disabled in server properties! Nether functionality will be disabled.");
         }
 
         if (!Server.getInstance().loadLevel("the_end")) {
-            Server.getInstance().getLogger().info("No level called \"the_end\" found, creating default the end level.");
+            log.info("No level called \"the_end\" found, creating default the end level.");
             Class<? extends Generator> generator = Generator.getGenerator("the_end");
             Server.getInstance().generateLevel("the_end", seed, generator);
             if (!Server.getInstance().isLevelLoaded("the_end")) {
@@ -96,7 +98,7 @@ public enum EnumLevel {
         return null;
     }
 
-    private static final int mRound(int value, int factor) {
+    private static int mRound(int value, int factor) {
         return Math.round((float) value / factor) * factor;
     }
 }
