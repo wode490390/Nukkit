@@ -13,6 +13,7 @@ import cn.nukkit.network.protocol.PlayerListPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.network.protocol.SetEntityDataPacket;
 import cn.nukkit.network.protocol.types.PlayerListEntry;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,34 +31,38 @@ public class FloatingTextParticle extends Particle {
     protected boolean invisible = false;
     protected EntityMetadata metadata = new EntityMetadata();
 
-    public FloatingTextParticle(Location location, String text) {
-        this(location, text, "");
+    public FloatingTextParticle(Location location, String title) {
+        this(location, title, null);
     }
 
-    public FloatingTextParticle(Location location, String text, String title) {
-        this(location.getLevel(), location, text, title);
+    public FloatingTextParticle(Location location, String title, String text) {
+        this(location.getLevel(), location, title, text);
     }
 
-    public FloatingTextParticle(Vector3 pos, String text) {
-        this(pos, text, "");
+    public FloatingTextParticle(Vector3 pos, String title) {
+        this(pos, title, null);
     }
 
-    public FloatingTextParticle(Vector3 pos, String text, String title) {
-        this(null, pos, text, title);
+    public FloatingTextParticle(Vector3 pos, String title, String text) {
+        this(null, pos, title, text);
     }
 
-    private FloatingTextParticle(Level level, Vector3 pos, String text, String title) {
+    private FloatingTextParticle(Level level, Vector3 pos, String title, String text) {
         super(pos.x, pos.y, pos.z);
         this.level = level;
 
-        long flags = 1l << Entity.DATA_FLAG_IMMOBILE;
+        long flags = 1l << Entity.DATA_FLAG_NO_AI;
         this.metadata.putLong(Entity.DATA_FLAGS, flags)
                 .putLong(Entity.DATA_LEAD_HOLDER_EID,-1)
-                .putString(Entity.DATA_NAMETAG, title)
-                .putString(Entity.DATA_SCORE_TAG, text)
                 .putFloat(Entity.DATA_SCALE, 0.01f) //zero causes problems on debug builds?
                 .putFloat(Entity.DATA_BOUNDING_BOX_HEIGHT, 0.01f)
                 .putFloat(Entity.DATA_BOUNDING_BOX_WIDTH, 0.01f);
+        if (!Strings.isNullOrEmpty(title)) {
+            metadata.putString(Entity.DATA_NAMETAG, title);
+        }
+        if (!Strings.isNullOrEmpty(text)) {
+            metadata.putString(Entity.DATA_SCORE_TAG, text);
+        }
     }
 
     public String getText() {

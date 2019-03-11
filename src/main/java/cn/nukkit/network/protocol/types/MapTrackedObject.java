@@ -9,6 +9,7 @@ public class MapTrackedObject {
 
     public long entityUniqueId; //Only set if is TYPE_ENTITY
 
+    //Only set if is TYPE_BLOCK
     public int x;
     public int y;
     public int z;

@@ -129,6 +129,7 @@ import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Zlib;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
+import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -3658,23 +3659,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.sendTitle(title, subtitle, 20, 20, 5);
     }
 
-    public void sendTitle(String title, String subtitle, int fadein, int duration, int fadeout) {
-        if (!subtitle.isEmpty()) {
-            SetTitlePacket pk = new SetTitlePacket();
-            pk.type = SetTitlePacket.TYPE_SET_SUBTITLE;
-            pk.text = subtitle;
-            pk.fadeInTime = fadein;
-            pk.stayTime = duration;
-            pk.fadeOutTime = fadeout;
-            this.dataPacket(pk);
+    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        this.setTitleAnimationTimes(fadeIn, stay, fadeOut);
+        if (!Strings.isNullOrEmpty(subtitle)) {
+            this.setSubtitle(subtitle);
         }
-        SetTitlePacket pk2 = new SetTitlePacket();
-        pk2.type = SetTitlePacket.TYPE_SET_TITLE;
-        pk2.text = title;
-        pk2.fadeInTime = fadein;
-        pk2.stayTime = duration;
-        pk2.fadeOutTime = fadeout;
-        this.dataPacket(pk2);
+        SetTitlePacket pk = new SetTitlePacket();
+        pk.text = Strings.isNullOrEmpty(title) ? " " : title; // title won't send if an empty string is used.
+        pk.type = SetTitlePacket.TYPE_SET_TITLE;
+        this.dataPacket(pk);
     }
 
     public void sendActionBar(String title) {
