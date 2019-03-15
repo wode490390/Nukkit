@@ -46,14 +46,14 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     @SuppressWarnings("unchecked")
     public static void init() {
         if (list == null) {
-            list = new Class[256];
-            fullList = new Block[4096];
-            light = new int[256];
-            lightFilter = new int[256];
-            solid = new boolean[256];
-            hardness = new double[256];
-            transparent = new boolean[256];
-            hasMeta = new boolean[256];
+            list = new Class[512];
+            fullList = new Block[8192];
+            light = new int[512];
+            lightFilter = new int[512];
+            solid = new boolean[512];
+            hardness = new double[512];
+            transparent = new boolean[512];
+            hasMeta = new boolean[512];
 
             list[AIR] = BlockAir.class; //0
             list[STONE] = BlockStone.class; //1
@@ -231,7 +231,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[COAL_BLOCK] = BlockCoal.class; //173
             list[PACKED_ICE] = BlockIcePacked.class; //174
             list[DOUBLE_PLANT] = BlockDoublePlant.class; //175
-
+            list[STANDING_BANNER] = BlockBanner.class; //176
+            list[WALL_BANNER] = BlockWallBanner.class; //177
             list[DAYLIGHT_DETECTOR_INVERTED] = BlockDaylightDetectorInverted.class; //178
             list[RED_SANDSTONE] = BlockRedSandstone.class; //179
             list[RED_SANDSTONE_STAIRS] = BlockStairsRedSandstone.class; //180
@@ -291,6 +292,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[STAINED_GLASS] = BlockGlassStained.class; //241
             list[PODZOL] = BlockPodzol.class; //243
             list[BEETROOT_BLOCK] = BlockBeetroot.class; //244
+            list[STONECUTTER] = BlockStonecutter.class; //245
             list[GLOWING_OBSIDIAN] = BlockObsidianGlowing.class; //246
             //list[NETHER_REACTOR] = BlockNetherReactor.class; //247 Should not be removed
 
@@ -298,7 +300,9 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
             list[OBSERVER] = BlockObserver.class; //251
 
-            for (int id = 0; id < 256; id++) {
+            list[BLUE_ICE] = BlockIceBlue.class; //266 Testing
+
+            for (int id = 0; id < 512; id++) {
                 Class c = list[id];
                 if (c != null) {
                     Block block;
@@ -387,10 +391,6 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
         block.z = z;
         block.level = level;
         return block;
-    }
-
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
@@ -903,7 +903,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
     public String getSaveId() {
         String name = getClass().getName();
-        return name.substring(16, name.length());
+        return name.substring(16);
     }
 
     @Override

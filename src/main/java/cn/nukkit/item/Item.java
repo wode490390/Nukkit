@@ -274,6 +274,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[ELYTRA] = ItemElytra.class; //444
 
             //TODO: list[SHULKER_SHELL] = ItemShulkerShell.class; //445
+            list[BANNER] = ItemBanner.class; //446
             
             list[TRIDENT] = ItemTrident.class; //455
 
@@ -308,6 +309,11 @@ public class Item implements Cloneable, BlockID, ItemID {
                     list[i] = Block.list[i];
                 }
             }
+            for (int i = 256; i < 512; ++i) {
+                if (Block.list[i] != null) {
+                    list[(0xff - i) & 0xffff] = Block.list[i];
+                }
+            }
         }
 
         initCreativeItems();
@@ -332,8 +338,8 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         for (Map map : list) {
             try {
-                int id = (int) map.get("id");
-                int damage = (int) map.getOrDefault("damage", 0);
+                int id = ((int) map.get("id")) & 0xffff;
+                int damage = ((int) map.getOrDefault("damage", 0)) & 0xffff;
                 String hex = (String) map.get("nbt_hex");
                 byte[] nbt = hex != null ? Utils.parseHexBinary(hex) : new byte[0];
 
@@ -410,6 +416,12 @@ public class Item implements Cloneable, BlockID, ItemID {
                 } else {
                     item = new ItemBlock(Block.get(id), meta, count);
                 }
+            } else if (id >= 512) {
+                if (meta >= 0) {
+                    item = new ItemBlock(Block.get(0xffff - id + 256, meta), meta, count);
+                } else {
+                    item = new ItemBlock(Block.get(0xffff - id + 256), meta, count);
+                }
             } else {
                 item = ((Item) c.getConstructor(Integer.class, int.class).newInstance(meta, count));
             }
@@ -430,7 +442,7 @@ public class Item implements Cloneable, BlockID, ItemID {
         int id = 0;
         int meta = 0;
 
-        Pattern integerPattern = Pattern.compile("^[1-9]\\d*$");
+        Pattern integerPattern = Pattern.compile("^-?[1-9]\\d*$");
         if (integerPattern.matcher(b[0]).matches()) {
             id = Integer.valueOf(b[0]);
         } else {
@@ -449,7 +461,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     public static Item fromJson(Map<String, Object> data) {
         String nbt = (String) data.getOrDefault("nbt_hex", "");
 
-        return get(Utils.toInt(data.get("id")), Utils.toInt(data.getOrDefault("damage", 0)), Utils.toInt(data.getOrDefault("count", 1)), nbt.isEmpty() ? new byte[0] : Utils.parseHexBinary(nbt));
+        return get(Utils.toInt(data.get("id")) & 0xffff, Utils.toInt(data.getOrDefault("damage", 0)) & 0xffff, Utils.toInt(data.getOrDefault("count", 1)), nbt.isEmpty() ? new byte[0] : Utils.parseHexBinary(nbt));
     }
 
     public static Item[] fromStringMultiple(String str) {
@@ -547,9 +559,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         if (tag.contains("ench")) {
             Tag enchTag = tag.get("ench");
-            if (enchTag instanceof ListTag) {
-                return true;
-            }
+            return enchTag instanceof ListTag;
         }
 
         return false;
@@ -635,7 +645,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             }
         }
 
-        return enchantments.stream().toArray(Enchantment[]::new);
+        return enchantments.toArray(new Enchantment[0]);
     }
 
     public boolean hasCustomName() {
@@ -646,9 +656,7 @@ public class Item implements Cloneable, BlockID, ItemID {
         CompoundTag tag = this.getNamedTag();
         if (tag.contains("display")) {
             Tag tag1 = tag.get("display");
-            if (tag1 instanceof CompoundTag && ((CompoundTag) tag1).contains("Name") && ((CompoundTag) tag1).get("Name") instanceof StringTag) {
-                return true;
-            }
+            return tag1 instanceof CompoundTag && ((CompoundTag) tag1).contains("Name") && ((CompoundTag) tag1).get("Name") instanceof StringTag;
         }
 
         return false;

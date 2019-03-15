@@ -66,7 +66,7 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
+        int[] faces = {2, 5, 3, 4};
         this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
         this.getLevel().setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag()
@@ -128,10 +128,15 @@ public class BlockFurnaceBurning extends BlockSolidMeta {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockFurnace());
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    new ItemBlock(new BlockFurnace())
+                    this.toItem()
             };
         } else {
             return new Item[0];

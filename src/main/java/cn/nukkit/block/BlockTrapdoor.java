@@ -64,20 +64,20 @@ public class BlockTrapdoor extends BlockTransparentMeta {
             if ((damage & 0x08) > 0) {
                 bb = new SimpleAxisAlignedBB(
                         0,
-                        0 + 1 - f,
+                        1 - f,
                         0,
-                        0 + 1,
-                        0 + 1,
-                        0 + 1
+                        1,
+                        1,
+                        1
                 );
             } else {
                 bb = new SimpleAxisAlignedBB(
                         0,
                         0,
                         0,
-                        0 + 1,
+                        1,
                         0 + f,
-                        0 + 1
+                        1
                 );
             }
             if ((damage & 0x04) > 0) {
@@ -85,29 +85,29 @@ public class BlockTrapdoor extends BlockTransparentMeta {
                     bb.setBounds(
                             0,
                             0,
-                            0 + 1 - f,
-                            0 + 1,
-                            0 + 1,
-                            0 + 1
+                            1 - f,
+                            1,
+                            1,
+                            1
                     );
                 } else if ((damage & 0x03) == 1) {
                     bb.setBounds(
                             0,
                             0,
                             0,
-                            0 + 1,
-                            0 + 1,
+                            1,
+                            1,
                             0 + f
                     );
                 }
                 if ((damage & 0x03) == 2) {
                     bb.setBounds(
-                            0 + 1 - f,
+                            1 - f,
                             0,
                             0,
-                            0 + 1,
-                            0 + 1,
-                            0 + 1
+                            1,
+                            1,
+                            1
                     );
                 }
                 if ((damage & 0x03) == 3) {
@@ -116,8 +116,8 @@ public class BlockTrapdoor extends BlockTransparentMeta {
                             0,
                             0,
                             0 + f,
-                            0 + 1,
-                            0 + 1
+                            1,
+                            1
                     );
                 }
             }
@@ -161,9 +161,12 @@ public class BlockTrapdoor extends BlockTransparentMeta {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_REDSTONE || type == Level.BLOCK_UPDATE_NORMAL) {
+        if (type == Level.BLOCK_UPDATE_REDSTONE) {
             if ((!isOpen() && this.level.isBlockPowered(this.getLocation())) || (isOpen() && !this.level.isBlockPowered(this.getLocation()))) {
                 this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, isOpen() ? 15 : 0, isOpen() ? 0 : 15));
+                this.setDamage(this.getDamage() ^ 0x08);
+                this.level.setBlock(this, this, true);
+                this.level.addSound(this, isOpen() ? Sound.RANDOM_DOOR_OPEN : Sound.RANDOM_DOOR_CLOSE);
                 return type;
             }
         }

@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
  */
 public class Anvil extends BaseLevelProvider {
     public static final int VERSION = 19133;
-    static private final byte[] PAD_256 = new byte[256];
 
     public Anvil(Level level, String path) throws IOException {
         super(level, path);
@@ -78,7 +77,7 @@ public class Anvil extends BaseLevelProvider {
                 .putLong("DayTime", 0)
                 .putInt("GameType", 0)
                 .putString("generatorName", Generator.getGeneratorName(generator))
-                .putString("generatorOptions", options.containsKey("preset") ? options.get("preset") : "")
+                .putString("generatorOptions", options.getOrDefault("preset", ""))
                 .putInt("generatorVersion", 1)
                 .putBoolean("hardcore", false)
                 .putBoolean("initialized", true)
@@ -99,6 +98,7 @@ public class Anvil extends BaseLevelProvider {
         NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", levelData), new FileOutputStream(path + "level.dat"), ByteOrder.BIG_ENDIAN);
     }
 
+    @Override
     public Chunk getEmptyChunk(int chunkX, int chunkZ) {
         return Chunk.getEmptyChunk(chunkX, chunkZ, this);
     }
@@ -154,13 +154,11 @@ public class Anvil extends BaseLevelProvider {
         }
         stream.putByte((byte) count);
         for (int i = 0; i < count; i++) {
-            stream.putByte((byte) 0);
             stream.put(sections[i].getBytes());
         }
         for (byte height : chunk.getHeightMapArray()) {
             stream.putByte(height);
         }
-        stream.put(PAD_256);
         stream.put(chunk.getBiomeIdArray());
         stream.putByte((byte) 0);
         if (extraData != null) {
