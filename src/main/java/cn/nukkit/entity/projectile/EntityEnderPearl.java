@@ -78,6 +78,11 @@ public class EntityEnderPearl extends EntityProjectile {
     }
 
     @Override
+    public boolean canCollideWith(Entity entity) {
+        return false;
+    }
+
+    @Override
     public void spawnTo(Player player) {
         AddEntityPacket pk = new AddEntityPacket();
         pk.type = NETWORK_ID;

@@ -3,6 +3,7 @@ package cn.nukkit.entity.projectile;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
 
@@ -108,6 +109,7 @@ public class EntityArrow extends EntityProjectile {
 
         if (this.onGround || this.hadCollision) {
             this.setCritical(false);
+            this.getLevel().addSound(this, SoundEnum.RANDOM_BOWHIT, 1, 1);
         }
 
         if (this.age > 1200) {

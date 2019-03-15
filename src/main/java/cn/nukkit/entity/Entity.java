@@ -183,7 +183,7 @@ public abstract class Entity extends Location implements Metadatable {
     public static final int DATA_FLAG_GRAVITY = 46;
     public static final int DATA_FLAG_SWIMMING = 55;  //1.4+ only
 
-    public static long entityCount = 1;
+    public static long entityCount = 2;
 
     private static final Map<String, Class<? extends Entity>> knownEntities = new HashMap<>();
     private static final Map<String, String> shortNames = new HashMap<>();
