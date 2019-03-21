@@ -15,11 +15,6 @@ public class BlockEntitySkull extends BlockEntitySpawnable {
     }
 
     @Override
-    public String getName() {
-        return "Skull";
-    }
-
-    @Override
     protected void initBlockEntity() {
         if (!namedTag.contains("SkullType")) {
             namedTag.putByte("SkullType", 0);
@@ -52,5 +47,4 @@ public class BlockEntitySkull extends BlockEntitySpawnable {
                 .putInt("z", (int) this.z)
                 .put("Rot", this.namedTag.get("Rot"));
     }
-
 }

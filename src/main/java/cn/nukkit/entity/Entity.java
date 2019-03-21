@@ -108,9 +108,9 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public static final int DATA_PADDLE_TIME_LEFT = 13; //float
     public static final int DATA_PADDLE_TIME_RIGHT = 14; //float
     public static final int DATA_EXPERIENCE_VALUE = 15; //int (xp orb)
-    public static final int DATA_MINECART_DISPLAY_BLOCK = 16; //int (id | (data << 16))
-    public static final int DATA_MINECART_DISPLAY_OFFSET = 17; //int
-    public static final int DATA_MINECART_HAS_DISPLAY = 18; //byte (must be 1 for minecart to show block inside)
+    public static final int DATA_DISPLAY_ITEM = 16; //int (id | (data << 16))
+    public static final int DATA_DISPLAY_OFFSET = 17; //int
+    public static final int DATA_HAS_DISPLAY = 18; //byte (must be 1 for minecart to show block inside)
 
     //TODO: add more properties
 
@@ -376,9 +376,11 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
     protected Timing timing;
 
-    protected boolean isPlayer = false;
-
     protected boolean constructed = false;
+
+    public boolean isPlayer() {
+        return this instanceof Player;
+    }
 
     public float getHeight() {
         return 0;
@@ -462,7 +464,6 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
 
         this.timing = Timings.getEntityTiming(this);
 
-        this.isPlayer = this instanceof Player;
         this.temporalVector = new Vector3();
 
         this.id = Entity.entityCount++;
@@ -1220,7 +1221,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public boolean entityBaseTick(int tickDiff) {
         Timings.entityBaseTickTimer.startTiming();
 
-        if (!this.isPlayer) {
+        if (!this.isPlayer()) {
             this.blocksAround = null;
             this.collisionBlocks = null;
         }
@@ -1229,7 +1230,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         if (!this.isAlive()) {
             this.removeAllEffects();
             this.despawnFromAll();
-            if (!this.isPlayer) {
+            if (!this.isPlayer()) {
                 this.close();
             }
             Timings.entityBaseTickTimer.stopTiming();
@@ -1419,7 +1420,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
             ++this.deadTicks;
             if (this.deadTicks >= 10) {
                 this.despawnFromAll();
-                if (!this.isPlayer) {
+                if (!this.isPlayer()) {
                     this.close();
                 }
             }
@@ -1819,7 +1820,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         if (this.keepMovement) {
             this.boundingBox.offset(dx, dy, dz);
             this.setPosition(this.temporalVector.setComponents((this.boundingBox.getMinX() + this.boundingBox.getMaxX()) / 2, this.boundingBox.getMinY(), (this.boundingBox.getMinZ() + this.boundingBox.getMaxZ()) / 2));
-            this.onGround = this.isPlayer;
+            this.onGround = this.isPlayer();
             return true;
         } else {
 

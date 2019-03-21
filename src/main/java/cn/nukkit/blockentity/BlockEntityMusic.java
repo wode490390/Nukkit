@@ -4,21 +4,22 @@ import cn.nukkit.block.Block;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class BlockEntityMusic extends BlockEntitySpawnable {
+public class BlockEntityMusic extends BlockEntity implements BlockEntityPowerable {
+
+    private int note = 0;
+    private boolean powered = false;
 
     public BlockEntityMusic(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
 
     @Override
-    public String getName() {
-        return "Music";
-    }
-
-    @Override
     protected void initBlockEntity() {
-        if (!this.namedTag.contains("note")) {
-            this.namedTag.putByte("note", 0);
+        if (this.namedTag.contains("note")) {
+            this.note = this.namedTag.getByte("note");
+        }
+        if (this.namedTag.contains("powered")) {
+            this.powered = this.namedTag.getBoolean("powered");
         }
 
         super.initBlockEntity();
@@ -30,12 +31,32 @@ public class BlockEntityMusic extends BlockEntitySpawnable {
     }
 
     @Override
-    public CompoundTag getSpawnCompound() {
-        return getDefaultCompound(this, MUSIC).putByte("note", this.namedTag.getByte("note"));
+    public void saveNBT() {
+        super.saveNBT();
+        this.namedTag.putByte("note", this.note);
+        this.namedTag.putBoolean("powered", this.powered);
+    }
+
+    @Override
+    public void setPowered() {
+        this.setPowered(true);
+    }
+
+    @Override
+    public void setPowered(boolean powered) {
+        this.powered =  powered;
+    }
+
+    @Override
+    public boolean isPowered() {
+        return this.powered;
     }
 
     public void changePitch() {
-        this.namedTag.putByte("note", Math.abs(this.namedTag.getByte("note") + 1) % 25);
-        this.setDirty();
+        this.note = (this.note + 1) % 25;
+    }
+
+    public int getPitch() {
+        return this.note;
     }
 }

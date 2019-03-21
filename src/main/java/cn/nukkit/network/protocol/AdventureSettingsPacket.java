@@ -40,11 +40,11 @@ public class AdventureSettingsPacket extends DataPacket {
     public static final int OPERATOR = 0x20 | BITFLAG_SECOND_SET;
     public static final int TELEPORT = 0x80 | BITFLAG_SECOND_SET;
 
-    public long flags = 0;
+    public long playerFlags = 0;
 
     public long commandPermission = PERMISSION_NORMAL;
 
-    public long flags2 = -1;
+    public long worldFlags = -1;
 
     public long playerPermission = PlayerPermissions.MEMBER;
 
@@ -54,9 +54,9 @@ public class AdventureSettingsPacket extends DataPacket {
 
     @Override
     public void decode() {
-        this.flags = getUnsignedVarInt();
+        this.playerFlags = getUnsignedVarInt();
         this.commandPermission = getUnsignedVarInt();
-        this.flags2 = getUnsignedVarInt();
+        this.worldFlags = getUnsignedVarInt();
         this.playerPermission = getUnsignedVarInt();
         this.customFlags = getUnsignedVarInt();
         this.entityUniqueId = getLLong();
@@ -65,9 +65,9 @@ public class AdventureSettingsPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putUnsignedVarInt(this.flags);
+        this.putUnsignedVarInt(this.playerFlags);
         this.putUnsignedVarInt(this.commandPermission);
-        this.putUnsignedVarInt(this.flags2);
+        this.putUnsignedVarInt(this.worldFlags);
         this.putUnsignedVarInt(this.playerPermission);
         this.putUnsignedVarInt(this.customFlags);
         this.putLLong(this.entityUniqueId);
@@ -75,10 +75,10 @@ public class AdventureSettingsPacket extends DataPacket {
 
     public boolean getFlag(int flag) {
         if ((flag & BITFLAG_SECOND_SET) != 0) {
-            return (this.flags2 & flag) != 0;
+            return (this.worldFlags & flag) != 0;
         }
 
-        return (this.flags & flag) != 0;
+        return (this.playerFlags & flag) != 0;
     }
 
     public void setFlag(int flag, boolean value) {
@@ -86,15 +86,15 @@ public class AdventureSettingsPacket extends DataPacket {
 
         if (value) {
             if (flags) {
-                this.flags2 |= flag;
+                this.worldFlags |= flag;
             } else {
-                this.flags |= flag;
+                this.playerFlags |= flag;
             }
         } else {
             if (flags) {
-                this.flags2 &= ~flag;
+                this.worldFlags &= ~flag;
             } else {
-                this.flags &= ~flag;
+                this.playerFlags &= ~flag;
             }
         }
     }

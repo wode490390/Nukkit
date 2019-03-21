@@ -58,21 +58,11 @@ public class BlockNoteblock extends BlockSolid {
     }
 
     public int getStrength() {
-        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity instanceof BlockEntityMusic) {
-            return Math.abs(blockEntity.namedTag.getByte("note")) % 25;
-        }
-        this.createBlockEntity();
-        return 0;
+        return this.getBlockEntity().getPitch();
     }
 
     public void increaseStrength() {
-        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity instanceof BlockEntityMusic) {
-            ((BlockEntityMusic) blockEntity).changePitch();
-        } else {
-            this.createBlockEntity();
-        }
+        this.getBlockEntity().changePitch();
     }
 
     public Instrument getInstrument() {
@@ -246,11 +236,25 @@ public class BlockNoteblock extends BlockSolid {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_REDSTONE) {
+            BlockEntityMusic tile = this.getBlockEntity();
             if (this.getLevel().isBlockPowered(this)) {
-                this.emitSound();
+                if (!tile.isPowered()) {
+                    this.emitSound();
+                }
+                tile.setPowered();
+            } else {
+                tile.setPowered(false);
             }
         }
-        return 0;
+        return super.onUpdate(type);
+    }
+
+    private BlockEntityMusic getBlockEntity() {
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityMusic) {
+            return (BlockEntityMusic) blockEntity;
+        }
+        return this.createBlockEntity();
     }
 
     private BlockEntityMusic createBlockEntity() {

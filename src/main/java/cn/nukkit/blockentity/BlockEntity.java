@@ -27,6 +27,7 @@ public abstract class BlockEntity extends Position {
     public static final String BREWING_STAND = "BrewingStand";
     public static final String CAULDRON = "Cauldron";
     public static final String CHEST = "Chest";
+    public static final String COMMAND_BLOCK = "CommandBlock";
     public static final String COMPARATOR = "Comparator";
     public static final String DAYLIGHT_DETECTOR = "DaylightDetector";
     public static final String DISPENSER = "Dispenser";
@@ -48,10 +49,9 @@ public abstract class BlockEntity extends Position {
 
     public static long count = 1;
 
-    private static final BiMap<String, Class<? extends BlockEntity>> knownBlockEntities = HashBiMap.create(21);
+    private static final BiMap<String, Class<? extends BlockEntity>> knownBlockEntities = HashBiMap.create();
 
     public FullChunk chunk;
-    public String name;
     public long id;
 
     public boolean movable = true;
@@ -72,7 +72,6 @@ public abstract class BlockEntity extends Position {
         this.chunk = chunk;
         this.setLevel(chunk.getProvider().getLevel());
         this.namedTag = nbt;
-        this.name = "";
         this.lastUpdate = System.currentTimeMillis();
         this.id = BlockEntity.count++;
         this.x = this.namedTag.getInt("x");
@@ -146,11 +145,11 @@ public abstract class BlockEntity extends Position {
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setDirty() {
-        chunk.setChanged();
+        this.chunk.setChanged();
     }
 
     public void saveNBT() {
@@ -167,9 +166,8 @@ public abstract class BlockEntity extends Position {
         tag.remove("x").remove("y").remove("z").remove("id");
         if (tag.getTags().size() > 0) {
             return tag;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public Block getBlock() {
@@ -183,7 +181,7 @@ public abstract class BlockEntity extends Position {
     }
 
     public final void scheduleUpdate() {
-        this.level.scheduleBlockEntityUpdate(this);
+        this.getLevel().scheduleBlockEntityUpdate(this);
     }
 
     public void close() {
@@ -192,8 +190,8 @@ public abstract class BlockEntity extends Position {
             if (this.chunk != null) {
                 this.chunk.removeBlockEntity(this);
             }
-            if (this.level != null) {
-                this.level.removeBlockEntity(this);
+            if (this.getLevel() != null) {
+                this.getLevel().removeBlockEntity(this);
             }
             this.level = null;
         }
@@ -203,16 +201,12 @@ public abstract class BlockEntity extends Position {
 
     }
 
-    public String getName() {
-        return name;
-    }
-
     public boolean isMovable() {
-        return movable;
+        return this.movable;
     }
 
     public static CompoundTag getDefaultCompound(Vector3 pos, String id) {
-        return new CompoundTag("")
+        return new CompoundTag()
                 .putString("id", id)
                 .putInt("x", pos.getFloorX())
                 .putInt("y", pos.getFloorY())

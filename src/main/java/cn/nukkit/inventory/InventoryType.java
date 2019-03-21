@@ -21,15 +21,15 @@ public enum InventoryType {
     DISPENSER(9, "Dispenser", 6),
     DROPPER(9, "Dropper", 7),
     HOPPER(5, "Hopper", 8),
-    //CAULDRON(1, "Cauldron", 9),
+    CAULDRON(0, "Cauldron", 9),
     MINECART_CHEST(27, "Minecart Chest", 10),
     MINECART_HOPPER(5, "Minecart Hopper", 11),
     HORSE(17, "Horse", 12), //1-2 ARMOR, 15 CONTAINER
     BEACON(1, "Beacon", 13),
-    //STRUCTURE_EDITOR(1, "Structure Editor", 14),
-    TRADING(3, "Trading", 15); //1-2 INPUT, 1 OUTPUT
-    //COMMAND_BLOCK(1, "Command Block", 16),
-    //JUKEBOX(1, "Jukebox", 17);
+    STRUCTURE_EDITOR(0, "Structure Editor", 14),
+    TRADING(3, "Trading", 15), //1-2 INPUT, 1 OUTPUT
+    COMMAND_BLOCK(0, "Command Block", 16),
+    JUKEBOX(0, "Jukebox", 17);
 
     private final int size;
     private final String title;

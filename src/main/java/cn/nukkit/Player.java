@@ -10,6 +10,7 @@ import cn.nukkit.block.BlockEnderChest;
 import cn.nukkit.block.BlockNoteblock;
 import cn.nukkit.block.BlockUnknown;
 import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntityCommandBlock;
 import cn.nukkit.blockentity.BlockEntityItemFrame;
 import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.command.Command;
@@ -31,6 +32,7 @@ import cn.nukkit.entity.item.EntityBoat;
 import cn.nukkit.entity.item.EntityFishingHook;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.entity.item.EntityMinecartAbstract;
+//import cn.nukkit.entity.item.EntityMinecartCommandBlock;
 import cn.nukkit.entity.item.EntityXPOrb;
 import cn.nukkit.entity.projectile.EntityArrow;
 import cn.nukkit.entity.projectile.EntityProjectile;
@@ -722,11 +724,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.firstPlayed = this.namedTag.getLong("firstPlayed", this.creationTime);
         this.lastPlayed = this.namedTag.getLong("lastPlayed", this.creationTime);
-    }
-
-    @Override
-    public boolean isPlayer() {
-        return true;
     }
 
     public void removeAchievement(String achievementId) {
@@ -3450,6 +3447,62 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.teleport(respawnPos, null);
                     }
                     break;
+                case ProtocolInfo.COMMAND_BLOCK_UPDATE_PACKET:
+                    CommandBlockUpdatePacket commandBlockUpdatePacket = (CommandBlockUpdatePacket) packet;
+
+                    if (this.isOp() && this.isCreative()) {
+                        if (commandBlockUpdatePacket.isBlock) {
+                            BlockEntity blockEntity = this.getLevel().getBlockEntity(new Vector3(commandBlockUpdatePacket.x, commandBlockUpdatePacket.y, commandBlockUpdatePacket.z));
+                            if (!(blockEntity instanceof BlockEntityCommandBlock)) {
+                                break;
+                            }
+                            BlockEntityCommandBlock commandBlock = (BlockEntityCommandBlock) blockEntity;
+                            Block cb = this.getLevel().getBlock(commandBlock);
+                            switch (commandBlockUpdatePacket.commandBlockMode) {
+                                case 1:
+                                    if (cb.getId() != Block.REPEATING_COMMAND_BLOCK) {
+                                        cb = Block.get(Block.REPEATING_COMMAND_BLOCK);
+                                    }
+                                    break;
+                                case 2:
+                                    if (cb.getId() != Block.CHAIN_COMMAND_BLOCK) {
+                                        cb = Block.get(Block.CHAIN_COMMAND_BLOCK);
+                                    }
+                                    break;
+                                case 0:
+                                default:
+                                    if (cb.getId() != Block.COMMAND_BLOCK) {
+                                        cb = Block.get(Block.COMMAND_BLOCK);
+                                    }
+                                    break;
+                            }
+                            boolean conditional = commandBlockUpdatePacket.isConditional;
+                            int meta = cb.getDamage();
+                            if (conditional) {
+                                if (meta < 8) {
+                                    cb.setDamage(meta + 8);
+                                }
+                            } else {
+                                if (meta > 8) {
+                                    cb.setDamage(meta - 8);
+                                }
+                            }
+                            this.getLevel().setBlock(commandBlock, cb, true);
+                            commandBlock.setCommand(commandBlockUpdatePacket.command);
+                            commandBlock.setName(commandBlockUpdatePacket.name);
+                            commandBlock.setTrackOutput(commandBlockUpdatePacket.shouldTrackOutput);
+                            commandBlock.setConditional(conditional);
+                            commandBlock.setAuto(!commandBlockUpdatePacket.isRedstoneMode);
+                        }/* else {
+                            Entity entity = this.getLevel().getEntity(commandBlockUpdatePacket.minecartEid);
+                            if (!(entity instanceof EntityMinecartCommandBlock)) {
+                                break;
+                            }
+                            EntityMinecartCommandBlock commandMinecart = (EntityMinecartCommandBlock) entity;
+                            //TODO: minecart of command block
+                        }*/
+                    }
+                    break;
                 default:
                     break;
             }
@@ -5143,6 +5196,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @Override
     public boolean isFireProof() {
         return this.isCreative();
+    }
+
+    @Override
+    public boolean isConsole() {
+        return false;
+    }
+
+    @Override
+    public boolean isCommandBlock() {
+        return false;
     }
 
     public Map<UUID, ResourcePack> getResourcePacks() {

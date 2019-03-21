@@ -7,21 +7,26 @@ public class AnimatePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ANIMATE_PACKET;
 
+    public static final int ACTION_NO_ACTION = 0;
     public static final int ACTION_SWING_ARM = 1;
 
     public static final int ACTION_STOP_SLEEP = 3;
     public static final int ACTION_CRITICAL_HIT = 4;
+    public static final int ACTION_MAGIC_CRITICAL_HIT = 5;
+
+    public static final int ACTION_ROW_RIGHT = 128;
+    public static final int ACTION_ROW_LEFT = 129;
 
     public int action;
     public long entityRuntimeId;
-    public float unknown = 0.0f; //TODO (Boat rowing time?)
+    public float rowingTime = 0;
 
     @Override
     public void decode() {
         this.action = this.getVarInt();
         this.entityRuntimeId = getEntityRuntimeId();
-        if ((this.action & 0x80) != 0) {
-            this.unknown = this.getLFloat();
+        if (this.action == ACTION_ROW_LEFT || this.action == ACTION_ROW_RIGHT) {
+            this.rowingTime = this.getLFloat();
         }
     }
 
@@ -30,8 +35,8 @@ public class AnimatePacket extends DataPacket {
         this.reset();
         this.putVarInt(this.action);
         this.putEntityRuntimeId(this.entityRuntimeId);
-        if ((this.action & 0x80) != 0) {
-            this.putLFloat(this.unknown);
+        if (this.action == ACTION_ROW_LEFT || this.action == ACTION_ROW_RIGHT) {
+            this.putLFloat(this.rowingTime);
         }
     }
 

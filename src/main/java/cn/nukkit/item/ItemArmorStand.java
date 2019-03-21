@@ -1,5 +1,10 @@
 package cn.nukkit.item;
 
+import cn.nukkit.Player;
+import cn.nukkit.block.Block;
+import cn.nukkit.level.Level;
+import cn.nukkit.math.BlockFace;
+
 public class ItemArmorStand extends Item {
 
     public ItemArmorStand() {
@@ -12,5 +17,11 @@ public class ItemArmorStand extends Item {
 
     public ItemArmorStand(Integer meta, int count) {
         super(ARMOR_STAND, meta, count, "Armor Stand");
+    }
+
+    @Override
+    public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
+        //TODO
+        return false;
     }
 }

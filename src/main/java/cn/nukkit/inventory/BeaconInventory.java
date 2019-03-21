@@ -26,4 +26,14 @@ public class BeaconInventory extends ContainerInventory {
         this.getHolder().getLevel().dropItem(this.getHolder().add(0.5, 0.5, 0.5), this.getItem(0));
         this.clear(0);
     }
+
+    @Override
+    public void sendSlot(int index, Player... players) {
+
+    }
+
+    @Override
+    public void sendContents(Player... players) {
+
+    }
 }

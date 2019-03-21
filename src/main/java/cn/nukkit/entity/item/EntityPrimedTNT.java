@@ -88,11 +88,6 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
     }
 
     @Override
-    public boolean canBeMovedByCurrents() {
-        return false;
-    }
-
-    @Override
     protected void initEntity() {
         super.initEntity();
 

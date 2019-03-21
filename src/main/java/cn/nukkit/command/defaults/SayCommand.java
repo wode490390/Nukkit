@@ -50,12 +50,13 @@ public class SayCommand extends VanillaCommand {
             msg = msg.substring(0, msg.length() - 1);
         }
 
-
-        sender.getServer().broadcastMessage(new TranslationContainer(
-                TextFormat.LIGHT_PURPLE + "%chat.type.announcement",
-                senderString,
-                TextFormat.LIGHT_PURPLE + msg
-        ));
+        TranslationContainer container;
+        if (sender.isCommandBlock()) {
+            container = new TranslationContainer("%chat.type.announcement", senderString, msg);
+        } else {
+            container = new TranslationContainer(TextFormat.LIGHT_PURPLE + "%chat.type.announcement", senderString, TextFormat.LIGHT_PURPLE + msg);
+        }
+        sender.getServer().broadcastMessage(container);
         return true;
     }
 }

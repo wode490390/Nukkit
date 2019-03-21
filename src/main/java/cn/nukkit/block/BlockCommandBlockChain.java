@@ -1,5 +1,8 @@
 package cn.nukkit.block;
 
+import cn.nukkit.blockentity.BlockEntityCommandBlock;
+import cn.nukkit.nbt.tag.CompoundTag;
+
 public class BlockCommandBlockChain extends BlockCommandBlock {
 
     public BlockCommandBlockChain() {
@@ -20,4 +23,9 @@ public class BlockCommandBlockChain extends BlockCommandBlock {
         return "Chain Command Block";
     }
 
+    @Override
+    protected CompoundTag createCompoundTag(CompoundTag nbt) {
+        nbt.putBoolean(BlockEntityCommandBlock.TAG_AUTO, true);
+        return nbt;
+    }
 }

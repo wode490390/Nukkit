@@ -20,8 +20,8 @@ public class BossEventPacket extends DataPacket {
     public static final int TYPE_HEALTH_PERCENT = 4;
     /* S2C: Also appears to not be implemented. Title clientside sticks as the target entity's nametag, or their entity type name if not set. */
     public static final int TYPE_TITLE = 5;
-    /* S2C: Not sure on this. Includes color and overlay fields, plus an unknown short. TODO: check this */
-    public static final int TYPE_UNKNOWN_6 = 6;
+    /* S2C: Darken the sky when the boss bar is shown. */
+    public static final int TYPE_DARKEN_SKY = 6;
     /* S2C: Not implemented :( Intended to alter bar appearance, but these currently produce no effect on clientside whatsoever. */
     public static final int TYPE_TEXTURE = 7;
 
@@ -52,7 +52,7 @@ public class BossEventPacket extends DataPacket {
             case TYPE_SHOW:
                 this.title = this.getString();
                 this.healthPercent = this.getLFloat();
-            case TYPE_UNKNOWN_6:
+            case TYPE_DARKEN_SKY:
                 this.unknownShort = (short) this.getLShort();
             case TYPE_TEXTURE:
                 this.color = (int) this.getUnsignedVarInt();
@@ -82,7 +82,7 @@ public class BossEventPacket extends DataPacket {
             case TYPE_SHOW:
                 this.putString(this.title);
                 this.putLFloat(this.healthPercent);
-            case TYPE_UNKNOWN_6:
+            case TYPE_DARKEN_SKY:
                 this.putLShort(this.unknownShort);
             case TYPE_TEXTURE:
                 this.putUnsignedVarInt(this.color);

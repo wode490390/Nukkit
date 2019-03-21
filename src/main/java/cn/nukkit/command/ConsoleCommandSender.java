@@ -79,6 +79,16 @@ public class ConsoleCommandSender implements CommandSender {
     }
 
     @Override
+    public boolean isConsole() {
+        return true;
+    }
+
+    @Override
+    public boolean isCommandBlock() {
+        return false;
+    }
+
+    @Override
     public Server getServer() {
         return Server.getInstance();
     }

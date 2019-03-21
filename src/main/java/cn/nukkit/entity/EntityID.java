@@ -104,4 +104,5 @@ public interface EntityID {
     int TROPICALFISH = 111;
     int COD = 112;
     int PANDA = 113;
+    int PILLAGER = 114;
 }

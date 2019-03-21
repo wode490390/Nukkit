@@ -9,6 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * Nukkit Project
  */
 public abstract class EntityHanging extends Entity {
+
     protected int direction;
 
     public EntityHanging(FullChunk chunk, CompoundTag nbt) {
@@ -59,7 +60,7 @@ public abstract class EntityHanging extends Entity {
         if (!this.isAlive()) {
 
             this.despawnFromAll();
-            if (!this.isPlayer) {
+            if (!this.isPlayer()) {
                 this.close();
             }
 
@@ -87,5 +88,4 @@ public abstract class EntityHanging extends Entity {
     protected boolean isSurfaceValid() {
         return true;
     }
-
 }

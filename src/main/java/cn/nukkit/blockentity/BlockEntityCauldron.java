@@ -3,7 +3,6 @@ package cn.nukkit.blockentity;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -14,11 +13,6 @@ public class BlockEntityCauldron extends BlockEntitySpawnable {
 
     public BlockEntityCauldron(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-    }
-
-    @Override
-    public String getName() {
-        return "Cauldron";
     }
 
     @Override

@@ -2,8 +2,8 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.item.Item;
+import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.utils.Binary;
-
 import java.util.UUID;
 
 /**
@@ -11,6 +11,7 @@ import java.util.UUID;
  * Nukkit Project
  */
 public class AddPlayerPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.ADD_PLAYER_PACKET;
 
     @Override
@@ -33,8 +34,13 @@ public class AddPlayerPacket extends DataPacket {
     public float yaw;
     public Item item;
     public EntityMetadata metadata = new EntityMetadata();
-    //public EntityLink links = new EntityLink[0];
+    public EntityLink[] links = new EntityLink[0];
     public String deviceId = "";
+    public int playerFlags = 0;
+    public int commandPermission = 0;
+    public int worldFlags = 0;
+    public int playerPermission = 0;
+    public int customFlags = 0;
 
     @Override
     public void decode() {
@@ -56,13 +62,16 @@ public class AddPlayerPacket extends DataPacket {
         this.putLFloat(this.yaw);
         this.putSlot(this.item);
         this.put(Binary.writeMetadata(this.metadata));
-        this.putUnsignedVarInt(0); //TODO: Adventure settings
-        this.putUnsignedVarInt(0);
-        this.putUnsignedVarInt(0);
-        this.putUnsignedVarInt(0);
-        this.putUnsignedVarInt(0);
+        this.putUnsignedVarInt(this.playerFlags);
+        this.putUnsignedVarInt(this.commandPermission);
+        this.putUnsignedVarInt(this.worldFlags);
+        this.putUnsignedVarInt(this.playerPermission);
+        this.putUnsignedVarInt(this.customFlags);
         this.putLLong(entityUniqueId);
-        this.putUnsignedVarInt(0); //TODO: Entity links
+        this.putUnsignedVarInt(this.links.length);
+        for (EntityLink link : this.links) {
+            this.putEntityLink(link);
+        }
         this.putString(deviceId);
     }
 }

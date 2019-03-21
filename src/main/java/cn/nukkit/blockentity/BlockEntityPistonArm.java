@@ -16,7 +16,7 @@ import cn.nukkit.nbt.tag.NumberTag;
  */
 public class BlockEntityPistonArm extends BlockEntitySpawnable {
 
-    public float progress = 1f;
+    public float progress = 1;
     public float lastProgress = 0;
     public BlockFace facing;
     public boolean extending = false;
@@ -32,32 +32,22 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
     }
 
     @Override
-    public String getName() {
-        return "Piston Head";
-    }
-
-    @Override
     protected void initBlockEntity() {
         if (namedTag.contains("Progress")) {
             this.progress = namedTag.getFloat("Progress");
         }
-
         if (namedTag.contains("LastProgress")) {
             this.lastProgress = namedTag.getInt("LastProgress");
         }
-
         if (namedTag.contains("Sticky")) {
             this.sticky = namedTag.getBoolean("Sticky");
         }
-
         if (namedTag.contains("Extending")) {
             this.extending = namedTag.getBoolean("Extending");
         }
-
         if (namedTag.contains("powered")) {
             this.powered = namedTag.getBoolean("powered");
         }
-
         if (namedTag.contains("AttachedBlocks")) {
             ListTag<?> blocks = namedTag.getList("AttachedBlocks", IntTag.class);
             if (blocks != null && blocks.size() > 0) {
@@ -78,7 +68,7 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         AxisAlignedBB bb = new SimpleAxisAlignedBB(x, y, z, x + 1.0d, y + 1.0d, z + 1.0d);
         Entity[] entities = this.level.getCollidingEntities(bb);
         if (entities.length != 0) {
-
+            //TODO
         }
     }
 

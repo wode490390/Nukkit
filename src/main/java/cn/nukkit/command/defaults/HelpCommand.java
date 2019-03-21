@@ -9,12 +9,16 @@ import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.utils.TextFormat;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class HelpCommand extends VanillaCommand {
+
+    private static final String SEARGE = "Searge says: ";
+    private static final String[] SEARGE_SAY = {SEARGE + "Yolo", SEARGE + "/achievement take achievement.understandCommands @p", SEARGE + "Ask for help on twitter", SEARGE + "/deop @p", SEARGE + "Scoreboard deleted, commands blocked", SEARGE + "Contact helpdesk for help", SEARGE + "/testfornoob @p", SEARGE + "/trigger warning", SEARGE + "Oh my god, it's full of stats", SEARGE + "/kill @p[name=!Searge]", SEARGE + "Have you tried turning it off and on again?", SEARGE + "Sorry, no help today"};
 
     public HelpCommand(String name) {
         super(name, "%nukkit.command.help.description", "%commands.help.usage", new String[]{"?"});
@@ -28,6 +32,10 @@ public class HelpCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!this.testPermission(sender)) {
+            return true;
+        }
+        if (sender.isCommandBlock()) {
+            sender.sendMessage(SEARGE_SAY[ThreadLocalRandom.current().nextInt(SEARGE_SAY.length - 1)]);
             return true;
         }
         String command = "";

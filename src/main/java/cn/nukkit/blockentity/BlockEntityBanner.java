@@ -73,11 +73,6 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
         return id == Block.STANDING_BANNER || id == Block.WALL_BANNER;
     }
 
-    @Override
-    public String getName() {
-        return "Banner";
-    }
-
     public void addAdditionalSpawnData(CompoundTag nbt) {
         nbt.putList(this.namedTag.getList("Patterns"));
         nbt.putInt("Base", this.namedTag.getInt("Base"));

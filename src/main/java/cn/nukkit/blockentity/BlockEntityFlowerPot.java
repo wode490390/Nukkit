@@ -15,11 +15,6 @@ public class BlockEntityFlowerPot extends BlockEntitySpawnable {
     }
 
     @Override
-    public String getName() {
-        return "Flower Pot";
-    }
-
-    @Override
     protected void initBlockEntity() {
         if (!namedTag.contains("item")) {
             namedTag.putShort("item", 0);
@@ -53,5 +48,4 @@ public class BlockEntityFlowerPot extends BlockEntitySpawnable {
                 .putShort("item", this.namedTag.getShort("item"))
                 .putInt("mData", this.namedTag.getInt("data"));
     }
-
 }

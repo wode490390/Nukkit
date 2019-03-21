@@ -35,11 +35,6 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
     }
 
     @Override
-    public String getName() {
-        return "Item Frame";
-    }
-
-    @Override
     public boolean isBlockEntityValid() {
         return this.getBlock().getId() == Block.ITEM_FRAME_BLOCK;
     }

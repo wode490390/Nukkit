@@ -30,7 +30,7 @@ public class PlayerListEntry {
         this.entityUniqueId = entityUniqueId;
         this.username = username;
         this.skin = skin;
-        this.xboxUserId = xboxUserId;
-        this.platformChatId = platformChatId;
+        this.xboxUserId = xboxUserId != null ? xboxUserId : "";
+        this.platformChatId = platformChatId != null ? platformChatId : "";
     }
 }
