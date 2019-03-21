@@ -397,7 +397,7 @@ public class Identifier {
             .put("coral", Block.CORAL)
             .put("coral_block", Block.CORAL_BLOCK)
             .put("coral_fan", Block.CORAL_FAN)
-            .put("coral_fan_dead", Block.CORAL_FAN_DEAD)
+            .put("coral_fan_dead", Block.DEAD_CORAL_FAN)
             .put("coral_fan_hang", Block.CORAL_FAN_HANG)
             .put("coral_fan_hang2", Block.CORAL_FAN_HANG2)
             .put("coral_fan_hang3", Block.CORAL_FAN_HANG3)

@@ -179,6 +179,7 @@ public interface ItemID {
     int DARK_OAK_DOOR = 431;
     int CHORUS_FRUIT = 432;
     int POPPED_CHORUS_FRUIT = 433;
+    int BANNER_PATTERN = 434;
 
     int DRAGON_BREATH = 437;
     int SPLASH_POTION = 438;
@@ -219,6 +220,7 @@ public interface ItemID {
     int JUNGLE_SIGN = 474;
     int ACACIA_SIGN = 475;
     int DARK_OAK_SIGN = 476;
+    int SWEET_BERRIES = 477;
 
     //int CAMERA = 498; //Edu
     int COMPOUND = 499; //edu
@@ -234,4 +236,6 @@ public interface ItemID {
     int RECORD_WARD = 509;
     int RECORD_11 = 510;
     int RECORD_WAIT = 511;
+
+    int SHIELD = 513;
 }

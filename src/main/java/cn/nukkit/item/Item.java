@@ -439,7 +439,7 @@ public class Item implements Cloneable, BlockID, ItemID {
                 } else {
                     item = new ItemBlock(Block.get(id), meta, count);
                 }
-            } else if (id >= 512) {
+            } else if (id > 0xfff) {
                 if (meta >= 0) {
                     item = new ItemBlock(Block.get(0xffff - id + 256, meta), meta, count);
                 } else {

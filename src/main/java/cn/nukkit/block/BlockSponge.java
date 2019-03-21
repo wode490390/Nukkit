@@ -62,15 +62,20 @@ public class BlockSponge extends BlockSolidMeta {
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Level level = block.getLevel();
         boolean blockSet = level.setBlock(block, this);
-        if (blockSet && this.getDamage() == 0 && performWaterAbsorb(block)) {
-            level.setBlock(block, get(this.getId(), WET));
+        if (blockSet) {
+            int meta = this.getDamage();
+            if (meta == WET && level.getDimension() == Level.DIMENSION_NETHER) {
+                level.setBlock(block, get(this.getId(), DRY));
+            } else if (meta == DRY && this.performWaterAbsorb(block)) {
+                level.setBlock(block, get(this.getId(), WET));
 
-            for (int i = 0; i < 4; i++) {
-                LevelEventPacket packet = new LevelEventPacket();
-                packet.evid = 2001;
-                packet.position = (new Vector3(block.getX(), block.getY(), block.getZ())).asVector3f();
-                packet.data = GlobalBlockPalette.getOrCreateRuntimeId(WATER, 0);
-                level.addChunkPacket(getChunkX(), getChunkZ(), packet);
+                for (int i = 0; i < 4; i++) {
+                    LevelEventPacket packet = new LevelEventPacket();
+                    packet.evid = 2001;
+                    packet.position = (new Vector3(block.getX(), block.getY(), block.getZ())).asVector3f();
+                    packet.data = GlobalBlockPalette.getOrCreateRuntimeId(WATER, 0);
+                    level.addChunkPacket(getChunkX(), getChunkZ(), packet);
+                }
             }
         }
         return blockSet;

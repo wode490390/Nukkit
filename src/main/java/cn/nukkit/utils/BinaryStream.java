@@ -345,6 +345,10 @@ public class BinaryStream {
             }
         }
 
+        if (id == Item.SHIELD) {
+            this.getVarLong(); //"blocking tick" (ffs mojang)
+        }
+
         return Item.get(id, data, cnt, nbt);
     }
 
@@ -355,7 +359,7 @@ public class BinaryStream {
         }
 
         int id = item.getId();
-        this.putVarInt(id > 511 ? id - 65536 : id);
+        this.putVarInt(id > 0xfff ? id - 65536 : id);
         int auxValue = (((item.hasMeta() ? item.getDamage() : -1) & 0x7fff) << 8) | item.getCount();
         this.putVarInt(auxValue);
         byte[] nbt = item.getCompoundTag();
@@ -363,6 +367,10 @@ public class BinaryStream {
         this.put(nbt);
         this.putVarInt(0); //TODO CanPlaceOn entry count
         this.putVarInt(0); //TODO CanDestroy entry count
+
+        if (id == Item.SHIELD) {
+            this.putVarLong(0); //"blocking tick" (ffs mojang)
+        }
     }
 
     public byte[] getByteArray() {

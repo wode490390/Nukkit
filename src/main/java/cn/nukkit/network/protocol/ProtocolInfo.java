@@ -13,12 +13,12 @@ public interface ProtocolInfo {
     /**
      * Actual Minecraft: PE protocol version
      */
-    int CURRENT_PROTOCOL = Integer.valueOf("332"); //plugins can change it
+    int CURRENT_PROTOCOL = Integer.valueOf("340"); //plugins can change it
 
     List<Integer> SUPPORTED_PROTOCOLS = Ints.asList(CURRENT_PROTOCOL);
 
-    String MINECRAFT_VERSION = "v1.9.0";
-    String MINECRAFT_VERSION_NETWORK = "1.9.0";
+    String MINECRAFT_VERSION = "v1.10.0";
+    String MINECRAFT_VERSION_NETWORK = "1.10.0";
 
     byte LOGIN_PACKET = 0x01;
     byte PLAY_STATUS_PACKET = 0x02;
@@ -114,7 +114,7 @@ public interface ProtocolInfo {
     byte PURCHASE_RECEIPT_PACKET = 0x5c;
     byte PLAYER_SKIN_PACKET = 0x5d;
     byte SUB_CLIENT_LOGIN_PACKET = 0x5e;
-    byte INITIATE_WEB_SOCKET_CONNECTION_PACKET = 0x5f;
+    byte AUTOMATION_CLIENT_CONNECT_PACKET = 0x5f;
     byte SET_LAST_HURT_BY_PACKET = 0x60;
     byte BOOK_EDIT_PACKET = 0x61;
     byte NPC_REQUEST_PACKET = 0x62;
@@ -143,6 +143,8 @@ public interface ProtocolInfo {
     byte NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET = 0x79;
     byte BIOME_DEFINITION_LIST_PACKET = 0x7a;
     byte LEVEL_SOUND_EVENT_PACKET = 0x7b;
+    byte LECTERN_UPDATE_PACKET = 0x7c;
+    byte VIDEO_STREAM_CONNECT_PACKET = 0x7d;
 
     byte BATCH_PACKET = (byte) 0xff;
 }

@@ -1,8 +1,8 @@
 package cn.nukkit.network.protocol;
 
-public class InitiateWebSocketConnectionPacket extends DataPacket {
+public class AutomationClientConnectPacket extends DataPacket {
 
-    public static final byte NETWORK_ID = ProtocolInfo.INITIATE_WEB_SOCKET_CONNECTION_PACKET;
+    public static final byte NETWORK_ID = ProtocolInfo.AUTOMATION_CLIENT_CONNECT_PACKET;
 
     public String serverUri;
 

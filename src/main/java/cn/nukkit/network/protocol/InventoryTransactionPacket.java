@@ -69,6 +69,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 this.putSlot(useItemData.itemInHand);
                 this.putVector3(useItemData.playerPos.asVector3f());
                 this.putVector3(useItemData.clickPos);
+                this.putUnsignedVarInt(useItemData.blockRuntimeId);
                 break;
             case TYPE_USE_ITEM_ON_ENTITY:
                 UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) this.trData;
@@ -117,6 +118,7 @@ public class InventoryTransactionPacket extends DataPacket {
                 itemData.itemInHand = this.getSlot();
                 itemData.playerPos = this.getVector3().asVector3();
                 itemData.clickPos = this.getVector3();
+                itemData.blockRuntimeId = this.getUnsignedVarInt();
 
                 this.trData = itemData;
                 break;

@@ -205,19 +205,21 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
         if (this.getLastExecution() != this.getServer().getTick()) {
             this.setConditionMet();
             if (this.getLevel().getGameRules().getBoolean(GameRule.COMMAND_BLOCKS_ENABLED) && this.isConditionMet()) {
-                if (this.getCommand().equalsIgnoreCase("Searge")) {
-                    this.lastOutput = "#itzlipofutzli";
-                    this.successCount = 1;
-                } else {
-                    this.lastOutput = null;
-                    String cmd = this.getCommand();
-                    if (cmd.startsWith("/")) {
-                        cmd = cmd.substring(1);
-                    }
-                    if (Server.getInstance().dispatchCommand(this, cmd)) {
-                        this.successCount = 1; //TODO: >1
+                String cmd = this.getCommand();
+                if (!Strings.isNullOrEmpty(cmd)) {
+                    if (cmd.equalsIgnoreCase("Searge")) {
+                        this.lastOutput = "#itzlipofutzli";
+                        this.successCount = 1;
                     } else {
-                        this.successCount = 0;
+                        this.lastOutput = null;
+                        if (cmd.startsWith("/")) {
+                            cmd = cmd.substring(1);
+                        }
+                        if (Server.getInstance().dispatchCommand(this, cmd)) {
+                            this.successCount = 1; //TODO: >1
+                        } else {
+                            this.successCount = 0;
+                        }
                     }
                 }
                 this.lastExecution = this.getServer().getTick();
