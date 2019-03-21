@@ -21,6 +21,7 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.level.LevelInitEvent;
 import cn.nukkit.event.level.LevelLoadEvent;
 import cn.nukkit.event.server.BatchPacketsEvent;
+import cn.nukkit.event.server.PlayerDataSerializeEvent;
 import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.inventory.CraftingManager;
 import cn.nukkit.inventory.Recipe;
@@ -78,13 +79,14 @@ import cn.nukkit.plugin.service.SimpleServiceManager;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.potion.Potion;
 import cn.nukkit.resourcepacks.ResourcePackManager;
-import cn.nukkit.scheduler.FileWriteTask;
 import cn.nukkit.scheduler.ServerScheduler;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
+import cn.nukkit.utils.DefaultPlayerDataSerializer;
 import cn.nukkit.utils.LevelException;
 import cn.nukkit.utils.MainLogger;
+import cn.nukkit.utils.PlayerDataSerializer;
 import cn.nukkit.utils.ServerException;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.utils.Utils;
@@ -94,11 +96,10 @@ import cn.nukkit.utils.bugreport.ExceptionHandler;
 import co.aikar.timings.Timings;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -278,6 +279,8 @@ public class Server {
 
     private DB nameLookup;
 
+    private PlayerDataSerializer playerDataSerializer = new DefaultPlayerDataSerializer(this);
+
     Server(final String filePath, String dataPath, String pluginPath) {
         Preconditions.checkState(instance == null, "Already initialized!");
         currentThread = Thread.currentThread(); // Saves the current thread instance as a reference, used in Server#isPrimaryThread()
@@ -308,7 +311,7 @@ public class Server {
             try {
                 InputStream languageList = this.getClass().getClassLoader().getResourceAsStream("lang/language.list");
                 if (languageList == null) {
-                    throw new RuntimeException("lang/language.list is missing. If you are running a development version, make sure you have run 'git submodule update --init'.");
+                    throw new IllegalStateException("lang/language.list is missing. If you are running a development version, make sure you have run 'git submodule update --init'.");
                 }
                 String[] lines = Utils.readFile(languageList).split("\n");
                 for (String line : lines) {
@@ -1596,28 +1599,41 @@ public class Server {
     }
 
     public CompoundTag getOfflinePlayerData(UUID uuid) {
-        return getOfflinePlayerDataInternal(uuid.toString());
+        return getOfflinePlayerDataInternal(uuid.toString(), true);
     }
 
     @Deprecated
     public CompoundTag getOfflinePlayerData(String name) {
-        return getOfflinePlayerDataInternal(name);
+        return getOfflinePlayerDataInternal(name, true);
     }
 
-    private CompoundTag getOfflinePlayerDataInternal(String name) {
+    private CompoundTag getOfflinePlayerDataInternal(String name, boolean runEvent) {
         Preconditions.checkNotNull(name, "name");
-        String path = this.getDataPath() + "players/" + name + ".dat";
-        File file = new File(path);
 
-        if (this.shouldSavePlayerData() && file.exists()) {
-            try {
-                return NBTIO.readCompressed(new FileInputStream(file));
-            } catch (IOException e) {
-                file.renameTo(new File(path + ".bak"));
-                log.info(this.getLanguage().translateString("nukkit.data.playerCorrupted", name));
+        PlayerDataSerializeEvent event = new PlayerDataSerializeEvent(name, playerDataSerializer);
+        if (runEvent) {
+            pluginManager.callEvent(event);
+        }
+
+        Optional<InputStream> dataStream = Optional.empty();
+        try {
+            dataStream = event.getSerializer().read(name, event.getUuid().orElse(null));
+            if (dataStream.isPresent()) {
+                return NBTIO.readCompressed(dataStream.get());
+            } else {
+                log.warn(this.getLanguage().translateString("nukkit.data.playerNotFound", name));
             }
-        } else if (this.shouldSavePlayerData()) {
-            log.info(this.getLanguage().translateString("nukkit.data.playerNotFound", name));
+        } catch (IOException e) {
+            log.warn(this.getLanguage().translateString("nukkit.data.playerCorrupted", name));
+            log.throwing(e);
+        } finally {
+            if (dataStream.isPresent()) {
+                try {
+                    dataStream.get().close();
+                } catch (IOException e) {
+                    log.throwing(e);
+                }
+            }
         }
 
         Position spawn = this.getDefaultLevel().getSafeSpawn();
@@ -1662,17 +1678,28 @@ public class Server {
     }
 
     public void saveOfflinePlayerData(String name, CompoundTag tag, boolean async) {
-        name = name.toLowerCase();
+        this.saveOfflinePlayerData(name, tag, async, true);
+    }
+
+    private void saveOfflinePlayerData(String name, CompoundTag tag, boolean async, boolean runEvent) {
+        String nameLower = name.toLowerCase();
         if (this.shouldSavePlayerData()) {
-            try {
-                if (async) {
-                    this.getScheduler().scheduleAsyncTask(new FileWriteTask(this.getDataPath() + "players/" + name + ".dat", NBTIO.writeGZIPCompressed(tag, ByteOrder.BIG_ENDIAN)));
-                } else {
-                    Utils.writeFile(this.getDataPath() + "players/" + name + ".dat", new ByteArrayInputStream(NBTIO.writeGZIPCompressed(tag, ByteOrder.BIG_ENDIAN)));
-                }
-            } catch (Exception e) {
-                log.error(this.getLanguage().translateString("nukkit.data.saveError", name, e));
+            PlayerDataSerializeEvent event = new PlayerDataSerializeEvent(nameLower, playerDataSerializer);
+            if (runEvent) {
+                pluginManager.callEvent(event);
             }
+
+            this.getScheduler().scheduleTask(null, () -> {
+                saveOfflinePlayerDataInternal(event.getSerializer(), tag, nameLower, event.getUuid().orElse(null));
+            }, async);
+        }
+    }
+
+    private void saveOfflinePlayerDataInternal(PlayerDataSerializer serializer, CompoundTag tag, String name, UUID uuid) {
+        try (OutputStream dataStream = serializer.write(name, uuid)) {
+            NBTIO.writeGZIPCompressed(tag, dataStream, ByteOrder.BIG_ENDIAN);
+        } catch (Exception e) {
+            log.error(this.getLanguage().translateString("nukkit.data.saveError", name, e));
         }
     }
 
@@ -1696,7 +1723,7 @@ public class Server {
 
             log.debug("Attempting legacy player data conversion for {}", name);
 
-            CompoundTag tag = getOfflinePlayerDataInternal(name);
+            CompoundTag tag = getOfflinePlayerDataInternal(name, false);
 
             if (tag == null || !tag.contains("UUIDLeast") || !tag.contains("UUIDMost")) {
                 // No UUID so we cannot convert. Wait until player logs in.
@@ -1713,7 +1740,7 @@ public class Server {
                 continue;
             }
 
-            saveOfflinePlayerData(uuid, tag);
+            saveOfflinePlayerData(uuid.toString(), tag, false, false);
 
             // Add name to lookup table
             updateName(uuid, name);
@@ -2363,6 +2390,14 @@ public class Server {
 
     public boolean isEducationAllowed() {
         return this.allowEducation;
+    }
+
+    public PlayerDataSerializer getPlayerDataSerializer() {
+        return playerDataSerializer;
+    }
+
+    public void setPlayerDataSerializer(PlayerDataSerializer playerDataSerializer) {
+        this.playerDataSerializer = Preconditions.checkNotNull(playerDataSerializer, "playerDataSerializer");
     }
 
     public static Server getInstance() {

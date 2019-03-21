@@ -26,6 +26,7 @@ public class SetScorePacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putByte((byte) this.type);
+
         this.putUnsignedVarInt(this.entries.length);
         for (ScorePacketEntry entry : entries) {
             this.putVarLong(entry.scoreboardId);
@@ -42,7 +43,7 @@ public class SetScorePacket extends DataPacket {
                         this.putString(entry.customName);
                         break;
                     default:
-                        throw new RuntimeException("Unknown entry type " + entry.type);
+                        throw new IllegalArgumentException("Unknown entry type " + entry.type);
                 }
             }
         }

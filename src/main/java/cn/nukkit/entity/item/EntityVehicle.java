@@ -1,6 +1,5 @@
 package cn.nukkit.entity.item;
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityInteractable;
@@ -85,13 +84,6 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
             pk.link = new EntityLink(this.getId(), entity.getId(), EntityLink.TYPE_REMOVE);
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
-            // Broadcast to player
-            if (entity instanceof Player) {
-                SetEntityLinkPacket pk2 = new SetEntityLinkPacket();
-                pk2.link = new EntityLink(0, entity.getId(), EntityLink.TYPE_REMOVE);
-                ((Player) entity).dataPacket(pk2);
-            }
-
             // Refurbish the entity
             entity.riding = null;
             entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, false);
@@ -107,15 +99,8 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
 
             // New Packet
             SetEntityLinkPacket pk = new SetEntityLinkPacket();
-            pk.link = new EntityLink(this.getId(), entity.getId(), EntityLink.TYPE_PASSENGER);
+            pk.link = new EntityLink(this.getId(), entity.getId(), EntityLink.TYPE_RIDER);
             Server.broadcastPacket(this.hasSpawned.values(), pk);
-
-            // Broadcast to player
-            if (entity instanceof Player) {
-                SetEntityLinkPacket pk2 = new SetEntityLinkPacket();
-                pk2.link = new EntityLink(0, entity.getId(), EntityLink.TYPE_PASSENGER);
-                ((Player) entity).dataPacket(pk2);
-            }
 
             // Add variables to entity
             entity.riding = this;

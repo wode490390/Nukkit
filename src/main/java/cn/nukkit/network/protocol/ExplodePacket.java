@@ -35,12 +35,10 @@ public class ExplodePacket extends DataPacket {
         this.reset();
         this.putVector3(this.position);
         this.putVarInt((int) (this.radius * 32));
+
         this.putUnsignedVarInt(this.records.length);
-        if (this.records.length > 0) {
-            for (Vector3f record : records) {
-                this.putSignedBlockPosition(record.asBlockVector3());
-            }
+        for (Vector3f record : records) {
+            this.putSignedBlockPosition(record.asBlockVector3());
         }
     }
-
 }

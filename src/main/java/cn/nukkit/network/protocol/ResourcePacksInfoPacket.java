@@ -20,10 +20,9 @@ public class ResourcePacksInfoPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putBoolean(this.mustAccept);
+        this.encodePacks(this.resourcePackEntries);
+        this.encodePacks(this.behaviourPackEntries);
         this.putBoolean(this.hasScripts);
-
-        encodePacks(this.resourcePackEntries);
-        encodePacks(this.behaviourPackEntries);
     }
 
     private void encodePacks(ResourcePack[] packs) {

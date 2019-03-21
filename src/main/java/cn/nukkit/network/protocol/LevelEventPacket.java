@@ -32,7 +32,6 @@ public class LevelEventPacket extends DataPacket {
 
     public static final int EVENT_SOUND_POP = 1030;
     public static final int EVENT_SOUND_ITEM_THROWN = 1031;
-
     public static final int EVENT_SOUND_PORTAL = 1032;
 
     public static final int EVENT_SOUND_ITEMFRAME_ADD_ITEM = 1040;
@@ -56,7 +55,6 @@ public class LevelEventPacket extends DataPacket {
     public static final int EVENT_PARTICLE_EYE_DESPAWN = 2003;
     public static final int EVENT_PARTICLE_SPAWN = 2004;
     public static final int EVENT_PARTICLE_BONEMEAL = 2005;
-
     public static final int EVENT_GUARDIAN_CURSE = 2006;
 
     public static final int EVENT_PARTICLE_BLOCK_FORCE_FIELD = 2008;
@@ -65,6 +63,7 @@ public class LevelEventPacket extends DataPacket {
 
     public static final int EVENT_PARTICLE_ENDERMAN_TELEPORT = 2013;
     public static final int EVENT_PARTICLE_PUNCH_BLOCK = 2014;
+    public static final int EVENT_PARTICLE_WATER_SPLASH = 2015;
 
     public static final int EVENT_START_RAIN = 3001;
     public static final int EVENT_START_THUNDER = 3002;

@@ -28,12 +28,13 @@ public class EntityEventPacket extends DataPacket {
     public static final int IRON_GOLEM_OFFER_FLOWER = 19;
     public static final int IRON_GOLEM_WITHDRAW_FLOWER = 20;
     public static final int LOVE_PARTICLES = 21; //breeding
-
+    public static final int VILLAGER_HURT = 22;
+    public static final int VILLAGER_STOP_TRADING = 23;
     public static final int WITCH_SPELL_PARTICLES = 24;
     public static final int FIREWORK_PARTICLES = 25;
 
     public static final int SILVERFISH_SPAWN_ANIMATION = 27;
-
+    public static final int GUARDIAN_ATTACK_ANIMATION = 28;
     public static final int WITCH_DRINK_POTION = 29;
     public static final int WITCH_THROW_POTION = 30;
     public static final int MINECART_TNT_PRIME_FUSE = 31;
@@ -51,14 +52,15 @@ public class EntityEventPacket extends DataPacket {
     public static final int DEATH_SMOKE_CLOUD = 61;
     public static final int COMPLETE_TRADE = 62;
     public static final int REMOVE_LEASH = 63; //data 1 = cut leash
-
+    public static final int CARAVAN = 64;
     public static final int CONSUME_TOTEM = 65;
     public static final int PLAYER_CHECK_TREASURE_HUNTER_ACHIEVEMENT = 66; //mojang...
     public static final int ENTITY_SPAWN = 67; //used for MinecraftEventing stuff, not needed
     public static final int DRAGON_PUKE = 68; //they call this puke particles
     public static final int ITEM_ENTITY_MERGE = 69;
 
-    //TODO: add more events
+    public static final int BALLOON_POP = 71;
+    public static final int FIND_TREASURE_BRIBE = 72;
 
     @Override
     public byte pid() {

@@ -4,6 +4,10 @@ public class NPCRequestPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.NPC_REQUEST_PACKET;
 
+    public static final int TYPE_SET_ACTION = 0;
+    public static final int TYPE_EXECUTE_COMMAND_ACTION = 1;
+    public static final int TYPE_EXECUTE_CLOSING_COMMANDS = 2;
+
     public long entityRuntimeId;
     public int requestType;
     public String commandString;

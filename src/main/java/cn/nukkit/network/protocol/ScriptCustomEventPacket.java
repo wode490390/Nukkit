@@ -14,7 +14,8 @@ public class ScriptCustomEventPacket extends DataPacket {
 
     @Override
     public void decode() {
-
+        this.eventName = this.getString();
+        this.eventData = this.getString();
     }
 
     @Override
@@ -23,5 +24,4 @@ public class ScriptCustomEventPacket extends DataPacket {
         this.putString(this.eventName);
         this.putString(this.eventData);
     }
-
 }

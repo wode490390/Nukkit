@@ -12,7 +12,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 //import cn.nukkit.network.protocol.EntityEventPacket;
-//import cn.nukkit.network.protocol.LevelSoundEventPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 //import cn.nukkit.network.protocol.TakeItemEntityPacket;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -141,7 +141,16 @@ public class EntityArrow extends EntityProjectile {
 
         boolean hasUpdate = super.onUpdate(currentTick);
 
-        if (this.isCollided) {
+        if (this.onGround || this.hadCollision) {
+            this.setCritical(false);
+            this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BOW_HIT);
+        }
+
+        if (this.age > 1200) {
+            this.close();
+            hasUpdate = true;
+        }
+        /*if (this.isCollided) {
             this.collideTicks += currentTick;
             if (this.collideTicks > 1200) {
                 this.flagForDespawn();
@@ -149,7 +158,7 @@ public class EntityArrow extends EntityProjectile {
             }
         } else {
             this.collideTicks = 0;
-        }
+        }*/
 
         this.timing.stopTiming();
 

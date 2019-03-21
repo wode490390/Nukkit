@@ -22,23 +22,27 @@ public class AdventureSettingsPacket extends DataPacket {
      */
     public static final int BITFLAG_SECOND_SET = 1 << 16;
 
-    public static final int WORLD_IMMUTABLE = 0x01;
-    public static final int NO_PVP = 0x02;
+    public static final int WORLD_IMMUTABLE = 1;
+    public static final int NO_PVP = 1 << 1;
+    public static final int NO_MVP = 1 << 2;
+    public static final int UNUSED = 1 << 3;
+    public static final int SHOW_NAME_TAGS = 1 << 4;
+    public static final int AUTO_JUMP = 1 << 5;
+    public static final int ALLOW_FLIGHT = 1 << 6;
+    public static final int NO_CLIP = 1 << 7;
+    public static final int WORLD_BUILDER = 1 << 8;
+    public static final int FLYING = 1 << 9;
+    public static final int MUTED = 1 << 10;
 
-    public static final int AUTO_JUMP = 0x20;
-    public static final int ALLOW_FLIGHT = 0x40;
-    public static final int NO_CLIP = 0x80;
-    public static final int WORLD_BUILDER = 0x100;
-    public static final int FLYING = 0x200;
-    public static final int MUTED = 0x400;
-
-    public static final int BUILD_AND_MINE = 0x01 | BITFLAG_SECOND_SET;
-    public static final int DOORS_AND_SWITCHES = 0x02 | BITFLAG_SECOND_SET;
-    public static final int OPEN_CONTAINERS = 0x04 | BITFLAG_SECOND_SET;
-    public static final int ATTACK_PLAYERS = 0x08 | BITFLAG_SECOND_SET;
-    public static final int ATTACK_MOBS = 0x10 | BITFLAG_SECOND_SET;
-    public static final int OPERATOR = 0x20 | BITFLAG_SECOND_SET;
-    public static final int TELEPORT = 0x80 | BITFLAG_SECOND_SET;
+    public static final int BUILD_AND_MINE = 1 | BITFLAG_SECOND_SET;
+    public static final int DOORS_AND_SWITCHES = (1 << 1) | BITFLAG_SECOND_SET;
+    public static final int OPEN_CONTAINERS = (1 << 2) | BITFLAG_SECOND_SET;
+    public static final int ATTACK_PLAYERS = (1 << 3) | BITFLAG_SECOND_SET;
+    public static final int ATTACK_MOBS = (1 << 4) | BITFLAG_SECOND_SET;
+    public static final int OPERATOR = (1 << 5) | BITFLAG_SECOND_SET;
+    public static final int TELEPORT = (1 << 7) | BITFLAG_SECOND_SET;
+    public static final int BUILD = (1 << 8) | BITFLAG_SECOND_SET;
+    public static final int DEAULT_LEVEL_PERMISSIONS = (1 << 9) | BITFLAG_SECOND_SET;
 
     public long playerFlags = 0;
 

@@ -14,9 +14,7 @@ public class UpdateBlockSyncedPacket extends UpdateBlockPacket {
 
     @Override
     public void decode() {
-        super.decode();
-        this.entityUniqueId = this.getUnsignedVarLong();
-        this.uvarint64_2 = this.getUnsignedVarLong();
+
     }
 
     @Override

@@ -13,7 +13,7 @@ public class AutomationClientConnectPacket extends DataPacket {
 
     @Override
     public void decode() {
-        this.serverUri = this.getString();
+
     }
 
     @Override

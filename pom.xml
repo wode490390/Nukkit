@@ -9,8 +9,8 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.jupiter.version>5.4.0</junit.jupiter.version>
-        <netty.version>4.1.33.Final</netty.version>
+        <junit.jupiter.version>5.5.0-M1</junit.jupiter.version>
+        <netty.version>4.1.34.Final</netty.version>
         <log4j2.version>2.11.2</log4j2.version>
         <jline.version>3.10.0</jline.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.iq80.leveldb</groupId>
             <artifactId>leveldb</artifactId>
-            <version>0.10-SNAPSHOT</version>
+            <version>0.11-SNAPSHOT</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>

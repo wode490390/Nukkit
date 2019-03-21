@@ -14,6 +14,13 @@ public class MovePlayerPacket extends DataPacket {
     public static final int MODE_TELEPORT = 2;
     public static final int MODE_PITCH = 3; //facepalm Mojang
 
+    public static final int CAUSE_UNKNOWN = 0;
+    public static final int CAUSE_PROJECTILE = 1;
+    public static final int CAUSE_CHORUS_FRUIT = 2;
+    public static final int CAUSE_COMMAND = 3;
+    public static final int CAUSE_BEHAVIOR = 4;
+    public static final int CAUSE_COUNT = 5;
+
     public long entityRuntimeId;
     public Vector3f position;
     public float pitch;
