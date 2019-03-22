@@ -4,7 +4,6 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.utils.TextFormat;
-
 import java.util.Map;
 
 /**
@@ -44,6 +43,6 @@ public class PluginsCommand extends VanillaCommand {
             list += plugin.getDescription().getFullName();
         }
 
-        sender.sendMessage(new TranslationContainer("nukkit.command.plugins.success", new String[]{String.valueOf(plugins.size()), list}));
+        sender.sendMessage(new TranslationContainer("nukkit.command.plugins.success", String.valueOf(plugins.size()), list));
     }
 }

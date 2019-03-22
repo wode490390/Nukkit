@@ -8,6 +8,10 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class ItemPotionSplash extends ProjectileItem {
 
+    public ItemPotionSplash() {
+        this(0, 1);
+    }
+
     public ItemPotionSplash(Integer meta) {
         this(meta, 1);
     }
@@ -33,11 +37,19 @@ public class ItemPotionSplash extends ProjectileItem {
 
     @Override
     public float getThrowForce() {
-        return 1f;
+        return 0.5f;
     }
 
     @Override
     protected void correctNBT(CompoundTag nbt) {
+        /*TODO: CompoundTag nbt = new CompoundTag()
+                .putList(new ListTag<CompoundTag>("CustomPotionEffects")
+                        .add(new CompoundTag()
+                                .putByte("Id", id)
+                                //.putByte("Amplifier", amplifier)
+                                //.putInt("Duration", time)
+                .putString("Potion", name)
+                .putInt("CustomPotionColor", color);//(R << 16) + (G << 8) + B*/
         nbt.putInt("PotionId", this.meta);
     }
 }

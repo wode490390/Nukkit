@@ -9,6 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * Package cn.nukkit.blockentity in project Nukkit.
  */
 public class BlockEntityFlowerPot extends BlockEntitySpawnable {
+
     public BlockEntityFlowerPot(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
@@ -47,5 +48,4 @@ public class BlockEntityFlowerPot extends BlockEntitySpawnable {
                 .putShort("item", this.namedTag.getShort("item"))
                 .putInt("mData", this.namedTag.getInt("data"));
     }
-
 }

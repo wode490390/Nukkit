@@ -1,7 +1,10 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
+import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.math.BlockFace;
 
 /**
  * Created by Pub4Game on 27.12.2015.
@@ -9,6 +12,7 @@ import cn.nukkit.item.ItemTool;
 public class BlockMobSpawner extends BlockSolid {
 
     public BlockMobSpawner() {
+
     }
 
     @Override
@@ -27,6 +31,11 @@ public class BlockMobSpawner extends BlockSolid {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public double getHardness() {
         return 5;
     }
@@ -38,13 +47,12 @@ public class BlockMobSpawner extends BlockSolid {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    toItem()
+                    this.toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override
@@ -57,4 +65,23 @@ public class BlockMobSpawner extends BlockSolid {
         return false;
     }
 
+    @Override
+    public boolean canBeActivated() {
+        return true;
+    }
+
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        //TODO
+        return false;
+    }
+
+    @Override
+    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        if (super.place(item, block, target, face, fx, fy, fz, player)) {
+            //TODO
+            return true;
+        }
+        return false;
+    }
 }

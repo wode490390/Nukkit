@@ -24,10 +24,15 @@
 package co.aikar.timings;
 
 import cn.nukkit.Server;
-
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 
 public class TimingsManager {
+
     static final Map<TimingIdentifier, Timing> TIMING_MAP = Collections.synchronizedMap(new HashMap<>(256, 0.5f));
 
     static final Queue<Timing> TIMINGS = new ArrayDeque<>();
@@ -116,6 +121,7 @@ public class TimingsManager {
     }
 
     static final class BoundedQueue<E> extends LinkedList<E> {
+
         final int maxSize;
 
         BoundedQueue(int maxSize) {

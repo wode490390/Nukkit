@@ -8,15 +8,18 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
-import net.minidev.json.JSONObject;
-
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import net.minidev.json.JSONObject;
 
 /**
  * ClientChainData is a container of chain data sent from clients.
@@ -32,8 +35,8 @@ import java.util.*;
  * ===============
  */
 public final class ClientChainData implements LoginChainData {
-    private static final String MOJANG_PUBLIC_KEY_BASE64 =
-            "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8ELkixyLcwlZryUQcu1TvPOmI2B7vX83ndnWRUaXm74wFfa5f/lwQNTfrLVHa2PmenpGI6JhIMUJaWZrjmMj90NoKNFSNBuKdm8rYiXsfaz3K36x/1U26HpG0ZxK/V1V";
+
+    private static final String MOJANG_PUBLIC_KEY_BASE64 = "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8ELkixyLcwlZryUQcu1TvPOmI2B7vX83ndnWRUaXm74wFfa5f/lwQNTfrLVHa2PmenpGI6JhIMUJaWZrjmMj90NoKNFSNBuKdm8rYiXsfaz3K36x/1U26HpG0ZxK/V1V";
     private static final PublicKey MOJANG_PUBLIC_KEY;
 
     static {
@@ -179,7 +182,7 @@ public final class ClientChainData implements LoginChainData {
 
     private String capeData;
 
-    private BinaryStream bs = new BinaryStream();
+    private final BinaryStream bs = new BinaryStream();
 
     private ClientChainData(byte[] buffer) {
         bs.setBuffer(buffer, 0);
@@ -194,24 +197,52 @@ public final class ClientChainData implements LoginChainData {
 
     private void decodeSkinData() {
         JsonObject skinToken = decodeToken(new String(bs.get(bs.getLInt())));
-        if (skinToken == null) return;
-        if (skinToken.has("ClientRandomId")) this.clientId = skinToken.get("ClientRandomId").getAsLong();
-        if (skinToken.has("ServerAddress")) this.serverAddress = skinToken.get("ServerAddress").getAsString();
-        if (skinToken.has("DeviceModel")) this.deviceModel = skinToken.get("DeviceModel").getAsString();
-        if (skinToken.has("DeviceOS")) this.deviceOS = skinToken.get("DeviceOS").getAsInt();
-        if (skinToken.has("DeviceId")) this.deviceId = skinToken.get("DeviceId").getAsString();
-        if (skinToken.has("GameVersion")) this.gameVersion = skinToken.get("GameVersion").getAsString();
-        if (skinToken.has("GuiScale")) this.guiScale = skinToken.get("GuiScale").getAsInt();
-        if (skinToken.has("LanguageCode")) this.languageCode = skinToken.get("LanguageCode").getAsString();
-        if (skinToken.has("CurrentInputMode")) this.currentInputMode = skinToken.get("CurrentInputMode").getAsInt();
-        if (skinToken.has("DefaultInputMode")) this.defaultInputMode = skinToken.get("DefaultInputMode").getAsInt();
-        if (skinToken.has("UIProfile")) this.UIProfile = skinToken.get("UIProfile").getAsInt();
-        if (skinToken.has("CapeData")) this.capeData = skinToken.get("CapeData").getAsString();
+        if (skinToken == null) {
+            return;
+        }
+        if (skinToken.has("ClientRandomId")) {
+            this.clientId = skinToken.get("ClientRandomId").getAsLong();
+        }
+        if (skinToken.has("ServerAddress")) {
+            this.serverAddress = skinToken.get("ServerAddress").getAsString();
+        }
+        if (skinToken.has("DeviceModel")) {
+            this.deviceModel = skinToken.get("DeviceModel").getAsString();
+        }
+        if (skinToken.has("DeviceOS")) {
+            this.deviceOS = skinToken.get("DeviceOS").getAsInt();
+        }
+        if (skinToken.has("DeviceId")) {
+            this.deviceId = skinToken.get("DeviceId").getAsString();
+        }
+        if (skinToken.has("GameVersion")) {
+            this.gameVersion = skinToken.get("GameVersion").getAsString();
+        }
+        if (skinToken.has("GuiScale")) {
+            this.guiScale = skinToken.get("GuiScale").getAsInt();
+        }
+        if (skinToken.has("LanguageCode")) {
+            this.languageCode = skinToken.get("LanguageCode").getAsString();
+        }
+        if (skinToken.has("CurrentInputMode")) {
+            this.currentInputMode = skinToken.get("CurrentInputMode").getAsInt();
+        }
+        if (skinToken.has("DefaultInputMode")) {
+            this.defaultInputMode = skinToken.get("DefaultInputMode").getAsInt();
+        }
+        if (skinToken.has("UIProfile")) {
+            this.UIProfile = skinToken.get("UIProfile").getAsInt();
+        }
+        if (skinToken.has("CapeData")) {
+            this.capeData = skinToken.get("CapeData").getAsString();
+        }
     }
 
     private JsonObject decodeToken(String token) {
         String[] base = token.split("\\.");
-        if (base.length < 2) return null;
+        if (base.length < 2) {
+            return null;
+        }
         String json = new String(Base64.getDecoder().decode(base[1]), StandardCharsets.UTF_8);
         //Server.getInstance().getLogger().debug(json);
         return new Gson().fromJson(json, JsonObject.class);
@@ -221,7 +252,9 @@ public final class ClientChainData implements LoginChainData {
         Map<String, List<String>> map = new Gson().fromJson(new String(bs.get(bs.getLInt()), StandardCharsets.UTF_8),
                 new TypeToken<Map<String, List<String>>>() {
                 }.getType());
-        if (map.isEmpty() || !map.containsKey("chain") || map.get("chain").isEmpty()) return;
+        if (map.isEmpty() || !map.containsKey("chain") || map.get("chain").isEmpty()) {
+            return;
+        }
         List<String> chains = map.get("chain");
 
         // Validate keys
@@ -233,15 +266,24 @@ public final class ClientChainData implements LoginChainData {
 
         for (String c : chains) {
             JsonObject chainMap = decodeToken(c);
-            if (chainMap == null) continue;
+            if (chainMap == null) {
+                continue;
+            }
             if (chainMap.has("extraData")) {
                 JsonObject extra = chainMap.get("extraData").getAsJsonObject();
-                if (extra.has("displayName")) this.username = extra.get("displayName").getAsString();
-                if (extra.has("identity")) this.clientUUID = UUID.fromString(extra.get("identity").getAsString());
-                if (extra.has("XUID")) this.xuid = extra.get("XUID").getAsString();
+                if (extra.has("displayName")) {
+                    this.username = extra.get("displayName").getAsString();
+                }
+                if (extra.has("identity")) {
+                    this.clientUUID = UUID.fromString(extra.get("identity").getAsString());
+                }
+                if (extra.has("XUID")) {
+                    this.xuid = extra.get("XUID").getAsString();
+                }
             }
-            if (chainMap.has("identityPublicKey"))
+            if (chainMap.has("identityPublicKey")) {
                 this.identityPublicKey = chainMap.get("identityPublicKey").getAsString();
+            }
         }
 
         if (!xboxAuthed) {

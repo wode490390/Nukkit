@@ -55,37 +55,37 @@ public class NoiseGeneratorImprovedF {
      */
     public void populateNoiseArray(float[] noiseArray, float xOffset, float yOffset, float zOffset, int xSize, int ySize, int zSize, float xScale, float yScale, float zScale, float noiseScale) {
         if (ySize == 1) {
-            int i5 = 0;
-            int j5 = 0;
-            int j = 0;
-            int k5 = 0;
-            float d14 = 0.0f;
-            float d15 = 0.0f;
+            int i5;
+            int j5;
+            int j;
+            int k5;
+            float d14;
+            float d15;
             int l5 = 0;
-            float d16 = 1.0f / noiseScale;
+            float d16 = 1 / noiseScale;
 
             for (int j2 = 0; j2 < xSize; ++j2) {
-                float d17 = xOffset + (float) j2 * xScale + this.xCoord;
+                float d17 = xOffset + j2 * xScale + this.xCoord;
                 int i6 = (int) d17;
 
-                if (d17 < (float) i6) {
+                if (d17 < i6) {
                     --i6;
                 }
 
                 int k2 = i6 & 255;
-                d17 = d17 - (float) i6;
+                d17 -= i6;
                 float d18 = d17 * d17 * d17 * (d17 * (d17 * 6.0f - 15.0f) + 10.0f);
 
                 for (int j6 = 0; j6 < zSize; ++j6) {
-                    float d19 = zOffset + (float) j6 * zScale + this.zCoord;
+                    float d19 = zOffset + j6 * zScale + this.zCoord;
                     int k6 = (int) d19;
 
-                    if (d19 < (float) k6) {
+                    if (d19 < k6) {
                         --k6;
                     }
 
                     int l6 = k6 & 255;
-                    d19 = d19 - (float) k6;
+                    d19 -= k6;
                     float d20 = d19 * d19 * d19 * (d19 * (d19 * 6.0f - 15.0f) + 10.0f);
                     i5 = this.permutations[k2] + 0;
                     j5 = this.permutations[i5] + l6;
@@ -102,51 +102,51 @@ public class NoiseGeneratorImprovedF {
             int i = 0;
             float d0 = 1.0f / noiseScale;
             int k = -1;
-            int l = 0;
-            int i1 = 0;
-            int j1 = 0;
-            int k1 = 0;
-            int l1 = 0;
-            int i2 = 0;
-            float d1 = 0.0f;
-            float d2 = 0.0f;
-            float d3 = 0.0f;
-            float d4 = 0.0f;
+            int l;
+            int i1;
+            int j1;
+            int k1;
+            int l1;
+            int i2;
+            float d1 = 0;
+            float d2 = 0;
+            float d3 = 0;
+            float d4 = 0;
 
             for (int l2 = 0; l2 < xSize; ++l2) {
-                float d5 = xOffset + (float) l2 * xScale + this.xCoord;
+                float d5 = xOffset + l2 * xScale + this.xCoord;
                 int i3 = (int) d5;
 
-                if (d5 < (float) i3) {
+                if (d5 < i3) {
                     --i3;
                 }
 
                 int j3 = i3 & 255;
-                d5 = d5 - (float) i3;
+                d5 -= i3;
                 float d6 = d5 * d5 * d5 * (d5 * (d5 * 6.0f - 15.0f) + 10.0f);
 
                 for (int k3 = 0; k3 < zSize; ++k3) {
-                    float d7 = zOffset + (float) k3 * zScale + this.zCoord;
+                    float d7 = zOffset + k3 * zScale + this.zCoord;
                     int l3 = (int) d7;
 
-                    if (d7 < (float) l3) {
+                    if (d7 < l3) {
                         --l3;
                     }
 
                     int i4 = l3 & 255;
-                    d7 = d7 - (float) l3;
+                    d7 -= l3;
                     float d8 = d7 * d7 * d7 * (d7 * (d7 * 6.0f - 15.0f) + 10.0f);
 
                     for (int j4 = 0; j4 < ySize; ++j4) {
-                        float d9 = yOffset + (float) j4 * yScale + this.yCoord;
+                        float d9 = yOffset + j4 * yScale + this.yCoord;
                         int k4 = (int) d9;
 
-                        if (d9 < (float) k4) {
+                        if (d9 < k4) {
                             --k4;
                         }
 
                         int l4 = k4 & 255;
-                        d9 = d9 - (float) k4;
+                        d9 -= k4;
                         float d10 = d9 * d9 * d9 * (d9 * (d9 * 6.0f - 15.0f) + 10.0f);
 
                         if (j4 == 0 || l4 != k) {

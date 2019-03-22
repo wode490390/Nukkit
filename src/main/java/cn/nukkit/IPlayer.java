@@ -2,7 +2,6 @@ package cn.nukkit;
 
 import cn.nukkit.metadata.Metadatable;
 import cn.nukkit.permission.ServerOperator;
-
 import java.util.UUID;
 
 /**

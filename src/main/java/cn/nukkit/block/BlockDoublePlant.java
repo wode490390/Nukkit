@@ -7,13 +7,14 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created on 2015/11/23 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockDoublePlant extends BlockFlowable {
+public class BlockDoublePlant extends BlockFlowableMeta {
+
     public static final int SUNFLOWER = 0;
     public static final int LILAC = 1;
     public static final int TALL_GRASS = 2;
@@ -21,6 +22,15 @@ public class BlockDoublePlant extends BlockFlowable {
     public static final int ROSE_BUSH = 4;
     public static final int PEONY = 5;
     public static final int TOP_HALF_BITMASK = 0x8;
+
+    private static final String[] NAMES = new String[]{
+            "Sunflower",
+            "Lilac",
+            "Double Tallgrass",
+            "Large Fern",
+            "Rose Bush",
+            "Peony"
+    };
 
     public BlockDoublePlant() {
         this(0);
@@ -42,15 +52,7 @@ public class BlockDoublePlant extends BlockFlowable {
 
     @Override
     public String getName() {
-        String[] names = new String[]{
-                "Sunflower",
-                "Lilac",
-                "Double Tallgrass",
-                "Large Fern",
-                "Rose Bush",
-                "Peony"
-        };
-        return names[this.getDamage() & 0x07];
+        return NAMES[this.getDamage() > 5 ? 0 : this.getDamage()];
     }
 
     @Override
@@ -106,7 +108,7 @@ public class BlockDoublePlant extends BlockFlowable {
             switch (this.getDamage() & 0x07) {
                 case 2:
                 case 3:
-                    boolean dropSeeds = new Random().nextInt(10) == 0;
+                    boolean dropSeeds = ThreadLocalRandom.current().nextInt(10) == 0;
                     if (item.isShears()) {
                         //todo enchantment
                         if (dropSeeds) {

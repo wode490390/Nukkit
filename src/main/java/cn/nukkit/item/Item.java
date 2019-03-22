@@ -18,9 +18,7 @@ import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.Config;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -29,23 +27,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class Item implements Cloneable, BlockID, ItemID {
-    //Normal Item IDs
 
     protected static String UNKNOWN_STR = "Unknown";
-    public static Class[] list = null;
+    public static Class[] list;
 
-    protected Block block = null;
+    protected Block block;
     protected final int id;
     protected int meta;
     protected boolean hasMeta = true;
     private byte[] tags = new byte[0];
-    private CompoundTag cachedNBT = null;
+    private CompoundTag cachedNBT;
     public int count;
     protected int durability = 0;
     protected String name;
@@ -166,7 +165,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[SNOWBALL] = ItemSnowball.class; //332
             list[BOAT] = ItemBoat.class; //333
             list[LEATHER] = ItemLeather.class; //334
-
+            list[KELP] = ItemKelp.class; //335
             list[BRICK] = ItemBrick.class; //336
             list[CLAY] = ItemClay.class; //337
             list[SUGARCANE] = ItemSugarcane.class; //338
@@ -217,7 +216,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[SPAWN_EGG] = ItemSpawnEgg.class; //383
             list[EXPERIENCE_BOTTLE] = ItemExpBottle.class; //384
             list[FIRE_CHARGE] = ItemFireCharge.class; //385
-            //TODO: list[BOOK_AND_QUILL] = ItemBookAndQuill.class; //386
+            list[BOOK_AND_QUILL] = ItemBookAndQuill.class; //386
             list[WRITTEN_BOOK] = ItemBookWritten.class; //387
             list[EMERALD] = ItemEmerald.class; //388
             list[ITEM_FRAME] = ItemItemFrame.class; //389
@@ -226,14 +225,14 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[POTATO] = ItemPotato.class; //392
             list[BAKED_POTATO] = ItemPotatoBaked.class; //393
             list[POISONOUS_POTATO] = ItemPotatoPoisonous.class; //394
-            //TODO: list[EMPTY_MAP] = ItemEmptyMap.class; //395
-            //TODO: list[GOLDEN_CARROT] = ItemCarrotGolden.class; //396
+            list[EMPTY_MAP] = ItemEmptyMap.class; //395
+            list[GOLDEN_CARROT] = ItemCarrotGolden.class; //396
             list[SKULL] = ItemSkull.class; //397
             list[CARROT_ON_A_STICK] = ItemCarrotOnAStick.class; //398
             list[NETHER_STAR] = ItemNetherStar.class; //399
             list[PUMPKIN_PIE] = ItemPumpkinPie.class; //400
             list[FIREWORKS] = ItemFirework.class; //401
-
+            list[FIREWORKSCHARGE] = ItemFireworkCharge.class; //402
             list[ENCHANTED_BOOK] = ItemBookEnchanted.class; //403
             list[COMPARATOR] = ItemRedstoneComparator.class; //404
             list[NETHER_BRICK] = ItemNetherBrick.class; //405
@@ -241,22 +240,22 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[MINECART_WITH_TNT] = ItemMinecartTNT.class; //407
             list[MINECART_WITH_HOPPER] = ItemMinecartHopper.class; //408
             list[PRISMARINE_SHARD] = ItemPrismarineShard.class; //409
-            list[HOPPER] = ItemHopper.class;
+            list[HOPPER] = ItemHopper.class; //410
             list[RAW_RABBIT] = ItemRabbitRaw.class; //411
             list[COOKED_RABBIT] = ItemRabbitCooked.class; //412
             list[RABBIT_STEW] = ItemRabbitStew.class; //413
             list[RABBIT_FOOT] = ItemRabbitFoot.class; //414
-            //TODO: list[RABBIT_HIDE] = ItemRabbitHide.class; //415
+            list[RABBIT_HIDE] = ItemRabbitHide.class; //415
             list[LEATHER_HORSE_ARMOR] = ItemHorseArmorLeather.class; //416
             list[IRON_HORSE_ARMOR] = ItemHorseArmorIron.class; //417
             list[GOLD_HORSE_ARMOR] = ItemHorseArmorGold.class; //418
             list[DIAMOND_HORSE_ARMOR] = ItemHorseArmorDiamond.class; //419
-            //TODO: list[LEAD] = ItemLead.class; //420
-            //TODO: list[NAME_TAG] = ItemNameTag.class; //421
+            list[LEAD] = ItemLead.class; //420
+            list[NAME_TAG] = ItemNameTag.class; //421
             list[PRISMARINE_CRYSTALS] = ItemPrismarineCrystals.class; //422
             list[RAW_MUTTON] = ItemMuttonRaw.class; //423
             list[COOKED_MUTTON] = ItemMuttonCooked.class; //424
-
+            list[ARMOR_STAND] = ItemArmorStand.class; //425
             list[END_CRYSTAL] = ItemEndCrystal.class; //426
             list[SPRUCE_DOOR] = ItemDoorSpruce.class; //427
             list[BIRCH_DOOR] = ItemDoorBirch.class; //428
@@ -264,19 +263,28 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[ACACIA_DOOR] = ItemDoorAcacia.class; //430
             list[DARK_OAK_DOOR] = ItemDoorDarkOak.class; //431
             list[CHORUS_FRUIT] = ItemChorusFruit.class; //432
-            //TODO: list[POPPED_CHORUS_FRUIT] = ItemChorusFruitPopped.class; //433
+            list[POPPED_CHORUS_FRUIT] = ItemChorusFruitPopped.class; //433
+            list[BANNER_PATTERN] = ItemBannerPattern.class; //434
 
-            //TODO: list[DRAGON_BREATH] = ItemDragonBreath.class; //437
+            list[DRAGON_BREATH] = ItemDragonBreath.class; //437
             list[SPLASH_POTION] = ItemPotionSplash.class; //438
 
             list[LINGERING_POTION] = ItemPotionLingering.class; //441
-
+            list[SPARKLER] = ItemSparkler.class; //442 edu
+            list[COMMAND_BLOCK_MINECART] = ItemMinecartCommandBlock.class; //443
             list[ELYTRA] = ItemElytra.class; //444
-
-            //TODO: list[SHULKER_SHELL] = ItemShulkerShell.class; //445
-            
+            list[SHULKER_SHELL] = ItemShulkerShell.class; //445
+            list[BANNER] = ItemBanner.class; //446
+            list[EYE_DROP] = ItemEyeDrop.class; //447 edu
+            list[BALLOON] = ItemBalloon.class; //448 edu
+            list[SUPER_FERTILIZER] = ItemSuperFertilizer.class; //449 edu
+            list[TOTEM] = ItemTotem.class; //450
+            list[BLEACH] = ItemBleach.class; //451 edu
+            list[IRON_NUGGET] = ItemIronNugget.class; //452
+            list[ICE_BOMB] = ItemIceBomb.class; //453 edu
+            //list[CHALKBOARD] = ItemChalkboard.class; //454 Edu
             list[TRIDENT] = ItemTrident.class; //455
-
+            //list[PORTFOLIO] = ItemPortfolio.class; //456 Edu
             list[BEETROOT] = ItemBeetroot.class; //457
             list[BEETROOT_SEEDS] = ItemSeedsBeetroot.class; //458
             list[BEETROOT_SOUP] = ItemBeetrootSoup.class; //459
@@ -285,27 +293,45 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[PUFFERFISH] = ItemPufferfish.class; //462
             list[COOKED_SALMON] = ItemSalmonCooked.class; //463
             list[DRIED_KELP] = ItemDriedKelp.class; //464
-
+            list[NAUTILUS_SHELL] = ItemNautilusShell.class; //465
             list[GOLDEN_APPLE_ENCHANTED] = ItemAppleGoldEnchanted.class; //466
-            
+            list[HEART_OF_THE_SEA] = ItemHeartOfTheSea.class; //467
+            list[SCUTE] = ItemScute.class; //468
             list[TURTLE_SHELL] = ItemTurtleShell.class; //469
+            list[PHANTOM_MEMBRANE] = ItemPhantomMembrane.class; //470
+            list[CROSSBOW] = ItemCrossbow.class; //471
+            list[SPRUCE_SIGN] = ItemSignSpruce.class; //472
+            list[BIRCH_SIGN] = ItemSignBirch.class; //473
+            list[JUNGLE_SIGN] = ItemSignJungle.class; //474
+            list[ACACIA_SIGN] = ItemSignAcacia.class; //475
+            list[DARK_OAK_SIGN] = ItemSignDarkOak.class; //476
+            list[SWEET_BERRIES] = ItemSweetBerries.class; //477
 
-            list[RECORD_11] = ItemRecord11.class;
-            list[RECORD_CAT] = ItemRecordCat.class;
-            list[RECORD_13] = ItemRecord13.class;
-            list[RECORD_BLOCKS] = ItemRecordBlocks.class;
-            list[RECORD_CHIRP] = ItemRecordChirp.class;
-            list[RECORD_FAR] = ItemRecordFar.class;
-            list[RECORD_WARD] = ItemRecordWard.class;
-            list[RECORD_MALL] = ItemRecordMall.class;
-            list[RECORD_MELLOHI] = ItemRecordMellohi.class;
-            list[RECORD_STAL] = ItemRecordStal.class;
-            list[RECORD_STRAD] = ItemRecordStrad.class;
-            list[RECORD_WAIT] = ItemRecordWait.class;
+            //list[CAMERA] = ItemCamera.class; //498 Edu
+            list[COMPOUND] = ItemCompound.class; //499 edu
+            list[RECORD_13] = ItemRecord13.class; //500
+            list[RECORD_CAT] = ItemRecordCat.class; //501
+            list[RECORD_BLOCKS] = ItemRecordBlocks.class; //502
+            list[RECORD_CHIRP] = ItemRecordChirp.class; //503
+            list[RECORD_FAR] = ItemRecordFar.class; //504
+            list[RECORD_MALL] = ItemRecordMall.class; //508
+            list[RECORD_MELLOHI] = ItemRecordMellohi.class; //506
+            list[RECORD_STAL] = ItemRecordStal.class; //507
+            list[RECORD_STRAD] = ItemRecordStrad.class; //508
+            list[RECORD_WARD] = ItemRecordWard.class; //509
+            list[RECORD_11] = ItemRecord11.class; //510
+            list[RECORD_WAIT] = ItemRecordWait.class; //511
+
+            list[SHIELD] = ItemShield.class; //513
 
             for (int i = 0; i < 256; ++i) {
                 if (Block.list[i] != null) {
                     list[i] = Block.list[i];
+                }
+            }
+            for (int i = 256; i < 512; ++i) {
+                if (Block.list[i] != null) {
+                    list[(0xff - i) & 0xffff] = Block.list[i];
                 }
             }
         }
@@ -324,7 +350,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             try {
                 Utils.writeFile(path, Server.class.getClassLoader().getResourceAsStream("creativeitems.json"));
             } catch (IOException e) {
-                MainLogger.getLogger().logException(e);
+                log.throwing(e);
                 return;
             }
         }
@@ -332,14 +358,21 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         for (Map map : list) {
             try {
-                int id = (int) map.get("id");
-                int damage = (int) map.getOrDefault("damage", 0);
+                int rid = ((int) map.get("id"));
+
+                int tid = rid < 0 ? 0xff - rid : rid;
+                if (rid <= 0xff && (Block.experimental[tid] && !server.isExperimentalAllowed() || Block.education[tid] && !server.isEducationAllowed())) {
+                    continue;
+                }
+
+                int id = rid & 0xffff;
+                int damage = ((int) map.getOrDefault("damage", 0)) & 0xffff;
                 String hex = (String) map.get("nbt_hex");
                 byte[] nbt = hex != null ? Utils.parseHexBinary(hex) : new byte[0];
 
                 addCreativeItem(Item.get(id, damage, 1, nbt));
             } catch (Exception e) {
-                MainLogger.getLogger().logException(e);
+                log.throwing(e);
             }
         }
     }
@@ -410,6 +443,12 @@ public class Item implements Cloneable, BlockID, ItemID {
                 } else {
                     item = new ItemBlock(Block.get(id), meta, count);
                 }
+            } else if (id > 0xfff) {
+                if (meta >= 0) {
+                    item = new ItemBlock(Block.get(0xffff - id + 256, meta), meta, count);
+                } else {
+                    item = new ItemBlock(Block.get(0xffff - id + 256), meta, count);
+                }
             } else {
                 item = ((Item) c.getConstructor(Integer.class, int.class).newInstance(meta, count));
             }
@@ -430,7 +469,7 @@ public class Item implements Cloneable, BlockID, ItemID {
         int id = 0;
         int meta = 0;
 
-        Pattern integerPattern = Pattern.compile("^[1-9]\\d*$");
+        Pattern integerPattern = Pattern.compile("^-?[1-9]\\d*$");
         if (integerPattern.matcher(b[0]).matches()) {
             id = Integer.valueOf(b[0]);
         } else {
@@ -440,8 +479,10 @@ public class Item implements Cloneable, BlockID, ItemID {
             }
         }
 
-        id = id & 0xFFFF;
-        if (b.length != 1) meta = Integer.valueOf(b[1]) & 0xFFFF;
+        id &= 0xffff;
+        if (b.length != 1) {
+            meta = Integer.valueOf(b[1]) & 0xffff;
+        }
 
         return get(id, meta);
     }
@@ -449,7 +490,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     public static Item fromJson(Map<String, Object> data) {
         String nbt = (String) data.getOrDefault("nbt_hex", "");
 
-        return get(Utils.toInt(data.get("id")), Utils.toInt(data.getOrDefault("damage", 0)), Utils.toInt(data.getOrDefault("count", 1)), nbt.isEmpty() ? new byte[0] : Utils.parseHexBinary(nbt));
+        return get(Utils.toInt(data.get("id")) & 0xffff, Utils.toInt(data.getOrDefault("damage", 0)), Utils.toInt(data.getOrDefault("count", 1)), nbt.isEmpty() ? new byte[0] : Utils.parseHexBinary(nbt));
     }
 
     public static Item[] fromStringMultiple(String str) {
@@ -461,25 +502,44 @@ public class Item implements Cloneable, BlockID, ItemID {
         return items;
     }
 
+    /**
+     * @param tag CompoundTag
+     *
+     * @return Item
+     */
     public Item setCompoundTag(CompoundTag tag) {
         this.setNamedTag(tag);
         return this;
     }
 
+    /**
+     * @param tags byte[]
+     *
+     * @return Item
+     */
     public Item setCompoundTag(byte[] tags) {
         this.tags = tags;
         this.cachedNBT = null;
         return this;
     }
 
+    /**
+     * @return byte[]
+     */
     public byte[] getCompoundTag() {
         return tags;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean hasCompoundTag() {
         return this.tags != null && this.tags.length > 0;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean hasCustomBlockData() {
         if (!this.hasCompoundTag()) {
             return false;
@@ -490,6 +550,9 @@ public class Item implements Cloneable, BlockID, ItemID {
 
     }
 
+    /**
+     * @return Item
+     */
     public Item clearCustomBlockData() {
         if (!this.hasCompoundTag()) {
             return this;
@@ -504,6 +567,11 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this;
     }
 
+    /**
+     * @param compoundTag CompoundTag
+     *
+     * @return Item
+     */
     public Item setCustomBlockData(CompoundTag compoundTag) {
         CompoundTag tags = compoundTag.copy();
         tags.setName("BlockEntityTag");
@@ -521,6 +589,9 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this;
     }
 
+    /**
+     * @return CompoundTag
+     */
     public CompoundTag getCustomBlockData() {
         if (!this.hasCompoundTag()) {
             return null;
@@ -538,6 +609,9 @@ public class Item implements Cloneable, BlockID, ItemID {
         return null;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean hasEnchantments() {
         if (!this.hasCompoundTag()) {
             return false;
@@ -546,25 +620,58 @@ public class Item implements Cloneable, BlockID, ItemID {
         CompoundTag tag = this.getNamedTag();
 
         if (tag.contains("ench")) {
-            Tag enchTag = tag.get("ench");
-            if (enchTag instanceof ListTag) {
-                return true;
-            }
+            return tag.get("ench") instanceof ListTag;
         }
 
         return false;
     }
 
+    public boolean hasEnchantment(int id) {
+        return this.hasEnchantment(id, -1);
+    }
+
+    /**
+     * @param id int
+     * @param level int
+     *
+     * @return boolean
+     */
+    public boolean hasEnchantment(int id, int level) {
+        if (!this.hasCompoundTag()) {
+            return false;
+        }
+
+        CompoundTag tag = this.getNamedTag();
+
+        if (tag.contains("ench") && tag.get("ench") instanceof ListTag) {
+            for (CompoundTag entry : tag.getList("ench", CompoundTag.class).getAll()) {
+                if (entry.getShort("id") == id && (level == -1 || entry.getShort("lvl") == level)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param id int
+     *
+     * @return Enchantment
+     */
     public Enchantment getEnchantment(int id) {
         return getEnchantment((short) (id & 0xffff));
     }
 
     public Enchantment getEnchantment(short id) {
-        if (!this.hasEnchantments()) {
+        if (!this.hasCompoundTag()) {
+            return null;
+        }
+        CompoundTag tag = this.getNamedTag();
+        if (!(tag.get("ench") instanceof ListTag)) {
             return null;
         }
 
-        for (CompoundTag entry : this.getNamedTag().getList("ench", CompoundTag.class).getAll()) {
+        for (CompoundTag entry : tag.getList("ench", CompoundTag.class).getAll()) {
             if (entry.getShort("id") == id) {
                 Enchantment e = Enchantment.getEnchantment(entry.getShort("id"));
                 if (e != null) {
@@ -577,7 +684,69 @@ public class Item implements Cloneable, BlockID, ItemID {
         return null;
     }
 
-    public void addEnchantment(Enchantment... enchantments) {
+    public Item removeEnchantment(int id) {
+        return this.removeEnchantment(id, -1);
+    }
+
+    /**
+     * @param id int
+     * @param level int
+     *
+     * @return Item
+     */
+    public Item removeEnchantment(int id, int level) {
+        CompoundTag tag;
+        if (!this.hasCompoundTag()) {
+            tag = new CompoundTag();
+        } else {
+            tag = this.getNamedTag();
+        }
+
+        ListTag<CompoundTag> ench;
+        if (!tag.contains("ench")) {
+            ench = new ListTag<>("ench");
+            tag.putList(ench);
+        } else {
+            ench = tag.getList("ench", CompoundTag.class);
+        }
+
+        for (int k = 0; k < ench.size(); k++) {
+            CompoundTag entry = ench.get(k);
+            if (entry.getShort("id") == id && (level == -1 || entry.getShort("lvl") == level)) {
+                ench.remove(entry);
+                break;
+            }
+        }
+
+        this.setNamedTag(tag);
+
+        return this;
+    }
+
+    /**
+     * @return Item
+     */
+    public Item removeEnchantments() {
+        CompoundTag tag;
+        if (!this.hasCompoundTag()) {
+            tag = new CompoundTag();
+        } else {
+            tag = this.getNamedTag();
+        }
+
+        tag.putList(new ListTag<>("ench"));
+
+        this.setNamedTag(tag);
+
+        return this;
+    }
+
+    /**
+     * @param enchantments Enchantment...
+     *
+     * @return Item
+     */
+    public Item addEnchantment(Enchantment... enchantments) {
         CompoundTag tag;
         if (!this.hasCompoundTag()) {
             tag = new CompoundTag();
@@ -617,8 +786,13 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
 
         this.setNamedTag(tag);
+
+        return this;
     }
 
+    /**
+     * @return Enchantment[]
+     */
     public Enchantment[] getEnchantments() {
         if (!this.hasEnchantments()) {
             return new Enchantment[0];
@@ -635,9 +809,30 @@ public class Item implements Cloneable, BlockID, ItemID {
             }
         }
 
-        return enchantments.stream().toArray(Enchantment[]::new);
+        return enchantments.toArray(new Enchantment[0]);
     }
 
+    /**
+     * Returns the level of the enchantment on this item with the specified ID, or 0 if the item does not have the enchantment.
+     *
+     * @param enchantmentId int
+     *
+     * @return int
+     */
+    public int getEnchantmentLevel(int enchantmentId) {
+        if (this.hasEnchantments()) {
+            for (CompoundTag entry : this.getNamedTag().getList("ench", CompoundTag.class).getAll()) {
+                if (entry.getShort("id") == enchantmentId) {
+                    return entry.getShort("lvl");
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @return boolean
+     */
     public boolean hasCustomName() {
         if (!this.hasCompoundTag()) {
             return false;
@@ -646,14 +841,15 @@ public class Item implements Cloneable, BlockID, ItemID {
         CompoundTag tag = this.getNamedTag();
         if (tag.contains("display")) {
             Tag tag1 = tag.get("display");
-            if (tag1 instanceof CompoundTag && ((CompoundTag) tag1).contains("Name") && ((CompoundTag) tag1).get("Name") instanceof StringTag) {
-                return true;
-            }
+            return tag1 instanceof CompoundTag && ((CompoundTag) tag1).contains("Name") && ((CompoundTag) tag1).get("Name") instanceof StringTag;
         }
 
         return false;
     }
 
+    /**
+     * @return String
+     */
     public String getCustomName() {
         if (!this.hasCompoundTag()) {
             return "";
@@ -670,8 +866,13 @@ public class Item implements Cloneable, BlockID, ItemID {
         return "";
     }
 
+    /**
+     * @param name String
+     *
+     * @return Item
+     */
     public Item setCustomName(String name) {
-        if (name == null || name.equals("")) {
+        if (name == null || name.isEmpty()) {
             this.clearCustomName();
         }
 
@@ -692,6 +893,9 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this;
     }
 
+    /**
+     * @return Item
+     */
     public Item clearCustomName() {
         if (!this.hasCompoundTag()) {
             return this;
@@ -711,6 +915,9 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this;
     }
 
+    /**
+     * @return String[]
+     */
     public String[] getLore() {
         Tag tag = this.getNamedTagEntry("display");
         ArrayList<String> lines = new ArrayList<>();
@@ -729,6 +936,11 @@ public class Item implements Cloneable, BlockID, ItemID {
         return lines.toArray(new String[0]);
     }
 
+    /**
+     * @param lines String...
+     *
+     * @return Item
+     */
     public Item setLore(String... lines) {
         CompoundTag tag;
         if (!this.hasCompoundTag()) {
@@ -752,6 +964,11 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this;
     }
 
+    /**
+     * @param name String
+     *
+     * @return Tag
+     */
     public Tag getNamedTagEntry(String name) {
         CompoundTag tag = this.getNamedTag();
         if (tag != null) {
@@ -761,6 +978,26 @@ public class Item implements Cloneable, BlockID, ItemID {
         return null;
     }
 
+    public void setNamedTagEntry(String name, Tag newTag) {
+        CompoundTag tag = this.getNamedTag();
+        tag.put(name, newTag);
+        this.setNamedTag(tag);
+    }
+
+    public void removeNamedTagEntry(String... names) {
+        CompoundTag tag = this.getNamedTag();
+        for (String name : names) {
+            tag.remove(name);
+        }
+        this.setNamedTag(tag);
+    }
+
+    /**
+     * Returns a tree of Tag objects representing the Item's NBT. If the item does not have any NBT, an empty CompoundTag
+     * object is returned to allow the caller to manipulate and apply back to the item.
+     *
+     * @return CompoundTag
+     */
     public CompoundTag getNamedTag() {
         if (!this.hasCompoundTag()) {
             return null;
@@ -777,6 +1014,13 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this.cachedNBT;
     }
 
+    /**
+     * Sets the Item's NBT from the supplied CompoundTag object.
+     *
+     * @param tag CompoundTag
+     *
+     * @return Item
+     */
     public Item setNamedTag(CompoundTag tag) {
         if (tag.isEmpty()) {
             return this.clearNamedTag();
@@ -789,6 +1033,10 @@ public class Item implements Cloneable, BlockID, ItemID {
         return this;
     }
 
+    /**
+     * Removes the Item's NBT.
+     * @return Item
+     */
     public Item clearNamedTag() {
         return this.setCompoundTag(new byte[0]);
     }
@@ -810,26 +1058,59 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
     }
 
+
+    /**
+     * @return int
+     */
     public int getCount() {
-        return count;
+        return this.count;
     }
 
-    public void setCount(int count) {
+    /**
+     * @param count int
+     *
+     * @return Item
+     */
+    public Item setCount(int count) {
         this.count = count;
+
+        return this;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean isNull() {
         return this.count <= 0 || this.id == AIR;
     }
 
-    final public String getName() {
-        return this.hasCustomName() ? this.getCustomName() : this.name;
+    /**
+     * Returns the name of the item, or the custom name if it is set.
+     * @return string
+     */
+    public final String getName() {
+        return this.hasCustomName() ? this.getCustomName() : this.getVanillaName();
     }
 
-    final public boolean canBePlaced() {
+    /**
+     * Returns the vanilla name of the item, disregarding custom names.
+     * @return String
+     */
+    public String getVanillaName() {
+        return this.name;
+    }
+
+    /**
+     * @return boolean
+     */
+    public final boolean canBePlaced() {
         return ((this.block != null) && this.block.canBePlaced());
     }
 
+    /**
+     * Returns the block corresponding to this Item.
+     * @return Block
+     */
     public Block getBlock() {
         if (this.block != null) {
             return this.block.clone();
@@ -838,12 +1119,18 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
     }
 
+    /**
+     * @return int
+     */
     public int getId() {
-        return id;
+        return this.id;
     }
 
+    /**
+     * @return int
+     */
     public int getDamage() {
-        return meta;
+        return this.meta;
     }
 
     public void setDamage(Integer meta) {
@@ -854,11 +1141,29 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
     }
 
+    /**
+     * Returns whether this item can match any item with an equivalent ID with any meta value.
+     * Used in crafting recipes which accept multiple variants of the same item, for example crafting tables recipes.
+     *
+     * @return boolean
+     */
+    public boolean hasAnyDamageValue() {
+        return this.meta == -1;
+    }
+
+    /**
+     * Returns the highest amount of this item which will fit into one inventory slot.
+     * @return int
+     */
     public int getMaxStackSize() {
         return 64;
     }
 
-    final public Short getFuelTime() {
+    /**
+     * Returns the time in ticks which the item will fuel a furnace for.
+     * @return Short
+     */
+    public final Short getFuelTime() {
         if (!Fuel.duration.containsKey(id)) {
             return null;
         }
@@ -866,6 +1171,48 @@ public class Item implements Cloneable, BlockID, ItemID {
             return Fuel.duration.get(this.id);
         }
         return null;
+    }
+    /**
+     * Returns how many points of damage this item will deal to an entity when used as a weapon.
+     * @return int
+     */
+    public int getAttackPoints() {
+        return 1;
+    }
+
+    /**
+     * Returns how many armor points can be gained by wearing this item.
+     * @return int
+     */
+    public int getDefensePoints() {
+        return 0;
+    }
+
+    ///**
+    // * Returns what type of block-breaking tool this is. Blocks requiring the same tool type as the item will break
+    // * faster (except for blocks requiring no tool, which break at the same speed regardless of the tool used)
+    // *
+    // * @return int
+    // */
+    //public int getBlockToolType() {
+    //    return BlockToolType.TYPE_NONE;
+    //}
+
+    ///**
+    // * Returns the harvesting power that this tool has. This affects what blocks it can mine when the tool type matches
+    // * the mined block.
+    // * This should return 1 for non-tiered tools, and the tool tier for tiered tools.
+    // *
+    // * @see Block.getToolHarvestLevel()
+    // *
+    // * @return int
+    // */
+    //public int getBlockToolHarvestLevel() {
+    //    return 0;
+    //}
+
+    public float getMiningEfficiency(Block block) {
+        return 1;
     }
 
     public boolean useOn(Entity entity) {
@@ -952,15 +1299,24 @@ public class Item implements Cloneable, BlockID, ItemID {
         return false;
     }
 
-    @Override
-    final public String toString() {
-        return "Item " + this.name + " (" + this.id + ":" + (!this.hasMeta ? "?" : this.meta) + ")x" + this.count + (this.hasCompoundTag() ? " tags:0x" + Binary.bytesToHexString(this.getCompoundTag()) : "");
-    }
-
     public int getDestroySpeed(Block block, Player player) {
         return 1;
     }
 
+    /**
+     * Called when a player uses this item on a block.
+     *
+     * @param level Level
+     * @param player Player
+     * @param block Block
+     * @param target Block
+     * @param face BlockFace
+     * @param fx double
+     * @param fy double
+     * @param fz double
+     *
+     * @return boolean
+     */
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         return false;
     }
@@ -971,6 +1327,7 @@ public class Item implements Cloneable, BlockID, ItemID {
      *
      * @param player player
      * @param directionVector direction
+     *
      * @return item changed
      */
     public boolean onClickAir(Player player, Vector3 directionVector) {
@@ -981,10 +1338,50 @@ public class Item implements Cloneable, BlockID, ItemID {
      * Called when a player is using this item and releases it. Used to handle bow shoot actions.
      * Returns whether the item was changed, for example count decrease or durability change.
      *
-     * @param player player
-     * @return item changed
+     * @param player Player
+     *
+     * @return boolean
      */
     public boolean onReleaseUsing(Player player) {
+        return false;
+    }
+
+    /**
+     * Called when this item is used to destroy a block. Usually used to update durability.
+     *
+     * @param block Block
+     *
+     * @return boolean
+     */
+    public boolean onDestroyBlock(Block block) {
+        return false;
+    }
+
+    /**
+     * Called when this item is used to attack an entity. Usually used to update durability.
+     *
+     * @param victim Entity
+     *
+     * @return boolean
+     */
+    public boolean onAttackEntity(Entity victim) {
+        return false;
+    }
+
+    /**
+     * Returns the number of ticks a player must wait before activating this item again.
+     *
+     * @return int
+     */
+    public int getCooldownTicks() {
+        return 0;
+    }
+
+    public boolean isExperimental() {
+        return false;
+    }
+
+    public boolean isEducation() {
         return false;
     }
 
@@ -997,8 +1394,17 @@ public class Item implements Cloneable, BlockID, ItemID {
         return equals(item, checkDamage, true);
     }
 
+    /**
+     * Compares an Item to this Item and check if they match.
+     *
+     * @param item Item
+     * @param checkDamage Whether to verify that the damage values match.
+     * @param checkCompound Whether to verify that the items' NBT match.
+     *
+     * @return bool
+     */
     public final boolean equals(Item item, boolean checkDamage, boolean checkCompound) {
-        if (this.getId() == item.getId() && (!checkDamage || this.getDamage() == item.getDamage())) {
+        if (item != null && this.getId() == item.getId() && (!checkDamage || this.getDamage() == item.getDamage())) {
             if (checkCompound) {
                 if (Arrays.equals(this.getCompoundTag(), item.getCompoundTag())) {
                     return true;
@@ -1016,8 +1422,9 @@ public class Item implements Cloneable, BlockID, ItemID {
     /**
      * Returns whether the specified item stack has the same ID, damage, NBT and count as this item stack.
      *
-     * @param other item
-     * @return equal
+     * @param other Item
+     *
+     * @return boolean equal
      */
     public final boolean equalsExact(Item other) {
         return this.equals(other, true, true) && this.count == other.count;
@@ -1036,6 +1443,14 @@ public class Item implements Cloneable, BlockID, ItemID {
     @Deprecated
     public final boolean deepEquals(Item item, boolean checkDamage, boolean checkCompound) {
         return equals(item, checkDamage, checkCompound);
+    }
+
+    /**
+     * @return String
+     */
+    @Override
+    final public String toString() {
+        return "Item " + this.name + " (" + this.id + ":" + (!this.hasMeta ? "?" : this.meta) + ")x" + this.count + (this.hasCompoundTag() ? " tags:0x" + Binary.bytesToHexString(this.getCompoundTag()) : "");
     }
 
     @Override

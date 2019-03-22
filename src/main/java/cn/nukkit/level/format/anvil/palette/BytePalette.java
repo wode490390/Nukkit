@@ -6,7 +6,8 @@ import java.util.Arrays;
  * @author https://github.com/boy0001/
  */
 public class BytePalette {
-    private static byte[] BYTE0 = new byte[0];
+
+    private static final byte[] BYTE0 = new byte[0];
     private byte[] keys = BYTE0;
     private byte lastIndex = Byte.MIN_VALUE;
 
@@ -57,7 +58,9 @@ public class BytePalette {
         int index;
         if (hasLast) {
             byte lastKey = keys[lastTmp];
-            if (lastKey == key) return lastTmp;
+            if (lastKey == key) {
+                return lastTmp;
+            }
             if (lastKey > key) {
                 index = binarySearch0(0, lastTmp, key);
             } else {
@@ -81,12 +84,13 @@ public class BytePalette {
             int mid = (low + high) >>> 1;
             byte midVal = keys[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }

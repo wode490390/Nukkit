@@ -80,9 +80,13 @@ abstract public class ItemColorArmor extends ItemArmor {
      * @return - BlockColor, or null if item has no color
      */
     public BlockColor getColor() {
-        if (!this.hasCompoundTag()) return null;
+        if (!this.hasCompoundTag()) {
+            return null;
+        }
         CompoundTag tag = this.getNamedTag();
-        if (!tag.exist("customColor")) return null;
+        if (!tag.exist("customColor")) {
+            return null;
+        }
         int rgb = tag.getInt("customColor");
         return new BlockColor(rgb);
     }

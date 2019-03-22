@@ -8,6 +8,7 @@ import cn.nukkit.item.ItemTool;
  * Nukkit Project
  */
 public class BlockBricksStone extends BlockSolidMeta {
+
     public static final int NORMAL = 0;
     public static final int MOSSY = 1;
     public static final int CRACKED = 2;
@@ -33,26 +34,26 @@ public class BlockBricksStone extends BlockSolidMeta {
 
     @Override
     public double getResistance() {
-        return 30;
+        return 10;
     }
 
     @Override
     public String getName() {
         String[] names = new String[]{
-                "Stone Bricks",
-                "Mossy Stone Bricks",
-                "Cracked Stone Bricks",
-                "Chiseled Stone Bricks"
+                "",
+                "Mossy ",
+                "Cracked ",
+                "Chiseled "
         };
 
-        return names[this.getDamage() & 0x03];
+        return names[this.getDamage() & 0x3] + "Stone Bricks";
     }
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    Item.get(Item.STONE_BRICKS, this.getDamage() & 0x03, 1)
+                    Item.get(Item.STONE_BRICKS, this.getDamage() & 0x3)
             };
         } else {
             return new Item[0];
@@ -62,6 +63,11 @@ public class BlockBricksStone extends BlockSolidMeta {
     @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
+    }
+
+    @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override

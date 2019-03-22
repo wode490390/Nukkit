@@ -10,11 +10,12 @@ import cn.nukkit.item.ItemTool;
 public class BlockMossStone extends BlockSolid {
 
     public BlockMossStone() {
+
     }
 
     @Override
     public String getName() {
-        return "Moss Stone";
+        return "Mossy Cobblestone";
     }
 
     @Override

@@ -8,9 +8,19 @@ import cn.nukkit.level.GameRules;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.Vector3f;
-
+import cn.nukkit.nbt.NBTIO;
+import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.types.CommandOriginData;
+import cn.nukkit.network.protocol.types.EntityLink;
+import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
+import java.io.IOException;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * author: MagicDroidX
@@ -19,7 +29,7 @@ import java.util.*;
 public class BinaryStream {
 
     public int offset;
-    private byte[] buffer;
+    public byte[] buffer;
     private int count;
 
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
@@ -44,6 +54,12 @@ public class BinaryStream {
         this.offset = 0;
         this.count = 0;
         return this;
+    }
+
+    public final void superReset() {
+        this.buffer = new byte[32];
+        this.offset = 0;
+        this.count = 0;
     }
 
     public void setBuffer(byte[] buffer) {
@@ -186,7 +202,7 @@ public class BinaryStream {
     }
 
     public boolean getBoolean() {
-        return this.getByte() == 0x01;
+        return this.getByte() != 0x00;
     }
 
     public void putBoolean(boolean bool) {
@@ -194,7 +210,7 @@ public class BinaryStream {
     }
 
     public int getByte() {
-        return this.buffer[this.offset++] & 0xff;
+        return this.get(1)[0] & 0xff;
     }
 
     public void putByte(byte b) {
@@ -205,37 +221,49 @@ public class BinaryStream {
      * Reads a list of Attributes from the stream.
      *
      * @return Attribute[]
+     * 
+     * @throws Exception
      */
     public Attribute[] getAttributeList() throws Exception {
         List<Attribute> list = new ArrayList<>();
         long count = this.getUnsignedVarInt();
 
         for (int i = 0; i < count; ++i) {
-            String name = this.getString();
-            Attribute attr = Attribute.getAttributeByName(name);
+            float min = this.getLFloat();
+            float max = this.getLFloat();
+            float current = this.getLFloat();
+            float defaultValue = this.getLFloat();
+            String id = this.getString();
+
+            Attribute attr = Attribute.getAttribute(id);
             if (attr != null) {
-                attr.setMinValue(this.getLFloat());
-                attr.setValue(this.getLFloat());
-                attr.setMaxValue(this.getLFloat());
+                attr.setMinValue(min);
+                attr.setMaxValue(max);
+                attr.setValue(current);
+                attr.setDefaultValue(defaultValue);
+
                 list.add(attr);
             } else {
-                throw new Exception("Unknown attribute type \"" + name + "\"");
+                throw new Exception("Unknown attribute type \"" + id + "\"");
             }
         }
 
-        return list.stream().toArray(Attribute[]::new);
+        return list.toArray(new Attribute[0]);
     }
 
     /**
      * Writes a list of Attributes to the packet buffer using the standard format.
+     * 
+     * @param attributes
      */
     public void putAttributeList(Attribute[] attributes) {
         this.putUnsignedVarInt(attributes.length);
         for (Attribute attribute : attributes) {
-            this.putString(attribute.getName());
             this.putLFloat(attribute.getMinValue());
-            this.putLFloat(attribute.getValue());
             this.putLFloat(attribute.getMaxValue());
+            this.putLFloat(attribute.getValue());
+            this.putLFloat(attribute.getDefaultValue());
+            this.putString(attribute.getId());
         }
     }
 
@@ -261,15 +289,18 @@ public class BinaryStream {
         skin.setSkinData(this.getByteArray());
         skin.setCapeData(this.getByteArray());
         skin.setGeometryName(this.getString());
-        skin.setGeometryData(skin.getGeometryData());
+        skin.setGeometryData(this.getString());
         return skin;
     }
 
     public Item getSlot() {
         int id = this.getVarInt();
 
-        if (id <= 0) {
+        if (id == 0) {
             return Item.get(0, 0, 0);
+        }
+        if (id < 0) {
+            id &= 0xffff;
         }
         int auxValue = this.getVarInt();
         int data = auxValue >> 8;
@@ -280,8 +311,22 @@ public class BinaryStream {
 
         int nbtLen = this.getLShort();
         byte[] nbt = new byte[0];
-        if (nbtLen > 0) {
+        if (nbtLen < Short.MAX_VALUE) {
             nbt = this.get(nbtLen);
+        } else if (nbtLen == 65535) {
+            int nbtTagCount = (int) this.getUnsignedVarInt();
+            int offset = this.getOffset();
+            FastByteArrayInputStream stream = new FastByteArrayInputStream(this.get());
+            for (int i = 0; i < nbtTagCount; i++) {
+                try {
+                    // TODO: 05/02/2019 This hack is necessary because we keep the raw NBT tag. Try to remove it.
+                    CompoundTag tag = NBTIO.read(stream, ByteOrder.LITTLE_ENDIAN, true);
+                    nbt = NBTIO.write(tag, ByteOrder.LITTLE_ENDIAN, false);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            this.setOffset(offset + (int) stream.position());
         }
 
         //TODO
@@ -300,9 +345,11 @@ public class BinaryStream {
             }
         }
 
-        return Item.get(
-                id, data, cnt, nbt
-        );
+        if (id == Item.SHIELD) {
+            this.getVarLong(); //"blocking tick" (ffs mojang)
+        }
+
+        return Item.get(id, data, cnt, nbt);
     }
 
     public void putSlot(Item item) {
@@ -311,7 +358,8 @@ public class BinaryStream {
             return;
         }
 
-        this.putVarInt(item.getId());
+        int id = item.getId();
+        this.putVarInt(id > 0xfff ? id - 65536 : id);
         int auxValue = (((item.hasMeta() ? item.getDamage() : -1) & 0x7fff) << 8) | item.getCount();
         this.putVarInt(auxValue);
         byte[] nbt = item.getCompoundTag();
@@ -319,6 +367,10 @@ public class BinaryStream {
         this.put(nbt);
         this.putVarInt(0); //TODO CanPlaceOn entry count
         this.putVarInt(0); //TODO CanDestroy entry count
+
+        if (id == Item.SHIELD) {
+            this.putVarLong(0); //"blocking tick" (ffs mojang)
+        }
     }
 
     public byte[] getByteArray() {
@@ -371,7 +423,7 @@ public class BinaryStream {
         VarInt.writeUnsignedVarLong(this, v);
     }
 
-    public BlockVector3 getBlockVector3() {
+    public BlockVector3 getBlockPosition() {
         return new BlockVector3(this.getVarInt(), (int) this.getUnsignedVarInt(), this.getVarInt());
     }
 
@@ -380,30 +432,30 @@ public class BinaryStream {
     }
 
     public void putSignedBlockPosition(BlockVector3 v) {
-        putVarInt(v.x);
-        putVarInt(v.y);
-        putVarInt(v.z);
+        this.putVarInt(v.x);
+        this.putVarInt(v.y);
+        this.putVarInt(v.z);
     }
 
     public void putBlockVector3(BlockVector3 v) {
-        this.putBlockVector3(v.x, v.y, v.z);
+        this.putBlockPosition(v.x, v.y, v.z);
     }
 
-    public void putBlockVector3(int x, int y, int z) {
+    public void putBlockPosition(int x, int y, int z) {
         this.putVarInt(x);
         this.putUnsignedVarInt(y);
         this.putVarInt(z);
     }
 
-    public Vector3f getVector3f() {
+    public Vector3f getVector3() {
         return new Vector3f(this.getLFloat(4), this.getLFloat(4), this.getLFloat(4));
     }
 
-    public void putVector3f(Vector3f v) {
-        this.putVector3f(v.x, v.y, v.z);
+    public void putVector3(Vector3f v) {
+        this.putVector3(v.x, v.y, v.z);
     }
 
-    public void putVector3f(float x, float y, float z) {
+    public void putVector3(float x, float y, float z) {
         this.putLFloat(x);
         this.putLFloat(y);
         this.putLFloat(z);
@@ -429,6 +481,8 @@ public class BinaryStream {
 
     /**
      * Writes an EntityUniqueID
+     * 
+     * @param eid
      */
     public void putEntityUniqueId(long eid) {
         this.putVarLong(eid);
@@ -436,6 +490,8 @@ public class BinaryStream {
 
     /**
      * Reads and returns an EntityRuntimeID
+     * 
+     * @return long
      */
     public long getEntityRuntimeId() {
         return this.getUnsignedVarLong();
@@ -443,6 +499,8 @@ public class BinaryStream {
 
     /**
      * Writes an EntityUniqueID
+     * 
+     * @param eid
      */
     public void putEntityRuntimeId(long eid) {
         this.putUnsignedVarLong(eid);
@@ -489,5 +547,62 @@ public class BinaryStream {
         return (minCapacity > MAX_ARRAY_SIZE) ?
                 Integer.MAX_VALUE :
                 MAX_ARRAY_SIZE;
+    }
+
+    public CommandOriginData getCommandOriginData() {
+        CommandOriginData result = new CommandOriginData();
+
+        result.type = (int) this.getUnsignedVarInt();
+        result.uuid = this.getUUID();
+        result.requestId = this.getString();
+
+        if (result.type == CommandOriginData.ORIGIN_DEV_CONSOLE || result.type == CommandOriginData.ORIGIN_TEST) {
+            result.varlong1 = this.getVarLong();
+        }
+
+        return result;
+    }
+
+    public void putCommandOriginData(CommandOriginData data) {
+        this.putUnsignedVarInt(data.type);
+        this.putUUID(data.uuid);
+        this.putString(data.requestId);
+
+        if (data.type == CommandOriginData.ORIGIN_DEV_CONSOLE || data.type == CommandOriginData.ORIGIN_TEST) {
+            this.putVarLong(data.varlong1);
+        }
+    }
+
+    public void putEntityLink(EntityLink link) {
+        this.putEntityUniqueId(link.fromEntityUniqueId);
+        this.putEntityUniqueId(link.toEntityUniqueId);
+        this.putByte((byte) link.type);
+        this.putBoolean(link.immediate);
+    }
+
+    public EntityLink getEntityLink() {
+        long fromEntityUniqueId = this.getEntityUniqueId();
+        long toEntityUniqueId = this.getEntityUniqueId();
+        byte type = (byte) this.getByte();
+        boolean immediate = this.getBoolean();
+        return new EntityLink(fromEntityUniqueId, toEntityUniqueId, type, immediate);
+    }
+
+    public void putVector3Nullable() {
+        this.putLFloat(0);
+        this.putLFloat(0);
+        this.putLFloat(0);
+    }
+
+    public void putVector3Nullable(Vector3f vector) {
+        this.putVector3(vector);
+    }
+
+    public void putByteRotation(float rotation) {
+        this.putByte((byte) (rotation / (360d / 256d)));
+    }
+
+    public float getByteRotation() {
+        return (float) (this.getByte() * (360d / 256d));
     }
 }

@@ -11,7 +11,7 @@ public class FormWindowModal extends FormWindow {
     private String button1 = "";
     private String button2 = "";
 
-    private FormResponseModal response = null;
+    private FormResponseModal response;
 
     public FormWindowModal(String title, String content, String trueButonText, String falseButtonText) {
         this.title = title;
@@ -52,21 +52,26 @@ public class FormWindowModal extends FormWindow {
         this.button2 = button2;
     }
 
+    @Override
     public String getJSONData() {
         return new Gson().toJson(this);
     }
 
+    @Override
     public FormResponseModal getResponse() {
         return response;
     }
 
+    @Override
     public void setResponse(String data) {
         if (data.equals("null")) {
             closed = true;
             return;
         }
-        if (data.equals("true")) response = new FormResponseModal(0, button1);
-        else response = new FormResponseModal(1, button2);
+        if (data.equals("true")) {
+            response = new FormResponseModal(0, button1);
+        } else {
+            response = new FormResponseModal(1, button2);
+        }
     }
-
 }

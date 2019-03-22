@@ -33,7 +33,9 @@ public final class BiomePalette {
     }
 
     public synchronized int get(int index) {
-        if (encodedData == null) return biome;
+        if (encodedData == null) {
+            return biome;
+        }
         return palette.getKey(encodedData.getAt(index));
     }
 
@@ -43,7 +45,9 @@ public final class BiomePalette {
 
     public synchronized void set(int index, int value) {
         if (encodedData == null) {
-            if (value == biome) return;
+            if (value == biome) {
+                return;
+            }
             if (biome == Integer.MIN_VALUE) {
                 biome = value;
                 return;
@@ -118,6 +122,7 @@ public final class BiomePalette {
         return (z << 4) | x;
     }
 
+    @Override
     public synchronized BiomePalette clone() {
         return new BiomePalette(this);
     }

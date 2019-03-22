@@ -68,4 +68,7 @@ public interface CommandSender extends Permissible {
 
     boolean isPlayer();
 
+    boolean isConsole();
+
+    boolean isCommandBlock();
 }

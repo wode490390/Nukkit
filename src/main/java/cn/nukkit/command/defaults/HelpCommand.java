@@ -3,12 +3,13 @@ package cn.nukkit.command.defaults;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
+import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.utils.TextFormat;
-
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -16,18 +17,25 @@ import java.util.TreeMap;
  */
 public class HelpCommand extends VanillaCommand {
 
+    private static final String SEARGE = "Searge says: ";
+    private static final String[] SEARGE_SAY = {SEARGE + "Yolo", SEARGE + "/achievement take achievement.understandCommands @p", SEARGE + "Ask for help on twitter", SEARGE + "/deop @p", SEARGE + "Scoreboard deleted, commands blocked", SEARGE + "Contact helpdesk for help", SEARGE + "/testfornoob @p", SEARGE + "/trigger warning", SEARGE + "Oh my god, it's full of stats", SEARGE + "/kill @p[name=!Searge]", SEARGE + "Have you tried turning it off and on again?", SEARGE + "Sorry, no help today"};
+
     public HelpCommand(String name) {
         super(name, "%nukkit.command.help.description", "%commands.help.usage", new String[]{"?"});
         this.setPermission("nukkit.command.help");
         this.commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
-                new CommandParameter("page", CommandParameter.ARG_TYPE_INT, true)
+                new CommandParameter("page", CommandParamType.INT, true)
         });
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!this.testPermission(sender)) {
+            return true;
+        }
+        if (sender.isCommandBlock()) {
+            sender.sendMessage(SEARGE_SAY[ThreadLocalRandom.current().nextInt(SEARGE_SAY.length - 1)]);
             return true;
         }
         String command = "";
@@ -49,7 +57,7 @@ public class HelpCommand extends VanillaCommand {
                     args = new String[0];
                 }*/
                 for (String arg : args) {
-                    if (!command.equals("")) {
+                    if (!command.isEmpty()) {
                         command += " ";
                     }
                     command += arg;
@@ -57,7 +65,7 @@ public class HelpCommand extends VanillaCommand {
             } catch (NumberFormatException e) {
                 pageNumber = 1;
                 for (String arg : args) {
-                    if (!command.equals("")) {
+                    if (!command.isEmpty()) {
                         command += " ";
                     }
                     command += arg;
@@ -69,7 +77,7 @@ public class HelpCommand extends VanillaCommand {
             pageHeight = Integer.MAX_VALUE;
         }
 
-        if (command.equals("")) {
+        if (command.isEmpty()) {
             Map<String, Command> commands = new TreeMap<>();
             for (Command cmd : sender.getServer().getCommandMap().getCommands().values()) {
                 if (cmd.testPermissionSilent(sender)) {
@@ -82,7 +90,7 @@ public class HelpCommand extends VanillaCommand {
                 pageNumber = 1;
             }
 
-            sender.sendMessage(new TranslationContainer("commands.help.header", new String[]{String.valueOf(pageNumber), String.valueOf(totalPage)}));
+            sender.sendMessage(new TranslationContainer("commands.help.header", String.valueOf(pageNumber), String.valueOf(totalPage)));
             int i = 1;
             for (Command command1 : commands.values()) {
                 if (i >= (pageNumber - 1) * pageHeight + 1 && i <= Math.min(commands.size(), pageNumber * pageHeight)) {
@@ -101,7 +109,7 @@ public class HelpCommand extends VanillaCommand {
                     String usage = "";
                     String[] usages = cmd.getUsage().split("\n");
                     for (String u : usages) {
-                        if (!usage.equals("")) {
+                        if (!usage.isEmpty()) {
                             usage += "\n" + TextFormat.WHITE;
                         }
                         usage += u;

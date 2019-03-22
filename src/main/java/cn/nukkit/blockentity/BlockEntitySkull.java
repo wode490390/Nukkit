@@ -9,6 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * Package cn.nukkit.blockentity in project Nukkit.
  */
 public class BlockEntitySkull extends BlockEntitySpawnable {
+
     public BlockEntitySkull(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
@@ -46,5 +47,4 @@ public class BlockEntitySkull extends BlockEntitySpawnable {
                 .putInt("z", (int) this.z)
                 .put("Rot", this.namedTag.get("Rot"));
     }
-
 }

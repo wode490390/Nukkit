@@ -19,7 +19,7 @@ import java.util.Set;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockRedstoneWire extends BlockFlowable {
+public class BlockRedstoneWire extends BlockFlowableMeta {
 
     private boolean canProvidePower = true;
     private final Set<Vector3> blocksNeedingUpdate = new HashSet<>();
@@ -219,10 +219,12 @@ public class BlockRedstoneWire extends BlockFlowable {
         return b.isSolid() && !b.isTransparent() && b.getId() != Block.GLOWSTONE;
     }
 
+    @Override
     public int getStrongPower(BlockFace side) {
         return !this.canProvidePower ? 0 : getWeakPower(side);
     }
 
+    @Override
     public int getWeakPower(BlockFace side) {
         if (!this.canProvidePower) {
             return 0;

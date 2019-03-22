@@ -13,13 +13,14 @@ import cn.nukkit.utils.TextFormat;
  * Package cn.nukkit.command.defaults in project nukkit.
  */
 public class XpCommand extends Command {
+
     public XpCommand(String name) {
         super(name, "%nukkit.command.xp.description", "%commands.xp.usage");
         this.setPermission("nukkit.command.xp");
         this.commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
                 new CommandParameter("amount|level", CommandParamType.INT, false),
-                new CommandParameter("player", CommandParameter.ARG_TYPE_TARGET, true)
+                new CommandParameter("player", CommandParamType.TARGET, true)
         });
     }
 
@@ -43,16 +44,19 @@ public class XpCommand extends Command {
             playerName = args[1];
             player = sender.getServer().getPlayer(playerName);
         } else {
-            if (args.length == 1) {
-                amountString = args[0];
-                player = (Player) sender;
-            } else if (args.length == 2) {
-                amountString = args[0];
-                playerName = args[1];
-                player = sender.getServer().getPlayer(playerName);
-            } else {
-                sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
-                return true;
+            switch (args.length) {
+                case 1:
+                    amountString = args[0];
+                    player = (Player) sender;
+                    break;
+                case 2:
+                    amountString = args[0];
+                    playerName = args[1];
+                    player = sender.getServer().getPlayer(playerName);
+                    break;
+                default:
+                    sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
+                    return true;
             }
         }
 
@@ -78,16 +82,18 @@ public class XpCommand extends Command {
         if (isLevel) {
             int newLevel = player.getExperienceLevel();
             newLevel += amount;
-            if (newLevel > 24791) newLevel = 24791;
+            if (newLevel > 24791) {
+                newLevel = 24791;
+            }
             if (newLevel < 0) {
                 player.setExperience(0, 0);
             } else {
                 player.setExperience(player.getExperience(), newLevel);
             }
             if (amount > 0) {
-                sender.sendMessage(new TranslationContainer("commands.xp.success.levels", new String[]{String.valueOf(amount), player.getName()}));
+                sender.sendMessage(new TranslationContainer("commands.xp.success.levels", String.valueOf(amount), player.getName()));
             } else {
-                sender.sendMessage(new TranslationContainer("commands.xp.success.levels.minus", new String[]{String.valueOf(-amount), player.getName()}));
+                sender.sendMessage(new TranslationContainer("commands.xp.success.levels.minus", String.valueOf(-amount), player.getName()));
             }
             return true;
         } else {
@@ -96,7 +102,8 @@ public class XpCommand extends Command {
                 return true;
             }
             player.addExperience(amount);
-            sender.sendMessage(new TranslationContainer("commands.xp.success", new String[]{String.valueOf(amount), player.getName()}));
+            sender.sendMessage(new TranslationContainer("commands.xp.success", String.valueOf(amount), player.getName()));
+
             return true;
         }
     }

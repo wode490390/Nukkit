@@ -3,8 +3,6 @@ package cn.nukkit;
 import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.Plugin;
-
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +16,9 @@ import java.util.UUID;
  * @since Nukkit 1.0 | Nukkit API 1.0.0
  */
 public class OfflinePlayer implements IPlayer {
+
     private final String name;
+    private final UUID uuid;
     private final Server server;
     private final CompoundTag namedTag;
 
@@ -28,18 +28,39 @@ public class OfflinePlayer implements IPlayer {
      *
      * @param server 这个玩家所在服务器的{@code Server}对象。<br>
      *               The server this player is in, as a {@code Server} object.
-     * @param name   这个玩家所的名字。<br>
-     *               Name of this player.
+     * @param uuid   这个玩家的UUID。<br>
+     *               UUID of this player.
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
+    public OfflinePlayer(Server server, UUID uuid) {
+        this(server, uuid, null);
+    }
+
     public OfflinePlayer(Server server, String name) {
+        this(server, null, name);
+    }
+
+    public OfflinePlayer(Server server, UUID uuid, String name) {
         this.server = server;
+
+        if (uuid != null) {
+            this.namedTag = this.server.getOfflinePlayerData(uuid);
+            if (name == null) {
+                name = getName();
+            }
+            this.namedTag.putLong("UUIDMost", uuid.getMostSignificantBits());
+            this.namedTag.putLong("UUIDLeast", uuid.getLeastSignificantBits());
+        } else if (name != null) {
+            this.namedTag = this.server.getOfflinePlayerData(name);
+            uuid = getUniqueId();
+        } else {
+            throw new IllegalArgumentException("Name and UUID cannot both be null");
+        }
+        this.uuid = uuid;
         this.name = name;
 
-        if (new File(this.server.getDataPath() + "players/" + name.toLowerCase() + ".dat").exists()) {
-            this.namedTag = this.server.getOfflinePlayerData(this.name);
-        } else {
-            this.namedTag = null;
+        if (name != null) {
+            namedTag.putString("NameTag", name);
         }
     }
 
@@ -50,7 +71,10 @@ public class OfflinePlayer implements IPlayer {
 
     @Override
     public String getName() {
-        return name;
+        if (namedTag != null && namedTag.contains("NameTag")) {
+            return namedTag.getString("NameTag");
+        }
+        return null;
     }
 
     @Override
@@ -66,6 +90,7 @@ public class OfflinePlayer implements IPlayer {
         return null;
     }
 
+    @Override
     public Server getServer() {
         return server;
     }
@@ -123,33 +148,36 @@ public class OfflinePlayer implements IPlayer {
 
     @Override
     public Long getFirstPlayed() {
-        return this.namedTag != null ? this.namedTag.getLong("firstPlayed") : null;
+        return this.namedTag instanceof CompoundTag ? this.namedTag.getLong("firstPlayed", 0) : null;
     }
 
     @Override
     public Long getLastPlayed() {
-        return this.namedTag != null ? this.namedTag.getLong("lastPlayed") : null;
+        return this.namedTag instanceof CompoundTag ? this.namedTag.getLong("lastPlayed", 0) : null;
     }
 
     @Override
     public boolean hasPlayedBefore() {
-        return this.namedTag != null;
+        return this.namedTag instanceof CompoundTag;
     }
 
+    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         this.server.getPlayerMetadata().setMetadata(this, metadataKey, newMetadataValue);
     }
 
+    @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
         return this.server.getPlayerMetadata().getMetadata(this, metadataKey);
     }
 
+    @Override
     public boolean hasMetadata(String metadataKey) {
         return this.server.getPlayerMetadata().hasMetadata(this, metadataKey);
     }
 
+    @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         this.server.getPlayerMetadata().removeMetadata(this, metadataKey, owningPlugin);
     }
-
 }

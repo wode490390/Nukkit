@@ -35,18 +35,20 @@ import cn.nukkit.plugin.MethodEventExecutor;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.scheduler.PluginTask;
 import cn.nukkit.scheduler.TaskHandler;
-
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
+import lombok.extern.log4j.Log4j2;
 
 import static co.aikar.timings.TimingIdentifier.DEFAULT_GROUP;
 
+@Log4j2
 public final class Timings {
+
     private static boolean timingsEnabled = false;
     private static boolean verboseEnabled = false;
     private static boolean privacy = false;
-    private static Set<String> ignoredConfigSections = new HashSet<>();
+    private static final Set<String> ignoredConfigSections = new HashSet<>();
 
     private static final int MAX_HISTORY_FRAMES = 12;
     private static int historyInterval = -1;
@@ -84,15 +86,15 @@ public final class Timings {
     public static final Timing permissionDefaultTimer;
 
     static {
-        setTimingsEnabled((boolean) Server.getInstance().getConfig("timings.enabled", false));
-        setVerboseEnabled((boolean) Server.getInstance().getConfig("timings.verbose", false));
-        setHistoryInterval((int) Server.getInstance().getConfig("timings.history-interval", 6000));
-        setHistoryLength((int) Server.getInstance().getConfig("timings.history-length", 72000));
+        setTimingsEnabled(Server.getInstance().getConfig("timings.enabled", false));
+        setVerboseEnabled(Server.getInstance().getConfig("timings.verbose", false));
+        setHistoryInterval(Server.getInstance().getConfig("timings.history-interval", 6000));
+        setHistoryLength(Server.getInstance().getConfig("timings.history-length", 72000));
 
-        privacy = (boolean) Server.getInstance().getConfig("timings.privacy", false);
+        privacy = Server.getInstance().getConfig("timings.privacy", false);
         ignoredConfigSections.addAll(Server.getInstance().getConfig().getStringList("timings.ignore"));
 
-        Server.getInstance().getLogger().debug("Timings: \n" +
+        log.debug("Timings: \n" +
                 "Enabled - " + isTimingsEnabled() + "\n" +
                 "Verbose - " + isVerboseEnabled() + "\n" +
                 "History Interval - " + getHistoryInterval() + "\n" +
@@ -187,10 +189,10 @@ public final class Timings {
         Queue<TimingsHistory> oldQueue = TimingsManager.HISTORY;
         int frames = (getHistoryLength() / getHistoryInterval());
         if (length > maxLength) {
-            Server.getInstance().getLogger().warning(
+            log.warn(
                     "Timings Length too high. Requested " + length + ", max is " + maxLength
                             + ". To get longer history, you must increase your interval. Set Interval to "
-                            + Math.ceil(length / MAX_HISTORY_FRAMES)
+                            + Math.ceil((float) length / MAX_HISTORY_FRAMES)
                             + " to achieve this length.");
         }
 
@@ -217,9 +219,9 @@ public final class Timings {
 
         if (handler.getTask() instanceof PluginTask) {
             String owner = ((PluginTask) handler.getTask()).getOwner().getName();
-            return TimingsManager.getTiming(owner, "PluginTask: " + handler.getTaskId() + repeating, schedulerSyncTimer);
+            return TimingsManager.getTiming(owner, "PluginTask: " + handler.getTaskId() + "<" + handler.getTask().getClass().getName() + ">" + repeating, schedulerSyncTimer);
         } else if (!handler.isAsynchronous()) {
-            return TimingsManager.getTiming(DEFAULT_GROUP.name, "Task: " + handler.getTaskId() + repeating, schedulerSyncTimer);
+            return TimingsManager.getTiming(DEFAULT_GROUP.name, "Task: " + handler.getTaskId() + "<" + handler.getTask().getClass().getName() + ">" + repeating, schedulerSyncTimer);
         } else {
             return null;
         }

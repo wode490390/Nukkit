@@ -4,7 +4,6 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BinaryStream;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,20 +13,23 @@ import static cn.nukkit.level.GameRule.*;
 
 @SuppressWarnings({"unchecked"})
 public class GameRules {
+
     private final EnumMap<GameRule, Value> gameRules = new EnumMap<>(GameRule.class);
     private boolean stale;
 
     private GameRules() {
-    }
 
+    }
 
     public static GameRules getDefault() {
         GameRules gameRules = new GameRules();
 
+        gameRules.gameRules.put(COMMAND_BLOCKS_ENABLED, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(COMMAND_BLOCK_OUTPUT, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(DO_DAYLIGHT_CYCLE, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(DO_ENTITY_DROPS, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(DO_FIRE_TICK, new Value(Type.BOOLEAN, true));
+        gameRules.gameRules.put(DO_INSOMNIA, new Value(Type.BOOLEAN, true));
         gameRules.gameRules.put(DO_MOB_LOOT, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(DO_MOB_SPAWNING, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(DO_TILE_DROPS, new Value<>(Type.BOOLEAN, true));
@@ -36,6 +38,7 @@ public class GameRules {
         gameRules.gameRules.put(FALL_DAMAGE, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(FIRE_DAMAGE, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(KEEP_INVENTORY, new Value<>(Type.BOOLEAN, false));
+        gameRules.gameRules.put(MAX_COMMAND_CHAIN_LENGTH, new Value<>(Type.INTEGER, 65536));
         gameRules.gameRules.put(MOB_GRIEFING, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(NATURAL_REGENERATION, new Value<>(Type.BOOLEAN, true));
         gameRules.gameRules.put(PVP, new Value<>(Type.BOOLEAN, true));
@@ -134,7 +137,7 @@ public class GameRules {
     }
 
     public GameRule[] getRules() {
-        return gameRules.keySet().toArray(new GameRule[gameRules.size()]);
+        return gameRules.keySet().toArray(new GameRule[0]);
     }
 
     // TODO: This needs to be moved out since there is not a separate compound tag in the LevelDB format for Game Rules.

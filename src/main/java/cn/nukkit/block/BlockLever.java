@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.event.block.BlockRedstoneEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.BlockFace;
@@ -10,7 +11,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * @author Nukkit Project Team
  */
-public class BlockLever extends BlockFlowable {
+public class BlockLever extends BlockFlowableMeta implements BlockFaceable {
 
     public BlockLever() {
         this(0);
@@ -46,8 +47,8 @@ public class BlockLever extends BlockFlowable {
     }
 
     @Override
-    public Item[] getDrops(Item item) {
-        return new Item[]{toItem()};
+    public Item toItem() {
+        return new ItemBlock(this, 0);
     }
 
     public boolean isPowerOn() {
@@ -107,6 +108,7 @@ public class BlockLever extends BlockFlowable {
         return isPowerOn() ? 15 : 0;
     }
 
+    @Override
     public int getStrongPower(BlockFace side) {
         return !isPowerOn() ? 0 : LeverOrientation.byMetadata(this.isPowerOn() ? this.getDamage() ^ 0x08 : this.getDamage()).getFacing() == side ? 15 : 0;
     }
@@ -114,6 +116,11 @@ public class BlockLever extends BlockFlowable {
     @Override
     public boolean isPowerSource() {
         return true;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 
     public enum LeverOrientation {
@@ -145,6 +152,7 @@ public class BlockLever extends BlockFlowable {
             return this.facing;
         }
 
+        @Override
         public String toString() {
             return this.name;
         }

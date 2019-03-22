@@ -33,7 +33,8 @@ public class EnchantmentFireAspect extends Enchantment {
 
         EntityCombustByEntityEvent ev = new EntityCombustByEntityEvent(attacker, entity, duration);
 
-        if (!ev.isCancelled())
+        if (!ev.isCancelled()) {
             entity.setOnFire(ev.getDuration());
+        }
     }
 }

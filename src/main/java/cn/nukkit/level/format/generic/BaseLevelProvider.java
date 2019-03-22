@@ -53,7 +53,7 @@ public abstract class BaseLevelProvider implements LevelProvider {
         if (!file_path.exists()) {
             file_path.mkdirs();
         }
-        CompoundTag levelData = NBTIO.readCompressed(new FileInputStream(new File(this.getPath() + "level.dat")), ByteOrder.BIG_ENDIAN);
+        CompoundTag levelData = NBTIO.readCompressed(new FileInputStream(new File(this.getPath(), "level.dat")), ByteOrder.BIG_ENDIAN);
         if (levelData.get("Data") instanceof CompoundTag) {
             this.levelData = levelData.getCompound("Data");
         } else {
@@ -232,6 +232,16 @@ public abstract class BaseLevelProvider implements LevelProvider {
     }
 
     @Override
+    public int getDifficulty() {
+        return this.levelData.getInt("difficulty");
+    }
+
+    @Override
+    public void setDifficulty(int difficulty) {
+        this.levelData.putInt("difficulty", difficulty);
+    }
+
+    @Override
     public Vector3 getSpawn() {
         return spawn;
     }
@@ -248,8 +258,9 @@ public abstract class BaseLevelProvider implements LevelProvider {
     public GameRules getGamerules() {
         GameRules rules = GameRules.getDefault();
 
-        if (this.levelData.contains("GameRules"))
+        if (this.levelData.contains("GameRules")) {
             rules.readNBT(this.levelData.getCompound("GameRules"));
+        }
 
         return rules;
     }
@@ -304,12 +315,13 @@ public abstract class BaseLevelProvider implements LevelProvider {
     @Override
     public void saveLevelData() {
         try {
-            NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", this.levelData), new FileOutputStream(this.getPath() + "level.dat"));
+            NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", this.levelData), new FileOutputStream(new File(this.getPath(), "level.dat")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public void updateLevelName(String name) {
         if (!this.getName().equals(name)) {
             this.levelData.putString("LevelName", name);

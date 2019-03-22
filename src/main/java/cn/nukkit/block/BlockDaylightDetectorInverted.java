@@ -1,5 +1,9 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
+
 /**
  * Created on 2015/11/22 by CreeperFace.
  * Package cn.nukkit.block in project Nukkit .
@@ -7,6 +11,11 @@ package cn.nukkit.block;
 public class BlockDaylightDetectorInverted extends BlockDaylightDetector {
 
     public BlockDaylightDetectorInverted() {
+        this(0);
+    }
+
+    public BlockDaylightDetectorInverted(int meta) {
+        super(meta);
     }
 
     @Override
@@ -19,8 +28,19 @@ public class BlockDaylightDetectorInverted extends BlockDaylightDetector {
         return "Daylight Detector Inverted";
     }
 
-    protected boolean invertDetect() {
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        this.getLevel().setBlock(this, new BlockDaylightDetector());
         return true;
     }
 
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockDaylightDetector(), 0);
+    }
+
+    @Override
+    protected boolean invertDetect() {
+        return true;
+    }
 }

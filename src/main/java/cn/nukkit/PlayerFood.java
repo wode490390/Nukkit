@@ -69,7 +69,9 @@ public class PlayerFood {
         float fsl = ev.getFoodSaturationLevel();
         this.foodLevel = foodLevel;
         if (fsl != -1) {
-            if (fsl > foodLevel) fsl = foodLevel;
+            if (fsl > foodLevel) {
+                fsl = foodLevel;
+            }
             this.foodSaturationLevel = fsl;
         }
         this.foodLevel = foodLevel0;
@@ -81,8 +83,12 @@ public class PlayerFood {
     }
 
     public void setFoodSaturationLevel(float fsl) {
-        if (fsl > this.getLevel()) fsl = this.getLevel();
-        if (fsl < 0) fsl = 0;
+        if (fsl > this.getLevel()) {
+            fsl = this.getLevel();
+        }
+        if (fsl < 0) {
+            fsl = 0;
+        }
         PlayerFoodLevelChangeEvent ev = new PlayerFoodLevelChangeEvent(this.getPlayer(), this.getLevel(), fsl);
         this.getPlayer().getServer().getPluginManager().callEvent(ev);
         if (ev.isCancelled()) {
@@ -101,7 +107,9 @@ public class PlayerFood {
         int foodLevel = this.getLevel();
         if (sfl > 0) {
             float newSfl = sfl - amount;
-            if (newSfl < 0) newSfl = 0;
+            if (newSfl < 0) {
+                newSfl = 0;
+            }
             this.setFoodSaturationLevel(newSfl);
         } else {
             this.setLevel(foodLevel - amount);
@@ -130,12 +138,14 @@ public class PlayerFood {
 
     public void sendFoodLevel(int foodLevel) {
         if (this.getPlayer().spawned) {
-            this.getPlayer().setAttribute(Attribute.getAttribute(Attribute.MAX_HUNGER).setValue(foodLevel));
+            this.getPlayer().setAttribute(Attribute.getAttribute(Attribute.HUNGER).setValue(foodLevel));
         }
     }
 
     public void update(int tickDiff) {
-        if (!this.getPlayer().isFoodEnabled()) return;
+        if (!this.getPlayer().isFoodEnabled()) {
+            return;
+        }
         if (this.getPlayer().isAlive()) {
             int diff = Server.getInstance().getDifficulty();
             if (this.getLevel() > 17) {
@@ -151,14 +161,22 @@ public class PlayerFood {
             } else if (this.getLevel() == 0) {
                 this.foodTickTimer += tickDiff;
                 if (this.foodTickTimer >= 80) {
-                    EntityDamageEvent ev = new EntityDamageEvent(this.getPlayer(), DamageCause.VOID, 1);
+                    EntityDamageEvent ev = new EntityDamageEvent(this.getPlayer(), DamageCause.HUNGER, 1);
                     float now = this.getPlayer().getHealth();
-                    if (diff == 1) {
-                        if (now > 10) this.getPlayer().attack(ev);
-                    } else if (diff == 2) {
-                        if (now > 1) this.getPlayer().attack(ev);
-                    } else {
-                        this.getPlayer().attack(ev);
+                    switch (diff) {
+                        case 1:
+                            if (now > 10) {
+                                this.getPlayer().attack(ev);
+                            }
+                            break;
+                        case 2:
+                            if (now > 1) {
+                                this.getPlayer().attack(ev);
+                            }
+                            break;
+                        default:
+                            this.getPlayer().attack(ev);
+                            break;
                     }
 
                     this.foodTickTimer = 0;
@@ -171,9 +189,9 @@ public class PlayerFood {
     }
 
     public void updateFoodExpLevel(double use) {
-        if (!this.getPlayer().isFoodEnabled()) return;
-        if (Server.getInstance().getDifficulty() == 0) return;
-        if (this.getPlayer().hasEffect(Effect.SATURATION)) return;
+        if (!this.getPlayer().isFoodEnabled() || Server.getInstance().getDifficulty() == 0 || this.getPlayer().hasEffect(Effect.SATURATION)) {
+            return;
+        }
         this.foodExpLevel += use;
         if (this.foodExpLevel > 4) {
             this.useHunger(1);

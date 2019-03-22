@@ -1,6 +1,7 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.AxisAlignedBB;
@@ -12,14 +13,14 @@ import cn.nukkit.utils.BlockColor;
  * Package cn.nukkit.block in project nukkit .
  * The name NetherPortalBlock comes from minecraft wiki.
  */
-public class BlockNetherPortal extends BlockFlowable {
+public class BlockNetherPortal extends BlockFlowableMeta implements BlockFaceable {
 
     public BlockNetherPortal() {
         this(0);
     }
 
     public BlockNetherPortal(int meta) {
-        super(0);
+        super(meta);
     }
 
     @Override
@@ -50,6 +51,11 @@ public class BlockNetherPortal extends BlockFlowable {
     @Override
     public int getLightLevel() {
         return 11;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(get(AIR));
     }
 
     @Override
@@ -91,9 +97,25 @@ public class BlockNetherPortal extends BlockFlowable {
         return this;
     }
 
-    public static void spawnPortal(Position pos)   {
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
+    }
+
+    public static Position spawnPortal(Position pos)   {
         Level lvl = pos.level;
-        int x = pos.getFloorX(), y = pos.getFloorY(), z = pos.getFloorZ();
+        int x = pos.getFloorX();
+        int y = pos.getFloorY();
+        int z = pos.getFloorZ();
+
+        int maxY = lvl.getDimension() == Level.DIMENSION_NETHER ? 110 : 240;
+        while (y < maxY) {
+            if (lvl.getBlockIdAt(x, y, z) == 0) {
+                break;
+            }
+
+            y++;
+        }
 
         for (int xx = -1; xx < 4; xx++) {
             for (int yy = 1; yy < 4; yy++)  {
@@ -140,5 +162,7 @@ public class BlockNetherPortal extends BlockFlowable {
         lvl.setBlockAt(x + 1, y, z, OBSIDIAN);
         lvl.setBlockAt(x + 2, y, z, OBSIDIAN);
         lvl.setBlockAt(x + 3, y, z, OBSIDIAN);
+
+        return new Position(x, y, z, lvl);
     }
 }

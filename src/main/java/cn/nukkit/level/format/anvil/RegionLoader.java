@@ -3,8 +3,10 @@ package cn.nukkit.level.format.anvil;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
 import cn.nukkit.level.format.generic.BaseRegionLoader;
-import cn.nukkit.utils.*;
-
+import cn.nukkit.utils.Binary;
+import cn.nukkit.utils.BinaryStream;
+import cn.nukkit.utils.ChunkException;
+import cn.nukkit.utils.Zlib;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,12 +14,15 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class RegionLoader extends BaseRegionLoader {
+
     public RegionLoader(LevelProvider level, int regionX, int regionZ) throws IOException {
         super(level, regionX, regionZ, "mca");
     }
@@ -52,18 +57,18 @@ public class RegionLoader extends BaseRegionLoader {
                 table[0] = ++this.lastSector;
                 table[1] = 1;
                 this.locationTable.put(index, table);
-                MainLogger.getLogger().error("Corrupted chunk header detected");
+                log.error("Corrupted chunk header detected");
             }
             return null;
         }
 
         if (length > (table[1] << 12)) {
-            MainLogger.getLogger().error("Corrupted bigger chunk detected");
+            log.error("Corrupted bigger chunk detected");
             table[1] = length >> 12;
             this.locationTable.put(index, table);
             this.writeLocationIndex(index);
         } else if (compression != COMPRESSION_ZLIB && compression != COMPRESSION_GZIP) {
-            MainLogger.getLogger().error("Invalid compression type");
+            log.error("Invalid compression type");
             return null;
         }
 
@@ -73,11 +78,11 @@ public class RegionLoader extends BaseRegionLoader {
         if (chunk != null) {
             return chunk;
         } else {
-            MainLogger.getLogger().error("Corrupted chunk detected at (" + x + ", " + z + ") in " + levelProvider.getName());
+            log.error("Corrupted chunk detected at (" + x + ", " + z + ") in " + levelProvider.getName());
             return null;
         }
         } catch (EOFException e) {
-            MainLogger.getLogger().error("Your world is corrupt, because some code is bad and corrupted it. oops. ");
+            log.error("Your world is corrupt, because some code is bad and corrupted it. oops. ");
             return null;
         }
     }

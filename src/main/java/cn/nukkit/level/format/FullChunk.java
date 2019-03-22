@@ -4,6 +4,7 @@ import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.biome.Biome;
+//import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.io.IOException;
 import java.util.Map;
 
@@ -109,6 +110,10 @@ public interface FullChunk extends Cloneable {
     void addEntity(Entity entity);
 
     void removeEntity(Entity entity);
+
+//    void updateEntity(Entity entity);
+//
+//    Long2ObjectMap<Entity> getUpdateEntities();
 
     void addBlockEntity(BlockEntity blockEntity);
 

@@ -2,8 +2,8 @@ package cn.nukkit.metadata;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.level.Level;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.Plugin;
-
 import java.util.List;
 
 /**
@@ -11,6 +11,7 @@ import java.util.List;
  * Nukkit Project
  */
 public class BlockMetadataStore extends MetadataStore {
+
     private final Level owningLevel;
 
     public BlockMetadataStore(Level owningLevel) {
@@ -22,7 +23,7 @@ public class BlockMetadataStore extends MetadataStore {
         if (!(block instanceof Block)) {
             throw new IllegalArgumentException("Argument must be a Block instance");
         }
-        return ((Block) block).x + ":" + ((Block) block).y + ":" + ((Block) block).z + ":" + metadataKey;
+        return ((Vector3) block).x + ":" + ((Vector3) block).y + ":" + ((Vector3) block).z + ":" + metadataKey;
     }
 
     @Override

@@ -16,11 +16,6 @@ public class BlockEntityEnderChest extends BlockEntitySpawnable {
     }
 
     @Override
-    public String getName() {
-        return "EnderChest";
-    }
-
-    @Override
     public CompoundTag getSpawnCompound() {
         return new CompoundTag()
                 .putString("id", BlockEntity.ENDER_CHEST)

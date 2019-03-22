@@ -36,4 +36,6 @@ public interface BlockEntityNameable {
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     boolean hasName();
+
+    String TAG_CUSTOM_NAME = "CustomName";
 }

@@ -1,9 +1,5 @@
 package cn.nukkit.block;
 
-/**
- * author: Justin
- */
-
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySkull;
@@ -14,7 +10,9 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.Tag;
 
-
+/**
+ * author: Justin
+ */
 public class BlockSkull extends BlockTransparentMeta {
 
     public BlockSkull() {
@@ -51,15 +49,12 @@ public class BlockSkull extends BlockTransparentMeta {
 
         if (this.level != null) {
             BlockEntity blockEntity = getLevel().getBlockEntity(this);
-            if (blockEntity != null) itemMeta = blockEntity.namedTag.getByte("SkullType");
+            if (blockEntity != null) {
+                itemMeta = blockEntity.namedTag.getByte("SkullType");
+            }
         }
 
         return ItemSkull.getItemSkullName(itemMeta);
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     @Override
@@ -101,7 +96,9 @@ public class BlockSkull extends BlockTransparentMeta {
     public Item[] getDrops(Item item) {
         BlockEntity blockEntity = getLevel().getBlockEntity(this);
         int dropMeta = 0;
-        if (blockEntity != null) dropMeta = blockEntity.namedTag.getByte("SkullType");
+        if (blockEntity != null) {
+            dropMeta = blockEntity.namedTag.getByte("SkullType");
+        }
         return new Item[]{
                 new ItemSkull(dropMeta)
         };
@@ -111,5 +108,4 @@ public class BlockSkull extends BlockTransparentMeta {
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
-
 }

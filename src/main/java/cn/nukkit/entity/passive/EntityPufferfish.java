@@ -19,6 +19,7 @@ public class EntityPufferfish extends EntityAnimal {
         return NETWORK_ID;
     }
 
+    @Override
     public String getName() {
         return "Pufferfish";
     }

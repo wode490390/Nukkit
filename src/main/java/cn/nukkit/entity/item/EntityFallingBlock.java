@@ -19,7 +19,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityFallingBlock extends Entity {
 
-    public static final int NETWORK_ID = 66;
+    public static final int NETWORK_ID = FALLING_BLOCK;
 
     @Override
     public float getWidth() {
@@ -88,6 +88,7 @@ public class EntityFallingBlock extends Entity {
         setDataProperty(new IntEntityData(DATA_VARIANT, GlobalBlockPalette.getOrCreateRuntimeId(this.getBlock(), this.getDamage())));
     }
 
+    @Override
     public boolean canCollideWith(Entity entity) {
         return false;
     }
@@ -129,7 +130,7 @@ public class EntityFallingBlock extends Entity {
             Vector3 pos = (new Vector3(x - 0.5, y, z - 0.5)).round();
 
             if (onGround) {
-                kill();
+                close();
                 Block block = level.getBlock(pos);
                 if (block.getId() > 0 && block.isTransparent() && !block.canBeReplaced()) {
                     if (this.level.getGameRules().getBoolean(GameRule.DO_ENTITY_DROPS)) {
@@ -155,6 +156,21 @@ public class EntityFallingBlock extends Entity {
         this.timing.stopTiming();
 
         return hasUpdate || !onGround || Math.abs(motionX) > 0.00001 || Math.abs(motionY) > 0.00001 || Math.abs(motionZ) > 0.00001;
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return false;
+    }
+
+    @Override
+    public void setOnFire(int seconds) {
+
+    }
+
+    @Override
+    public boolean canBeMovedByCurrents() {
+        return false;
     }
 
     public int getBlock() {

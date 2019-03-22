@@ -34,12 +34,7 @@ public class BlockCactus extends BlockTransparentMeta {
 
     @Override
     public double getHardness() {
-        return 0.4;
-    }
-
-    @Override
-    public double getResistance() {
-        return 2;
+        return 0.4000000059604645;
     }
 
     @Override
@@ -103,7 +98,7 @@ public class BlockCactus extends BlockTransparentMeta {
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (down().getId() != CACTUS) {
-                if (this.getDamage() == 0x0F) {
+                if (this.getDamage() == 0xf) {
                     for (int y = 1; y < 3; ++y) {
                         Block b = this.getLevel().getBlock(new Vector3(this.x, this.y + y, this.z));
                         if (b.getId() == AIR) {

@@ -2,14 +2,15 @@ package cn.nukkit.item;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityID;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.event.entity.ProjectileLaunchEvent;
-import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 
 /**
  * @author CreeperFace
@@ -24,6 +25,7 @@ public abstract class ProjectileItem extends Item {
 
     abstract public float getThrowForce();
 
+    @Override
     public boolean onClickAir(Player player, Vector3 directionVector) {
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<DoubleTag>("Pos")
@@ -53,7 +55,7 @@ public abstract class ProjectileItem extends Item {
                     projectile.kill();
                 } else {
                     projectile.spawnToAll();
-                    player.getLevel().addSound(player, Sound.RANDOM_BOW, 1, 1, player.getViewers().values());
+                    player.getLevel().addLevelSoundEvent(player, LevelSoundEventPacket.SOUND_THROW, 0, EntityID.PLAYER);
                 }
             } else {
                 projectile.spawnToAll();

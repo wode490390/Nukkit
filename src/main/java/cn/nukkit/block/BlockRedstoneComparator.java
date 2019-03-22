@@ -16,11 +16,7 @@ import cn.nukkit.nbt.tag.ListTag;
  */
 public abstract class BlockRedstoneComparator extends BlockRedstoneDiode {
 
-    public BlockRedstoneComparator() {
-        this(0);
-    }
-
-    public BlockRedstoneComparator(int meta) {
+    protected BlockRedstoneComparator(int meta) {
         super(meta);
     }
 
@@ -75,6 +71,7 @@ public abstract class BlockRedstoneComparator extends BlockRedstoneDiode {
         }
     }
 
+    @Override
     protected int calculateInputStrength() {
         int power = super.calculateInputStrength();
         BlockFace face = getFacing();
@@ -93,6 +90,7 @@ public abstract class BlockRedstoneComparator extends BlockRedstoneDiode {
         return power;
     }
 
+    @Override
     protected boolean shouldBePowered() {
         int input = this.calculateInputStrength();
 

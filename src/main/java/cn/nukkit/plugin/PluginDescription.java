@@ -2,10 +2,14 @@ package cn.nukkit.plugin;
 
 import cn.nukkit.permission.Permission;
 import cn.nukkit.utils.PluginException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-
-import java.util.*;
 
 /* TODO Add these to Javadoc：
  *     <li><i>softdepend</i><br>
@@ -138,7 +142,7 @@ public class PluginDescription {
 
     private void loadMap(Map<String, Object> plugin) throws PluginException {
         this.name = ((String) plugin.get("name")).replaceAll("[^A-Za-z0-9 _.-]", "");
-        if (this.name.equals("")) {
+        if (this.name.isEmpty()) {
             throw new PluginException("Invalid PluginDescription name");
         }
         this.name = this.name.replace(" ", "_");
@@ -318,7 +322,7 @@ public class PluginDescription {
     }
 
     /**
-     * TODO finish javadoc
+     * @return List
      */
     public List<String> getLoadBefore() {
         return loadBefore;
@@ -379,7 +383,7 @@ public class PluginDescription {
     }
 
     /**
-     * TODO finish javadoc
+     * @return List
      */
     public List<String> getSoftDepend() {
         return softDepend;

@@ -69,4 +69,12 @@ public abstract class BlockEntitySpawnable extends BlockEntity {
     public boolean updateCompoundTag(CompoundTag nbt, Player player) {
         return false;
     }
+
+    protected void onChanged() {
+        this.spawnToAll();
+
+        if (this.chunk != null) {
+            this.chunk.setChanged();
+        }
+    }
 }

@@ -3,8 +3,12 @@ package cn.nukkit.entity.projectile;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityLiving;
 import cn.nukkit.entity.data.LongEntityData;
-import cn.nukkit.event.entity.*;
+import cn.nukkit.event.entity.EntityCombustByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageByChildEntityEvent;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
+import cn.nukkit.event.entity.ProjectileHitEvent;
 import cn.nukkit.level.MovingObjectPosition;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.AxisAlignedBB;
@@ -20,7 +24,7 @@ public abstract class EntityProjectile extends Entity {
 
     public static final int DATA_SHOOTER_ID = 17;
 
-    public Entity shootingEntity = null;
+    public Entity shootingEntity;
 
     protected double getDamage() {
         return namedTag.contains("damage") ? namedTag.getDouble("damage") : getBaseDamage();
@@ -52,6 +56,7 @@ public abstract class EntityProjectile extends Entity {
         return NukkitMath.ceilDouble(Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ) * getDamage());
     }
 
+    @Override
     public boolean attack(EntityDamageEvent source) {
         return source.getCause() == DamageCause.VOID && super.attack(source);
     }

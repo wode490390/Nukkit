@@ -3,19 +3,20 @@ package cn.nukkit.network.query;
 import cn.nukkit.Server;
 import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.utils.Binary;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class QueryHandler {
 
-    public static final byte HANDSHAKE = 0x09;
-    public static final byte STATISTICS = 0x00;
+    public static final byte HANDSHAKE = 0x9;
+    public static final byte STATISTICS = 0x0;
 
     private final Server server;
     private byte[] lastToken;
@@ -26,16 +27,16 @@ public class QueryHandler {
 
     public QueryHandler() {
         this.server = Server.getInstance();
-        this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.server.query.start"));
+        log.info(this.server.getLanguage().translateString("nukkit.server.query.start"));
         String ip = this.server.getIp();
         String addr = (!ip.isEmpty()) ? ip : "0.0.0.0";
         int port = this.server.getPort();
-        this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.server.query.info", String.valueOf(port)));
+        log.info(this.server.getLanguage().translateString("nukkit.server.query.info", String.valueOf(port)));
 
         this.regenerateToken();
         this.lastToken = this.token;
         this.regenerateInfo();
-        this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.server.query.running", new String[]{addr, String.valueOf(port)}));
+        log.info(this.server.getLanguage().translateString("nukkit.server.query.running", new String[]{addr, String.valueOf(port)}));
     }
 
     public void regenerateInfo() {
@@ -49,7 +50,7 @@ public class QueryHandler {
         this.lastToken = this.token;
         byte[] token = new byte[16];
         for (int i = 0; i < 16; i++) {
-            token[i] = (byte) new Random().nextInt(255);
+            token[i] = (byte) ThreadLocalRandom.current().nextInt(255);
         }
         this.token = token;
     }
@@ -63,7 +64,7 @@ public class QueryHandler {
         try {
             return String.valueOf(Binary.readInt(Binary.subBytes(MessageDigest.getInstance("SHA-512").digest((salt + ":" + token).getBytes()), 7, 4)));
         } catch (NoSuchAlgorithmException e) {
-            return String.valueOf(new Random().nextInt());
+            return String.valueOf(ThreadLocalRandom.current().nextInt());
         }
     }
 

@@ -10,12 +10,11 @@ public abstract class RakNet {
 
     public static final String VERSION = "1.1.0";
     public static final byte PROTOCOL = 9;
-    public static final byte[] MAGIC = new byte[]{
-            (byte) 0x00, (byte) 0xff, (byte) 0xff, (byte) 0x00,
-            (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe,
-            (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd,
-            (byte) 0x12, (byte) 0x34, (byte) 0x56, (byte) 0x78
-    };
+    /**
+     * Default vanilla Raknet protocol version that this library implements. Things using RakNet can override this
+     * protocol version with something different.
+     */
+    public static final byte DEFAULT_PROTOCOL_VERSION = 6;
 
     public static final byte PRIORITY_NORMAL = 0;
     public static final byte PRIORITY_IMMEDIATE = 1;
@@ -23,98 +22,7 @@ public abstract class RakNet {
     public static final byte FLAG_NEED_ACK = 0b00001000;
 
     /*
-     * ENCAPSULATED payload:
-     * byte (identifier length)
-     * byte[] (identifier)
-     * byte (flags, last 3 bits, priority)
-     * payload (binary internal EncapsulatedPacket)
+     * Regular RakNet uses 10 by default. MCPE uses 20. Configure this value as appropriate.
      */
-    public static final byte PACKET_ENCAPSULATED = 0x01;
-
-    /*
-     * OPEN_SESSION payload:
-     * byte (identifier length)
-     * byte[] (identifier)
-     * byte (address length)
-     * byte[] (address)
-     * short (port)
-     * long (clientID)
-     */
-    public static final byte PACKET_OPEN_SESSION = 0x02;
-
-    /*
-     * CLOSE_SESSION payload:
-     * byte (identifier length)
-     * byte[] (identifier)
-     * string (reason)
-     */
-    public static final byte PACKET_CLOSE_SESSION = 0x03;
-
-    /*
-     * INVALID_SESSION payload:
-     * byte (identifier length)
-     * byte[] (identifier)
-     */
-    public static final byte PACKET_INVALID_SESSION = 0x04;
-
-    /* SEND_QUEUE payload:
-     * byte (identifier length)
-     * byte[] (identifier)
-     */
-    public static final byte PACKET_SEND_QUEUE = 0x05;
-
-    /*
-     * ACK_NOTIFICATION payload:
-     * byte (identifier length)
-     * byte[] (identifier)
-     * int (identifierACK)
-     */
-    public static final byte PACKET_ACK_NOTIFICATION = 0x06;
-
-    /*
-     * SET_OPTION payload:
-     * byte (option name length)
-     * byte[] (option name)
-     * byte[] (option value)
-     */
-    public static final byte PACKET_SET_OPTION = 0x07;
-
-    /*
-     * RAW payload:
-     * byte (address length)
-     * byte[] (address from/to)
-     * short (port)
-     * byte[] (payload)
-     */
-    public static final byte PACKET_RAW = 0x08;
-
-    /*
-     * BLOCK_ADDRESS payload:
-     * byte (address length)
-     * byte[] (address)
-     * int (timeout)
-     */
-    public static final byte PACKET_BLOCK_ADDRESS = 0x09;
-
-    /*
-     * UNBLOCK_ADDRESS payload:
-     * byte (adress length)
-     * byte[] (address)
-     */
-    public static final byte PACKET_UNBLOCK_ADDRESS = 0x10;
-
-    /*
-     * No payload
-     *
-     * Sends the disconnect message, removes sessions correctly, closes sockets.
-     */
-    public static final byte PACKET_SHUTDOWN = 0x7e;
-
-    /*
-     * No payload
-     *
-     * Leaves everything as-is and halts, other Threads can be in a post-crash condition.
-     */
-    public static final byte PACKET_EMERGENCY_SHUTDOWN = 0x7f;
-
+    public static final int SYSTEM_ADDRESS_COUNT = 20;
 }

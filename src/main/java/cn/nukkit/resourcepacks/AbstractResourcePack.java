@@ -2,9 +2,12 @@ package cn.nukkit.resourcepacks;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.util.UUID;
 
 public abstract class AbstractResourcePack implements ResourcePack {
+
     protected JsonObject manifest;
+    private UUID id;
 
     protected boolean verifyManifest() {
         if (this.manifest.has("format_version") && this.manifest.has("header") && this.manifest.has("modules")) {
@@ -21,23 +24,21 @@ public abstract class AbstractResourcePack implements ResourcePack {
 
     @Override
     public String getPackName() {
-        return this.manifest.getAsJsonObject("header")
-                .get("name").getAsString();
+        return this.manifest.getAsJsonObject("header").get("name").getAsString();
     }
 
     @Override
-    public String getPackId() {
-        return this.manifest.getAsJsonObject("header")
-                .get("uuid").getAsString();
+    public UUID getPackId() {
+        if (this.id == null) {
+            this.id = UUID.fromString(this.manifest.getAsJsonObject("header").get("uuid").getAsString());
+        }
+        return this.id;
     }
 
     @Override
     public String getPackVersion() {
-        JsonArray version = this.manifest.getAsJsonObject("header")
-                .get("version").getAsJsonArray();
+        JsonArray version = this.manifest.getAsJsonObject("header").get("version").getAsJsonArray();
 
-        return String.join(".", version.get(0).getAsString(),
-                version.get(1).getAsString(),
-                version.get(2).getAsString());
+        return String.join(".", version.get(0).getAsString(), version.get(1).getAsString(), version.get(2).getAsString());
     }
 }

@@ -1,6 +1,7 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 
@@ -8,7 +9,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/2 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockDoubleSlabWood extends BlockSolidMeta {
+public class BlockDoubleSlabWood extends BlockDoubleSlab {
 
     public BlockDoubleSlabWood() {
         this(0);
@@ -21,16 +22,6 @@ public class BlockDoubleSlabWood extends BlockSolidMeta {
     @Override
     public int getId() {
         return DOUBLE_WOOD_SLAB;
-    }
-
-    @Override
-    public double getHardness() {
-        return 2;
-    }
-
-    @Override
-    public double getResistance() {
-        return 15;
     }
 
     @Override
@@ -50,12 +41,18 @@ public class BlockDoubleSlabWood extends BlockSolidMeta {
                 "",
                 ""
         };
-        return "Double " + names[this.getDamage() & 0x07] + " Slab";
+        return "Double " + names[this.getDamage() & 0x7] + " Slab";
     }
 
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockSlabWood(), this.getDamage() & 0x7);
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         return new Item[]{
-                Item.get(Item.WOOD_SLAB, this.getDamage() & 0x07, 2)
+                Item.get(Item.WOOD_SLAB, this.getDamage() & 0x7, 2)
         };
     }
 

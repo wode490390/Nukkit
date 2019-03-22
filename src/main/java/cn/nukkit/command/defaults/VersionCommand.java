@@ -6,7 +6,6 @@ import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginDescription;
 import cn.nukkit.utils.TextFormat;
-
 import java.util.List;
 
 /**
@@ -16,11 +15,7 @@ import java.util.List;
 public class VersionCommand extends VanillaCommand {
 
     public VersionCommand(String name) {
-        super(name,
-                "%nukkit.command.version.description",
-                "%nukkit.command.version.usage",
-                new String[]{"ver", "about"}
-        );
+        super(name, "%nukkit.command.version.description", "%nukkit.command.version.usage", new String[]{"ver", "about"});
         this.setPermission("nukkit.command.version");
         this.commandParameters.clear();
     }
@@ -31,17 +26,19 @@ public class VersionCommand extends VanillaCommand {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(new TranslationContainer("nukkit.server.info.extended", new String[]{
+            sender.sendMessage(new TranslationContainer("nukkit.server.info.extended",
                     sender.getServer().getName(),
                     sender.getServer().getNukkitVersion(),
                     sender.getServer().getCodename(),
                     sender.getServer().getApiVersion(),
                     sender.getServer().getVersion(),
-                    String.valueOf(ProtocolInfo.CURRENT_PROTOCOL)
-            }));
+                    String.valueOf(ProtocolInfo.CURRENT_PROTOCOL))
+            );
         } else {
             String pluginName = "";
-            for (String arg : args) pluginName += arg + " ";
+            for (String arg : args) {
+                pluginName += arg + " ";
+            }
             pluginName = pluginName.trim();
             final boolean[] found = {false};
             final Plugin[] exactPlugin = {sender.getServer().getPluginManager().getPlugin(pluginName)};

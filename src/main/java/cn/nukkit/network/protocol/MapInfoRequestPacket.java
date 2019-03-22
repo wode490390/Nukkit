@@ -4,16 +4,19 @@ package cn.nukkit.network.protocol;
  * Created by CreeperFace on 5.3.2017.
  */
 public class MapInfoRequestPacket extends DataPacket {
+
+    public static final byte NETWORK_ID = ProtocolInfo.MAP_INFO_REQUEST_PACKET;
+
     public long mapId;
 
     @Override
     public byte pid() {
-        return ProtocolInfo.MAP_INFO_REQUEST_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
     public void decode() {
-        mapId = this.getEntityUniqueId();
+        this.mapId = this.getEntityUniqueId();
     }
 
     @Override

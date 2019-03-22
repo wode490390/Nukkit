@@ -8,7 +8,7 @@ import cn.nukkit.math.BlockFace;
 /**
  * Created by CreeperFace on 2.6.2017.
  */
-public abstract class BlockTerracottaGlazed extends BlockSolidMeta {
+public abstract class BlockTerracottaGlazed extends BlockSolidMeta implements BlockFaceable {
 
     public BlockTerracottaGlazed() {
         this(0);
@@ -25,7 +25,7 @@ public abstract class BlockTerracottaGlazed extends BlockSolidMeta {
 
     @Override
     public double getHardness() {
-        return 1.4;
+        return 1.399999976158142;
     }
 
     @Override
@@ -34,13 +34,18 @@ public abstract class BlockTerracottaGlazed extends BlockSolidMeta {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        return item.getTier() >= ItemTool.TIER_WOODEN ? new Item[]{this.toItem()} : new Item[0];
+        return item.getTier() >= this.getToolHarvestLevel() ? new Item[]{this.toItem()} : new Item[0];
     }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
+        int[] faces = {2, 5, 3, 4};
         this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
         return this.getLevel().setBlock(block, this, true, true);
     }
@@ -48,5 +53,10 @@ public abstract class BlockTerracottaGlazed extends BlockSolidMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

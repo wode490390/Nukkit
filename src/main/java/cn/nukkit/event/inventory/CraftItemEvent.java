@@ -7,7 +7,6 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.inventory.Recipe;
 import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.item.Item;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +41,7 @@ public class CraftItemEvent extends Event implements Cancellable {
             merged.addAll(Arrays.asList(items));
         }
         this.player = transaction.getSource();
-        this.input = merged.stream().toArray(Item[]::new);
+        this.input = merged.toArray(new Item[0]);
         this.recipe = transaction.getRecipe();
     }
 

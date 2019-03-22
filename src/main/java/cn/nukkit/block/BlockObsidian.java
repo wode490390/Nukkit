@@ -11,6 +11,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockObsidian extends BlockSolid {
 
     public BlockObsidian() {
+
     }
 
     @Override
@@ -35,7 +36,7 @@ public class BlockObsidian extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 6000;
+        return 2000;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class BlockObsidian extends BlockSolid {
                 this.west(), this.east(),
         };
         for (Block aNearby : nearby) {
-            if (aNearby != null) if (aNearby.getId() == NETHER_PORTAL) {
+            if (aNearby != null && aNearby.getId() == NETHER_PORTAL) {
                 aNearby.onBreak(item);
             }
         }
