@@ -331,7 +331,7 @@ public class EntityFishingHook extends EntityProjectile {
             entity.attack(ev);
 
             if (!ev.isCancelled() && this.shootingEntity != null) {
-                entity.setMotion(entity.subtract(this.shootingEntity).divide(12).add(0, 0.3, 0));
+                entity.setMotion(entity.subtract(this.shootingEntity).divide(15).add(0, 0.3, 0));
             }
 
             this.linkedEntity = entity;
