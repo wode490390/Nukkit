@@ -264,6 +264,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[DARK_OAK_DOOR] = ItemDoorDarkOak.class; //431
             list[CHORUS_FRUIT] = ItemChorusFruit.class; //432
             list[POPPED_CHORUS_FRUIT] = ItemChorusFruitPopped.class; //433
+            list[BANNER_PATTERN] = ItemBannerPattern.class; //434
 
             list[DRAGON_BREATH] = ItemDragonBreath.class; //437
             list[SPLASH_POTION] = ItemPotionSplash.class; //438
@@ -304,6 +305,7 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[JUNGLE_SIGN] = ItemSignJungle.class; //474
             list[ACACIA_SIGN] = ItemSignAcacia.class; //475
             list[DARK_OAK_SIGN] = ItemSignDarkOak.class; //476
+            list[SWEET_BERRIES] = ItemSweetBerries.class; //477
 
             //list[CAMERA] = ItemCamera.class; //498 Edu
             list[COMPOUND] = ItemCompound.class; //499 edu
@@ -319,6 +321,8 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[RECORD_WARD] = ItemRecordWard.class; //509
             list[RECORD_11] = ItemRecord11.class; //510
             list[RECORD_WAIT] = ItemRecordWait.class; //511
+
+            list[SHIELD] = ItemShield.class; //513
 
             for (int i = 0; i < 256; ++i) {
                 if (Block.list[i] != null) {

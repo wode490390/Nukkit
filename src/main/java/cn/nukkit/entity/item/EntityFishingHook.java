@@ -4,11 +4,14 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityHuman;
+import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.event.entity.EntityDamageByChildEntityEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
+import cn.nukkit.event.entity.EntityFishingRodCollideEntityEvent;
 import cn.nukkit.event.entity.ProjectileHitEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.randomitem.Fishing;
@@ -24,8 +27,10 @@ import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.EntityEventPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
+import cn.nukkit.network.protocol.SetEntityLinkPacket;
+import cn.nukkit.network.protocol.types.EntityLink;
 import java.util.concurrent.ThreadLocalRandom;
-
 
 /**
  * Created by PetteriM1
@@ -48,12 +53,19 @@ public class EntityFishingHook extends EntityProjectile {
 
     public Item rod;
 
+    public Entity linkedEntity;
+
     public EntityFishingHook(FullChunk chunk, CompoundTag nbt) {
         this(chunk, nbt, null);
     }
 
     public EntityFishingHook(FullChunk chunk, CompoundTag nbt, Entity shootingEntity) {
         super(chunk, nbt, shootingEntity);
+        long ownerId = -1;
+        if (this.shootingEntity != null) {
+            ownerId = this.shootingEntity.getId();
+        }
+        this.dataProperties.putLong(DATA_OWNER_EID, ownerId);
     }
 
     @Override
@@ -78,7 +90,7 @@ public class EntityFishingHook extends EntityProjectile {
 
     @Override
     public float getGravity() {
-        return 0.08f;
+        return 0.07f;
     }
 
     @Override
@@ -93,9 +105,11 @@ public class EntityFishingHook extends EntityProjectile {
             return false;
         }
 
-        if (this.isInsideOfWater()) {
+        if (this.linkedEntity != null) {
+            this.setPosition(this.linkedEntity);
+        } else if (this.isInsideOfWater()) {
             this.motionX = 0;
-            this.motionY -= getGravity() * -0.03;
+            this.motionY -= getGravity() * -0.04;
             this.motionZ = 0;
             hasUpdate = true;
         } else if (this.isCollided && this.keepMovement) {
@@ -103,11 +117,6 @@ public class EntityFishingHook extends EntityProjectile {
             this.motionY = 0;
             this.motionZ = 0;
             this.keepMovement = false;
-            hasUpdate = true;
-        } else if (this.isOnGround() || this.isInsideOfSolid()) {
-            this.motionX = 0;
-            this.motionY = getGravity();
-            this.motionZ = 0;
             hasUpdate = true;
         }
 
@@ -206,6 +215,7 @@ public class EntityFishingHook extends EntityProjectile {
 
     public void reelLine() {
         if (this.shootingEntity instanceof Player && this.caught) {
+            this.level.addLevelSoundEvent(this.shootingEntity, LevelSoundEventPacket.SOUND_LAUNCH);
             Item item = Fishing.getFishingResult(this.rod);
             int experience = ThreadLocalRandom.current().nextInt(1, 4);
             Vector3 motion;
@@ -246,6 +256,21 @@ public class EntityFishingHook extends EntityProjectile {
                 player.addExperience(experience);
             }
         }
+        if (this.linkedEntity != null) {
+            float damage = this.getResultDamage();
+            EntityDamageEvent ev;
+            if (this.shootingEntity == null) {
+                ev = new EntityDamageByEntityEvent(this, this.linkedEntity, DamageCause.PROJECTILE, damage, 0);
+            } else {
+                ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, this.linkedEntity, DamageCause.PROJECTILE, damage);
+                ((EntityDamageByEntityEvent) ev).setKnockBack(0);
+            }
+
+            this.linkedEntity.attack(ev);
+            if (!ev.isCancelled() && this.shootingEntity != null) {
+                this.linkedEntity.setMotion(this.shootingEntity.subtract(this.linkedEntity).divide(8).add(0, 0.3, 0));
+            }
+        }
         if (this.shootingEntity instanceof Player) {
             EntityEventPacket pk = new EntityEventPacket();
             pk.entityRuntimeId = this.getId();
@@ -269,27 +294,46 @@ public class EntityFishingHook extends EntityProjectile {
         pk.yaw = (float) this.yaw;
         pk.pitch = (float) this.pitch;
 
-        long ownerId = -1;
-        if (this.shootingEntity != null) {
-            ownerId = this.shootingEntity.getId();
-        }
-        pk.metadata = this.dataProperties.putLong(DATA_OWNER_EID, ownerId);
+        pk.metadata = this.dataProperties;
         player.dataPacket(pk);
         super.spawnTo(player);
     }
 
     @Override
     public void onCollideWithEntity(Entity entity) {
-        this.server.getPluginManager().callEvent(new ProjectileHitEvent(this, MovingObjectPosition.fromEntity(entity)));
-        float damage = this.getResultDamage();
+        if (this.linkedEntity == null) {
+            EntityFishingRodCollideEntityEvent collideEntityEvent = new EntityFishingRodCollideEntityEvent(this, entity);
+            this.server.getPluginManager().callEvent(collideEntityEvent);
+            if (collideEntityEvent.isCancelled()) {
+                return;
+            }
 
-        EntityDamageEvent ev;
-        if (this.shootingEntity == null) {
-            ev = new EntityDamageByEntityEvent(this, entity, DamageCause.PROJECTILE, damage);
-        } else {
-            ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, entity, DamageCause.PROJECTILE, damage);
+            this.server.getPluginManager().callEvent(new ProjectileHitEvent(this, MovingObjectPosition.fromEntity(entity)));
+            float damage = this.getResultDamage();
+
+            EntityDamageEvent ev;
+            if (this.shootingEntity == null) {
+                ev = new EntityDamageByEntityEvent(this, entity, DamageCause.PROJECTILE, damage, 0f);
+            } else {
+                ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, entity, DamageCause.PROJECTILE, damage);
+                ((EntityDamageByEntityEvent) ev).setKnockBack(0f);
+            }
+
+            entity.attack(ev);
+
+            if (!ev.isCancelled() && this.shootingEntity != null) {
+                entity.setMotion(entity.subtract(this.shootingEntity).divide(12).add(0, 0.3, 0));
+            }
+
+            this.linkedEntity = entity;
+
+            SetEntityLinkPacket pk;
+
+            pk = new SetEntityLinkPacket();
+            pk.link = new EntityLink(entity.getId(), this.getId(), EntityLink.TYPE_PASSENGER);
+            Server.broadcastPacket(this.hasSpawned.values(), pk);
+
+            this.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, new Vector3(0, entity instanceof EntityHuman ? entity.getMountedYOffset() - entity.getEyeHeight() : entity.getMountedYOffset(), 0).asVector3f()));
         }
-
-        entity.attack(ev);
     }
 }

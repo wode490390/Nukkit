@@ -89,6 +89,7 @@ public class BlockEndPortalFrame extends BlockTransparentMeta implements BlockFa
                                 this.getLevel().setBlock(t.add(k, 0, l), get(END_PORTAL), true);
                             }
                         }
+                        this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_BLOCK_END_PORTAL_SPAWN);
                         return true;
                     }
                 }

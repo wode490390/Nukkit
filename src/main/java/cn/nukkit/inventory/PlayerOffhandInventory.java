@@ -1,6 +1,8 @@
 package cn.nukkit.inventory;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.EntityHuman;
+import cn.nukkit.entity.EntityHumanType;
 import cn.nukkit.network.protocol.InventorySlotPacket;
 import cn.nukkit.network.protocol.types.ContainerIds;
 
@@ -9,7 +11,7 @@ import cn.nukkit.network.protocol.types.ContainerIds;
  */
 public class PlayerOffhandInventory extends BaseInventory {
 
-    public PlayerOffhandInventory(Player holder) {
+    public PlayerOffhandInventory(EntityHumanType holder) {
         super(holder, InventoryType.OFFHAND);
     }
 
@@ -51,13 +53,8 @@ public class PlayerOffhandInventory extends BaseInventory {
         }
     }
 
-    /**
-     * This override is here for documentation and code completion purposes only.
-     *
-     * @return Player
-     */
     @Override
-    public Player getHolder() {
-        return (Player) this.holder;
+    public EntityHuman getHolder() {
+        return (EntityHuman) this.holder;
     }
 }

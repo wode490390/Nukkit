@@ -229,7 +229,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public int craftingType = CRAFTING_SMALL;
 
     protected PlayerCursorInventory cursorInventory;
-    protected PlayerOffhandInventory offhandInventory;
     protected CraftingGrid craftingGrid;
     protected CraftingTransaction craftingTransaction;
 
@@ -1007,6 +1006,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.inventory.sendContents(this);
         this.inventory.sendArmorContents(this);
+        this.offhandInventory.sendContents(this);
 
         this.noDamageTicks = 60;
 
@@ -1821,6 +1821,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.messageCounter = 2;
 
         this.lastUpdate = currentTick;
+
+        if (this.fishing != null) {
+            if (this.distance(fishing) > 80) {
+                this.stopFishing(false);
+            }
+        }
 
         if (!this.isAlive() && this.spawned) {
             ++this.deadTicks;
@@ -3462,18 +3468,18 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             switch (commandBlockUpdatePacket.commandBlockMode) {
                                 case 1:
                                     if (cb.getId() != Block.REPEATING_COMMAND_BLOCK) {
-                                        cb = Block.get(Block.REPEATING_COMMAND_BLOCK);
+                                        cb = Block.get(Block.REPEATING_COMMAND_BLOCK, cb.getDamage());
                                     }
                                     break;
                                 case 2:
                                     if (cb.getId() != Block.CHAIN_COMMAND_BLOCK) {
-                                        cb = Block.get(Block.CHAIN_COMMAND_BLOCK);
+                                        cb = Block.get(Block.CHAIN_COMMAND_BLOCK, cb.getDamage());
                                     }
                                     break;
                                 case 0:
                                 default:
                                     if (cb.getId() != Block.COMMAND_BLOCK) {
-                                        cb = Block.get(Block.COMMAND_BLOCK);
+                                        cb = Block.get(Block.COMMAND_BLOCK, cb.getDamage());
                                     }
                                     break;
                             }
@@ -4037,6 +4043,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         } else {
             message = "";
             params.clear();
+        }
+
+        if (this.fishing != null) {
+            this.stopFishing(false);
         }
 
         this.health = 0;
@@ -4679,7 +4689,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.addWindow(this.getInventory(), ContainerIds.INVENTORY, true);
 
         this.cursorInventory = new PlayerCursorInventory(this);
-        this.offhandInventory = new PlayerOffhandInventory(this);
         this.addWindow(this.cursorInventory, ContainerIds.CURSOR, true);
         this.addWindow(this.offhandInventory, ContainerIds.OFFHAND, true);
 
@@ -4690,11 +4699,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public PlayerCursorInventory getCursorInventory() {
         return this.cursorInventory;
-    }
-
-    @Override
-    public PlayerOffhandInventory getOffhandInventory() {
-        return offhandInventory;
     }
 
     public CraftingGrid getCraftingGrid() {
@@ -5130,7 +5134,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 .putList(new ListTag<FloatTag>("Rotation")
                         .add(new FloatTag("", (float) yaw))
                         .add(new FloatTag("", (float) pitch)));
-        double f = 0.9;
+        double f = 1;
         EntityFishingHook fishingHook = new EntityFishingHook(chunk, nbt, this);
         fishingHook.setMotion(new Vector3(-Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)) * f * f, -Math.sin(Math.toRadians(pitch)) * f * f,
                 Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)) * f * f));

@@ -117,7 +117,7 @@ public abstract class BlockButton extends BlockFlowableMeta implements BlockFace
 
     @Override
     public Item toItem() {
-        return Item.get(this.getId(), 0, 1);
+        return Item.get(this.getId(), 5);
     }
 
     @Override

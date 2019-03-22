@@ -183,7 +183,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
         } else {
             this.namedTag.putString(TAG_CUSTOM_NAME, name);
         }
-        this.setDirty();
+        this.spawnToAll();
     }
 
     @Override
@@ -211,7 +211,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
                         this.lastOutput = "#itzlipofutzli";
                         this.successCount = 1;
                     } else {
-                        this.lastOutput = null;
+                        //this.lastOutput = null;
                         if (cmd.startsWith("/")) {
                             cmd = cmd.substring(1);
                         }
@@ -229,7 +229,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
             } else {
                 this.successCount = 0;
             }
-            this.setDirty();
+            this.spawnToAll();
             return true;
         }
         return false;
@@ -262,7 +262,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
     public void setCommand(String command) {
         this.command = command;
         this.successCount = 0;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public boolean isAuto() {
@@ -275,7 +275,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
         //if (!autoed && this.auto && !this.powered && this.getMode() != MODE_CHAIN) {
         //    this.setConditionMet();
         //}
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public boolean isConditional() {
@@ -285,7 +285,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
     public void setConditional(boolean conditionalMode) {
         this.conditionalMode = conditionalMode;
         this.setConditionMet();
-        //this.setDirty();
+        //this.spawnToAll();
     }
 
     public boolean isConditionMet() {
@@ -304,7 +304,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
         } else {
             this.conditionMet = true;
         }
-        this.setDirty();
+        this.spawnToAll();
         return this.conditionMet;
     }
 
@@ -314,7 +314,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     public void setSuccessCount(int count) {
         this.successCount = count;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public long getLastExecution() {
@@ -323,7 +323,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     public void setLastExecution(long time) {
         this.lastExecution = time;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public boolean isTrackingOutput() {
@@ -332,7 +332,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     public void setTrackOutput(boolean track) {
         this.trackOutput = track;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public String getLastOutput() {
@@ -345,7 +345,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
         } else {
             this.lastOutput = output;
         }
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public int getLastOutputCommandMode() {
@@ -354,7 +354,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     public void setLastOutputCommandMode(int mode) {
         this.lastOutputCommandMode = mode;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public boolean getLastOutputCondionalMode() {
@@ -363,7 +363,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     public void setLastOutputCondionalMode(boolean condionalMode) {
         this.lastOutputCondionalMode = condionalMode;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public boolean getLastOutputRedstoneMode() {
@@ -372,12 +372,12 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     public void setLastOutputRedstoneMode(boolean redstoneMode) {
         this.lastOutputRedstoneMode = redstoneMode;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     public void setLastOutputParams(ListTag<StringTag> params) {
         this.lastOutputParams = params;
-        this.setDirty();
+        this.spawnToAll();
     }
 
     @Override

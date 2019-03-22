@@ -47,6 +47,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
     @Override
     protected void initEntity() {
         this.inventory = new PlayerInventory(this);
+        this.offhandInventory = new PlayerOffhandInventory(this);
 
         if (this.namedTag.contains("Inventory") && this.namedTag.get("Inventory") instanceof ListTag) {
             ListTag<CompoundTag> inventoryList = this.namedTag.getList("Inventory", CompoundTag.class);
@@ -57,7 +58,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
                     inventoryList.remove(item);
                 } else if (slot >= 100 && slot < 104) {
                     this.inventory.setItem(this.inventory.getSize() + slot - 100, NBTIO.getItemHelper(item));
-                } else if (slot == 106) {
+                } else if (slot == -106) {
                     this.offhandInventory.setItem(0, NBTIO.getItemHelper(item));
                 } else {
                     this.inventory.setItem(slot - 9, NBTIO.getItemHelper(item));
@@ -109,7 +110,7 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
         if (this.offhandInventory != null) {
             Item item = this.offhandInventory.getItem(0);
             if (item != null && item.getId() != Item.AIR) {
-                this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, 106));
+                this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, -106));
             }
         }
 
