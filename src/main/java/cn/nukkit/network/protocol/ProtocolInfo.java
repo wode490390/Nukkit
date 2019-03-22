@@ -135,6 +135,7 @@ public interface ProtocolInfo {
     int LEVEL_SOUND_EVENT_PACKET_V2 = 0x78;
     int NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET = 0x79;
     int BIOME_DEFINITION_LIST_PACKET = 0x7a;
+    int LEVEL_SOUND_EVENT_PACKET_V3 = 0x7b;
 
     //NetEase Common Mod
     int PACKET_CHANGE_MODEL = 0xc9;

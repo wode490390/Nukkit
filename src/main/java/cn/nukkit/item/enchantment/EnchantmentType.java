@@ -20,7 +20,9 @@ public enum EnchantmentType {
     DIGGER,
     FISHING_ROD,
     BREAKABLE,
-    BOW;
+    BOW,
+    WEARABLE,
+    TRIDENT;
 
     public boolean canEnchantItem(Item item) {
         if (this == ALL) {

@@ -182,6 +182,10 @@ public class LevelSoundEventPacket extends DataPacket {
     public boolean isBabyMob;
     public boolean isGlobal;
 
+    public LevelSoundEventPacket() {
+
+	}
+
     @Override
     public void decode() {
         this.sound = this.getByte();

@@ -18,6 +18,7 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageModifier;
+import cn.nukkit.event.entity.ProjectileLaunchEvent;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryPickupArrowEvent;
 import cn.nukkit.event.inventory.InventoryPickupItemEvent;
@@ -50,6 +51,7 @@ import cn.nukkit.level.particle.CriticalParticle;
 import cn.nukkit.level.particle.PunchBlockParticle;
 import cn.nukkit.level.sound.ExperienceOrbSound;
 import cn.nukkit.level.sound.ItemFrameItemRemovedSound;
+import cn.nukkit.level.sound.LaunchSound;
 import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.*;
 import cn.nukkit.metadata.MetadataValue;
@@ -234,6 +236,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected Map<String, ResourcePack> resourcePacks;
     protected Map<String, ResourcePack> behaviourPacks;
     protected boolean forceResources = false;
+
+    public EntityFishingHook fishing = null;
 
     public int getStartActionTick() {
         return startAction;
@@ -435,6 +439,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     @Override
     public boolean canCollideWith(Entity entity) {
+        if ((this.isSurvival() || this.isAdventure()) && entity instanceof EntityFishingHook) return true;
         return false;
     }
 
@@ -1704,6 +1709,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                 if (this.isSurvival() || this.isAdventure()) {
                     if (this.getFoodData() != null) this.getFoodData().update(tickDiff);
+                }
+            }
+
+            if (this.fishing != null) {
+                if (this.fishing.level != this.level || this.fishing.distanceSquared(this) > 400) {
+                    this.stopFishing(false);
                 }
             }
         }
@@ -3405,6 +3416,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 if (this.loggedIn && ev.getAutoSave()) {
                     this.save();
                 }
+                if (this.fishing != null) {
+                    this.stopFishing(false);
+                }
             }
 
             for (Player player : new ArrayList<>(this.server.getOnlinePlayers().values())) {
@@ -4640,5 +4654,44 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public boolean isForceResources() {
         return this.forceResources;
+    }
+
+    public void startFishing(Item fishingRod) {
+        Vector3 motion = this.getDirectionVector();
+        CompoundTag nbt = new CompoundTag()
+                .putList(new ListTag<DoubleTag>("Pos")
+                        .add(new DoubleTag("", x))
+                        .add(new DoubleTag("", y + this.getEyeHeight()))
+                        .add(new DoubleTag("", z)))
+                .putList(new ListTag<DoubleTag>("Motion")
+                        .add(new DoubleTag("", motion.x))
+                        .add(new DoubleTag("", motion.y))
+                        .add(new DoubleTag("", motion.z)))
+                .putList(new ListTag<FloatTag>("Rotation")
+                        .add(new FloatTag("", (float) yaw))
+                        .add(new FloatTag("", (float) pitch)));
+        EntityFishingHook fishingHook = new EntityFishingHook(chunk, nbt, this);
+        fishingHook.setMotion(motion);
+        ProjectileLaunchEvent ev = new ProjectileLaunchEvent(fishingHook);
+        this.getServer().getPluginManager().callEvent(ev);
+        if (ev.isCancelled()) {
+            fishingHook.kill();
+        } else {
+            fishingHook.spawnToAll();
+            this.fishing = fishingHook;
+            fishingHook.rod = fishingRod;
+            this.level.addSound(new LaunchSound(this));
+        }
+    }
+
+    public void stopFishing(boolean click) {
+        if (click) {
+            fishing.reelLine();
+        } else if (this.fishing != null) {
+            this.fishing.kill();
+            this.fishing.close();
+        }
+
+        this.fishing = null;
     }
 }
