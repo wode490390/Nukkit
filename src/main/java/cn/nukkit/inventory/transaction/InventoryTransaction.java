@@ -1,6 +1,7 @@
 package cn.nukkit.inventory.transaction;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.PlayerInventory;
@@ -73,11 +74,11 @@ public class InventoryTransaction {
     /**
      * This method should not be used by plugins, it's used to add tracked inventories for InventoryActions
      * involving inventories.
+     *
+     * @param inventory to add
      */
     public void addInventory(Inventory inventory) {
-        if (!this.inventories.contains(inventory)) {
-            this.inventories.add(inventory);
-        }
+        this.inventories.add(inventory);
     }
 
     protected boolean matchItems(List<Item> needItems, List<Item> haveItems) {
@@ -133,8 +134,9 @@ public class InventoryTransaction {
      * multiple inventorySlot changes referring to the same inventorySlot in a single transaction. These multiples are not even guaranteed
      * to be in the correct order (inventorySlot splitting in the crafting grid for example, causes the actions to be sent in the
      * wrong order), so this method also tries to chain them into order.
+     * </p>
      *
-     * @return bool
+     * @return successful
      */
     protected boolean squashDuplicateSlotChanges() {
         Map<Integer, List<SlotChangeAction>> slotChanges = new HashMap<>();
@@ -232,6 +234,40 @@ public class InventoryTransaction {
     protected boolean callExecuteEvent() {
         InventoryTransactionEvent ev = new InventoryTransactionEvent(this);
         this.source.getServer().getPluginManager().callEvent(ev);
+
+        SlotChangeAction from = null;
+        SlotChangeAction to = null;
+        Player who = null;
+
+        for (InventoryAction action : this.actions) {
+            if (!(action instanceof SlotChangeAction)) {
+                continue;
+            }
+            SlotChangeAction slotChange = (SlotChangeAction) action;
+
+            if (slotChange.getInventory() instanceof PlayerInventory) {
+                who = (Player) slotChange.getInventory().getHolder();
+            }
+
+            if (from == null) {
+                from = slotChange;
+            } else {
+                to = slotChange;
+            }
+        }
+
+        if (who != null && to != null) {
+            if (from.getTargetItem().getCount() > from.getSourceItem().getCount()) {
+                from = to;
+            }
+
+            InventoryClickEvent ev2 = new InventoryClickEvent(who, from.getInventory(), from.getSlot(), from.getSourceItem(), from.getTargetItem());
+            this.source.getServer().getPluginManager().callEvent(ev2);
+
+            if (ev2.isCancelled()) {
+                return false;
+            }
+        }
 
         return !ev.isCancelled();
     }
