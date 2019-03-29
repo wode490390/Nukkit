@@ -224,7 +224,7 @@ public class InventoryTransaction {
     }
 
     public boolean canExecute() {
-        this.squashDuplicateSlotChanges();
+        if (!this.squashDuplicateSlotChanges()) return false;
 
         List<Item> haveItems = new ArrayList<>();
         List<Item> needItems = new ArrayList<>();
