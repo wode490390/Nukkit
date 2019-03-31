@@ -195,4 +195,9 @@ public class EntityFallingBlock extends Entity {
         super.spawnTo(player);
     }
 
+    @Override
+    public boolean canBeMovedByCurrents() {
+        return false;
+    }
+
 }

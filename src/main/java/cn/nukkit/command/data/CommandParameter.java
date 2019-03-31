@@ -25,6 +25,7 @@ public class CommandParameter {
     public String name;
     public CommandParamType type;
     public boolean optional;
+    public byte options = 0;
 
     public CommandEnum enumData;
     public String postFix;

@@ -89,7 +89,7 @@ public class EntityFishingHook extends EntityProjectile {
 
     @Override
     public float getGravity() {
-        return 0.08f;
+        return 0.07f;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class EntityFishingHook extends EntityProjectile {
             this.setPosition(this.linkedEntity);
         } else if (this.isInsideOfWater()) {
             this.motionX = 0;
-            this.motionY -= getGravity() * -0.03;
+            this.motionY -= getGravity() * -0.04;
             this.motionZ = 0;
             this.setImmobile();
             this.addMovement(this.x, this.y + this.getBaseOffset() + 0.5, this.z, this.yaw, this.pitch, this.yaw);

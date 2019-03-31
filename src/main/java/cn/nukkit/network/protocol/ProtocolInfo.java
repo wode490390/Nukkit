@@ -136,6 +136,8 @@ public interface ProtocolInfo {
     int NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET = 0x79;
     int BIOME_DEFINITION_LIST_PACKET = 0x7a;
     int LEVEL_SOUND_EVENT_PACKET_V3 = 0x7b;
+    int LECTERN_UPDATE_PACKET = 0x7c;
+    int VIDEO_STREAM_CONNECT_PACKET = 0x7d;
 
     //NetEase Common Mod
     int PACKET_CHANGE_MODEL = 0xc9;

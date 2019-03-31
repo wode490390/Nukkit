@@ -1713,7 +1713,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             if (this.fishing != null) {
-                if (this.fishing.level != this.level || this.fishing.distanceSquared(this) > 400) {
+                if (this.fishing.level != this.level || this.fishing.distance(this) > 80) {
                     this.stopFishing(false);
                 }
             }
@@ -1818,7 +1818,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public boolean canInteract(Vector3 pos, double maxDistance) {
-        return this.canInteract(pos, maxDistance, 0.5);
+        return this.canInteract(pos, maxDistance, 0.6);
     }
 
     public boolean canInteract(Vector3 pos, double maxDistance, double maxDiff) {
@@ -2594,8 +2594,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             }
 
                             this.getLevel().addSound(this.add(0, this.getEyeHeight(), 0), SoundEnum.RANDOM_EAT);
-                            /*this.dataPacket(packet); //bug?
-                            Server.broadcastPacket(this.getViewers().values(), packet);*/
+
+                            entityEventPacket.eid = this.id;
+                            this.dataPacket(entityEventPacket);
+
+                            EntityEventPacket pk = new EntityEventPacket();
+                            pk.event = entityEventPacket.event;
+                            pk.eid = this.id;
+                            pk.data = entityEventPacket.data;
+                            Server.broadcastPacket(this.getViewers().values(), pk);
+
                             break;
                     }
                     break;
@@ -4288,6 +4296,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             return -1;
         }
+    }
+
+    public Optional<Inventory> getTopWindow() {
+        return Optional.ofNullable(this.windowIndex.get(windowCnt));
     }
 
     public void removeWindow(Inventory inventory) {
