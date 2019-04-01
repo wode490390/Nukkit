@@ -12,7 +12,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
         <junit.platform.version>1.0.0-M4</junit.platform.version>
+        <log4j2.version>2.11.1</log4j2.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jline.version>3.9.0</jline.version>
         <!-- 本地测试服务端插件目录 -->
         <dir.api>../../_api</dir.api>
         <dir.server>../../_server</dir.server>
@@ -46,21 +48,19 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.4</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.16</version>
-        </dependency>
-        <dependency>
-            <groupId>jline</groupId>
-            <artifactId>jline</artifactId>
-            <version>2.14.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <!-- This dependency doesn't seem to be available in public maven repos.
@@ -76,24 +76,16 @@
         <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.24.Final</version>
+            <artifactId>netty-handler</artifactId>
+            <version>4.1.6.Final</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.dblock</groupId>
-            <artifactId>oshi-core</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>1.7.25</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-native-epoll</artifactId>
+            <version>4.1.6.Final</version>
+            <scope>compile</scope>
+            <classifier>linux-x86_64</classifier>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -106,6 +98,78 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>4.39.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j2.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jopt-simple</groupId>
+            <artifactId>jopt-simple</artifactId>
+            <version>5.0.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.minecrell</groupId>
+            <artifactId>terminalconsoleappender</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jline</groupId>
+                    <artifactId>jline-reader</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jline</groupId>
+                    <artifactId>jline-terminal-jna</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jline</groupId>
+                    <artifactId>jline-terminal</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-terminal</artifactId>
+            <version>${jline.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-terminal-jna</artifactId>
+            <version>${jline.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-reader</artifactId>
+            <version>${jline.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -131,34 +195,11 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <executions>
-                    <execution>
-                        <id>install-external</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <file>${basedir}/lib/leveldb.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>com.tinfoiled.mcpe.leveldb</groupId>
-                            <artifactId>leveldb</artifactId>
-                            <version>0.8</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
+                <version>3.0.0-M2</version>
                 <executions>
                     <execution>
                         <id>enforce</id>
@@ -172,11 +213,19 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.edwgiz</groupId>
+                        <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
+                        <version>2.8.1</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -189,6 +238,9 @@
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>cn.nukkit.Nukkit</mainClass>
+                        </transformer>
+                        <transformer
+                                implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer">
                         </transformer>
                     </transformers>
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
