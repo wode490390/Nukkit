@@ -1,0 +1,94 @@
+package cn.nukkit.math;
+
+/**
+ * author: MagicDroidX
+ * Nukkit Project
+ */
+public class NukkitMath {
+
+    public static int floorDouble(double n) {
+        int i = (int) n;
+        return n >= i ? i : i - 1;
+    }
+
+    public static int ceilDouble(double n) {
+        int i = (int) (n + 1);
+        return n >= i ? i : i - 1;
+    }
+
+    public static int floorFloat(float n) {
+        int i = (int) n;
+        return n >= i ? i : i - 1;
+    }
+
+    public static int ceilFloat(float n) {
+        int i = (int) (n + 1);
+        return n >= i ? i : i - 1;
+    }
+
+    public static int randomRange(NukkitRandom random) {
+        return randomRange(random, 0);
+    }
+
+    public static int randomRange(NukkitRandom random, int start) {
+        return randomRange(random, 0, 0x7fffffff);
+    }
+
+    public static int randomRange(NukkitRandom random, int start, int end) {
+        return start + (random.nextInt() % (end + 1 - start));
+    }
+
+    public static double round(double d) {
+        return round(d, 0);
+    }
+
+    public static double round(double d, int precision) {
+        return Math.round(d * Math.pow(10, precision)) / Math.pow(10, precision);
+    }
+
+    public static double clamp(double value, double min, double max) {
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    public static int clamp(int value, int min, int max) {
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    public static double getDirection(double d0, double d1) {
+        if (d0 < 0.0D) {
+            d0 = -d0;
+        }
+
+        if (d1 < 0.0D) {
+            d1 = -d1;
+        }
+
+        return d0 > d1 ? d0 : d1;
+    }
+
+    public static double max(double... numbers) {
+        int i = 0;
+        double max = numbers[i];
+
+        while (++i < numbers.length) {
+            if (numbers[i] > max) {
+                max = numbers[i];
+            }
+        }
+
+        return max;
+    }
+
+    public static int max(int... numbers) {
+        int i = 0;
+        int max = numbers[i];
+
+        while (++i < numbers.length) {
+            if (numbers[i] > max) {
+                max = numbers[i];
+            }
+        }
+
+        return max;
+    }
+}

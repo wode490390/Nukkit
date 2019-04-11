@@ -1,0 +1,84 @@
+package cn.nukkit.level.generator.object.ore;
+
+import cn.nukkit.block.Block;
+import cn.nukkit.level.ChunkManager;
+import cn.nukkit.math.MathHelper;
+import cn.nukkit.math.NukkitRandom;
+
+/**
+ * author: MagicDroidX
+ * Nukkit Project
+ */
+//porktodo: rewrite this, the whole class is terrible and generated ores look stupid
+public class OreType {
+
+    public final int fullId;
+    public final int clusterCount;
+    public final int clusterSize;
+    public final int maxHeight;
+    public final int minHeight;
+    public final int replaceBlockId;
+
+    public OreType(Block material, int clusterCount, int clusterSize, int minHeight, int maxHeight) {
+        this(material, clusterCount, clusterSize, minHeight, maxHeight, Block.STONE);
+    }
+
+    public OreType(Block material, int clusterCount, int clusterSize, int minHeight, int maxHeight, int replaceBlockId) {
+        this.fullId = material.getFullId();
+        this.clusterCount = clusterCount;
+        this.clusterSize = clusterSize;
+        this.maxHeight = maxHeight;
+        this.minHeight = minHeight;
+        this.replaceBlockId = replaceBlockId;
+    }
+
+    public boolean spawn(ChunkManager level, NukkitRandom rand, int replaceId, int x, int y, int z) {
+        float piScaled = rand.nextFloat() * (float) Math.PI;
+        double scaleMaxX = (x + 8) + MathHelper.sin(piScaled) * clusterSize / 8f;
+        double scaleMinX = (x + 8) - MathHelper.sin(piScaled) * clusterSize / 8f;
+        double scaleMaxZ = (z + 8) + MathHelper.cos(piScaled) * clusterSize / 8f;
+        double scaleMinZ = (z + 8) - MathHelper.cos(piScaled) * clusterSize / 8f;
+        double scaleMaxY = y + rand.nextBoundedInt(3) - 2;
+        double scaleMinY = y + rand.nextBoundedInt(3) - 2;
+
+        for (int i = 0; i < clusterSize; ++i) {
+            float sizeIncr = i / (float) clusterSize;
+            double scaleX = scaleMaxX + (scaleMinX - scaleMaxX) * sizeIncr;
+            double scaleY = scaleMaxY + (scaleMinY - scaleMaxY) * sizeIncr;
+            double scaleZ = scaleMaxZ + (scaleMinZ - scaleMaxZ) * sizeIncr;
+            double randSizeOffset = rand.nextDouble() * clusterSize / 16.0D;
+            double randVec1 = (MathHelper.sin((float) Math.PI * sizeIncr) + 1.0F) * randSizeOffset + 1.0D;
+            double randVec2 = (MathHelper.sin((float) Math.PI * sizeIncr) + 1.0F) * randSizeOffset + 1.0D;
+            int minX = MathHelper.floor(scaleX - randVec1 / 2.0D);
+            int minY = MathHelper.floor(scaleY - randVec2 / 2.0D);
+            int minZ = MathHelper.floor(scaleZ - randVec1 / 2.0D);
+            int maxX = MathHelper.floor(scaleX + randVec1 / 2.0D);
+            int maxY = MathHelper.floor(scaleY + randVec2 / 2.0D);
+            int maxZ = MathHelper.floor(scaleZ + randVec1 / 2.0D);
+
+            for (int xSeg = minX; xSeg <= maxX; ++xSeg) {
+                double xVal = (xSeg + 0.5D - scaleX) / (randVec1 / 2.0D);
+
+                if (xVal * xVal < 1.0D) {
+                    for (int ySeg = minY; ySeg <= maxY; ++ySeg) {
+                        double yVal = (ySeg + 0.5D - scaleY) / (randVec2 / 2.0D);
+
+                        if (xVal * xVal + yVal * yVal < 1.0D) {
+                            for (int zSeg = minZ; zSeg <= maxZ; ++zSeg) {
+                                double zVal = (zSeg + 0.5D - scaleZ) / (randVec1 / 2.0D);
+
+                                if (xVal * xVal + yVal * yVal + zVal * zVal < 1.0D) {
+                                    if (level.getBlockIdAt(xSeg, ySeg, zSeg) == replaceBlockId) {
+                                        level.setBlockFullIdAt(xSeg, ySeg, zSeg, fullId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+}
