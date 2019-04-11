@@ -24,7 +24,6 @@ Get Nukkit
 
 Build JAR file
 -------------
-- `git submodule update --init`
 - `mvn clean package`
 
 The compiled JAR can be found in the `target/` directory.

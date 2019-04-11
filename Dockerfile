@@ -14,7 +14,6 @@ RUN apt update && apt install -y \
 # Build from source and create artifact
 WORKDIR /src
 COPY ./ /src
-RUN git submodule update --init
 RUN mvn clean package
 
 # Use OpenJDK JRE image for runtime
