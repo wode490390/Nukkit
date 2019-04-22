@@ -321,7 +321,7 @@ public class EntityFishingHook extends EntityProjectile {
             pk.link = new EntityLink(entity.getId(), this.getId(), EntityLink.TYPE_PASSENGER);
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
-            this.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, new Vector3(0, entity instanceof EntityHuman ? entity.getMountedYOffset() - entity.getEyeHeight() : entity.getMountedYOffset(), 0).asVector3f()));
+            this.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, new Vector3(0, entity instanceof EntityHuman ? this.getMountedOffset(entity).add(0, -entity.getEyeHeight()).y : this.getMountedOffset(entity).y, 0).asVector3f()));
         }
     }
 }

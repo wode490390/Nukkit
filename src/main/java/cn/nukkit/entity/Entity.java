@@ -61,6 +61,7 @@ import cn.nukkit.utils.ChunkException;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
 import co.aikar.timings.TimingsHistory;
+import com.google.common.collect.Iterables;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -282,7 +283,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
             //.putFloat(DATA_BOUNDING_BOX_HEIGHT, this.getHeight()) //getHeight() callback on dataProperties causing NPE!
             //.putFloat(DATA_BOUNDING_BOX_WIDTH, this.getWidth()); //move into initEntity() method
 
-    public Entity linkedEntity;
+    public final List<Entity> passengers = new ArrayList<>();
 
     public Entity riding;
 
@@ -771,12 +772,28 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         }
     }
 
-    public Entity getLinkedEntity() {
-        return this.linkedEntity;
+    public List<Entity> getPassengers() {
+        return this.passengers;
     }
 
-    public void setLinkedEntity(Entity entity) {
-        this.linkedEntity = entity;
+    public Entity getPassenger() {
+        return Iterables.getFirst(this.passengers, null);
+    }
+
+    public boolean isPassenger(Entity entity) {
+        return this.passengers.contains(entity);
+    }
+
+    public boolean isControlling(Entity entity) {
+        return this.passengers.indexOf(entity) == 0;
+    }
+
+    public boolean hasControllingPassenger() {
+        return !this.passengers.isEmpty() && isControlling(this.passengers.get(0));
+    }
+
+    public Entity getRiding() {
+        return this.riding;
     }
 
     public boolean canSaveWithChunk() {
@@ -1243,6 +1260,8 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
             ((EntityRideable) riding).mountEntity(this);
         }
 
+        this.updatePassengers();
+
         if (!this.effects.isEmpty()) {
             for (Effect effect : this.effects.values()) {
                 if (effect.canTick()) {
@@ -1445,50 +1464,103 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         return hasUpdate;
     }
 
-    private boolean updateRidden() {
-        if (this.linkedEntity != null) {
-            if (!linkedEntity.isAlive()) {
+    public boolean mountEntity(Entity entity) {
+        return mountEntity(entity, EntityLink.TYPE_RIDER);
+    }
+
+    /**
+     * Mount or Dismounts an Entity from a/into vehicle
+     *
+     * @param entity The target Entity
+     * @return {@code true} if the mounting successful
+     */
+    public boolean mountEntity(Entity entity, byte mode) {
+        Objects.requireNonNull(entity, "The target of the mounting entity can't be null");
+
+        if (entity.riding != null) {
+            dismountEntity(entity);
+        } else {
+            if (isPassenger(entity)) {
                 return false;
             }
-            this.motionX = 0;
-            this.motionY = 0;
-            this.motionZ = 0;
-            onUpdate(lastUpdate);
-            if (this.linkedEntity != null) {
-                this.yawDelta += this.linkedEntity.yaw - this.linkedEntity.lastYaw;
-                for (this.pitchDelta += this.linkedEntity.pitch - this.linkedEntity.lastPitch; this.yawDelta >= 180; this.yawDelta -= 360) {
-                }
-                while (this.yawDelta < -180) {
-                    this.yawDelta += 360;
-                }
-                while (this.pitchDelta >= 180) {
-                    this.pitchDelta -= 360;
-                }
-                while (this.pitchDelta < -180) {
-                    this.pitchDelta += 360;
-                }
-                double var1 = this.yawDelta * 0.5;
-                double var3 = this.pitchDelta * 0.5;
-                float var5 = 10;
-                var1 = NukkitMath.clamp(var1, -var5, var5);
-                var3 = NukkitMath.clamp(var3, -var5, var5);
-                this.yawDelta -= var1;
-                this.pitchDelta -= var3;
+
+            // Entity entering a vehicle
+            EntityVehicleEnterEvent ev = new EntityVehicleEnterEvent(entity, this);
+            server.getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
+                return false;
             }
-            return true;
+
+            broadcastLinkPacket(entity, mode);
+
+            // Add variables to entity
+            entity.riding = this;
+            entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
+            passengers.add(entity);
+
+            entity.setSeatPosition(getMountedOffset(entity));
+            updatePassengerPosition(entity);
         }
-        return false;
+        return true;
     }
 
-    protected void updateRiderPosition(float offset) {
-        // Messy unknown variables
-        if (updateRidden()) {
-            linkedEntity.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, new Vector3f(0, offset, 0)));
+    public boolean dismountEntity(Entity entity) {
+        // Run the events
+        EntityVehicleExitEvent ev = new EntityVehicleExitEvent(entity, this);
+        server.getPluginManager().callEvent(ev);
+        if (ev.isCancelled()) {
+            return false;
+        }
+
+        broadcastLinkPacket(entity, EntityLink.TYPE_REMOVE);
+
+        // Refurbish the entity
+        entity.riding = null;
+        entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, false);
+        passengers.remove(entity);
+
+        entity.setSeatPosition(new Vector3f());
+        updatePassengerPosition(entity);
+
+        return true;
+    }
+
+    protected void broadcastLinkPacket(Entity rider, byte type) {
+        SetEntityLinkPacket pk = new SetEntityLinkPacket();
+        pk.link = new EntityLink(rider.getId(), this.getId(), type);
+
+        Server.broadcastPacket(this.hasSpawned.values(), pk);
+    }
+
+    public void updatePassengers() {
+        if (this.passengers.isEmpty()) {
+            return;
+        }
+
+        for (Entity passenger : new ArrayList<>(this.passengers)) {
+            if (!passenger.isAlive()) {
+                dismountEntity(passenger);
+                continue;
+            }
+
+            updatePassengerPosition(passenger);
         }
     }
 
-    public float getMountedYOffset() {
-        return getHeight() * 0.75F;
+    protected void updatePassengerPosition(Entity passenger) {
+        passenger.setPosition(this.add(passenger.getSeatPosition().asVector3()));
+    }
+
+    public void setSeatPosition(Vector3f pos) {
+        this.setDataProperty(new Vector3fEntityData(DATA_RIDER_SEAT_POSITION, pos));
+    }
+
+    public Vector3f getSeatPosition() {
+        return this.getDataPropertyVector3f(DATA_RIDER_SEAT_POSITION);
+    }
+
+    public Vector3f getMountedOffset(Entity entity) {
+        return new Vector3f(0, getHeight() * 0.75f);
     }
 
     public final void scheduleUpdate() {
@@ -1667,7 +1739,7 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     }
 
     public void applyEntityCollision(Entity entity) {
-        if (entity.riding != this && entity.linkedEntity != this) {
+        if (entity.riding != this && !entity.passengers.contains(this)) {
             double dx = entity.x - this.x;
             double dy = entity.z - this.z;
             double dz = NukkitMath.getDirection(dx, dy);
@@ -2138,6 +2210,10 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public void kill() {
         this.health = 0;
         this.scheduleUpdate();
+
+        for (Entity passenger : this.passengers) {
+            this.dismountEntity(passenger);
+        }
     }
 
     public boolean teleport(Vector3 pos) {
@@ -2210,6 +2286,11 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
         addEntity.position = this.asVector3f();
         addEntity.motion = this.getMotion().asVector3f();
         addEntity.metadata = this.dataProperties;
+
+        addEntity.links = new EntityLink[this.passengers.size()];
+        for (int i = 0; i < addEntity.links.length; i++) {
+            addEntity.links[i] = new EntityLink(this.getId(), this.passengers.get(i).getId(), i == 0 ? EntityLink.TYPE_RIDER : EntityLink.TYPE_PASSENGER, false);
+        }
 
         return addEntity;
     }
