@@ -1,9 +1,12 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class EntityEventPacket extends DataPacket {
 
     public static final int NETWORK_ID = ProtocolInfo.ENTITY_EVENT_PACKET;
@@ -67,8 +70,8 @@ public class EntityEventPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long entityRuntimeId = -1;
-    public int event = -1;
+    public long entityRuntimeId;
+    public int event;
     public int data = 0;
 
     @Override

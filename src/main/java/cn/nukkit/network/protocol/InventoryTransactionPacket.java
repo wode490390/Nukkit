@@ -5,7 +5,9 @@ import cn.nukkit.inventory.transaction.data.TransactionData;
 import cn.nukkit.inventory.transaction.data.UseItemData;
 import cn.nukkit.inventory.transaction.data.UseItemOnEntityData;
 import cn.nukkit.network.protocol.types.NetworkInventoryAction;
+import lombok.ToString;
 
+@ToString
 public class InventoryTransactionPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
@@ -33,9 +35,9 @@ public class InventoryTransactionPacket extends DataPacket {
      * determine whether we're doing a crafting transaction.
      */
     public boolean isCraftingPart = false;
-    //TODO: public boolean isFinalCraftingPart = false;
+    //public boolean isFinalCraftingPart = false;
 
-    public NetworkInventoryAction[] actions;
+    public NetworkInventoryAction[] actions = new NetworkInventoryAction[0];
 
     public TransactionData trData;
 

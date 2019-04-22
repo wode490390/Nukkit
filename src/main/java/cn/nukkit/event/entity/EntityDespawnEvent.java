@@ -4,7 +4,6 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityCreature;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.item.EntityItem;
-import cn.nukkit.entity.item.EntityVehicle;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.level.Position;
@@ -14,6 +13,7 @@ import cn.nukkit.level.Position;
  * Nukkit Project
  */
 public class EntityDespawnEvent extends EntityEvent {
+
     private static final HandlerList handlers = new HandlerList();
 
     public static HandlerList getHandlers() {
@@ -47,12 +47,7 @@ public class EntityDespawnEvent extends EntityEvent {
         return this.entity instanceof EntityProjectile;
     }
 
-    public boolean isVehicle() {
-        return this.entity instanceof EntityVehicle;
-    }
-
     public boolean isItem() {
         return this.entity instanceof EntityItem;
     }
-
 }

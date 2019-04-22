@@ -1,7 +1,9 @@
 package cn.nukkit.network.protocol;
 
 import java.util.Base64;
+import lombok.ToString;
 
+@ToString(exclude = "namedtag")
 public class BiomeDefinitionListPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.BIOME_DEFINITION_LIST_PACKET;

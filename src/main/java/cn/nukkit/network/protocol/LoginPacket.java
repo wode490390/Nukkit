@@ -9,11 +9,13 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.ToString;
 
 
 /**
  * Created by on 15-10-13.
  */
+@ToString
 public class LoginPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.LOGIN_PACKET;
@@ -24,14 +26,14 @@ public class LoginPacket extends DataPacket {
     public int protocol;
     public UUID clientUUID;
     public long clientId;
-    public String xuid = "";
-    public String identityPublicKey = "";
-    public String serverAddress = "";
-    public String locale = "en_US";
-    public Skin skin = new Skin();
+    public String xuid;
+    public String identityPublicKey;
+    public String serverAddress;
+    public String locale;
+    public Skin skin;
 
     public Map<String, List<String>> chainData; //the "chain" index contains one or more JWTs
-    public String clientDataJwt = "";
+    public String clientDataJwt;
     public JsonObject clientData; //decoded payload of the clientData JWT
 
     /**

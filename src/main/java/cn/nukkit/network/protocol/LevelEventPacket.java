@@ -1,11 +1,13 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.Vector3f;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class LevelEventPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.LEVEL_EVENT_PACKET;
@@ -91,7 +93,7 @@ public class LevelEventPacket extends DataPacket {
 
     public static final int EVENT_ADD_PARTICLE_MASK = 0x4000;
 
-    public int evid = 0;
+    public int evid;
     public Vector3f position = new Vector3f();
     public int data = 0;
 

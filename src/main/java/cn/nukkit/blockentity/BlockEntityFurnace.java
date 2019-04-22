@@ -130,8 +130,8 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
 
     @Override
     public boolean isBlockEntityValid() {
-        int blockID = this.getBlock().getId();
-        return blockID == Block.FURNACE || blockID == Block.BURNING_FURNACE;
+        int blockId = this.getBlock().getId();
+        return blockId == Block.FURNACE || blockId == Block.BURNING_FURNACE;
     }
 
     @Override

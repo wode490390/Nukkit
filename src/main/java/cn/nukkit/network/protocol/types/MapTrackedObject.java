@@ -1,5 +1,8 @@
 package cn.nukkit.network.protocol.types;
 
+import lombok.ToString;
+
+@ToString
 public class MapTrackedObject {
 
     public static final int TYPE_ENTITY = 0;

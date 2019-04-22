@@ -5,10 +5,12 @@ import cn.nukkit.network.protocol.types.MapTrackedObject;
 import cn.nukkit.utils.Utils;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import lombok.ToString;
 
 /**
  * Created by CreeperFace on 5.3.2017.
  */
+@ToString
 public class ClientboundMapItemDataPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CLIENTBOUND_MAP_ITEM_DATA_PACKET;

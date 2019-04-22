@@ -16,16 +16,16 @@ public class BlockEntityFlowerPot extends BlockEntitySpawnable {
 
     @Override
     protected void initBlockEntity() {
-        if (!namedTag.contains("item")) {
-            namedTag.putShort("item", 0);
+        if (!this.namedTag.contains("item")) {
+            this.namedTag.putShort("item", 0);
         }
 
-        if (!namedTag.contains("data")) {
-            if (namedTag.contains("mData")) {
-                namedTag.putInt("data", namedTag.getInt("mData"));
-                namedTag.remove("mData");
+        if (!this.namedTag.contains("data")) {
+            if (this.namedTag.contains("mData")) {
+                this.namedTag.putInt("data", this.namedTag.getInt("mData"));
+                this.namedTag.remove("mData");
             } else {
-                namedTag.putInt("data", 0);
+                this.namedTag.putInt("data", 0);
             }
         }
 
@@ -34,17 +34,12 @@ public class BlockEntityFlowerPot extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        int blockID = getBlock().getId();
-        return blockID == Block.FLOWER_POT_BLOCK;
+        return this.getBlock().getId() == Block.FLOWER_POT_BLOCK;
     }
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return new CompoundTag()
-                .putString("id", BlockEntity.FLOWER_POT)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
+        return getDefaultCompound(this, FLOWER_POT)
                 .putShort("item", this.namedTag.getShort("item"))
                 .putInt("mData", this.namedTag.getInt("data"));
     }

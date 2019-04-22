@@ -37,12 +37,12 @@ public class BlockNoteblock extends BlockSolid {
 
     @Override
     public double getHardness() {
-        return 0.8d;
+        return 0.8;
     }
 
     @Override
     public double getResistance() {
-        return 4d;
+        return 4;
     }
 
     @Override
@@ -258,7 +258,7 @@ public class BlockNoteblock extends BlockSolid {
     }
 
     private BlockEntityMusic createBlockEntity() {
-        return new BlockEntityMusic(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC).putByte("note", 0));
+        return new BlockEntityMusic(this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), BlockEntity.getDefaultCompound(this, BlockEntity.MUSIC));
     }
 
     public enum Instrument {
@@ -267,8 +267,6 @@ public class BlockNoteblock extends BlockSolid {
         STICKS(Sound.NOTE_HAT),
         DRUM(Sound.NOTE_SNARE),
         BASS(Sound.NOTE_BASS);
-        //PLING(Sound.NOTE_PLING),
-        //BASS_ATTACK(Sound.NOTE_BASSATTACK),
 
         private final Sound sound;
 

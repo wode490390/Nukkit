@@ -1,7 +1,9 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.network.protocol.types.ScorePacketEntry;
+import lombok.ToString;
 
+@ToString
 public class SetScorePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_SCORE_PACKET;

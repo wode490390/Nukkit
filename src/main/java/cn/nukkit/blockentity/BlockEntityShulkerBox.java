@@ -19,10 +19,14 @@ import java.util.HashSet;
  */
 public class BlockEntityShulkerBox extends BlockEntitySpawnable implements InventoryHolder, BlockEntityContainer, BlockEntityNameable {
 
-    protected final ShulkerBoxInventory inventory;
+    protected ShulkerBoxInventory inventory;
 
     public BlockEntityShulkerBox(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    protected void initBlockEntity() {
         this.inventory = new ShulkerBoxInventory(this);
 
         if (!this.namedTag.contains("Items") || !(this.namedTag.get("Items") instanceof ListTag)) {
@@ -34,6 +38,12 @@ public class BlockEntityShulkerBox extends BlockEntitySpawnable implements Inven
             Item item = NBTIO.getItemHelper(compound);
             this.inventory.slots.put(compound.getByte("Slot"), item);
         }
+
+        if (!this.namedTag.contains("facing")) {
+            this.namedTag.putByte("facing", 0);
+        }
+
+        super.initBlockEntity();
     }
 
     @Override
@@ -60,7 +70,8 @@ public class BlockEntityShulkerBox extends BlockEntitySpawnable implements Inven
 
     @Override
     public boolean isBlockEntityValid() {
-        return getBlock().getId() == Block.SHULKER_BOX;
+        int blockId = this.getBlock().getId();
+        return blockId == Block.SHULKER_BOX || blockId == Block.UNDYED_SHULKER_BOX;
     }
 
     @Override
@@ -83,7 +94,7 @@ public class BlockEntityShulkerBox extends BlockEntitySpawnable implements Inven
     public Item getItem(int index) {
         int i = this.getSlotIndex(index);
         if (i < 0) {
-            return new ItemBlock(new BlockAir(), 0, 0);
+            return Item.get(Item.AIR);
         } else {
             CompoundTag data = (CompoundTag) this.namedTag.getList("Items").get(i);
             return NBTIO.getItemHelper(data);
@@ -138,11 +149,8 @@ public class BlockEntityShulkerBox extends BlockEntitySpawnable implements Inven
 
     @Override
     public CompoundTag getSpawnCompound() {
-        CompoundTag c = new CompoundTag()
-                .putString("id", BlockEntity.SHULKER_BOX)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z);
+        CompoundTag c = getDefaultCompound(this, SHULKER_BOX)
+                .putByte("facing", this.namedTag.getByte("facing"));
 
         if (this.hasName()) {
             c.put("CustomName", this.namedTag.get("CustomName"));

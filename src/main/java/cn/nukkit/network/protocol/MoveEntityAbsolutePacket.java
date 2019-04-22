@@ -1,11 +1,13 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.Vector3f;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class MoveEntityAbsolutePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MOVE_ENTITY_ABSOLUTE_PACKET;
@@ -13,12 +15,12 @@ public class MoveEntityAbsolutePacket extends DataPacket {
     public static final int FLAG_GROUND = 0x01;
     public static final int FLAG_TELEPORT = 0x02;
 
-    public long entityRuntimeId = 0;
+    public long entityRuntimeId;
     public int flags = 0;
-    public Vector3f position = new Vector3f();
-    public double xRot = 0.0d;
-    public double yRot = 0.0d;
-    public double zRot = 0.0d;
+    public Vector3f position;
+    public double xRot;
+    public double yRot;
+    public double zRot;
 
     @Override
     public byte pid() {

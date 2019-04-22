@@ -6,13 +6,14 @@ import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.utils.Binary;
-
 import com.google.common.collect.ImmutableMap;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class AddEntityPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ADD_ENTITY_PACKET;
@@ -116,6 +117,8 @@ public class AddEntityPacket extends DataPacket {
             .put(Entity.ICE_BOMB, "minecraft:ice_bomb")
             .put(Entity.PHANTOM, "minecraft:phantom")
             .put(Entity.TRIPOD_CAMERA, "minecraft:tripod_camera")
+            .put(Entity.PILLAGER, "minecraft:pillager")
+            .put(Entity.WANDERING_TRADER, "minecraft:wandering_trader")
             .build();
 
     @Override
@@ -123,14 +126,14 @@ public class AddEntityPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long entityUniqueId = 0; //TODO
-    public long entityRuntimeId = 0;
-    public int type = -1;
-    public Vector3f position = new Vector3f();
-    public Vector3f motion = new Vector3f();
-    public float pitch = 0f;
-    public float yaw = 0f;
-    public float headYaw = 0f;
+    public long entityUniqueId;
+    public long entityRuntimeId;
+    public int type;
+    public Vector3f position;
+    public Vector3f motion;
+    public float pitch = 0;
+    public float yaw = 0;
+    public float headYaw = 0;
 
     public Attribute[] attributes = new Attribute[0];
     public EntityMetadata metadata = new EntityMetadata();

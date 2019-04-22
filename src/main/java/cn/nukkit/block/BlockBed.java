@@ -52,11 +52,6 @@ public class BlockBed extends BlockTransparentMeta implements BlockFaceable {
     }
 
     @Override
-    public boolean onActivate(Item item) {
-        return this.onActivate(item, null);
-    }
-
-    @Override
     public boolean onActivate(Item item, Player player) {
         int time = this.getLevel().getTime() % Level.TIME_FULL;
 
@@ -111,11 +106,11 @@ public class BlockBed extends BlockTransparentMeta implements BlockFaceable {
             if (next.canBeReplaced() && !downNext.isTransparent()) {
                 int meta = player.getDirection().getHorizontalIndex();
 
-                this.getLevel().setBlock(block, Block.get(this.getId(), meta), true, true);
-                this.getLevel().setBlock(next, Block.get(this.getId(), meta | 0x8), true, true);
+                this.getLevel().setBlock(block, Block.get(this.getId(), meta), true);
+                this.getLevel().setBlock(next, Block.get(this.getId(), meta | 0x8), true);
 
-                createBlockEntity(this, item.getDamage());
-                createBlockEntity(next, item.getDamage());
+                this.createBlockEntity(this, item.getDamage());
+                this.createBlockEntity(next, item.getDamage());
                 return true;
             }
         }
@@ -174,9 +169,8 @@ public class BlockBed extends BlockTransparentMeta implements BlockFaceable {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
         if (blockEntity instanceof BlockEntityBed) {
             return ((BlockEntityBed) blockEntity).getDyeColor();
-        } else {
-            this.createBlockEntity(this, DyeColor.RED.getWoolData());
         }
+        this.createBlockEntity(this, DyeColor.RED.getWoolData());
         return DyeColor.RED;
     }
 

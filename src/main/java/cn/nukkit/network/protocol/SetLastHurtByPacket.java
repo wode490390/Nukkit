@@ -1,5 +1,8 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class SetLastHurtByPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_LAST_HURT_BY_PACKET;

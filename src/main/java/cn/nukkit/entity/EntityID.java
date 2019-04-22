@@ -105,4 +105,6 @@ public interface EntityID {
     int COD = 112;
     int PANDA = 113;
     int PILLAGER = 114;
+
+    int WANDERING_TRADER = 118;
 }

@@ -576,7 +576,7 @@ public class BinaryStream {
     public void putEntityLink(EntityLink link) {
         this.putEntityUniqueId(link.fromEntityUniqueId);
         this.putEntityUniqueId(link.toEntityUniqueId);
-        this.putByte((byte) link.type);
+        this.putByte(link.type);
         this.putBoolean(link.immediate);
     }
 

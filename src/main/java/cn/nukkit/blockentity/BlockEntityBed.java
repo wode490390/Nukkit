@@ -25,12 +25,13 @@ public class BlockEntityBed extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        return this.level.getBlockIdAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) == Block.BED_BLOCK;
+        return this.getBlock().getId() == Block.BED_BLOCK;
     }
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return getDefaultCompound(this, BED).putByte("color", this.getColor());
+        return getDefaultCompound(this, BED)
+                .putByte("color", this.getColor());
     }
 
     public DyeColor getDyeColor() {

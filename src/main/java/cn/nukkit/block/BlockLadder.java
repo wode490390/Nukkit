@@ -1,7 +1,6 @@
 package cn.nukkit.block;
 
 import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
@@ -57,11 +56,6 @@ public class BlockLadder extends BlockTransparentMeta implements BlockFaceable {
     @Override
     public double getResistance() {
         return 2;
-    }
-
-    @Override
-    public void onEntityCollide(Entity entity) {
-        entity.resetFallDistance();
     }
 
     private double offMinX;

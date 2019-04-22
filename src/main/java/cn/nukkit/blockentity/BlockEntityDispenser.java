@@ -37,7 +37,7 @@ public class BlockEntityDispenser extends BlockEntitySpawnable implements Invent
 
     @Override
     public boolean isBlockEntityValid() {
-        return this.level.getBlockIdAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) == Block.DISPENSER;
+        return this.getBlock().getId() == Block.DISPENSER;
     }
 
     @Override

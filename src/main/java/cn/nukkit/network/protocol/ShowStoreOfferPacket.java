@@ -1,5 +1,8 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class ShowStoreOfferPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SHOW_STORE_OFFER_PACKET;
@@ -23,5 +26,4 @@ public class ShowStoreOfferPacket extends DataPacket {
         this.putString(this.offerId);
         this.putBoolean(this.showAll);
     }
-
 }

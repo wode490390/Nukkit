@@ -8,11 +8,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString(exclude = {"skinData", "capeData", "geometryData"})
 public class Skin {
 
     private static final int PIXEL_SIZE = 4;
