@@ -6,6 +6,11 @@
 ![Code Size](https://img.shields.io/github/languages/code-size/nukkitv/nukkit.svg)
 ![Repo Size](https://img.shields.io/github/repo-size/nukkitv/nukkit.svg)
 
+ATTENTION
+-------------
+* Changes in the temporary repo can be merged to this repo when they are stable
+* The temporary repo is located [here](https://github.com/wode490390/Nukkit/tree/f181030e)
+
 Introduction
 -------------
 
