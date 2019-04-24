@@ -1,8 +1,11 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
 /**
  * @author Nukkit Project Team
  */
+@ToString
 public class AddPaintingPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ADD_PAINTING_PACKET;
@@ -25,7 +28,7 @@ public class AddPaintingPacket extends DataPacket {
         this.reset();
         this.putEntityUniqueId(this.entityUniqueId);
         this.putEntityRuntimeId(this.entityRuntimeId);
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBlockPosition(this.x, this.y, this.z);
         this.putVarInt(this.direction);
         this.putString(this.title);
     }
@@ -34,5 +37,4 @@ public class AddPaintingPacket extends DataPacket {
     public byte pid() {
         return NETWORK_ID;
     }
-
 }

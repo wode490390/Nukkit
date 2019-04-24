@@ -1,8 +1,11 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
 /**
  * Created by CreeperFace on 30. 10. 2016.
  */
+@ToString
 public class BossEventPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.BOSS_EVENT_PACKET;
@@ -20,17 +23,18 @@ public class BossEventPacket extends DataPacket {
     public static final int TYPE_HEALTH_PERCENT = 4;
     /* S2C: Also appears to not be implemented. Title clientside sticks as the target entity's nametag, or their entity type name if not set. */
     public static final int TYPE_TITLE = 5;
-    /* S2C: Not sure on this. Includes color and overlay fields, plus an unknown short. TODO: check this */
-    public static final int TYPE_UNKNOWN_6 = 6;
+    /* S2C: Darken the sky when the boss bar is shown. */
+    public static final int TYPE_DARKEN_SKY = 6;
     /* S2C: Not implemented :( Intended to alter bar appearance, but these currently produce no effect on clientside whatsoever. */
     public static final int TYPE_TEXTURE = 7;
 
     public long bossEid;
-    public int type;
+    public int eventType;
+
     public long playerEid;
     public float healthPercent;
     public String title = "";
-    public short unknown;
+    public short unknownShort;
     public int color;
     public int overlay;
     
@@ -42,8 +46,8 @@ public class BossEventPacket extends DataPacket {
     @Override
     public void decode() {
         this.bossEid = this.getEntityUniqueId();
-        this.type = (int) this.getUnsignedVarInt();
-        switch (this.type) {
+        this.eventType = (int) this.getUnsignedVarInt();
+        switch (this.eventType) {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
                 this.playerEid = this.getEntityUniqueId();
@@ -51,8 +55,8 @@ public class BossEventPacket extends DataPacket {
             case TYPE_SHOW:
                 this.title = this.getString();
                 this.healthPercent = this.getLFloat();
-            case TYPE_UNKNOWN_6:
-                this.unknown = (short) this.getShort();
+            case TYPE_DARKEN_SKY:
+                this.unknownShort = (short) this.getLShort();
             case TYPE_TEXTURE:
                 this.color = (int) this.getUnsignedVarInt();
                 this.overlay = (int) this.getUnsignedVarInt();
@@ -63,6 +67,8 @@ public class BossEventPacket extends DataPacket {
             case TYPE_TITLE:
                 this.title = this.getString();
                 break;
+            default:
+                break;
         }
     }
 
@@ -70,8 +76,8 @@ public class BossEventPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putEntityUniqueId(this.bossEid);
-        this.putUnsignedVarInt(this.type);
-        switch (this.type) {
+        this.putUnsignedVarInt(this.eventType);
+        switch (this.eventType) {
             case TYPE_REGISTER_PLAYER:
             case TYPE_UNREGISTER_PLAYER:
                 this.putEntityUniqueId(this.playerEid);
@@ -79,8 +85,8 @@ public class BossEventPacket extends DataPacket {
             case TYPE_SHOW:
                 this.putString(this.title);
                 this.putLFloat(this.healthPercent);
-            case TYPE_UNKNOWN_6:
-                this.putShort(this.unknown);
+            case TYPE_DARKEN_SKY:
+                this.putLShort(this.unknownShort);
             case TYPE_TEXTURE:
                 this.putUnsignedVarInt(this.color);
                 this.putUnsignedVarInt(this.overlay);
@@ -90,6 +96,8 @@ public class BossEventPacket extends DataPacket {
                 break;
             case TYPE_TITLE:
                 this.putString(this.title);
+                break;
+            default:
                 break;
         }
     }

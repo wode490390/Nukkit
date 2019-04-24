@@ -8,14 +8,13 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.BoneMealParticle;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public abstract class BlockCrops extends BlockFlowable {
+public abstract class BlockCrops extends BlockFlowableMeta {
 
     protected BlockCrops(int meta) {
         super(meta);
@@ -24,11 +23,6 @@ public abstract class BlockCrops extends BlockFlowable {
     @Override
     public boolean canBeActivated() {
         return true;
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
     }
 
     @Override
@@ -51,7 +45,7 @@ public abstract class BlockCrops extends BlockFlowable {
         if (item.getId() == Item.DYE && item.getDamage() == 0x0f) {
             BlockCrops block = (BlockCrops) this.clone();
             if (this.getDamage() < 7) {
-                block.setDamage(block.getDamage() + new Random().nextInt(3) + 2);
+                block.setDamage(block.getDamage() + ThreadLocalRandom.current().nextInt(3) + 2);
                 if (block.getDamage() > 7) {
                     block.setDamage(7);
                 }
@@ -81,7 +75,7 @@ public abstract class BlockCrops extends BlockFlowable {
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
-            if (new Random().nextInt(2) == 1) {
+            if (ThreadLocalRandom.current().nextInt(2) == 1) {
                 if (this.getDamage() < 0x07) {
                     BlockCrops block = (BlockCrops) this.clone();
                     block.setDamage(block.getDamage() + 1);

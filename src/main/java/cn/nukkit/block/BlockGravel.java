@@ -4,8 +4,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFlint;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -13,8 +12,8 @@ import java.util.Random;
  */
 public class BlockGravel extends BlockFallable {
 
-
     public BlockGravel() {
+
     }
 
     @Override
@@ -44,20 +43,18 @@ public class BlockGravel extends BlockFallable {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (new Random().nextInt(9) == 0) {
+        if (ThreadLocalRandom.current().nextInt(9) == 0) {
             return new Item[]{
                     new ItemFlint()
             };
-        } else {
-            return new Item[]{
-                    toItem()
-            };
         }
+        return new Item[]{
+                this.toItem()
+        };
     }
 
     @Override
     public BlockColor getColor() {
         return BlockColor.SAND_BLOCK_COLOR;
     }
-
 }

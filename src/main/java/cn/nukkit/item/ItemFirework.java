@@ -5,15 +5,16 @@ import cn.nukkit.block.Block;
 import cn.nukkit.entity.item.EntityFirework;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.DyeColor;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author CreeperFace
@@ -46,6 +47,7 @@ public class ItemFirework extends Item {
                 tag.putCompound("Fireworks", new CompoundTag("Fireworks")
                         .putList(new ListTag<CompoundTag>("Explosions").add(ex))
                         .putByte("Flight", 1)
+                        .putInt("LifeTime", 30 + ThreadLocalRandom.current().nextInt(6) + ThreadLocalRandom.current().nextInt(7))
                 );
                 this.setNamedTag(tag);
             }
@@ -60,23 +62,27 @@ public class ItemFirework extends Item {
     @Override
     public boolean onActivate(Level level, Player player, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
         if (block.canPassThrough()) {
-            CompoundTag nbt = new CompoundTag()
-                    .putList(new ListTag<DoubleTag>("Pos")
-                            .add(new DoubleTag("", block.x + 0.5))
-                            .add(new DoubleTag("", block.y + 0.5))
-                            .add(new DoubleTag("", block.z + 0.5)))
-                    .putList(new ListTag<DoubleTag>("Motion")
-                            .add(new DoubleTag("", 0))
-                            .add(new DoubleTag("", 0))
-                            .add(new DoubleTag("", 0)))
-                    .putList(new ListTag<FloatTag>("Rotation")
-                            .add(new FloatTag("", 0))
-                            .add(new FloatTag("", 0)))
-                    .putCompound("FireworkItem", NBTIO.putItemHelper(this));
+            this.spawnFirework(level, block);
 
-            EntityFirework entity = new EntityFirework(level.getChunk(block.getFloorX() >> 4,
-                    block.getFloorZ() >> 4), nbt);
-            entity.spawnToAll();
+            if (!player.isCreative()) {
+                player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onClickAir(Player player, Vector3 directionVector) {
+        if (player.getInventory().getChestplate() instanceof ItemElytra && player.isGliding()) {
+            this.spawnFirework(player.getLevel(), player);
+
+            player.setMotion(new Vector3(
+                    -Math.sin(Math.toRadians(player.yaw)) * Math.cos(Math.toRadians(player.pitch)) * 2,
+                    -Math.sin(Math.toRadians(player.pitch)) * 2,
+                    Math.cos(Math.toRadians(player.yaw)) * Math.cos(Math.toRadians(player.pitch)) * 2));
 
             if (!player.isCreative()) {
                 player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
@@ -105,7 +111,6 @@ public class ItemFirework extends Item {
             fds[i] = (byte) fades.get(i).getDyeData();
         }
 
-
         ListTag<CompoundTag> explosions = this.getNamedTag().getCompound("Fireworks").getList("Explosions", CompoundTag.class);
         CompoundTag tag = new CompoundTag()
                 .putByteArray("FireworkColor", clrs)
@@ -117,15 +122,48 @@ public class ItemFirework extends Item {
         explosions.add(tag);
     }
 
+    public void setLifeTime(int lifeTime) {
+        CompoundTag tag = this.getNamedTag();
+        if (tag != null) {
+            tag.putInt("LifeTime", lifeTime);
+        }
+    }
+
+    public int getLifeTime() {
+        CompoundTag tag = this.getNamedTag();
+        if (tag != null && tag.contains("LifeTime")) {
+            return tag.getInt("LifeTime");
+        }
+        return 30;
+    }
+
     public void clearExplosions() {
-        this.getNamedTag().getCompound("Fireworks")
-                .putList(new ListTag<CompoundTag>("Explosions"));
+        this.getNamedTag().getCompound("Fireworks").putList(new ListTag<CompoundTag>("Explosions"));
+    }
+
+    private void spawnFirework(Level level, Vector3 pos) {
+        CompoundTag nbt = new CompoundTag()
+                .putList(new ListTag<DoubleTag>("Pos")
+                        .add(new DoubleTag("", pos.x + 0.5))
+                        .add(new DoubleTag("", pos.y + 0.5))
+                        .add(new DoubleTag("", pos.z + 0.5)))
+                .putList(new ListTag<DoubleTag>("Motion")
+                        .add(new DoubleTag("", 0))
+                        .add(new DoubleTag("", 0))
+                        .add(new DoubleTag("", 0)))
+                .putList(new ListTag<FloatTag>("Rotation")
+                        .add(new FloatTag("", 0))
+                        .add(new FloatTag("", 0)))
+                .putCompound("FireworkItem", NBTIO.putItemHelper(this));
+
+        EntityFirework entity = new EntityFirework(level.getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4), nbt);
+        entity.spawnToAll();
     }
 
     public static class FireworkExplosion {
 
-        private List<DyeColor> colors = new ArrayList<>();
-        private List<DyeColor> fades = new ArrayList<>();
+        private final List<DyeColor> colors = new ArrayList<>();
+        private final List<DyeColor> fades = new ArrayList<>();
         private boolean flicker = false;
         private boolean trail = false;
         private ExplosionType type = ExplosionType.CREEPER_SHAPED;
@@ -182,7 +220,5 @@ public class ItemFirework extends Item {
             CREEPER_SHAPED,
             BURST
         }
-
     }
-
 }

@@ -1,0 +1,53 @@
+package cn.nukkit.network.protocol;
+
+import cn.nukkit.network.protocol.types.ScorePacketEntry;
+import lombok.ToString;
+
+@ToString
+public class SetScorePacket extends DataPacket {
+
+    public static final byte NETWORK_ID = ProtocolInfo.SET_SCORE_PACKET;
+
+    public static final int TYPE_CHANGE = 0;
+    public static final int TYPE_REMOVE = 1;
+
+    public int type;
+    public ScorePacketEntry[] entries = new ScorePacketEntry[0];
+
+    @Override
+    public byte pid() {
+        return NETWORK_ID;
+    }
+
+    @Override
+    public void decode() {
+
+    }
+
+    @Override
+    public void encode() {
+        this.reset();
+        this.putByte((byte) this.type);
+
+        this.putUnsignedVarInt(this.entries.length);
+        for (ScorePacketEntry entry : entries) {
+            this.putVarLong(entry.scoreboardId);
+            this.putString(entry.objectiveName);
+            this.putLInt(entry.score);
+            if (this.type != TYPE_REMOVE) {
+                this.putByte((byte) entry.type);
+                switch (entry.type) {
+                    case ScorePacketEntry.TYPE_PLAYER:
+                    case ScorePacketEntry.TYPE_ENTITY:
+                        this.putEntityUniqueId(entry.entityUniqueId);
+                        break;
+                    case ScorePacketEntry.TYPE_FAKE_PLAYER:
+                        this.putString(entry.customName);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknown entry type " + entry.type);
+                }
+            }
+        }
+    }
+}

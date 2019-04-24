@@ -239,6 +239,8 @@ public interface Plugin extends CommandExecutor {
      * 返回运行这个插件的服务器的{@link cn.nukkit.Server}对象。<br>
      * Gets the server which is running this plugin, and returns as a {@link cn.nukkit.Server} object.
      *
+     * @return Server
+     * 
      * @see cn.nukkit.Server
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
@@ -251,6 +253,8 @@ public interface Plugin extends CommandExecutor {
      * <p>Nukkit会从已经读取的插件描述中获取插件的名字。<br>
      * Nukkit will read plugin name from plugin description.</p>
      *
+     * @return String
+     * 
      * @see cn.nukkit.plugin.Plugin#getDescription
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
@@ -263,6 +267,8 @@ public interface Plugin extends CommandExecutor {
      * <p>使用日志记录器，你可以在控制台和日志文件输出信息。<br>
      * You can use a plugin logger to output messages to the console and log file.</p>
      *
+     * @return PluginLogger
+     * 
      * @see cn.nukkit.plugin.PluginLogger
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
@@ -272,9 +278,10 @@ public interface Plugin extends CommandExecutor {
      * 返回这个插件的加载器为{@link cn.nukkit.plugin.PluginLoader}对象。<br>
      * Returns the loader of this plugin as a {@link cn.nukkit.plugin.PluginLoader} object.
      *
+     * @return PluginLoader
+     * 
      * @see cn.nukkit.plugin.PluginLoader
      * @since Nukkit 1.0 | Nukkit API 1.0.0
      */
     PluginLoader getPluginLoader();
-
 }

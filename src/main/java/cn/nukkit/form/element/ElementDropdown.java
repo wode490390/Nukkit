@@ -25,20 +25,22 @@ public class ElementDropdown extends Element {
     }
 
     public int getDefaultOptionIndex() {
-        return defaultOptionIndex;
+        return this.defaultOptionIndex;
     }
 
     public void setDefaultOptionIndex(int index) {
-        if (index >= options.size()) return;
+        if (index >= this.options.size()) {
+            return;
+        }
         this.defaultOptionIndex = index;
     }
 
     public List<String> getOptions() {
-        return options;
+        return this.options;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
 
     public void setText(String text) {
@@ -46,12 +48,13 @@ public class ElementDropdown extends Element {
     }
 
     public void addOption(String option) {
-        addOption(option, false);
+        this.addOption(option, false);
     }
 
     public void addOption(String option, boolean isDefault) {
-        options.add(option);
-        if (isDefault) this.defaultOptionIndex = options.size() - 1;
+        this.options.add(option);
+        if (isDefault) {
+            this.defaultOptionIndex = this.options.size() - 1;
+        }
     }
-
 }

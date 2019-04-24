@@ -1,6 +1,11 @@
 package cn.nukkit.utils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,7 +16,7 @@ import java.util.regex.Pattern;
 public class HastebinUtility {
 
     public static final String BIN_URL = "https://hastebin.com/documents", USER_AGENT = "Mozilla/5.0";
-    public static final Pattern PATTERN = Pattern.compile("\\{\"key\":\"([\\S\\s]*)\"\\}");
+    public static final Pattern PATTERN = Pattern.compile("\\{\"key\":\"([\\S\\s]*)\"}");
 
     public static String upload(final String string) throws IOException {
         final URL url = new URL(BIN_URL);
@@ -59,5 +64,4 @@ public class HastebinUtility {
         }
         return upload(content.toString());
     }
-
 }

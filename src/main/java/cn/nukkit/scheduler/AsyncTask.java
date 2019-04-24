@@ -3,13 +3,14 @@ package cn.nukkit.scheduler;
 import cn.nukkit.Server;
 import cn.nukkit.utils.ThreadStore;
 import co.aikar.timings.Timings;
-
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Nukkit Project Team
  */
+@Log4j2
 public abstract class AsyncTask implements Runnable {
 
     public static final Queue<AsyncTask> FINISHED_LIST = new ConcurrentLinkedQueue<>();
@@ -18,6 +19,7 @@ public abstract class AsyncTask implements Runnable {
     private int taskId;
     private boolean finished = false;
 
+    @Override
     public void run() {
         this.result = null;
         this.onRun();
@@ -82,12 +84,11 @@ public abstract class AsyncTask implements Runnable {
             try {
                 task.onCompletion(Server.getInstance());
             } catch (Exception e) {
-                Server.getInstance().getLogger().critical("Exception while async task "
+                log.error("Exception while async task "
                         + task.getTaskId()
                         + " invoking onCompletion", e);
             }
         }
         Timings.schedulerAsyncTimer.stopTiming();
     }
-
 }

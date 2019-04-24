@@ -9,7 +9,9 @@ import cn.nukkit.math.AxisAlignedBB;
  */
 public class BlockAir extends BlockTransparent {
 
-    public BlockAir() {}
+    public BlockAir() {
+
+    }
 
     @Override
     public int getId() {
@@ -58,7 +60,7 @@ public class BlockAir extends BlockTransparent {
 
     @Override
     public double getHardness() {
-        return 0;
+        return -1;
     }
 
     @Override
@@ -69,5 +71,10 @@ public class BlockAir extends BlockTransparent {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public double getFrictionFactor() {
+        return 0.8999999761581421;
     }
 }

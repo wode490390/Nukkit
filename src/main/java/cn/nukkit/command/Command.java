@@ -2,15 +2,24 @@ package cn.nukkit.command;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.command.data.*;
+import cn.nukkit.command.data.CommandData;
+import cn.nukkit.command.data.CommandDataVersions;
+import cn.nukkit.command.data.CommandEnum;
+import cn.nukkit.command.data.CommandOverload;
+import cn.nukkit.command.data.CommandParamType;
+import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.lang.TextContainer;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.permission.Permissible;
 import cn.nukkit.utils.TextFormat;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * author: MagicDroidX
@@ -18,7 +27,7 @@ import java.util.*;
  */
 public abstract class Command {
 
-    private static CommandData defaultDataTemplate = null;
+    private static CommandData defaultDataTemplate;
 
     protected CommandData commandData;
 
@@ -32,15 +41,15 @@ public abstract class Command {
 
     private String[] activeAliases = new String[0];
 
-    private CommandMap commandMap = null;
+    private CommandMap commandMap;
 
     protected String description = "";
 
     protected String usageMessage = "";
 
-    private String permission = null;
+    private String permission;
 
-    private String permissionMessage = null;
+    private String permissionMessage;
 
     protected Map<String, CommandParameter[]> commandParameters = new HashMap<>();
 
@@ -68,7 +77,7 @@ public abstract class Command {
         this.aliases = aliases;
         this.activeAliases = aliases;
         this.timing = Timings.getCommandTiming(this);
-        this.commandParameters.put("default", new CommandParameter[]{new CommandParameter("args", "rawtext", true)});
+        this.commandParameters.put("default", new CommandParameter[]{new CommandParameter("args", CommandParamType.RAWTEXT, true)});
     }
 
     /**
@@ -125,7 +134,9 @@ public abstract class Command {
             overload.input.parameters = par;
             customData.overloads.put(key, overload);
         });
-        if (customData.overloads.size() == 0) customData.overloads.put("default", new CommandOverload());
+        if (customData.overloads.isEmpty()) {
+            customData.overloads.put("default", new CommandOverload());
+        }
         CommandDataVersions versions = new CommandDataVersions();
         versions.versions.add(customData);
         return versions;
@@ -156,7 +167,7 @@ public abstract class Command {
 
         if (this.permissionMessage == null) {
             target.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.unknown", this.name));
-        } else if (!this.permissionMessage.equals("")) {
+        } else if (!this.permissionMessage.isEmpty()) {
             target.sendMessage(this.permissionMessage.replace("<permission>", this.permission));
         }
 
@@ -164,7 +175,7 @@ public abstract class Command {
     }
 
     public boolean testPermissionSilent(CommandSender target) {
-        if (this.permission == null || this.permission.equals("")) {
+        if (this.permission == null || this.permission.isEmpty()) {
             return true;
         }
 
@@ -278,7 +289,7 @@ public abstract class Command {
         for (Permissible user : users) {
             if (user instanceof CommandSender) {
                 if (user instanceof ConsoleCommandSender) {
-                    ((ConsoleCommandSender) user).sendMessage(result);
+                    ((CommandSender) user).sendMessage(result);
                 } else if (!user.equals(source)) {
                     ((CommandSender) user).sendMessage(colored);
                 }
@@ -310,7 +321,7 @@ public abstract class Command {
         for (Permissible user : users) {
             if (user instanceof CommandSender) {
                 if (user instanceof ConsoleCommandSender) {
-                    ((ConsoleCommandSender) user).sendMessage(result);
+                    ((CommandSender) user).sendMessage(result);
                 } else if (!user.equals(source)) {
                     ((CommandSender) user).sendMessage(colored);
                 }
@@ -322,5 +333,4 @@ public abstract class Command {
     public String toString() {
         return this.name;
     }
-
 }

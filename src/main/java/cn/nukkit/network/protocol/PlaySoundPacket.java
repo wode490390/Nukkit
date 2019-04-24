@@ -1,13 +1,16 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class PlaySoundPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PLAY_SOUND_PACKET;
 
-    public String name;
-    public int x;
-    public int y;
-    public int z;
+    public String soundName;
+    public float x;
+    public float y;
+    public float z;
     public float volume;
     public float pitch;
 
@@ -24,8 +27,8 @@ public class PlaySoundPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putString(this.name);
-        this.putBlockVector3(this.x * 8, this.y * 8, this.z * 8);
+        this.putString(this.soundName);
+        this.putBlockPosition((int) (this.x * 8), (int) (this.y * 8), (int) (this.z * 8));
         this.putLFloat(this.volume);
         this.putLFloat(this.pitch);
     }

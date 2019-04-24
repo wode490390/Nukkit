@@ -7,7 +7,7 @@ package cn.nukkit.item;
 public class ItemLeggingsIron extends ItemArmor {
 
     public ItemLeggingsIron() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemLeggingsIron(Integer meta) {
@@ -15,7 +15,7 @@ public class ItemLeggingsIron extends ItemArmor {
     }
 
     public ItemLeggingsIron(Integer meta, int count) {
-        super(IRON_LEGGINGS, meta, count, "Iron Leggings");
+        super(IRON_LEGGINGS, meta, 1, "Iron Leggings");
     }
 
     @Override
@@ -35,6 +35,6 @@ public class ItemLeggingsIron extends ItemArmor {
 
     @Override
     public int getMaxDurability() {
-        return 226;
+        return 225;
     }
 }

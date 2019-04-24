@@ -1,13 +1,13 @@
 package cn.nukkit.network.protocol;
 
-
 import cn.nukkit.item.Item;
-
 import java.util.UUID;
+import lombok.ToString;
 
 /**
  * @author Nukkit Project Team
  */
+@ToString
 public class CraftingEventPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CRAFTING_EVENT_PACKET;
@@ -22,9 +22,15 @@ public class CraftingEventPacket extends DataPacket {
     public int windowId;
     public int type;
     public UUID id;
+    public Item[] input = new Item[0];
+    public Item[] output = new Item[0];
 
-    public Item[] input;
-    public Item[] output;
+    @Override
+    public DataPacket clean() {
+        this.input = new Item[0];
+        this.output = new Item[0];
+        return super.clean();
+    }
 
     @Override
     public void decode() {
@@ -54,5 +60,4 @@ public class CraftingEventPacket extends DataPacket {
     public byte pid() {
         return NETWORK_ID;
     }
-
 }

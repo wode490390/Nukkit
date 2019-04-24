@@ -4,14 +4,13 @@ import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
 import cn.nukkit.level.format.anvil.Chunk;
 import cn.nukkit.level.format.anvil.ChunkSection;
-
 import java.util.ArrayList;
 
 public class ChunkConverter {
 
     private BaseFullChunk chunk;
     private Class<? extends FullChunk> toClass;
-    private LevelProvider provider;
+    private final LevelProvider provider;
 
     public ChunkConverter(LevelProvider provider) {
         this.provider = provider;
@@ -51,9 +50,13 @@ public class ChunkConverter {
                                 break;
                             }
                         }
-                        if (!empty) break;
+                        if (!empty) {
+                            break;
+                        }
                     }
-                    if (!empty) break;
+                    if (!empty) {
+                        break;
+                    }
                 }
                 if (!empty) {
                     ChunkSection section = new ChunkSection(Y);
@@ -71,9 +74,7 @@ public class ChunkConverter {
                 }
             }
         }
-        for (int i = 0; i < 256; i++) {
-            result.biomes[i] = chunk.biomes[i];
-        }
+        System.arraycopy(chunk.biomes, 0, result.biomes, 0, 256);
         System.arraycopy(chunk.getHeightMapArray(), 0, result.heightMap, 0, 256);
         if (chunk.NBTentities != null && !chunk.NBTentities.isEmpty()) {
             result.NBTentities = new ArrayList<>(chunk.NBTentities.size());

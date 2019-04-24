@@ -1,20 +1,18 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemQuartz;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.math.NukkitRandom;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created on 2015/12/26 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockOreQuartz extends BlockSolid {
+public class BlockOreQuartz extends BlockOre {
 
     public BlockOreQuartz() {
+
     }
 
     @Override
@@ -28,23 +26,13 @@ public class BlockOreQuartz extends BlockSolid {
     }
 
     @Override
-    public double getHardness() {
-        return 3;
-    }
-
-    @Override
-    public double getResistance() {
-        return 5;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             int count = 1;
             Enchantment fortune = item.getEnchantment(Enchantment.ID_FORTUNE_DIGGING);
             if (fortune != null && fortune.getLevel() >= 1) {
@@ -58,7 +46,7 @@ public class BlockOreQuartz extends BlockSolid {
             }
 
             return new Item[]{
-                    new ItemQuartz(0, count)
+                    Item.get(Item.QUARTZ, 0, count)
             };
         } else {
             return new Item[0];
@@ -67,12 +55,7 @@ public class BlockOreQuartz extends BlockSolid {
 
     @Override
     public int getDropExp() {
-        return new NukkitRandom().nextRange(1, 5);
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return false;
+        return ThreadLocalRandom.current().nextInt(2, 5);
     }
 
     @Override

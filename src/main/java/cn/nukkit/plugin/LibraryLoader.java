@@ -31,14 +31,17 @@ public class LibraryLoader {
             throw new IllegalArgumentException(library);
         }
         load(new Library() {
+            @Override
             public String getGroupId() {
                 return split[0];
             }
 
+            @Override
             public String getArtifactId() {
                 return split[1];
             }
 
+            @Override
             public String getVersion() {
                 return split[2];
             }
@@ -55,13 +58,15 @@ public class LibraryLoader {
         }
 
         File file = new File(folder, fileName);
-        if (!file.isFile()) try {
-            URL url = new URL("https://repo1.maven.org/maven2/" + filePath + '/' + fileName);
-            LOGGER.info("Get library from " + url + '.');
-            Files.copy(url.openStream(), file.toPath());
-            LOGGER.info("Get library " + fileName + " done!");
-        } catch (IOException e) {
-            throw new LibraryLoadException(library);
+        if (!file.isFile()) {
+            try {
+                URL url = new URL("https://repo1.maven.org/maven2/" + filePath + '/' + fileName);
+                LOGGER.info("Get library from " + url + '.');
+                Files.copy(url.openStream(), file.toPath());
+                LOGGER.info("Get library " + fileName + " done!");
+            } catch (IOException e) {
+                throw new LibraryLoadException(library);
+            }
         }
 
         try {

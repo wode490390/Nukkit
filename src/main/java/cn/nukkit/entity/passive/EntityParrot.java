@@ -20,6 +20,7 @@ public class EntityParrot extends EntityAnimal {
         return NETWORK_ID;
     }
 
+    @Override
     public String getName() {
         return "Parrot";
     }

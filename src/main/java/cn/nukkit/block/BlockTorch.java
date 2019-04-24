@@ -11,7 +11,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/2 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockTorch extends BlockFlowable {
+public class BlockTorch extends BlockFlowableMeta implements BlockFaceable {
 
     public BlockTorch() {
         this(0);
@@ -33,7 +33,7 @@ public class BlockTorch extends BlockFlowable {
 
     @Override
     public int getLightLevel() {
-        return 15;
+        return 14;
     }
 
     @Override
@@ -50,8 +50,9 @@ public class BlockTorch extends BlockFlowable {
                     0, //5
                     0  //6
             };
+            Block face = this.getSide(BlockFace.fromIndex(faces[side]));
 
-            if (this.getSide(BlockFace.fromIndex(faces[side])).isTransparent() && !(side == 0 && (below instanceof BlockFence || below.getId() == COBBLE_WALL))) {
+            if (face.isTransparent() && !(face instanceof BlockGlass || face instanceof BlockGlassStained || face instanceof BlockIce || face instanceof BlockIceFrosted) && !(side == 0 && (below instanceof BlockHopper || below instanceof BlockFence || below instanceof BlockWall))) {
                 this.getLevel().useBreakOn(this);
 
                 return Level.BLOCK_UPDATE_NORMAL;
@@ -65,7 +66,7 @@ public class BlockTorch extends BlockFlowable {
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block below = this.down();
 
-        if (!target.isTransparent() && face != BlockFace.DOWN) {
+        if (face != BlockFace.DOWN && (!target.isTransparent() || target instanceof BlockGlass || target instanceof BlockGlassStained || target instanceof BlockIce || target instanceof BlockIceFrosted)) {
             int[] faces = new int[]{
                     0, //0, nerver used
                     5, //1
@@ -78,7 +79,7 @@ public class BlockTorch extends BlockFlowable {
             this.getLevel().setBlock(block, this, true, true);
 
             return true;
-        } else if (!below.isTransparent() || below instanceof BlockFence || below.getId() == COBBLE_WALL) {
+        } else if (!below.isTransparent() || below instanceof BlockGlass || below instanceof BlockGlassStained || below instanceof BlockIce || below instanceof BlockIceFrosted || below instanceof BlockHopper || below instanceof BlockFence || below instanceof BlockWall) {
             this.setDamage(0);
             this.getLevel().setBlock(block, this, true, true);
 
@@ -97,11 +98,12 @@ public class BlockTorch extends BlockFlowable {
         return BlockColor.AIR_BLOCK_COLOR;
     }
 
-    public BlockFace getFacing() {
-        return getFacing(this.getDamage());
+    @Override
+    public BlockFace getBlockFace() {
+        return this.getBlockFace(this.getDamage() & 0x07);
     }
 
-    public BlockFace getFacing(int meta) {
+    public BlockFace getBlockFace(int meta) {
         switch (meta) {
             case 1:
                 return BlockFace.EAST;

@@ -4,7 +4,7 @@ package cn.nukkit.item;
  * Created by Snake1999 on 2016/1/14.
  * Package cn.nukkit.item in project nukkit.
  */
-public class ItemPotatoPoisonous extends ItemPotato {
+public class ItemPotatoPoisonous extends ItemEdible {
 
     public ItemPotatoPoisonous() {
         this(0, 1);

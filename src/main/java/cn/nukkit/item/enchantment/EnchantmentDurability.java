@@ -1,14 +1,14 @@
 package cn.nukkit.item.enchantment;
 
 import cn.nukkit.item.Item;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class EnchantmentDurability extends Enchantment {
+
     protected EnchantmentDurability() {
         super(ID_DURABILITY, "durability", 5, EnchantmentType.BREAKABLE);
     }
@@ -38,7 +38,7 @@ public class EnchantmentDurability extends Enchantment {
         return item.getMaxDurability() >= 0 || super.canEnchant(item);
     }
 
-    public static boolean negateDamage(Item item, int level, Random random) {
-        return !(item.isArmor() && random.nextFloat() < 0.6f) && random.nextInt(level + 1) > 0;
+    public static boolean negateDamage(Item item, int level) {
+        return !(item.isArmor() && ThreadLocalRandom.current().nextFloat() < 0.6f) && ThreadLocalRandom.current().nextInt(level + 1) > 0;
     }
 }

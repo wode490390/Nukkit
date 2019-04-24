@@ -1,12 +1,12 @@
 package cn.nukkit.command.defaults;
 
-import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.GameRules;
-
+import cn.nukkit.level.Position;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -22,7 +22,7 @@ public class GameruleCommand extends VanillaCommand {
         this.commandParameters.clear();
         this.commandParameters.put("byString", new CommandParameter[]{
                 new CommandParameter("gamerule", true , GameRule.getNames()),
-                new CommandParameter("value", CommandParameter.ARG_TYPE_STRING, true)
+                new CommandParameter("value", CommandParamType.STRING, true)
         });
     }
 
@@ -36,7 +36,7 @@ public class GameruleCommand extends VanillaCommand {
             sender.sendMessage("This command can only be executed by players");
             return true;
         }
-        GameRules rules = ((Player) sender).getLevel().getGameRules();
+        GameRules rules = ((Position) sender).getLevel().getGameRules();
 
         switch (args.length) {
             case 0:

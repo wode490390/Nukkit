@@ -1,33 +1,32 @@
 package cn.nukkit.level;
 
 import cn.nukkit.Server;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
 import cn.nukkit.level.generator.Generator;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public enum EnumLevel {
     OVERWORLD,
     NETHER,
-    //THE_END
-    ;
+    THE_END;
 
     Level level;
 
     public Level getLevel() {
-        return level;
+        return this.level;
     }
 
     public static void initLevels() {
         OVERWORLD.level = Server.getInstance().getDefaultLevel();
 
+        long seed = Server.getInstance().getDefaultLevelSeed();
+
         // attempt to load the nether world if it is allowed in server properties
         if (Server.getInstance().isNetherAllowed() && !Server.getInstance().loadLevel("nether")) {
 
             // Nether is allowed, and not found, create the default nether world
-            Server.getInstance().getLogger().info("No level called \"nether\" found, creating default nether level.");
+            log.info("No level called \"nether\" found, creating default nether level.");
 
-            // Generate seed for nether and get nether generator
-            long seed = System.currentTimeMillis();
             Class<? extends Generator> generator = Generator.getGenerator("nether");
 
             // Generate the nether world
@@ -44,8 +43,19 @@ public enum EnumLevel {
 
         if (NETHER.level == null) {
             // Nether is not found or disabled
-            Server.getInstance().getLogger().alert("No level called \"nether\" found or nether is disabled in server properties! Nether functionality will be disabled.");
+            log.warn("No level called \"nether\" found or nether is disabled in server properties! Nether functionality will be disabled.");
         }
+
+        if (!Server.getInstance().loadLevel("the_end")) {
+            log.info("No level called \"the_end\" found, creating default the end level.");
+            Class<? extends Generator> generator = Generator.getGenerator("the_end");
+            Server.getInstance().generateLevel("the_end", seed, generator);
+            if (!Server.getInstance().isLevelLoaded("the_end")) {
+                Server.getInstance().loadLevel("the_end");
+            }
+        }
+
+        THE_END.level = Server.getInstance().getLevelByName("the_end");
     }
 
     public static Level getOtherNetherPair(Level current)   {
@@ -53,26 +63,42 @@ public enum EnumLevel {
             return NETHER.level;
         } else if (current == NETHER.level) {
             return OVERWORLD.level;
-        } else {
-            throw new IllegalArgumentException("Neither overworld nor nether given!");
         }
+        return null;
     }
 
     public static Position moveToNether(Position current)   {
-        if (NETHER.level == null) {
-            return null;
-        } else {
+        if (NETHER.level != null) {
             if (current.level == OVERWORLD.level) {
                 return new Position(mRound(current.getFloorX() >> 3, 128), mRound(current.getFloorY(), 32), mRound(current.getFloorZ() >> 3, 128), NETHER.level);
             } else if (current.level == NETHER.level) {
                 return new Position(mRound(current.getFloorX() << 3, 1024), mRound(current.getFloorY(), 32), mRound(current.getFloorZ() << 3, 1024), OVERWORLD.level);
-            } else {
-                throw new IllegalArgumentException("Neither overworld nor nether given!");
             }
         }
+        return null;
     }
 
-    private static final int mRound(int value, int factor) {
-        return Math.round(value / factor) * factor;
+    public static Level getOtherTheEndPair(Level current)   {
+        if (current == OVERWORLD.level) {
+            return THE_END.level;
+        } else if (current == THE_END.level) {
+            return OVERWORLD.level;
+        }
+        return null;
+    }
+
+    public static Position moveToTheEnd(Position current)   {
+        if (THE_END.level != null) {
+            if (current.level == OVERWORLD.level) {
+                return new Position(100.5, 49, 0.5, THE_END.level);
+            } else if (current.level == THE_END.level) {
+                return OVERWORLD.level.getSpawnLocation();
+            }
+        }
+        return null;
+    }
+
+    private static int mRound(int value, int factor) {
+        return Math.round((float) value / factor) * factor;
     }
 }

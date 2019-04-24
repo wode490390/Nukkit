@@ -1,8 +1,11 @@
 package cn.nukkit.inventory;
 
 import cn.nukkit.item.Item;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * author: MagicDroidX
@@ -12,7 +15,8 @@ public class ShapelessRecipe implements CraftingRecipe {
 
     private final Item output;
 
-    private long least,most;
+    private long least;
+    private long most;
 
     private final List<Item> ingredients;
 

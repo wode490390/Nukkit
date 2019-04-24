@@ -1,10 +1,13 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class StopSoundPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.STOP_SOUND_PACKET;
 
-    public String name;
+    public String soundName;
     public boolean stopAll;
 
     @Override
@@ -20,7 +23,7 @@ public class StopSoundPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putString(this.name);
+        this.putString(this.soundName);
         this.putBoolean(this.stopAll);
     }
 }

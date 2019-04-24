@@ -1,7 +1,6 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemDoorJungle;
 
 public class BlockDoorJungle extends BlockDoorWood {
 
@@ -25,6 +24,6 @@ public class BlockDoorJungle extends BlockDoorWood {
 
     @Override
     public Item toItem() {
-        return new ItemDoorJungle();
+        return Item.get(Item.JUNGLE_DOOR);
     }
 }

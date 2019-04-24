@@ -10,9 +10,11 @@ import cn.nukkit.utils.BlockColor;
  * Nukkit Project
  */
 public class BlockSandstone extends BlockSolidMeta {
+
     public static final int NORMAL = 0;
     public static final int CHISELED = 1;
-    public static final int SMOOTH = 2;
+    public static final int CUT = 2;
+    public static final int SMOOTH = 3;
 
     public BlockSandstone() {
         this(0);
@@ -40,13 +42,13 @@ public class BlockSandstone extends BlockSolidMeta {
     @Override
     public String getName() {
         String[] names = new String[]{
-                "Sandstone",
-                "Chiseled Sandstone",
-                "Smooth Sandstone",
+                "",
+                "Chiseled ",
+                "Smooth ",
                 ""
         };
 
-        return names[this.getDamage() & 0x03];
+        return names[this.getDamage() & 0x3] + "Sandstone";
     }
 
     @Override
@@ -55,14 +57,13 @@ public class BlockSandstone extends BlockSolidMeta {
             return new Item[]{
                     toItem()
             };
-        } else {
-            return new Item[0];
         }
+        return new Item[0];
     }
 
     @Override
     public Item toItem() {
-        return new ItemBlock(this, this.getDamage() & 0x03);
+        return new ItemBlock(this, this.getDamage() & 0x3);
     }
 
     @Override

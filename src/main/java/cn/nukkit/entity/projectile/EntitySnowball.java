@@ -9,7 +9,8 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * Nukkit Project
  */
 public class EntitySnowball extends EntityProjectile {
-    public static final int NETWORK_ID = 81;
+
+    public static final int NETWORK_ID = SNOWBALL;
 
     @Override
     public int getNetworkId() {

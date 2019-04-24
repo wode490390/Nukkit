@@ -7,9 +7,10 @@ import cn.nukkit.item.ItemTool;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockOreGold extends BlockSolid {
+public class BlockOreGold extends BlockOre {
 
     public BlockOreGold() {
+
     }
 
     @Override
@@ -18,38 +19,23 @@ public class BlockOreGold extends BlockSolid {
     }
 
     @Override
-    public double getHardness() {
-        return 3;
-    }
-
-    @Override
-    public double getResistance() {
-        return 15;
-    }
-
-    @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
-    }
-
-    @Override
     public String getName() {
         return "Gold Ore";
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_IRON;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_IRON) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     Item.get(GOLD_ORE)
             };
         } else {
             return new Item[0];
         }
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return false;
     }
 }

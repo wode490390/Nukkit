@@ -7,13 +7,17 @@ import cn.nukkit.math.NukkitMath;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.BlockUpdateEntry;
 import com.google.common.collect.Maps;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class BlockUpdateScheduler {
+
     private final Level level;
     private long lastTick;
-    private Map<Long, LinkedHashSet<BlockUpdateEntry>> queuedUpdates;
+    private final Map<Long, LinkedHashSet<BlockUpdateEntry>> queuedUpdates;
 
     private Set<BlockUpdateEntry> pendingUpdates;
 
@@ -89,7 +93,9 @@ public class BlockUpdateScheduler {
 
     public boolean isBlockTickPending(Vector3 pos, Block block) {
         Set<BlockUpdateEntry> tmpUpdates = pendingUpdates;
-        if (tmpUpdates == null || tmpUpdates.isEmpty()) return false;
+        if (tmpUpdates == null || tmpUpdates.isEmpty()) {
+            return false;
+        }
         return tmpUpdates.contains(new BlockUpdateEntry(pos, block));
     }
 
@@ -102,7 +108,9 @@ public class BlockUpdateScheduler {
         LinkedHashSet<BlockUpdateEntry> updateSet = queuedUpdates.get(time);
         if (updateSet == null) {
             LinkedHashSet<BlockUpdateEntry> tmp = queuedUpdates.putIfAbsent(time, updateSet = new LinkedHashSet<>());
-            if (tmp != null) updateSet = tmp;
+            if (tmp != null) {
+                updateSet = tmp;
+            }
         }
         updateSet.add(entry);
     }

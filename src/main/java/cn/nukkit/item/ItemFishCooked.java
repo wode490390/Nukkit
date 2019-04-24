@@ -4,7 +4,7 @@ package cn.nukkit.item;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class ItemFishCooked extends ItemFish {
+public class ItemFishCooked extends ItemEdible {
 
     public ItemFishCooked() {
         this(0, 1);
@@ -17,5 +17,4 @@ public class ItemFishCooked extends ItemFish {
     public ItemFishCooked(Integer meta, int count) {
         super(COOKED_FISH, meta, count, "Cooked Fish");
     }
-
 }

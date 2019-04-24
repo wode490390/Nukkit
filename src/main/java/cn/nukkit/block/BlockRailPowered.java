@@ -41,7 +41,9 @@ public class BlockRailPowered extends BlockRail {
         //          When updating the block state. Espicially on the world with many rails. 
         //          Trust me, I tested this on my server.
         if (type == Level.BLOCK_UPDATE_NORMAL || type == Level.BLOCK_UPDATE_REDSTONE || type == Level.BLOCK_UPDATE_SCHEDULED) {
-            super.onUpdate(type);
+            if (super.onUpdate(type) == Level.BLOCK_UPDATE_NORMAL) {
+                return 0; // Already broken
+            }
             boolean wasPowered = isActive();
             boolean isPowered = level.isBlockPowered(this.getLocation())
                     || checkSurrounding(this, true, 0)
@@ -165,7 +167,7 @@ public class BlockRailPowered extends BlockRail {
         }
 
         // Sometimes the rails are diffrent orientation
-        Rail.Orientation base = ((BlockRailPowered) block).getOrientation();
+        Rail.Orientation base = ((BlockRail) block).getOrientation();
 
         // Possible way how to know when the rail is activated is rail were directly powered
         // OR recheck the surrounding... Which will returns here =w=        

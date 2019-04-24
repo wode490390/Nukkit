@@ -22,7 +22,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityBoat extends EntityVehicle {
 
-    public static final int NETWORK_ID = 90;
+    public static final int NETWORK_ID = BOAT;
 
     public static final int DATA_WOOD_ID = 20;
 
@@ -42,12 +42,12 @@ public class EntityBoat extends EntityVehicle {
 
     @Override
     public float getHeight() {
-        return 0.7f;
+        return 0.455f;
     }
 
     @Override
     public float getWidth() {
-        return 1.6f;
+        return 1.4f;
     }
 
     @Override
@@ -57,12 +57,17 @@ public class EntityBoat extends EntityVehicle {
 
     @Override
     protected float getGravity() {
-        return 0.1f;
+        return 0.03999999910593033f;
     }
 
     @Override
     public float getBaseOffset() {
-        return 0.35F;
+        return 0.375f;
+    }
+
+    @Override
+    public float getMountedYOffset() {
+        return 0.71f;
     }
 
     @Override
@@ -145,7 +150,7 @@ public class EntityBoat extends EntityVehicle {
 
         boolean hasUpdate = this.entityBaseTick(tickDiff);
 
-        if (this.isAlive()) {
+        if (this.isAlive() && !this.isImmobile()) {
             super.onUpdate(currentTick);
 
             this.motionY = (this.level.getBlock(new Vector3(this.x, this.y, this.z)).getBoundingBox() != null || this.isInsideOfWater()) ? getGravity() : -0.08;
@@ -193,5 +198,10 @@ public class EntityBoat extends EntityVehicle {
 
         super.mountEntity(player);
         return true;
+    }
+
+    @Override
+    public boolean canPassThrough() {
+        return false;
     }
 }

@@ -1,16 +1,19 @@
 package cn.nukkit.network.protocol;
 
+import cn.nukkit.math.Vector3f;
+import lombok.ToString;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class SetEntityMotionPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.SET_ENTITY_MOTION_PACKET;
 
-    public long eid;
-    public float motionX;
-    public float motionY;
-    public float motionZ;
+    public long entityRuntimeId;
+    public Vector3f motion;
 
     @Override
     public byte pid() {
@@ -25,7 +28,7 @@ public class SetEntityMotionPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityRuntimeId(this.eid);
-        this.putVector3f(this.motionX, this.motionY, this.motionZ);
+        this.putEntityRuntimeId(this.entityRuntimeId);
+        this.putVector3(this.motion);
     }
 }

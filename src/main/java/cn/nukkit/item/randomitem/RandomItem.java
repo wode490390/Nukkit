@@ -9,6 +9,7 @@ import java.util.Objects;
  * Package cn.nukkit.item.randomitem in project nukkit.
  */
 public final class RandomItem {
+
     private static final Map<Selector, Float> selectors = new HashMap<>();
 
     public static final Selector ROOT = new Selector(null);
@@ -18,7 +19,9 @@ public final class RandomItem {
     }
 
     public static Selector putSelector(Selector selector, float chance) {
-        if (selector.getParent() == null) selector.setParent(ROOT);
+        if (selector.getParent() == null) {
+            selector.setParent(ROOT);
+        }
         selectors.put(selector, chance);
         return selector;
     }
@@ -27,10 +30,13 @@ public final class RandomItem {
         Objects.requireNonNull(selector);
         Map<Selector, Float> child = new HashMap<>();
         selectors.forEach((s, f) -> {
-            if (s.getParent() == selector) child.put(s, f);
+            if (s.getParent() == selector) {
+                child.put(s, f);
+            }
         });
-        if (child.size() == 0) return selector.select();
+        if (child.isEmpty()) {
+            return selector.select();
+        }
         return selectFrom(Selector.selectRandom(child));
     }
-
 }

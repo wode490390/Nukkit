@@ -7,25 +7,33 @@ import cn.nukkit.network.protocol.BatchPacket;
 import cn.nukkit.network.protocol.CraftingDataPacket;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.Config;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import io.netty.util.collection.CharObjectHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.zip.Deflater;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class CraftingManager {
 
     public final Collection<Recipe> recipes = new ArrayDeque<>();
 
-    public static BatchPacket packet = null;
+    public static BatchPacket packet;
     protected final Map<Integer, Map<UUID, ShapedRecipe>> shapedRecipes = new Int2ObjectOpenHashMap<>();
 
     public final Map<Integer, FurnaceRecipe> furnaceRecipes = new Int2ObjectOpenHashMap<>();
@@ -44,7 +52,8 @@ public class CraftingManager {
             return 1;
         } else if (i1.getDamage() < i2.getDamage()) {
             return -1;
-        } else return Integer.compare(i1.getCount(), i2.getCount());
+        }
+        return Integer.compare(i1.getCount(), i2.getCount());
     };
 
     @SuppressWarnings("unchecked")
@@ -55,12 +64,12 @@ public class CraftingManager {
             try {
                 Utils.writeFile(path, Server.class.getClassLoader().getResourceAsStream("recipes.json"));
             } catch (IOException e) {
-                MainLogger.getLogger().logException(e);
+                log.throwing(e);
             }
         }
 
         List<Map> recipes = new Config(path, Config.JSON).getMapList("recipes");
-        MainLogger.getLogger().info("Loading recipes...");
+        log.info("Loading recipes...");
         for (Map<String, Object> recipe : recipes) {
             try {
                 switch (Utils.toInt(recipe.get("type"))) {
@@ -82,7 +91,7 @@ public class CraftingManager {
                         List<Map> output = (List<Map>) recipe.get("output");
 
                         first = output.remove(0);
-                        String[] shape = ((List<String>) recipe.get("shape")).stream().toArray(String[]::new);
+                        String[] shape = ((List<String>) recipe.get("shape")).toArray(new String[0]);
                         Map<Character, Item> ingredients = new CharObjectHashMap<>();
                         List<Item> extraResults = new ArrayList<>();
 
@@ -110,14 +119,14 @@ public class CraftingManager {
                         break;
                 }
             } catch (Exception e) {
-                MainLogger.getLogger().error("Exception during registering recipe", e);
+                log.error("Exception during registering recipe", e);
             }
         }
 
         this.registerBrewing();
         this.rebuildPacket();
 
-        MainLogger.getLogger().info("Loaded " + this.recipes.size() + " recipes.");
+        log.info("Loaded " + this.recipes.size() + " recipes.");
     }
 
     protected void registerBrewing() {
@@ -192,7 +201,9 @@ public class CraftingManager {
 
     public FurnaceRecipe matchFurnaceRecipe(Item input) {
         FurnaceRecipe recipe = this.furnaceRecipes.get(getItemHash(input));
-        if (recipe == null) recipe = this.furnaceRecipes.get(getItemHash(input.getId(), 0));
+        if (recipe == null) {
+            recipe = this.furnaceRecipes.get(getItemHash(input.getId(), 0));
+        }
         return recipe;
     }
 
@@ -287,7 +298,9 @@ public class CraftingManager {
         int outputHash = getItemHash(primaryOutput);
         if (this.shapedRecipes.containsKey(outputHash)) {
             List<Item> itemCol = new ArrayList<>();
-            for (Item[] items : inputMap) itemCol.addAll(Arrays.asList(items));
+            for (Item[] items : inputMap) {
+                itemCol.addAll(Arrays.asList(items));
+            }
             UUID inputHash = getMultiItemHash(itemCol);
 
             Map<UUID, ShapedRecipe> recipeMap = shapedRecipes.get(outputHash);

@@ -43,6 +43,15 @@ public class ItemDye extends Item {
     @Deprecated
     public static final int BLACK = DyeColor.BLACK.getDyeData();
 
+    @Deprecated
+    public static final int BLACK2 = DyeColor.BLACK2.getDyeData();
+    @Deprecated
+    public static final int BROWN2 = DyeColor.BROWN2.getDyeData();
+    @Deprecated
+    public static final int BLUE2 = DyeColor.BLUE2.getDyeData();
+    @Deprecated
+    public static final int WHITE2 = DyeColor.WHITE2.getDyeData();
+
     public ItemDye() {
         this(0, 1);
     }

@@ -1,16 +1,18 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.BlockVector3;
+import lombok.ToString;
 
+@ToString
 public class BlockPickRequestPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.BLOCK_PICK_REQUEST_PACKET;
 
-    public int x;
-    public int y;
-    public int z;
-    public boolean addUserData;
-    public int selectedSlot;
+    public int blockX;
+    public int blockY;
+    public int blockZ;
+    public boolean addUserData = false;
+    public int hotbarSlot;
 
     @Override
     public byte pid() {
@@ -20,11 +22,11 @@ public class BlockPickRequestPacket extends DataPacket {
     @Override
     public void decode() {
         BlockVector3 v = this.getSignedBlockPosition();
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        this.putBoolean(this.addUserData);
-        this.selectedSlot = this.getByte();
+        this.blockX = v.x;
+        this.blockY = v.y;
+        this.blockZ = v.z;
+        this.addUserData = this.getBoolean();
+        this.hotbarSlot = this.getByte();
     }
 
     @Override

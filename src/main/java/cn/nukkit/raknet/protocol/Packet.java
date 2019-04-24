@@ -1,7 +1,7 @@
 package cn.nukkit.raknet.protocol;
 
 import cn.nukkit.utils.Binary;
-
+//import cn.nukkit.utils.IPv6Converter;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -11,6 +11,8 @@ import java.util.Arrays;
  * Nukkit Project
  */
 public abstract class Packet implements Cloneable {
+
+    public static final byte ID = -1;
 
     protected int offset = 0;
     public byte[] buffer;
@@ -80,9 +82,17 @@ public abstract class Packet implements Cloneable {
         if (version == 4) {
             String addr = ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff) + "." + ((~this.getByte()) & 0xff);
             int port = this.getShort();
-            return new InetSocketAddress(addr, port);
+            return new InetSocketAddress(addr, port);/*
+        } else if (version == 6) {
+            //http://man7.org/linux/man-pages/man7/ipv6.7.html
+            Binary.readLShort(this.get(2)); //Family, AF_INET6
+            int port = this.getShort();
+            this.getInt(); //flow info
+            String addr = IPv6Converter.splitKey(this.get(16));
+            this.getInt(); //scope ID
+            return new InetSocketAddress(addr, port);*/
         } else {
-            //todo IPV6 SUPPORT
+            //throw new RuntimeException("IP version " + version + " is not supported");
             return null;
         }
     }
@@ -142,9 +152,15 @@ public abstract class Packet implements Cloneable {
             for (String b : addr.split("\\.")) {
                 this.putByte((byte) ((~Integer.valueOf(b)) & 0xff));
             }
+            this.putShort(port);/*
+        } else if (version == 6) {
+            this.put(Binary.writeLShort(10));
             this.putShort(port);
+            this.putInt(0);
+            this.put(IPv6Converter.toByte(addr));
+            this.putInt(0);*/
         } else {
-            //todo ipv6
+            //throw new RuntimeException("IP version " + version + " is not supported");
         }
     }
 
@@ -157,13 +173,14 @@ public abstract class Packet implements Cloneable {
     }
 
     public void decode() {
-        this.offset = 1;
+        this.getByte(); //PID
     }
 
     public Packet clean() {
         this.buffer = null;
         this.offset = 0;
         this.sendTime = null;
+
         return this;
     }
 
@@ -180,6 +197,8 @@ public abstract class Packet implements Cloneable {
     public interface PacketFactory {
         /**
          * Creates the packet
+         * 
+         * @return Packet
          */
         Packet create();
     }

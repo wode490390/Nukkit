@@ -34,20 +34,25 @@ import cn.nukkit.utils.TextFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.Deflater;
+import lombok.extern.log4j.Log4j2;
 
-
-import static co.aikar.timings.TimingsManager.HISTORY;
-
+@Log4j2
 public class TimingsExport extends Thread {
+
     private final CommandSender sender;
     private final JsonObject out;
     private final TimingsHistory[] history;
@@ -96,12 +101,12 @@ public class TimingsExport extends Thread {
                 new JsonUtil.JSONPair(input.getName(), JsonUtil.toArray(input.getCollectionCount(), input.getCollectionTime()))));
         out.add("system", system);
 
-        TimingsHistory[] history = HISTORY.toArray(new TimingsHistory[HISTORY.size() + 1]);
-        history[HISTORY.size()] = new TimingsHistory(); //Current snapshot
+        TimingsHistory[] history = TimingsManager.HISTORY.toArray(new TimingsHistory[TimingsManager.HISTORY.size() + 1]);
+        history[TimingsManager.HISTORY.size()] = new TimingsHistory(); //Current snapshot
 
         JsonObject timings = new JsonObject();
         for (TimingIdentifier.TimingGroup group : TimingIdentifier.GROUP_MAP.values()) {
-            for (Timing id : group.timings.stream().toArray(Timing[]::new)) {
+            for (Timing id : group.timings) {
                 if (!id.timed && !id.isSpecial()) {
                     continue;
                 }
@@ -206,18 +211,17 @@ public class TimingsExport extends Thread {
             con.setRequestMethod("POST");
             con.setInstanceFollowRedirects(false);
 
-            PGZIPOutputStream request = new PGZIPOutputStream(con.getOutputStream());
-            request.setLevel(Deflater.BEST_COMPRESSION);
-
-            request.write(new Gson().toJson(this.out).getBytes("UTF-8"));
-            request.close();
+            try (PGZIPOutputStream request = new PGZIPOutputStream(con.getOutputStream())) {
+                request.setLevel(Deflater.BEST_COMPRESSION);
+                request.write(new Gson().toJson(this.out).getBytes(StandardCharsets.UTF_8));
+            }
 
             response = getResponse(con);
 
             if (con.getResponseCode() != 302) {
-                this.sender.sendMessage(new TranslationContainer("nukkit.command.timings.uploadError", new String[]{String.valueOf(con.getResponseCode()), con.getResponseMessage()}));
+                this.sender.sendMessage(new TranslationContainer("nukkit.command.timings.uploadError", String.valueOf(con.getResponseCode()), con.getResponseMessage()));
                 if (response != null) {
-                    Server.getInstance().getLogger().alert(response);
+                    log.error(response);
                 }
                 return;
             }
@@ -225,11 +229,11 @@ public class TimingsExport extends Thread {
             String location = con.getHeaderField("Location");
             this.sender.sendMessage(new TranslationContainer("nukkit.command.timings.timingsLocation", location));
             if (!(this.sender instanceof ConsoleCommandSender)) {
-                Server.getInstance().getLogger().info(Server.getInstance().getLanguage().translateString("nukkit.command.timings.timingsLocation", location));
+                log.info(Server.getInstance().getLanguage().translateString("nukkit.command.timings.timingsLocation", location));
             }
 
             if (response != null && !response.isEmpty()) {
-                Server.getInstance().getLogger().info(Server.getInstance().getLanguage().translateString("nukkit.command.timings.timingsResponse", response));
+                log.info(Server.getInstance().getLanguage().translateString("nukkit.command.timings.timingsResponse", response));
             }
 
             File timingFolder = new File(Server.getInstance().getDataPath() + File.separator + "timings");
@@ -241,20 +245,18 @@ public class TimingsExport extends Thread {
             writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(this.out));
             writer.close();
 
-            Server.getInstance().getLogger().info(Server.getInstance().getLanguage().translateString("nukkit.command.timings.timingsWrite", fileName));
+            log.info(Server.getInstance().getLanguage().translateString("nukkit.command.timings.timingsWrite", fileName));
         } catch (IOException exception) {
             this.sender.sendMessage(TextFormat.RED + "" + new TranslationContainer("nukkit.command.timings.reportError"));
             if (response != null) {
-                Server.getInstance().getLogger().alert(response);
+                log.error(response);
             }
-            Server.getInstance().getLogger().logException(exception);
+            log.throwing(exception);
         }
     }
 
     private String getResponse(HttpURLConnection con) throws IOException {
-        InputStream is = null;
-        try {
-            is = con.getInputStream();
+        try (InputStream is = con.getInputStream()) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
             byte[] b = new byte[1024];
@@ -266,12 +268,8 @@ public class TimingsExport extends Thread {
 
         } catch (IOException exception) {
             this.sender.sendMessage(TextFormat.RED + "" + new TranslationContainer("nukkit.command.timings.reportError"));
-            Server.getInstance().getLogger().warning(con.getResponseMessage(), exception);
+            log.warn(con.getResponseMessage(), exception);
             return null;
-        } finally {
-            if (is != null) {
-                is.close();
-            }
         }
     }
 }

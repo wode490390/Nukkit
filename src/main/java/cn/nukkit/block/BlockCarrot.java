@@ -2,8 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemCarrot;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Nukkit Project Team
@@ -30,9 +29,9 @@ public class BlockCarrot extends BlockCrops {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (getDamage() >= 0x07) {
+        if (getDamage() >= 0x7) {
             return new Item[]{
-                    new ItemCarrot(0, new Random().nextInt(3) + 1)
+                    new ItemCarrot(0, ThreadLocalRandom.current().nextInt(1, 4))
             };
         }
         return new Item[]{

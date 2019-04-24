@@ -1,11 +1,14 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class UpdateBlockPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_BLOCK_PACKET;
 
     public static final int FLAG_NONE = 0b0000;
@@ -17,12 +20,15 @@ public class UpdateBlockPacket extends DataPacket {
     public static final int FLAG_ALL = (FLAG_NEIGHBORS | FLAG_NETWORK);
     public static final int FLAG_ALL_PRIORITY = (FLAG_ALL | FLAG_PRIORITY);
 
+    public static final int DATA_LAYER_NORMAL = 0;
+    public static final int DATA_LAYER_LIQUID = 1;
+
     public int x;
     public int z;
     public int y;
     public int blockRuntimeId;
-    public int flags;
-    public int dataLayer = 0;
+    public int flags = 0x2;
+    public int dataLayerId = DATA_LAYER_NORMAL;
 
     @Override
     public byte pid() {
@@ -37,10 +43,10 @@ public class UpdateBlockPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putBlockVector3(x, y, z);
-        this.putUnsignedVarInt(blockRuntimeId);
-        this.putUnsignedVarInt(flags);
-        this.putUnsignedVarInt(dataLayer);
+        this.putBlockPosition(this.x, this.y, this.z);
+        this.putUnsignedVarInt(this.blockRuntimeId);
+        this.putUnsignedVarInt(this.flags);
+        this.putUnsignedVarInt(this.dataLayerId);
     }
 
     public static class Entry {

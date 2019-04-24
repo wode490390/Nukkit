@@ -13,26 +13,30 @@ public class PlayerCursorInventory extends BaseInventory {
         super(holder, InventoryType.CURSOR);
     }
 
+    @Override
     public String getName() {
         return "Cursor";
     }
 
+    @Override
     public int getSize() {
         return 1;
     }
 
+    @Override
     public void setSize(int size) {
         throw new RuntimeException("Cursor can only carry one item at a time");
     }
 
+    @Override
     public void sendSlot(int index, Player... target) {
         InventorySlotPacket pk = new InventorySlotPacket();
-        pk.slot = index;
+        pk.inventorySlot = index;
         pk.item = this.getItem(index);
 
         for (Player p : target) {
             if (p == this.getHolder()) {
-                pk.inventoryId = ContainerIds.CURSOR;
+                pk.windowId = ContainerIds.CURSOR;
                 p.dataPacket(pk);
             } else {
                 int id;
@@ -41,7 +45,7 @@ public class PlayerCursorInventory extends BaseInventory {
                     this.close(p);
                     continue;
                 }
-                pk.inventoryId = id;
+                pk.windowId = id;
                 p.dataPacket(pk);
             }
         }
@@ -52,6 +56,7 @@ public class PlayerCursorInventory extends BaseInventory {
      *
      * @return Player
      */
+    @Override
     public Player getHolder() {
         return (Player) this.holder;
     }

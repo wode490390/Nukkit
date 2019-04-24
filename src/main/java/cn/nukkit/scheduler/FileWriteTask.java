@@ -1,19 +1,20 @@
 package cn.nukkit.scheduler;
 
-import cn.nukkit.Server;
 import cn.nukkit.utils.Utils;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class FileWriteTask extends AsyncTask {
+
     private final File file;
     private final InputStream contents;
 
@@ -50,8 +51,7 @@ public class FileWriteTask extends AsyncTask {
         try {
             Utils.writeFile(file, contents);
         } catch (IOException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
     }
-
 }

@@ -6,7 +6,6 @@ import cn.nukkit.math.NukkitMath;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.network.protocol.ContainerClosePacket;
 import cn.nukkit.network.protocol.ContainerOpenPacket;
-
 import java.util.Map;
 
 /**
@@ -14,6 +13,7 @@ import java.util.Map;
  * Nukkit Project
  */
 public abstract class ContainerInventory extends BaseInventory {
+
     public ContainerInventory(InventoryHolder holder, InventoryType type) {
         super(holder, type);
     }
@@ -69,12 +69,12 @@ public abstract class ContainerInventory extends BaseInventory {
                 Item item = inv.getItem(slot);
 
                 if (item.getId() != 0) {
-                    averageCount += (float) item.getCount() / (float) Math.min(inv.getMaxStackSize(), item.getMaxStackSize());
+                    averageCount += item.getCount() / (float) Math.min(inv.getMaxStackSize(), item.getMaxStackSize());
                     ++itemCount;
                 }
             }
 
-            averageCount = averageCount / (float) inv.getSize();
+            averageCount /= inv.getSize();
             return NukkitMath.floorFloat(averageCount * 14) + (itemCount > 0 ? 1 : 0);
         }
     }

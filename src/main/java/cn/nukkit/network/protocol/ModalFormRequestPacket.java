@@ -1,13 +1,18 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class ModalFormRequestPacket extends DataPacket {
 
+    public static final byte NETWORK_ID = ProtocolInfo.MODAL_FORM_REQUEST_PACKET;
+
     public int formId;
-    public String data;
+    public String formData; //json
 
     @Override
     public byte pid() {
-        return ProtocolInfo.MODAL_FORM_REQUEST_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -18,7 +23,7 @@ public class ModalFormRequestPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putVarInt(this.formId);
-        this.putString(this.data);
+        this.putUnsignedVarInt(this.formId);
+        this.putString(this.formData);
     }
 }

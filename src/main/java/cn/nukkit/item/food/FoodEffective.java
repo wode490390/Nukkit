@@ -2,7 +2,6 @@ package cn.nukkit.item.food;
 
 import cn.nukkit.Player;
 import cn.nukkit.potion.Effect;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,8 +25,12 @@ public class FoodEffective extends Food {
     }
 
     public FoodEffective addChanceEffect(float chance, Effect effect) {
-        if (chance > 1f) chance = 1f;
-        if (chance < 0f) chance = 0f;
+        if (chance > 1) {
+            chance = 1;
+        }
+        if (chance < 0) {
+            chance = 0;
+        }
         effects.put(effect, chance);
         return this;
     }
@@ -37,7 +40,9 @@ public class FoodEffective extends Food {
         super.onEatenBy(player);
         List<Effect> toApply = new LinkedList<>();
         effects.forEach((effect, chance) -> {
-            if (chance >= Math.random()) toApply.add(effect.clone());
+            if (chance >= Math.random()) {
+                toApply.add(effect.clone());
+            }
         });
         toApply.forEach(player::addEffect);
         return true;

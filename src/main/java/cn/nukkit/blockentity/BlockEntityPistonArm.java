@@ -9,20 +9,21 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.IntTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.NumberTag;
 
 /**
  * @author CreeperFace
  */
-public class BlockEntityPistonArm extends BlockEntity {
+public class BlockEntityPistonArm extends BlockEntitySpawnable {
 
-    public float progress = 1.0F;
-    public float lastProgress = 1.0F;
+    public float progress = 1;
+    public float lastProgress = 0;
     public BlockFace facing;
     public boolean extending = false;
     public boolean sticky = false;
     public byte state = 1;
     public byte newState = 1;
-    public Vector3 attachedBlock = null;
+    public Vector3 attachedBlock;
     public boolean isMovable = true;
     public boolean powered = false;
 
@@ -35,27 +36,22 @@ public class BlockEntityPistonArm extends BlockEntity {
         if (namedTag.contains("Progress")) {
             this.progress = namedTag.getFloat("Progress");
         }
-
         if (namedTag.contains("LastProgress")) {
-            this.lastProgress = (float) namedTag.getInt("LastProgress");
+            this.lastProgress = namedTag.getInt("LastProgress");
         }
-
         if (namedTag.contains("Sticky")) {
             this.sticky = namedTag.getBoolean("Sticky");
         }
-
         if (namedTag.contains("Extending")) {
             this.extending = namedTag.getBoolean("Extending");
         }
-
         if (namedTag.contains("powered")) {
             this.powered = namedTag.getBoolean("powered");
         }
-
         if (namedTag.contains("AttachedBlocks")) {
-            ListTag blocks = namedTag.getList("AttachedBlocks", IntTag.class);
+            ListTag<?> blocks = namedTag.getList("AttachedBlocks", IntTag.class);
             if (blocks != null && blocks.size() > 0) {
-                this.attachedBlock = new Vector3((double) ((IntTag) blocks.get(0)).getData(), (double) ((IntTag) blocks.get(1)).getData(), (double) ((IntTag) blocks.get(2)).getData());
+                this.attachedBlock = new Vector3((double) ((NumberTag<Integer>) blocks.get(0)).getData(), (double) ((NumberTag<Integer>) blocks.get(1)).getData(), (double) ((NumberTag<Integer>) blocks.get(2)).getData());
             }
         } else {
             namedTag.putList(new ListTag("AttachedBlocks"));
@@ -66,25 +62,26 @@ public class BlockEntityPistonArm extends BlockEntity {
 
     private void pushEntities() {
         float lastProgress = this.getExtendedProgress(this.lastProgress);
-        double x = (double) (lastProgress * (float) this.facing.getXOffset());
-        double y = (double) (lastProgress * (float) this.facing.getYOffset());
-        double z = (double) (lastProgress * (float) this.facing.getZOffset());
-        AxisAlignedBB bb = new SimpleAxisAlignedBB(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D);
+        double x = lastProgress * this.facing.getXOffset();
+        double y = lastProgress * this.facing.getYOffset();
+        double z = lastProgress * this.facing.getZOffset();
+        AxisAlignedBB bb = new SimpleAxisAlignedBB(x, y, z, x + 1.0d, y + 1.0d, z + 1.0d);
         Entity[] entities = this.level.getCollidingEntities(bb);
         if (entities.length != 0) {
-            ;
+            //TODO
         }
-
     }
 
     private float getExtendedProgress(float progress) {
-        return this.extending ? progress - 1.0F : 1.0F - progress;
+        return this.extending ? progress - 1.0f : 1.0f - progress;
     }
 
+    @Override
     public boolean isBlockEntityValid() {
         return true;
     }
 
+    @Override
     public void saveNBT() {
         super.saveNBT();
         this.namedTag.putBoolean("isMovable", this.isMovable);
@@ -95,7 +92,16 @@ public class BlockEntityPistonArm extends BlockEntity {
         this.namedTag.putBoolean("powered", this.powered);
     }
 
+    @Override
     public CompoundTag getSpawnCompound() {
-        return (new CompoundTag()).putString("id", "PistonArm").putInt("x", (int) this.x).putInt("y", (int) this.y).putInt("z", (int) this.z);
+        return getDefaultCompound(this, PISTON_ARM)
+                .putFloat("Progress", this.progress)
+                .putBoolean("isMovable", this.isMovable)
+                .putByte("State", this.state)
+                .putFloat("LastProgress", this.lastProgress)
+                .putByte("NewState", this.newState)
+                .putList(new ListTag<>("BreakBlocks"))
+                .putList(new ListTag<>("AttachedBlocks"))
+                .putBoolean("Sticky", this.sticky);
     }
 }

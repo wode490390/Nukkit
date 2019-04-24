@@ -56,7 +56,9 @@ public final class BitArray256 {
 
     public BitArray256 grow(int newBitsPerEntry) {
         int amtGrow = newBitsPerEntry - this.bitsPerEntry;
-        if (amtGrow <= 0) return this;
+        if (amtGrow <= 0) {
+            return this;
+        }
         BitArray256 newBitArray = new BitArray256(newBitsPerEntry);
 
         int[] buffer = ThreadCache.intCache256.get();
@@ -85,6 +87,7 @@ public final class BitArray256 {
         return toRaw(new int[256]);
     }
 
+    @Override
     public BitArray256 clone() {
         return new BitArray256(this);
     }

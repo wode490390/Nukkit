@@ -11,7 +11,9 @@ public class ElementButton {
 
     public ElementButton(String text, ElementButtonImageData image) {
         this.text = text;
-        if (!image.getData().isEmpty() && !image.getType().isEmpty()) this.image = image;
+        if (!image.getData().isEmpty() && !image.getType().isEmpty()) {
+            this.image = image;
+        }
     }
 
     public String getText() {
@@ -27,7 +29,8 @@ public class ElementButton {
     }
 
     public void addImage(ElementButtonImageData image) {
-        if (!image.getData().isEmpty() && !image.getType().isEmpty()) this.image = image;
+        if (!image.getData().isEmpty() && !image.getType().isEmpty()) {
+            this.image = image;
+        }
     }
-
 }

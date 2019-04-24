@@ -5,7 +5,6 @@ import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.EventException;
-
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -14,6 +13,7 @@ import java.util.Map;
  * Nukkit Project
  */
 public class EntityDamageEvent extends EntityEvent implements Cancellable {
+
     private static final HandlerList handlers = new HandlerList();
 
     public static HandlerList getHandlers() {
@@ -193,6 +193,10 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
         /**
          * Damage caused by being struck by lightning
          */
-        LIGHTNING
+        LIGHTNING,
+        /**
+         * Damage caused by hunger
+         */
+        HUNGER
     }
 }

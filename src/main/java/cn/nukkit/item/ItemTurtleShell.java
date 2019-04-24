@@ -6,7 +6,7 @@ package cn.nukkit.item;
 public class ItemTurtleShell extends ItemArmor {
 
     public ItemTurtleShell() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemTurtleShell(Integer meta) {
@@ -14,7 +14,7 @@ public class ItemTurtleShell extends ItemArmor {
     }
 
     public ItemTurtleShell(Integer meta, int count) {
-        super(TURTLE_SHELL, meta, count, "Turtle Shell");
+        super(TURTLE_SHELL, meta, 1, "Turtle Shell");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ItemTurtleShell extends ItemArmor {
 
     @Override
     public int getMaxDurability() {
-        return 276;
+        return 275;
     }
 
     @Override

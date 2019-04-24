@@ -8,8 +8,8 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddPlayerPacket;
 import cn.nukkit.network.protocol.RemoveEntityPacket;
 import cn.nukkit.network.protocol.SetEntityLinkPacket;
+import cn.nukkit.network.protocol.types.EntityLink;
 import cn.nukkit.utils.Utils;
-
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -22,9 +22,6 @@ public class EntityHuman extends EntityHumanType {
     public static final int DATA_PLAYER_FLAG_SLEEP = 1;
     public static final int DATA_PLAYER_FLAG_DEAD = 2;
 
-    public static final int DATA_PLAYER_FLAGS = 26;
-
-    public static final int DATA_PLAYER_BED_POSITION = 28;
     public static final int DATA_PLAYER_BUTTON_TEXT = 40;
 
     protected UUID uuid;
@@ -85,7 +82,7 @@ public class EntityHuman extends EntityHumanType {
     @Override
     protected void initEntity() {
         this.setDataFlag(DATA_PLAYER_FLAGS, DATA_PLAYER_FLAG_SLEEP, false);
-        this.setDataFlag(DATA_FLAGS, DATA_FLAG_GRAVITY);
+        this.setDataFlag(DATA_FLAGS, DATA_FLAG_AFFECTED_BY_GRAVITY);
 
         this.setDataProperty(new IntPositionEntityData(DATA_PLAYER_BED_POSITION, 0, 0, 0), false);
 
@@ -154,14 +151,15 @@ public class EntityHuman extends EntityHumanType {
                 throw new IllegalStateException(this.getClass().getSimpleName() + " must have a valid skin set");
             }
 
-            if (this instanceof Player)
+            if (this instanceof Player) {
                 this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.skin, ((Player) this).getLoginChainData().getXUID(), new Player[]{player});
-            else
+            } else {
                 this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.skin, new Player[]{player});
+            }
 
             AddPlayerPacket pk = new AddPlayerPacket();
             pk.uuid = this.getUniqueId();
-            pk.username = this.getName();
+            pk.username = this.getNameTag();
             pk.entityUniqueId = this.getId();
             pk.entityRuntimeId = this.getId();
             pk.x = (float) this.x;
@@ -180,10 +178,7 @@ public class EntityHuman extends EntityHumanType {
 
             if (this.riding != null) {
                 SetEntityLinkPacket pkk = new SetEntityLinkPacket();
-                pkk.rider = this.riding.getId();
-                pkk.riding = this.getId();
-                pkk.type = 1;
-                pkk.unknownByte = 1;
+                pkk.link = new EntityLink(this.riding.getId(), this.getId(), EntityLink.TYPE_RIDER, true);
 
                 player.dataPacket(pkk);
             }
@@ -199,7 +194,7 @@ public class EntityHuman extends EntityHumanType {
         if (this.hasSpawned.containsKey(player.getLoaderId())) {
 
             RemoveEntityPacket pk = new RemoveEntityPacket();
-            pk.eid = this.getId();
+            pk.entityUniqueId = this.getId();
             player.dataPacket(pk);
             this.hasSpawned.remove(player.getLoaderId());
         }
@@ -208,7 +203,7 @@ public class EntityHuman extends EntityHumanType {
     @Override
     public void close() {
         if (!this.closed) {
-            if (!(this instanceof Player) || ((Player) this).loggedIn) {
+            if (inventory != null && (!(this instanceof Player) || ((Player) this).loggedIn)) {
                 for (Player viewer : this.inventory.getViewers()) {
                     viewer.removeWindow(this.inventory);
                 }
@@ -217,5 +212,4 @@ public class EntityHuman extends EntityHumanType {
             super.close();
         }
     }
-
 }

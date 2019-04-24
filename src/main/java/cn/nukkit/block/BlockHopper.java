@@ -4,8 +4,8 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityHopper;
 import cn.nukkit.inventory.ContainerInventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemHopper;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
@@ -15,7 +15,7 @@ import cn.nukkit.nbt.tag.ListTag;
 /**
  * @author CreeperFace
  */
-public class BlockHopper extends BlockTransparentMeta {
+public class BlockHopper extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockHopper() {
         this(0);
@@ -79,7 +79,7 @@ public class BlockHopper extends BlockTransparentMeta {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityHopper) {
-            return player.addWindow(((BlockEntityHopper) blockEntity).getInventory()) != -1;
+            return player.addWindow(((InventoryHolder) blockEntity).getInventory()) != -1;
         }
 
         return false;
@@ -90,6 +90,7 @@ public class BlockHopper extends BlockTransparentMeta {
         return true;
     }
 
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }
@@ -99,7 +100,7 @@ public class BlockHopper extends BlockTransparentMeta {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityHopper) {
-            return ContainerInventory.calculateRedstone(((BlockEntityHopper) blockEntity).getInventory());
+            return ContainerInventory.calculateRedstone(((InventoryHolder) blockEntity).getInventory());
         }
 
         return super.getComparatorInputOverride();
@@ -143,19 +144,25 @@ public class BlockHopper extends BlockTransparentMeta {
     @Override
     public Item[] getDrops(Item item) {
         if (item.getTier() >= ItemTool.TIER_WOODEN) {
-            return new Item[]{toItem()};
+            return new Item[]{
+                    this.toItem()
+            };
         }
-
         return new Item[0];
     }
 
     @Override
     public Item toItem() {
-        return new ItemHopper();
+        return Item.get(Item.HOPPER);
     }
 
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

@@ -35,11 +35,6 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
     }
 
     @Override
-    public String getName() {
-        return "Item Frame";
-    }
-
-    @Override
     public boolean isBlockEntityValid() {
         return this.getBlock().getId() == Block.ITEM_FRAME_BLOCK;
     }
@@ -51,7 +46,7 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
     public void setItemRotation(int itemRotation) {
         this.namedTag.putByte("ItemRotation", itemRotation);
         this.level.updateComparatorOutputLevel(this);
-        this.setChanged();
+        this.setDirty();
     }
 
     public Item getItem() {
@@ -66,7 +61,7 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
     public void setItem(Item item, boolean setChanged) {
         this.namedTag.putCompound("Item", NBTIO.putItemHelper(item));
         if (setChanged) {
-            this.setChanged();
+            this.setDirty();
         }
 
         this.level.updateComparatorOutputLevel(this);
@@ -80,11 +75,10 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
         this.namedTag.putFloat("ItemDropChance", chance);
     }
 
-    private void setChanged() {
+    @Override
+    public void setDirty() {
         this.spawnToAll();
-        if (this.chunk != null) {
-            this.chunk.setChanged();
-        }
+        super.setDirty();
     }
 
     @Override
@@ -95,11 +89,7 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
         CompoundTag NBTItem = namedTag.getCompound("Item").copy();
         NBTItem.setName("Item");
         boolean item = NBTItem.getShort("id") == Item.AIR;
-        return new CompoundTag()
-                .putString("id", BlockEntity.ITEM_FRAME)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
+        return getDefaultCompound(this, ITEM_FRAME)
                 .putCompound("Item", item ? NBTIO.putItemHelper(new ItemBlock(new BlockAir())) : NBTItem)
                 .putByte("ItemRotation", item ? 0 : this.getItemRotation());
         // TODO: This crashes the client, why?

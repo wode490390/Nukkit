@@ -4,10 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.Deflater;
+import lombok.extern.log4j.Log4j2;
 
-
+@Log4j2
 public abstract class Zlib {
-    private static ZlibProvider[] providers;
+
+    private static final ZlibProvider[] providers;
     private static ZlibProvider provider;
 
     static {
@@ -17,25 +19,28 @@ public abstract class Zlib {
     }
 
     public static void setProvider(int providerIndex) {
-        MainLogger.getLogger().info("Selected Zlib Provider: " + providerIndex + " (" + provider.getClass().getCanonicalName() + ")");
+        log.info("Selected Zlib Provider: " + providerIndex + " (" + provider.getClass().getCanonicalName() + ")");
         switch (providerIndex) {
             case 0:
-                if (providers[providerIndex] == null)
+                if (providers[providerIndex] == null) {
                     providers[providerIndex] = new ZlibOriginal();
+        }
                 break;
             case 1:
-                if (providers[providerIndex] == null)
+                if (providers[providerIndex] == null) {
                     providers[providerIndex] = new ZlibSingleThreadLowMem();
+        }
                 break;
             case 2:
-                if (providers[providerIndex] == null)
+                if (providers[providerIndex] == null) {
                     providers[providerIndex] = new ZlibThreadLocal();
+        }
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid provider: " + providerIndex);
         }
         if (providerIndex != 2) {
-            MainLogger.getLogger().warning(" - This Zlib will negatively affect performance");
+            log.warn(" - This Zlib will negatively affect performance");
         }
         provider = providers[providerIndex];
     }

@@ -1,12 +1,15 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.BlockVector3;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString(exclude = "namedTag")
 public class BlockEntityDataPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.BLOCK_ENTITY_DATA_PACKET;
 
     public int x;
@@ -21,7 +24,7 @@ public class BlockEntityDataPacket extends DataPacket {
 
     @Override
     public void decode() {
-        BlockVector3 v = this.getBlockVector3();
+        BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -31,7 +34,7 @@ public class BlockEntityDataPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBlockPosition(this.x, this.y, this.z);
         this.put(this.namedTag);
     }
 }

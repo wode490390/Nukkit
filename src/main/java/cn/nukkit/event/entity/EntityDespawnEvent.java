@@ -14,6 +14,7 @@ import cn.nukkit.level.Position;
  * Nukkit Project
  */
 public class EntityDespawnEvent extends EntityEvent {
+
     private static final HandlerList handlers = new HandlerList();
 
     public static HandlerList getHandlers() {
@@ -54,5 +55,4 @@ public class EntityDespawnEvent extends EntityEvent {
     public boolean isItem() {
         return this.entity instanceof EntityItem;
     }
-
 }

@@ -1,10 +1,12 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.BlockVector3;
+import lombok.ToString;
 
 /**
  * @author Nukkit Project Team
  */
+@ToString
 public class PlayerActionPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PLAYER_ACTION_PACKET;
@@ -28,13 +30,14 @@ public class PlayerActionPacket extends DataPacket {
     public static final int ACTION_STOP_GLIDE = 16;
     public static final int ACTION_BUILD_DENIED = 17;
     public static final int ACTION_CONTINUE_BREAK = 18;
+    public static final int ACTION_CHANGE_SKIN = 19;
     public static final int ACTION_SET_ENCHANTMENT_SEED = 20;
     public static final int ACTION_START_SWIMMING = 21;
     public static final int ACTION_STOP_SWIMMING = 22;
     public static final int ACTION_START_SPIN_ATTACK = 23;
     public static final int ACTION_STOP_SPIN_ATTACK = 24;
 
-    public long entityId;
+    public long entityRuntimeId;
     public int action;
     public int x;
     public int y;
@@ -44,9 +47,9 @@ public class PlayerActionPacket extends DataPacket {
 
     @Override
     public void decode() {
-        this.entityId = this.getEntityRuntimeId();
+        this.entityRuntimeId = this.getEntityRuntimeId();
         this.action = this.getVarInt();
-        BlockVector3 v = this.getBlockVector3();
+        BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -56,9 +59,9 @@ public class PlayerActionPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityRuntimeId(this.entityId);
+        this.putEntityRuntimeId(this.entityRuntimeId);
         this.putVarInt(this.action);
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBlockPosition(this.x, this.y, this.z);
         this.putVarInt(this.face);
     }
 
@@ -66,5 +69,4 @@ public class PlayerActionPacket extends DataPacket {
     public byte pid() {
         return NETWORK_ID;
     }
-
 }

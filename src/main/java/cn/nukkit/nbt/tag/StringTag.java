@@ -2,10 +2,10 @@ package cn.nukkit.nbt.tag;
 
 import cn.nukkit.nbt.stream.NBTInputStream;
 import cn.nukkit.nbt.stream.NBTOutputStream;
-
 import java.io.IOException;
 
 public class StringTag extends Tag {
+
     public String data;
 
     public StringTag(String name) {
@@ -15,7 +15,9 @@ public class StringTag extends Tag {
     public StringTag(String name, String data) {
         super(name);
         this.data = data;
-        if (data == null) throw new IllegalArgumentException("Empty string not allowed");
+        if (data == null) {
+            throw new IllegalArgumentException("Empty string not allowed");
+        }
     }
 
     @Override
@@ -51,5 +53,4 @@ public class StringTag extends Tag {
         }
         return false;
     }
-
 }

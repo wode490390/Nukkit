@@ -4,14 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
  * @author Tee7even
- *         <p>
- *         Various methods for more compact JSON object constructing
+ * <p>
+ * Various methods for more compact JSON object constructing
  */
 @SuppressWarnings("unchecked")
 public class JsonUtil {

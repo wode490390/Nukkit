@@ -10,7 +10,6 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.BlockFace.Plane;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +18,7 @@ import java.util.Set;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockRedstoneWire extends BlockFlowable {
+public class BlockRedstoneWire extends BlockFlowableMeta {
 
     private boolean canProvidePower = true;
     private final Set<Vector3> blocksNeedingUpdate = new HashSet<>();
@@ -104,17 +103,18 @@ public class BlockRedstoneWire extends BlockFlowable {
 
         for (BlockFace face : Plane.HORIZONTAL) {
             Vector3 v = pos.getSide(face);
-            boolean flag = v.getX() != this.getX() || v.getZ() != this.getZ();
 
-            if (flag) {
-                strength = this.getMaxCurrentStrength(v, strength);
+            if (v.getX() == this.getX() && v.getZ() == this.getZ()) {
+                continue;
             }
 
-            if (this.level.getBlock(v).isNormalBlock() && !this.level.getBlock(pos.up()).isNormalBlock()) {
-                if (flag) {
-                    strength = this.getMaxCurrentStrength(v.up(), strength);
-                }
-            } else if (flag && !this.level.getBlock(v).isNormalBlock()) {
+            strength = this.getMaxCurrentStrength(v, strength);
+
+            boolean vNormal = this.level.getBlock(v).isNormalBlock();
+
+            if (vNormal && !this.level.getBlock(pos.up()).isNormalBlock()) {
+                strength = this.getMaxCurrentStrength(v.up(), strength);
+            } else if (!vNormal) {
                 strength = this.getMaxCurrentStrength(v.down(), strength);
             }
         }
@@ -129,6 +129,8 @@ public class BlockRedstoneWire extends BlockFlowable {
 
         if (power > maxStrength - 1) {
             maxStrength = power;
+        } else if (power < maxStrength && strength <= maxStrength) {
+            maxStrength = Math.max(power, strength - 1);
         }
 
         if (meta != maxStrength) {
@@ -219,10 +221,12 @@ public class BlockRedstoneWire extends BlockFlowable {
         return b.isSolid() && !b.isTransparent() && b.getId() != Block.GLOWSTONE;
     }
 
+    @Override
     public int getStrongPower(BlockFace side) {
         return !this.canProvidePower ? 0 : getWeakPower(side);
     }
 
+    @Override
     public int getWeakPower(BlockFace side) {
         if (!this.canProvidePower) {
             return 0;

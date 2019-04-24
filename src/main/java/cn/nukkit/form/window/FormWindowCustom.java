@@ -1,11 +1,17 @@
 package cn.nukkit.form.window;
 
-import cn.nukkit.form.element.*;
+import cn.nukkit.form.element.Element;
+import cn.nukkit.form.element.ElementButtonImageData;
+import cn.nukkit.form.element.ElementDropdown;
+import cn.nukkit.form.element.ElementInput;
+import cn.nukkit.form.element.ElementLabel;
+import cn.nukkit.form.element.ElementSlider;
+import cn.nukkit.form.element.ElementStepSlider;
+import cn.nukkit.form.element.ElementToggle;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.response.FormResponseData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +30,17 @@ public class FormWindowCustom extends FormWindow {
     }
 
     public FormWindowCustom(String title, List<Element> contents) {
-        this(title, contents, "");
+        this(title, contents, (ElementButtonImageData) null);
     }
 
     public FormWindowCustom(String title, List<Element> contents, String icon) {
+        this(title, contents, icon.isEmpty() ? null : new ElementButtonImageData(ElementButtonImageData.IMAGE_DATA_TYPE_URL, icon));
+    }
+
+    public FormWindowCustom(String title, List<Element> contents, ElementButtonImageData icon) {
         this.title = title;
         this.content = contents;
-        if (!icon.isEmpty()) this.icon = new ElementButtonImageData(ElementButtonImageData.IMAGE_DATA_TYPE_URL, icon);
+        this.icon = icon;
     }
 
     public String getTitle() {
@@ -54,9 +64,16 @@ public class FormWindowCustom extends FormWindow {
     }
 
     public void setIcon(String icon) {
-        if (!icon.isEmpty()) this.icon = new ElementButtonImageData(ElementButtonImageData.IMAGE_DATA_TYPE_URL, icon);
+        if (!icon.isEmpty()) {
+            this.icon = new ElementButtonImageData(ElementButtonImageData.IMAGE_DATA_TYPE_URL, icon);
+        }
     }
 
+    public void setIcon(ElementButtonImageData icon) {
+        this.icon = icon;
+    }
+
+    @Override
     public String getJSONData() {
         String toModify = new Gson().toJson(this);
         //We need to replace this due to Java not supporting declaring class field 'default'
@@ -66,10 +83,12 @@ public class FormWindowCustom extends FormWindow {
                 .replace("defaultStepIndex", "default");
     }
 
+    @Override
     public FormResponseCustom getResponse() {
         return response;
     }
 
+    @Override
     public void setResponse(String data) {
         if (data.equals("null")) {
             this.closed = true;
@@ -88,6 +107,7 @@ public class FormWindowCustom extends FormWindow {
         HashMap<Integer, FormResponseData> stepSliderResponses = new HashMap<>();
         HashMap<Integer, Boolean> toggleResponses = new HashMap<>();
         HashMap<Integer, Object> responses = new HashMap<>();
+        HashMap<Integer, String> labelResponses = new HashMap<>();
 
         for (String elementData : elementResponses) {
             if (i >= content.size()) {
@@ -95,12 +115,13 @@ public class FormWindowCustom extends FormWindow {
             }
 
             Element e = content.get(i);
-            if (e == null) break;
-            if (e instanceof ElementLabel) {
-                i++;
-                continue;
+            if (e == null) {
+                break;
             }
-            if (e instanceof ElementDropdown) {
+            if (e instanceof ElementLabel) {
+                labelResponses.put(i, ((ElementLabel) e).getText());
+                responses.put(i, ((ElementLabel) e).getText());
+            } else if (e instanceof ElementDropdown) {
                 String answer = ((ElementDropdown) e).getOptions().get(Integer.parseInt(elementData));
                 dropdownResponses.put(i, new FormResponseData(Integer.parseInt(elementData), answer));
                 responses.put(i, answer);
@@ -124,7 +145,7 @@ public class FormWindowCustom extends FormWindow {
         }
 
         this.response = new FormResponseCustom(responses, dropdownResponses, inputResponses,
-                sliderResponses, stepSliderResponses, toggleResponses);
+                sliderResponses, stepSliderResponses, toggleResponses, labelResponses);
     }
 
     /**
@@ -151,5 +172,4 @@ public class FormWindowCustom extends FormWindow {
             });
         }
     }
-
 }

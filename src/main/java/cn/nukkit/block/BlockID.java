@@ -1,6 +1,7 @@
 package cn.nukkit.block;
 
 public interface BlockID {
+
     int AIR = 0;
     int STONE = 1;
     int GRASS = 2;
@@ -46,6 +47,7 @@ public interface BlockID {
     int PISTON = 33;
     int PISTON_HEAD = 34;
     int WOOL = 35;
+    int ELEMENT_0 = 36;
     int DANDELION = 37;
     int POPPY = 38;
     int ROSE = 38;
@@ -99,7 +101,6 @@ public interface BlockID {
     int STONE_PRESSURE_PLATE = 70;
     int IRON_DOOR_BLOCK = 71;
     int WOODEN_PRESSURE_PLATE = 72;
-
     int REDSTONE_ORE = 73;
     int GLOWING_REDSTONE_ORE = 74;
     int LIT_REDSTONE_ORE = 74;
@@ -167,7 +168,6 @@ public interface BlockID {
     int DRAGON_EGG = 122;
     int REDSTONE_LAMP = 123;
     int LIT_REDSTONE_LAMP = 124;
-    //Note: dropper CAN NOT BE HARVESTED WITH HAND -- canHarvestWithHand method should be overridden FALSE.
     int DROPPER = 125;
     int ACTIVATOR_RAIL = 126;
     int COCOA = 127;
@@ -184,7 +184,7 @@ public interface BlockID {
     int BIRCH_WOODEN_STAIRS = 135;
     int JUNGLE_WOOD_STAIRS = 136;
     int JUNGLE_WOODEN_STAIRS = 136;
-
+    int COMMAND_BLOCK = 137;
     int BEACON = 138;
     int COBBLE_WALL = 139;
     int STONE_WALL = 139;
@@ -227,7 +227,7 @@ public interface BlockID {
     int DARK_OAK_WOOD_STAIRS = 164;
     int DARK_OAK_WOODEN_STAIRS = 164;
     int SLIME_BLOCK = 165;
-
+    int GLOW_STICK = 166;
     int IRON_TRAPDOOR = 167;
     int PRISMARINE = 168;
     int SEA_LANTERN = 169;
@@ -237,7 +237,8 @@ public interface BlockID {
     int COAL_BLOCK = 173;
     int PACKED_ICE = 174;
     int DOUBLE_PLANT = 175;
-
+    int STANDING_BANNER = 176;
+    int WALL_BANNER = 177;
     int DAYLIGHT_DETECTOR_INVERTED = 178;
     int RED_SANDSTONE = 179;
     int RED_SANDSTONE_STAIRS = 180;
@@ -248,6 +249,8 @@ public interface BlockID {
     int FENCE_GATE_JUNGLE = 185;
     int FENCE_GATE_DARK_OAK = 186;
     int FENCE_GATE_ACACIA = 187;
+    int REPEATING_COMMAND_BLOCK = 188;
+    int CHAIN_COMMAND_BLOCK = 189;
 
     int SPRUCE_DOOR_BLOCK = 193;
     int BIRCH_DOOR_BLOCK = 194;
@@ -260,11 +263,10 @@ public interface BlockID {
     int PURPUR_BLOCK = 201;
 
     int PURPUR_STAIRS = 203;
-    //int DOUBLE_PURPUR_SLAB = 204;
+
     int UNDYED_SHULKER_BOX = 205;
     int END_BRICKS = 206;
-    //Note: frosted ice CAN NOT BE HARVESTED WITH HAND -- canHarvestWithHand method should be overridden FALSE.
-    int ICE_FROSTED = 207;
+    int FROSTED_ICE = 207;
     int END_ROD = 208;
     int END_GATEWAY = 209;
 
@@ -295,13 +297,133 @@ public interface BlockID {
 
     int CHORUS_PLANT = 240;
     int STAINED_GLASS = 241;
+
     int PODZOL = 243;
     int BEETROOT_BLOCK = 244;
     int STONECUTTER = 245;
     int GLOWING_OBSIDIAN = 246;
-    int NETHER_REACTOR = 247; //Should not be removed
+    int NETHER_REACTOR_CORE = 247;
 
-    int PISTON_EXTENSION = 250;
-
+    int MOVING_BLOCK = 250;
     int OBSERVER = 251;
+    int STRUCTURE_BLOCK = 252;
+
+    int PRISMARINE_STAIRS = 257;
+    int DARK_PRISMARINE_STAIRS = 258;
+    int PRISMARINE_BRICKS_STAIRS = 259;
+    int STRIPPED_SPRUCE_LOG = 260;
+    int STRIPPED_SPRUCE_WOOD = 260;
+    int STRIPPED_SPRUCE_TRUNK = 260;
+    int STRIPPED_BIRCH_LOG = 261;
+    int STRIPPED_BIRCH_WOOD = 261;
+    int STRIPPED_BIRCH_TRUNK = 261;
+    int STRIPPED_JUNGLE_LOG = 262;
+    int STRIPPED_JUNGLE_WOOD = 262;
+    int STRIPPED_JUNGLE_TRUNK = 262;
+    int STRIPPED_ACACIA_LOG = 263;
+    int STRIPPED_ACACIA_WOOD = 263;
+    int STRIPPED_ACACIA_TRUNK = 263;
+    int STRIPPED_DARK_OAK_LOG = 264;
+    int STRIPPED_DARK_OAK_WOOD = 264;
+    int STRIPPED_DARK_OAK_TRUNK = 264;
+    int STRIPPED_OAK_LOG = 265;
+    int STRIPPED_OAK_WOOD = 265;
+    int STRIPPED_OAK_TRUNK = 265;
+    int BLUE_ICE = 266;
+
+    int SEAGRASS = 385;
+    int CORAL = 386;
+    int TUBE_CORAL = 386;
+    int CORAL_BLOCK = 387;
+    int TUBE_CORAL_BLOCK = 387;
+    int CORAL_FAN = 388;
+    int TUBE_CORAL_FAN = 388;
+    int DEAD_CORAL_FAN = 389;
+    int DEAD_TUBE_CORAL_FAN = 389;
+    int CORAL_FAN_HANG = 390;
+    int TUBE_CORAL_WALL_FAN = 390;
+    int CORAL_FAN_HANG2 = 391;
+    int BUBBLE_CORAL_WALL_FAN = 391;
+    int CORAL_FAN_HANG3 = 392;
+    int HORN_CORAL_WALL_FAN = 392;
+    int KELP_BLOCK = 393;
+    int DRIED_KELP_BLOCK = 394;
+    int ACACIA_BUTTON = 395;
+    int BIRCH_BUTTON = 396;
+    int DARK_OAK_BUTTON = 397;
+    int JUNGLE_BUTTON = 398;
+    int SPRUCE_BUTTON = 399;
+    int ACACIA_TRAPDOOR = 400;
+    int BIRCH_TRAPDOOR = 401;
+    int DARK_OAK_TRAPDOOR = 402;
+    int JUNGLE_TRAPDOOR = 403;
+    int SPRUCE_TRAPDOOR = 404;
+    int ACACIA_PRESSURE_PLATE = 405;
+    int BIRCH_PRESSURE_PLATE = 406;
+    int DARK_OAK_PRESSURE_PLATE = 407;
+    int JUNGLE_PRESSURE_PLATE = 408;
+    int SPRUCE_PRESSURE_PLATE = 409;
+    int CARVED_PUMPKIN = 410;
+    int SEA_PICKLE = 411;
+    int CONDUIT = 412;
+
+    int TURTLE_EGG = 414;
+    int BUBBLE_COLUMN = 415;
+    int BARRIER = 416;
+    int STONE_SLAB3 = 417;
+    int END_STONE_BRICK_SLAB = 417;
+    int BAMBOO = 418;
+    int BAMBOO_SAPLING = 419;
+    int SCAFFOLDING = 420;
+    int STONE_SLAB4 = 421;
+    int MOSSY_STONE_BRICK_SLAB = 421;
+    int DOUBLE_STONE_SLAB3 = 422;
+    int DOUBLE_END_STONE_BRICK_SLAB = 422;
+    int DOUBLE_STONE_SLAB4 = 423;
+    int DOUBLE_MOSSY_STONE_BRICK_SLAB = 423;
+    int GRANITE_STAIRS = 424;
+    int DIORITE_STAIRS = 425;
+    int ANDESITE_STAIRS = 426;
+    int POLISHED_GRANITE_STAIRS = 427;
+    int POLISHED_DIORITE_STAIRS = 428;
+    int POLISHED_ANDESITE_STAIRS = 429;
+    int MOSSY_STONE_BRICK_STAIRS = 430;
+    int SMOOTH_RED_SANDSTONE_STAIRS = 431;
+    int SMOOTH_SANDSTONE_STAIRS = 432;
+    int END_BRICK_STAIRS = 433;
+    int MOSSY_COBBLESTONE_STAIRS = 434;
+    int STONE_STAIRS = 435;
+    int SPRUCE_STANDING_SIGN = 436;
+    int SPRUCE_WALL_SIGN = 437;
+    int SMOOTH_STONE = 438;
+    int RED_NETHER_BRICK_STAIRS = 439;
+    int SMOOTH_QUARTZ_STAIRS = 440;
+    int BIRCH_STANDING_SIGN = 441;
+    int BIRCH_WALL_SIGN = 442;
+    int JUNGLE_STANDING_SIGN = 443;
+    int JUNGLE_WALL_SIGN = 444;
+    int ACACIA_STANDING_SIGN = 445;
+    int ACACIA_WALL_SIGN = 446;
+    int DARK_OAK_STANDING_SIGN = 447;
+    int DARK_OAK_WALL_SIGN = 448;
+    int LECTERN = 449;
+    int GRINDSTONE = 450;
+    int BLAST_FURNACE = 451;
+    int STONECUTTER_BLOCK = 452;
+    int SMOKER = 453;
+
+    int CARTOGRAPHY_TABLE = 455;
+    int FLETCHING_TABLE = 456;
+    int SMITHING_TABLE = 457;
+    int BARREL = 458;
+    int LOOM = 459;
+
+    int BELL = 461;
+    int SWEET_BERRY_BUSH = 462;
+    int LANTERN = 463;
+    int CAMPFIRE = 464;
+    int LAVA_CAULDRON = 465;
+    int JIGSAW = 466;
+    int BARK = 467;
+    int COMPOSTER = 468;
 }

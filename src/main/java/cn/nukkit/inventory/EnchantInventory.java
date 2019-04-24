@@ -1,9 +1,20 @@
 package cn.nukkit.inventory;
 
+import cn.nukkit.Player;
+//import cn.nukkit.block.Block;
+//import cn.nukkit.item.Item;
+//import cn.nukkit.item.ItemBookEnchanted;
+//import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.item.enchantment.EnchantmentEntry;
+//import cn.nukkit.item.enchantment.EnchantmentList;
+//import cn.nukkit.level.Level;
+//import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
-
-import java.util.Random;
+//import cn.nukkit.network.protocol.CraftingDataPacket;
+//import cn.nukkit.utils.DyeColor;
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -11,12 +22,10 @@ import java.util.Random;
  */
 public class EnchantInventory extends ContainerInventory {
 
-    private final Random random = new Random();
-
     private int bookshelfAmount = 0;
 
-    private int[] levels = null;
-    private EnchantmentEntry[] entries = null;
+    private int[] levels;
+    private EnchantmentEntry[] entries;
 
     public EnchantInventory(Position position) {
         super(null, InventoryType.ENCHANT_TABLE);
@@ -44,9 +53,7 @@ public class EnchantInventory extends ContainerInventory {
                 this.bookshelfAmount = 15;
             }
 
-            NukkitRandom random = new NukkitRandom();
-
-            double base = (double) random.nextRange(1, 8) + (bookshelfAmount / 2d) + (double) random.nextRange(0, bookshelfAmount);
+            double base = (double) ThreadLocalRandom.current().nextInt(1, 8) + (bookshelfAmount / 2d) + (double) ThreadLocalRandom.current().nextInt(0, bookshelfAmount);
             this.levels[0] = (int) Math.max(base / 3, 1);
             this.levels[1] = (int) ((base * 2) / 3 + 1);
             this.levels[2] = (int) Math.max(base, bookshelfAmount * 2);
@@ -164,25 +171,23 @@ public class EnchantInventory extends ContainerInventory {
                 this.sendEnchantmentList();
             }
         }
-    }
+    }*/
 
     @Override
     public void onClose(Player who) {
         super.onClose(who);
-
-        for (int i = 0; i < 2; ++i) {
-            this.getHolder().getLevel().dropItem(this.getHolder().add(0.5, 0.5, 0.5), this.getItem(i));
-            this.clear(i);
-        }
-
-        if (this.getViewers().size() == 0) {
+        if (this.getViewers().isEmpty()) {
+            for (int i = 0; i < 2; ++i) {
+                who.getInventory().addItem(this.getItem(i));
+                this.clear(i);
+            }
             this.levels = null;
             this.entries = null;
             this.bookshelfAmount = 0;
         }
     }
 
-    public void onEnchant(Player who, Item before, Item after) {
+    /*public void onEnchant(Player who, Item before, Item after) {
         Item result = (before.getId() == Item.BOOK) ? new ItemBookEnchanted() : before;
         if (!before.hasEnchantments() && after.hasEnchantments() && after.getId() == result.getId() && this.levels != null && this.entries != null) {
             Enchantment[] enchantments = after.getEnchantments();
