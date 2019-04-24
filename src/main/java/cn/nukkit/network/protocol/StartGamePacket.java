@@ -4,10 +4,12 @@ import cn.nukkit.level.GameRules;
 import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.network.protocol.types.PlayerPermissions;
+import lombok.ToString;
 
 /**
  * Created on 15-10-13.
  */
+@ToString
 public class StartGamePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.START_GAME_PACKET;
@@ -23,36 +25,36 @@ public class StartGamePacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long entityUniqueId = 0;
-    public long entityRuntimeId = 0;
-    public int playerGamemode = 0;
+    public long entityUniqueId;
+    public long entityRuntimeId;
+    public int playerGamemode;
 
-    public Vector3f playerPosition = new Vector3f();
+    public Vector3f playerPosition;
 
-    public float pitch = 0;
-    public float yaw = 0;
+    public float pitch;
+    public float yaw;
 
-    public int seed = 0;
-    public byte dimension = 0;
+    public int seed;
+    public byte dimension;
     public int generator = 1; //default infinite - 0 old, 1 infinite, 2 flat
-    public int worldGamemode = 0;
-    public int difficulty = 1;
-    public int spawnX = 0;
-    public int spawnY = 0;
-    public int spawnZ = 0;
+    public int worldGamemode;
+    public int difficulty;
+    public int spawnX;
+    public int spawnY;
+    public int spawnZ;
     public boolean hasAchievementsDisabled = true;
     public int time = -1; //-1 = not stopped, any positive value = stopped at that time
     public boolean eduMode = false;
     public boolean hasEduFeaturesEnabled = false;
-    public float rainLevel = 0;
-    public float lightningLevel = 0;
+    public float rainLevel;
+    public float lightningLevel;
     public boolean hasConfirmedPlatformLockedContent = false;
     public boolean isMultiplayerGame = true;
     public boolean hasLANBroadcast = true;
     public int xboxLiveBroadcastMode = GAME_PUBLISH_SETTING_PUBLIC;
     public int platformBroadcastMode = GAME_PUBLISH_SETTING_PUBLIC;
-    public boolean commandsEnabled = false;
-    public boolean isTexturePacksRequired = false;
+    public boolean commandsEnabled;
+    public boolean isTexturePacksRequired = true;
     public GameRules gameRules;
     public boolean hasBonusChestEnabled = false;
     public boolean hasStartWithMapEnabled = false;
@@ -68,7 +70,7 @@ public class StartGamePacket extends DataPacket {
     public boolean isWorldTemplateOptionLocked = false;
 
     public String levelId = ""; //base64 string, usually the same as world folder name in vanilla
-    public String worldName = "";
+    public String worldName;
     public String premiumWorldTemplateId = "";
     public boolean isTrial = false;
     public long currentTick = 0; //only used if isTrial is true

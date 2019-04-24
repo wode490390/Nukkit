@@ -1,15 +1,16 @@
 package cn.nukkit.network.protocol.types;
 
 import cn.nukkit.entity.data.Skin;
-
 import java.util.UUID;
+import lombok.ToString;
 
+@ToString
 public class PlayerListEntry {
 
     public final UUID uuid;
     public long entityUniqueId = 0;
     public String username = "";
-    public Skin skin = new Skin();
+    public Skin skin;
     public String xboxUserId = "";
     public String platformChatId = "";
 

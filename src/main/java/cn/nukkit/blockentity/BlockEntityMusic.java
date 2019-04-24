@@ -27,7 +27,7 @@ public class BlockEntityMusic extends BlockEntity implements BlockEntityPowerabl
 
     @Override
     public boolean isBlockEntityValid() {
-        return this.getLevel().getBlockIdAt(this.getFloorX(), this.getFloorY(), this.getFloorZ()) == Block.NOTEBLOCK;
+        return this.getBlock().getId() == Block.NOTEBLOCK;
     }
 
     @Override

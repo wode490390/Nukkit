@@ -8,14 +8,15 @@ import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.item.enchantment.EnchantmentEntry;
 import cn.nukkit.item.enchantment.EnchantmentList;
 import cn.nukkit.utils.BinaryStream;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.ToString;
 
 /**
  * @author Nukkit Project Team
  */
+@ToString
 public class CraftingDataPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CRAFTING_DATA_PACKET;
@@ -158,5 +159,4 @@ public class CraftingDataPacket extends DataPacket {
     public byte pid() {
         return NETWORK_ID;
     }
-
 }

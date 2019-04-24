@@ -1,9 +1,12 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class UpdateBlockPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_BLOCK_PACKET;
@@ -24,7 +27,7 @@ public class UpdateBlockPacket extends DataPacket {
     public int z;
     public int y;
     public int blockRuntimeId;
-    public int flags = 0x02;
+    public int flags = 0x2;
     public int dataLayerId = DATA_LAYER_NORMAL;
 
     @Override

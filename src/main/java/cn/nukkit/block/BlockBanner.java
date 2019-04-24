@@ -12,13 +12,13 @@ import cn.nukkit.math.NukkitMath;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 
-public class BlockStandingBanner extends BlockTransparentMeta implements BlockFaceable {
+public class BlockBanner extends BlockTransparentMeta implements BlockFaceable {
 
-    public BlockStandingBanner() {
+    public BlockBanner() {
         this(0);
     }
 
-    public BlockStandingBanner(int meta) {
+    public BlockBanner(int meta) {
         super(meta);
     }
 

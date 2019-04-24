@@ -1,7 +1,9 @@
 package cn.nukkit.network.protocol.types;
 
 import java.awt.Color;
+import lombok.ToString;
 
+@ToString
 public class MapDecorator {
 
     public byte img;

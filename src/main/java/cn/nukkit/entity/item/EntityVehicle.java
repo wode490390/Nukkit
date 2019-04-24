@@ -67,8 +67,8 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
     @Override
     public boolean mountEntity(Entity entity) {
         Objects.requireNonNull(entity, "The target of the mounting entity can't be null");
-        this.PitchDelta = 0.0D;
-        this.YawDelta = 0.0D;
+        this.pitchDelta = 0.0D;
+        this.yawDelta = 0.0D;
         // TODO: Check if its necessary to check if player is dead (So the vehicle wont think that there is entity riding).
         // Check if the entity is riding some sort of vehicle
         // and check if the entity is not dead yet

@@ -1,11 +1,15 @@
 package cn.nukkit.network.protocol;
 
+import cn.nukkit.network.protocol.types.WindowTypes;
+import lombok.ToString;
+
+@ToString
 public class UpdateTradePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_TRADE_PACKET;
 
     public byte windowId;
-    public byte windowType = 15; //trading id
+    public byte windowType = WindowTypes.TRADING; //trading id
     public int varint1; //unknown
     public int varint2; //unknown
     public int varint3; //unknown
@@ -39,5 +43,4 @@ public class UpdateTradePacket extends DataPacket {
         this.putString(displayName);
         this.put(this.offers);
     }
-
 }

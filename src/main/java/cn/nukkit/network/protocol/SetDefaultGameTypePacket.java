@@ -1,5 +1,8 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class SetDefaultGameTypePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_DEFAULT_GAME_TYPE_PACKET;
@@ -21,5 +24,4 @@ public class SetDefaultGameTypePacket extends DataPacket {
         this.reset();
         this.putUnsignedVarInt(this.gamemode);
     }
-
 }

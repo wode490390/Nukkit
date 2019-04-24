@@ -4,11 +4,13 @@ import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.utils.Binary;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class AddItemEntityPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ADD_ITEM_ENTITY_PACKET;
@@ -18,11 +20,11 @@ public class AddItemEntityPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long entityUniqueId = 0; //TODO
-    public long entityRuntimeId = 0;
-    public Item item = new Item(0);
-    public Vector3f position = new Vector3f();
-    public Vector3f motion = new Vector3f();
+    public long entityUniqueId;
+    public long entityRuntimeId;
+    public Item item;
+    public Vector3f position;
+    public Vector3f motion;
     public EntityMetadata metadata = new EntityMetadata();
     public boolean isFromFishing = false;
 

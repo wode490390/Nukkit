@@ -80,8 +80,8 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
     @Override
     public boolean isBlockEntityValid() {
-        // TODO: 2016/2/4 TRAPPED_CHEST?
-        return getBlock().getId() == Block.CHEST;
+        int blockId = this.getBlock().getId();
+        return blockId == Block.CHEST || blockId == Block.TRAPPED_CHEST;
     }
 
     @Override
@@ -205,7 +205,7 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
     }
 
     public boolean pairWith(BlockEntityChest chest) {
-        if (this.isPaired() || chest.isPaired()) {
+        if (this.isPaired() || chest.isPaired() || this.getBlock().getId() != chest.getBlock().getId()) {
             return false;
         }
 
@@ -252,21 +252,11 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
     @Override
     public CompoundTag getSpawnCompound() {
-        CompoundTag c;
+        CompoundTag c = getDefaultCompound(this, CHEST);
+
         if (this.isPaired()) {
-            c = new CompoundTag()
-                    .putString("id", BlockEntity.CHEST)
-                    .putInt("x", (int) this.x)
-                    .putInt("y", (int) this.y)
-                    .putInt("z", (int) this.z)
-                    .putInt("pairx", this.namedTag.getInt("pairx"))
+            c.putInt("pairx", this.namedTag.getInt("pairx"))
                     .putInt("pairz", this.namedTag.getInt("pairz"));
-        } else {
-            c = new CompoundTag()
-                    .putString("id", BlockEntity.CHEST)
-                    .putInt("x", (int) this.x)
-                    .putInt("y", (int) this.y)
-                    .putInt("z", (int) this.z);
         }
 
         if (this.hasName()) {

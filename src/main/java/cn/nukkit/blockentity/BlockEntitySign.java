@@ -50,6 +50,11 @@ public class BlockEntitySign extends BlockEntitySpawnable {
             }
         }
 
+        // Check old text to sanitize
+        if (text != null) {
+            sanitizeText(text);
+        }
+
         super.initBlockEntity();
     }
 
@@ -61,12 +66,12 @@ public class BlockEntitySign extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        int blockID = getBlock().getId();
-        return blockID == Block.SIGN_POST || blockID == Block.WALL_SIGN;
+        int blockId = this.getBlock().getId();
+        return blockId == Block.SIGN_POST || blockId == Block.WALL_SIGN; //TODO:1.9
     }
 
     public boolean setText(String... lines) {
-        for (int i = 0; i < text.length; i++) {
+        for (int i = 0; i < 4; i++) {
             if (i < lines.length) {
                 text[i] = lines[i];
             } else {
@@ -98,6 +103,8 @@ public class BlockEntitySign extends BlockEntitySpawnable {
         String[] splitLines = nbt.getString("Text").split("\n", 4);
         System.arraycopy(splitLines, 0, lines, 0, splitLines.length);
 
+        sanitizeText(lines);
+
         SignChangeEvent signChangeEvent = new SignChangeEvent(this.getBlock(), player, lines);
 
         if (!this.namedTag.contains("Creator") || !Objects.equals(player.getUniqueId().toString(), this.namedTag.getString("Creator"))) {
@@ -122,12 +129,16 @@ public class BlockEntitySign extends BlockEntitySpawnable {
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return new CompoundTag()
-                .putString("id", BlockEntity.SIGN)
-                .putString("Text", this.namedTag.getString("Text"))
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z);
+        return getDefaultCompound(this, SIGN)
+                .putString("Text", this.namedTag.getString("Text"));
+    }
 
+    private static void sanitizeText(String[] lines) {
+        for (int i = 0; i < lines.length; i++) {
+            // Don't allow excessive text per line.
+            if (lines[i] != null) {
+                lines[i] = lines[i].substring(0, Math.min(255, lines[i].length()));
+            }
+        }
     }
 }

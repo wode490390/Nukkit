@@ -11,6 +11,8 @@ jobs:
           - v1-dependencies-
       - run:
           command: |
+            git submodule sync
+            git submodule update --init
             mvn clean package
       - store_artifacts:
           path: ./target/nukkit-1.0-SNAPSHOT.jar

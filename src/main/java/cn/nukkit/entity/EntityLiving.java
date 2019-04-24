@@ -208,10 +208,13 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         boolean hasUpdate = super.entityBaseTick(tickDiff);
 
         if (this.isAlive()) {
-
             if (this.isInsideOfSolid()) {
                 hasUpdate = true;
                 this.attack(new EntityDamageEvent(this, DamageCause.SUFFOCATION, 1));
+            }
+
+            if (this.isOnLadder()) {
+                this.resetFallDistance();
             }
 
             if (!this.hasEffect(Effect.WATER_BREATHING) && this.isInsideOfWater()) {
@@ -253,7 +256,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
             this.attackTime -= tickDiff;
         }
         if (this.riding == null) {
-            for (Entity entity : level.getNearbyEntities(this.boundingBox.grow(0.20000000298023224D, 0.0D, 0.20000000298023224D), this)) {
+            for (Entity entity : level.getNearbyEntities(this.boundingBox.grow(0.20000000298023224, 0, 0.20000000298023224), this)) {
                 if (entity instanceof EntityRideable) {
                     this.collidingWith(entity);
                 }

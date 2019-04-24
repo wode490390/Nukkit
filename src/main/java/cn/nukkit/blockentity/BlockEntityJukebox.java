@@ -33,7 +33,7 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        return this.getLevel().getBlockIdAt(getFloorX(), getFloorY(), getFloorZ()) == Block.JUKEBOX;
+        return this.getBlock().getId() == Block.JUKEBOX;
     }
 
     public void setRecordItem(Item recordItem) {
@@ -108,6 +108,7 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return getDefaultCompound(this, JUKEBOX).putCompound("RecordItem", NBTIO.putItemHelper(this.recordItem));
+        return getDefaultCompound(this, JUKEBOX)
+                .putCompound("RecordItem", NBTIO.putItemHelper(this.recordItem));
     }
 }

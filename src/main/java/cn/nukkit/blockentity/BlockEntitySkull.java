@@ -34,17 +34,13 @@ public class BlockEntitySkull extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        return getBlock().getId() == Block.SKULL_BLOCK;
+        return this.getBlock().getId() == Block.SKULL_BLOCK;
     }
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return new CompoundTag()
-                .putString("id", BlockEntity.SKULL)
+        return getDefaultCompound(this, SKULL)
                 .put("SkullType", this.namedTag.get("SkullType"))
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
                 .put("Rot", this.namedTag.get("Rot"));
     }
 }

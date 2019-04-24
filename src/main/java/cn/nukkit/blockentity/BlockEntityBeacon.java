@@ -21,20 +21,20 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
 
     @Override
     protected void initBlockEntity() {
-        if (!namedTag.contains("Lock")) {
-            namedTag.putString("Lock", "");
+        if (!this.namedTag.contains("Lock")) {
+            this.namedTag.putString("Lock", "");
         }
 
-        if (!namedTag.contains("Levels")) {
-            namedTag.putInt("Levels", 0);
+        if (!this.namedTag.contains("Levels")) {
+            this.namedTag.putInt("Levels", 0);
         }
 
-        if (!namedTag.contains("Primary")) {
-            namedTag.putInt("Primary", 0);
+        if (!this.namedTag.contains("Primary")) {
+            this.namedTag.putInt("Primary", 0);
         }
 
-        if (!namedTag.contains("Secondary")) {
-            namedTag.putInt("Secondary", 0);
+        if (!this.namedTag.contains("Secondary")) {
+            this.namedTag.putInt("Secondary", 0);
         }
 
         this.scheduleUpdate();
@@ -44,8 +44,7 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        int blockID = this.getBlock().getId();
-        return blockID == Block.BEACON;
+        return this.getBlock().getId() == Block.BEACON;
     }
 
     @Override

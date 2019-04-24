@@ -238,7 +238,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
             list[COAL_BLOCK] = BlockCoal.class; //173
             list[PACKED_ICE] = BlockIcePacked.class; //174
             list[DOUBLE_PLANT] = BlockDoublePlant.class; //175
-            list[STANDING_BANNER] = BlockStandingBanner.class; //176
+            list[STANDING_BANNER] = BlockBanner.class; //176
             list[WALL_BANNER] = BlockWallBanner.class; //177
             list[DAYLIGHT_DETECTOR_INVERTED] = BlockDaylightDetectorInverted.class; //178
             list[RED_SANDSTONE] = BlockRedSandstone.class; //179
@@ -723,7 +723,7 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     @Override
     public Block getSide(BlockFace face) {
         if (this.isValid()) {
-            return this.getLevel().getBlock((int) x + face.getXOffset(), (int) y + face.getYOffset(), (int) z + face.getZOffset());
+            return this.getLevel().getBlock(this.getFloorX() + face.getXOffset(), this.getFloorY() + face.getYOffset(), this.getFloorZ() + face.getZOffset());
         }
         return this.getSide(face, 1);
     }
@@ -732,15 +732,15 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
     public Block getSide(BlockFace face, int step) {
         if (this.isValid()) {
             if (step == 1) {
-                return this.getLevel().getBlock((int) x + face.getXOffset(), (int) y + face.getYOffset(), (int) z + face.getZOffset());
+                return this.getLevel().getBlock(this.getFloorX() + face.getXOffset(), this.getFloorY() + face.getYOffset(), this.getFloorZ() + face.getZOffset());
             } else {
-                return this.getLevel().getBlock((int) x + face.getXOffset() * step, (int) y + face.getYOffset() * step, (int) z + face.getZOffset() * step);
+                return this.getLevel().getBlock(this.getFloorX() + face.getXOffset() * step, this.getFloorY() + face.getYOffset() * step, this.getFloorZ() + face.getZOffset() * step);
             }
         }
-        Block block = Block.get(Item.AIR, 0);
-        block.x = (int) x + face.getXOffset() * step;
-        block.y = (int) y + face.getYOffset() * step;
-        block.z = (int) z + face.getZOffset() * step;
+        Block block = Block.get(AIR, 0);
+        block.x = this.getFloorX() + face.getXOffset() * step;
+        block.y = this.getFloorY() + face.getYOffset() * step;
+        block.z = this.getFloorZ() + face.getZOffset() * step;
         return block;
     }
 

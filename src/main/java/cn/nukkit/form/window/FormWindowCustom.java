@@ -107,6 +107,7 @@ public class FormWindowCustom extends FormWindow {
         HashMap<Integer, FormResponseData> stepSliderResponses = new HashMap<>();
         HashMap<Integer, Boolean> toggleResponses = new HashMap<>();
         HashMap<Integer, Object> responses = new HashMap<>();
+        HashMap<Integer, String> labelResponses = new HashMap<>();
 
         for (String elementData : elementResponses) {
             if (i >= content.size()) {
@@ -118,10 +119,9 @@ public class FormWindowCustom extends FormWindow {
                 break;
             }
             if (e instanceof ElementLabel) {
-                i++;
-                continue;
-            }
-            if (e instanceof ElementDropdown) {
+                labelResponses.put(i, ((ElementLabel) e).getText());
+                responses.put(i, ((ElementLabel) e).getText());
+            } else if (e instanceof ElementDropdown) {
                 String answer = ((ElementDropdown) e).getOptions().get(Integer.parseInt(elementData));
                 dropdownResponses.put(i, new FormResponseData(Integer.parseInt(elementData), answer));
                 responses.put(i, answer);
@@ -145,7 +145,7 @@ public class FormWindowCustom extends FormWindow {
         }
 
         this.response = new FormResponseCustom(responses, dropdownResponses, inputResponses,
-                sliderResponses, stepSliderResponses, toggleResponses);
+                sliderResponses, stepSliderResponses, toggleResponses, labelResponses);
     }
 
     /**

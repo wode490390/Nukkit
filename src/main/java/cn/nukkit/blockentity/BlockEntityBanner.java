@@ -69,8 +69,8 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
 
     @Override
     public boolean isBlockEntityValid() {
-        int id = this.getBlock().getId();
-        return id == Block.STANDING_BANNER || id == Block.WALL_BANNER;
+        int blockId = this.getBlock().getId();
+        return blockId == Block.STANDING_BANNER || blockId == Block.WALL_BANNER;
     }
 
     public void addAdditionalSpawnData(CompoundTag nbt) {
@@ -235,11 +235,7 @@ public class BlockEntityBanner extends BlockEntitySpawnable {
 
     @Override
     public CompoundTag getSpawnCompound() {
-        return new CompoundTag()
-                .putString("id", BlockEntity.BANNER)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
+        return getDefaultCompound(this, BANNER)
                 .putInt("Base", this.getBaseColor());
     }
 

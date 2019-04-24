@@ -256,20 +256,8 @@ public class EntityFishingHook extends EntityProjectile {
                 player.addExperience(experience);
             }
         }
-        if (this.linkedEntity != null) {
-            float damage = this.getResultDamage();
-            EntityDamageEvent ev;
-            if (this.shootingEntity == null) {
-                ev = new EntityDamageByEntityEvent(this, this.linkedEntity, DamageCause.PROJECTILE, damage, 0);
-            } else {
-                ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, this.linkedEntity, DamageCause.PROJECTILE, damage);
-                ((EntityDamageByEntityEvent) ev).setKnockBack(0);
-            }
-
-            this.linkedEntity.attack(ev);
-            if (!ev.isCancelled() && this.shootingEntity != null) {
-                this.linkedEntity.setMotion(this.shootingEntity.subtract(this.linkedEntity).divide(8).add(0, 0.3, 0));
-            }
+        if (this.linkedEntity != null && this.shootingEntity != null) {
+            this.linkedEntity.setMotion(this.shootingEntity.subtract(this.linkedEntity).divide(8).add(0, 0.3, 0));
         }
         if (this.shootingEntity instanceof Player) {
             EntityEventPacket pk = new EntityEventPacket();
@@ -322,7 +310,7 @@ public class EntityFishingHook extends EntityProjectile {
             entity.attack(ev);
 
             if (!ev.isCancelled() && this.shootingEntity != null) {
-                entity.setMotion(entity.subtract(this.shootingEntity).divide(12).add(0, 0.3, 0));
+                entity.setMotion(entity.subtract(this.shootingEntity).divide(15).add(0, 0.3, 0));
             }
 
             this.linkedEntity = entity;

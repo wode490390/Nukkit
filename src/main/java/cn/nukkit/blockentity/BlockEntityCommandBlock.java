@@ -163,7 +163,8 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
 
     @Override
     public boolean isBlockEntityValid() {
-        return this.getBlock() instanceof BlockCommandBlock;
+        int blockId = this.getBlock().getId();
+        return blockId == Block.COMMAND_BLOCK || blockId == Block.CHAIN_COMMAND_BLOCK || blockId == Block.REPEATING_COMMAND_BLOCK;
     }
 
     @Override
@@ -211,7 +212,7 @@ public class BlockEntityCommandBlock extends BlockEntitySpawnable implements Com
                         this.lastOutput = "#itzlipofutzli";
                         this.successCount = 1;
                     } else {
-                        //this.lastOutput = null;
+                        this.lastOutput = null;
                         if (cmd.startsWith("/")) {
                             cmd = cmd.substring(1);
                         }

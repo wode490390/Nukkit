@@ -1,7 +1,9 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.BlockVector3;
+import lombok.ToString;
 
+@ToString
 public class LabTablePacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.LAB_TABLE_PACKET;

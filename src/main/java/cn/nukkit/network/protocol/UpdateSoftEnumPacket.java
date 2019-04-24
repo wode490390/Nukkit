@@ -1,5 +1,8 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class UpdateSoftEnumPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_SOFT_ENUM_PACKET;
@@ -10,7 +13,7 @@ public class UpdateSoftEnumPacket extends DataPacket {
 
     public String enumName = "";
     public String[] values = new String[0];
-    public int type;
+    public int type = TYPE_SET;
 
     @Override
     public byte pid() {

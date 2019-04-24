@@ -137,6 +137,7 @@ public class DummyBossBar {
         pkAdd.entityUniqueId = bossBarId;
         pkAdd.entityRuntimeId = bossBarId;
         pkAdd.position = new Vector3(player.x, -10, player.z).asVector3f(); // Below the bedrock
+        pkAdd.motion = new Vector3().asVector3f();
         pkAdd.metadata = new EntityMetadata()
                 // Default Metadata tags
                 .putLong(Entity.DATA_FLAGS, 0)
@@ -199,8 +200,10 @@ public class DummyBossBar {
     public void updateBossEntityPosition() {
         MoveEntityAbsolutePacket pk = new MoveEntityAbsolutePacket();
         pk.entityRuntimeId = this.bossBarId;
-        pk.flags = MoveEntityAbsolutePacket.FLAG_TELEPORT;
         pk.position = new Vector3(this.player.x, -10, this.player.z).asVector3f();
+        pk.xRot = 0;
+        pk.yRot = 0;
+        pk.zRot = 0;
         player.dataPacket(pk);
     }
 

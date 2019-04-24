@@ -282,7 +282,7 @@ public class Server {
 
     private PlayerDataSerializer playerDataSerializer = new DefaultPlayerDataSerializer(this);
 
-    Server(final String filePath, String dataPath, String pluginPath) {
+    Server(final String filePath, String dataPath, String pluginPath, String predefinedLanguage) {
         Preconditions.checkState(instance == null, "Already initialized!");
         currentThread = Thread.currentThread(); // Saves the current thread instance as a reference, used in Server#isPrimaryThread()
         instance = this;
@@ -325,10 +325,20 @@ public class Server {
             String fallback = BaseLang.FALLBACK_LANGUAGE;
             String language = null;
             while (language == null) {
-                String lang = this.console.readLine();
+                String lang;
+                if (predefinedLanguage != null) {
+                    log.info("Trying to load language from predefined language: " + predefinedLanguage);
+                    lang = predefinedLanguage;
+                } else {
+                    lang = this.console.readLine();
+                }
+
                 InputStream conf = this.getClass().getClassLoader().getResourceAsStream("lang/" + lang + "/lang.ini");
                 if (conf != null) {
                     language = lang;
+                } else if(predefinedLanguage != null) {
+                    log.warn("No language found for predefined language: " + predefinedLanguage + ", please choose a valid language");
+                    predefinedLanguage = null;
                 }
             }
 
@@ -627,7 +637,7 @@ public class Server {
         return recipients.length;
     }
 
-    public int broadcastMessage(String message, Collection<CommandSender> recipients) {
+    public int broadcastMessage(String message, Collection<? extends CommandSender> recipients) {
         for (CommandSender recipient : recipients) {
             recipient.sendMessage(message);
         }
@@ -635,7 +645,7 @@ public class Server {
         return recipients.size();
     }
 
-    public int broadcastMessage(TextContainer message, Collection<CommandSender> recipients) {
+    public int broadcastMessage(TextContainer message, Collection<? extends CommandSender> recipients) {
         for (CommandSender recipient : recipients) {
             recipient.sendMessage(message);
         }
@@ -709,14 +719,13 @@ public class Server {
             return;
         }
 
-        Timings.playerNetworkSendTimer.startTiming();
-
         BatchPacketsEvent ev = new BatchPacketsEvent(players, packets, forceSync);
-        getPluginManager().callEvent(ev);
+        this.getPluginManager().callEvent(ev);
         if (ev.isCancelled()) {
-            Timings.playerNetworkSendTimer.stopTiming();
             return;
         }
+
+        Timings.playerNetworkSendTimer.startTiming();
 
         byte[][] payload = new byte[packets.length * 2][];
         int size = 0;
@@ -865,10 +874,6 @@ public class Server {
                 this.rcon.close();
             }
 
-            if (this.nameLookup != null) {
-                this.nameLookup.close();
-            }
-
             log.debug("Disabling all plugins");
             this.pluginManager.disablePlugins();
 
@@ -895,6 +900,10 @@ public class Server {
             for (SourceInterface interfaz : this.network.getInterfaces()) {
                 interfaz.shutdown();
                 this.network.unregisterInterface(interfaz);
+            }
+
+            if (this.nameLookup != null) {
+                this.nameLookup.close();
             }
 
             log.debug("Disabling timings");
@@ -1605,7 +1614,8 @@ public class Server {
 
     @Deprecated
     public CompoundTag getOfflinePlayerData(String name) {
-        return getOfflinePlayerDataInternal(name, true);
+        Optional<UUID> uuid = lookupName(name);
+        return getOfflinePlayerDataInternal(uuid.map(UUID::toString).orElse(name), true);
     }
 
     private CompoundTag getOfflinePlayerDataInternal(String name, boolean runEvent) {
@@ -1662,7 +1672,7 @@ public class Server {
                 .putBoolean("OnGround", true)
                 .putBoolean("Invulnerable", false);
 
-        this.saveOfflinePlayerData(name, nbt);
+        this.saveOfflinePlayerData(name, nbt, true, runEvent);
         return nbt;
     }
 
@@ -1679,7 +1689,8 @@ public class Server {
     }
 
     public void saveOfflinePlayerData(String name, CompoundTag tag, boolean async) {
-        this.saveOfflinePlayerData(name, tag, async, true);
+        Optional<UUID> uuid = lookupName(name);
+        saveOfflinePlayerData(uuid.map(UUID::toString).orElse(name), tag, async, true);
     }
 
     private void saveOfflinePlayerData(String name, CompoundTag tag, boolean async, boolean runEvent) {
@@ -1691,7 +1702,7 @@ public class Server {
             }
 
             this.getScheduler().scheduleTask(null, new Task() {
-                protected boolean hasRun = false;
+                boolean hasRun = false;
 
                 @Override
                 public void onRun(int currentTick) {
@@ -2333,6 +2344,7 @@ public class Server {
         Entity.registerEntity("TropicalFish", EntityTropicalFish.class);
         Entity.registerEntity("Turtle", EntityTurtle.class);
         Entity.registerEntity("Villager", EntityVillager.class);
+        Entity.registerEntity("WanderingTrader", WanderingTrader.class);
         Entity.registerEntity("Wolf", EntityWolf.class);
         Entity.registerEntity("ZombieHorse", EntityZombieHorse.class);
         //Projectile

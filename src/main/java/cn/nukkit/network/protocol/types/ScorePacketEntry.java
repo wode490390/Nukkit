@@ -1,5 +1,8 @@
 package cn.nukkit.network.protocol.types;
 
+import lombok.ToString;
+
+@ToString
 public class ScorePacketEntry {
 
     public static final int TYPE_PLAYER = 1;

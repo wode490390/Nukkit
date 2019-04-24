@@ -13,11 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ToIntFunction;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class AvailableCommandsPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.AVAILABLE_COMMANDS_PACKET;
@@ -83,7 +85,7 @@ public class AvailableCommandsPacket extends DataPacket {
 
     @Override
     public void decode() {
-        commands = new HashMap<>();
+        this.commands = new HashMap<>();
 
         List<String> enumValues = new ArrayList<>();
         List<String> postFixes = new ArrayList<>();
@@ -204,7 +206,7 @@ public class AvailableCommandsPacket extends DataPacket {
         LinkedHashSet<String> postFixesSet = new LinkedHashSet<>();
         LinkedHashSet<CommandEnum> enumsSet = new LinkedHashSet<>();
 
-        commands.forEach((name, data) -> {
+        this.commands.forEach((name, data) -> {
             CommandData cmdData = data.versions.get(0);
 
             if (cmdData.aliases != null) {
@@ -265,9 +267,9 @@ public class AvailableCommandsPacket extends DataPacket {
             }
         });
 
-        putUnsignedVarInt(commands.size());
+        putUnsignedVarInt(this.commands.size());
 
-        commands.forEach((name, cmdData) -> {
+        this.commands.forEach((name, cmdData) -> {
             CommandData data = cmdData.versions.get(0);
 
             putString(name);
@@ -307,9 +309,9 @@ public class AvailableCommandsPacket extends DataPacket {
             }
         });
 
-        this.putUnsignedVarInt(softEnums.size());
+        this.putUnsignedVarInt(this.softEnums.size());
 
-        softEnums.forEach((name, values) -> {
+        this.softEnums.forEach((name, values) -> {
             this.putString(name);
             this.putUnsignedVarInt(values.size());
             values.forEach(this::putString);

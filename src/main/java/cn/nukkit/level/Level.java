@@ -169,6 +169,7 @@ public class Level implements ChunkManager, Metadatable {
 
     // The blocks that can randomly tick
     private static final boolean[] randomTickBlocks = new boolean[512];
+
     static {
         randomTickBlocks[Block.GRASS] = true;
         randomTickBlocks[Block.FARMLAND] = true;
@@ -415,25 +416,25 @@ public class Level implements ChunkManager, Metadatable {
         return (((long) x) << 32) | (z & 0xffffffffL);
     }
 
-    public static long blockHash(int x, int y, int z){
-        if(y < 0 || y >= 256){
+    public static long blockHash(int x, int y, int z) {
+        if (y < 0 || y >= 256) {
             throw new IllegalArgumentException("Y coordinate y is out of range!");
         }
-        return (((long) x & (long) 0xFFFFFFF) << 36) | (((long) y & (long) 0xFF) << 28) | ((long) z & (long) 0xFFFFFFF);
+        return (((long) x & (long) 0xfffffff) << 36) | (((long) y & (long) 0xff) << 28) | ((long) z & (long) 0xfffffff);
     }
 
     public static char localBlockHash(double x, double y, double z) {
         byte hi = (byte) (((int) x & 15) + (((int) z & 15) << 4));
         byte lo = (byte) y;
-        return (char) (((hi & 0xFF) << 8) | (lo & 0xFF));
+        return (char) (((hi & 0xff) << 8) | (lo & 0xff));
     }
 
     public static Vector3 getBlockXYZ(long chunkHash, char blockHash) {
         int hi = (byte) (blockHash >>> 8);
         int lo = (byte) blockHash;
-        int y = lo & 0xFF;
-        int x = (hi & 0xF) + (getHashX(chunkHash) << 4);
-        int z = ((hi >> 4) & 0xF) + (getHashZ(chunkHash) << 4);
+        int y = lo & 0xff;
+        int x = (hi & 0xf) + (getHashX(chunkHash) << 4);
+        int z = ((hi >> 4) & 0xf) + (getHashZ(chunkHash) << 4);
         return new Vector3(x, y, z);
     }
 
@@ -785,8 +786,8 @@ public class Level implements ChunkManager, Metadatable {
         this.timings.doTick.startTiming();
 
         this.checkTime();
-        
-        if(stopTime) {
+
+        if (stopTime) {
             this.sendTime();
         }
 
@@ -1458,6 +1459,10 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public AxisAlignedBB[] getCollisionCubes(Entity entity, AxisAlignedBB bb, boolean entities) {
+        return this.getCollisionCubes(entity, bb, entities, false);
+    }
+
+    public AxisAlignedBB[] getCollisionCubes(Entity entity, AxisAlignedBB bb, boolean entities, boolean solidEntities) {
         int minX = NukkitMath.floorDouble(bb.getMinX());
         int minY = NukkitMath.floorDouble(bb.getMinY());
         int minZ = NukkitMath.floorDouble(bb.getMinZ());
@@ -1478,9 +1483,11 @@ public class Level implements ChunkManager, Metadatable {
             }
         }
 
-        if (entities) {
+        if (entities || solidEntities) {
             for (Entity ent : this.getCollidingEntities(bb.grow(0.25f, 0.25f, 0.25f), entity)) {
-                collides.add(ent.boundingBox.clone());
+                if (solidEntities && !ent.canPassThrough()) {
+                    collides.add(ent.boundingBox.clone());
+                }
             }
         }
 
@@ -1968,8 +1975,8 @@ public class Level implements ChunkManager, Metadatable {
             drops = ev.getDrops();
         } else if (!target.isBreakable(item)) {
             return null;
-        } else if(item.getEnchantment(Enchantment.ID_SILK_TOUCH) != null) {
-            drops = new Item[] {target.toItem()};
+        } else if (item.getEnchantment(Enchantment.ID_SILK_TOUCH) != null) {
+            drops = new Item[]{target.toItem()};
         } else {
             drops = target.getDrops(item);
         }
@@ -2471,7 +2478,7 @@ public class Level implements ChunkManager, Metadatable {
         this.getChunk(x >> 4, z >> 4, true).setHeightMap(x & 0x0f, z & 0x0f, value & 0x0f);
     }
 
-    public Map<Long,? extends FullChunk> getChunks() {
+    public Map<Long, ? extends FullChunk> getChunks() {
         return provider.getLoadedChunks();
     }
 
@@ -3289,17 +3296,17 @@ public class Level implements ChunkManager, Metadatable {
         this.server.getLevelMetadata().removeMetadata(this, metadataKey, owningPlugin);
     }
 
-    public void addEntityMotion(int chunkX, int chunkZ, long entityId, double x, double y, double z) {
+    public void addEntityMotion(Entity entity, double x, double y, double z) {
         SetEntityMotionPacket pk = new SetEntityMotionPacket();
-        pk.entityRuntimeId = entityId;
+        pk.entityRuntimeId = entity.getId();
         pk.motion = new Vector3(x, y, z).asVector3f();
 
-        this.addChunkPacket(chunkX, chunkZ, pk);
+        Server.broadcastPacket(entity.getViewers().values(), pk);
     }
 
-    public void addEntityMovement(int chunkX, int chunkZ, long entityId, double x, double y, double z, double yaw, double pitch, double headYaw) {
+    public void addEntityMovement(Entity entity, double x, double y, double z, double yaw, double pitch, double headYaw) {
         MoveEntityAbsolutePacket pk = new MoveEntityAbsolutePacket();
-        pk.entityRuntimeId = entityId;
+        pk.entityRuntimeId = entity.getId();
         pk.flags = MoveEntityAbsolutePacket.FLAG_GROUND;
         pk.position = new Vector3(x, y, z).asVector3f();
 
@@ -3310,7 +3317,7 @@ public class Level implements ChunkManager, Metadatable {
         pk.yRot = yaw; //TODO: head yaw
         pk.zRot = yaw;
 
-        this.addChunkPacket(chunkX, chunkZ, pk);
+        Server.broadcastPacket(entity.getViewers().values(), pk);
     }
 
     public boolean isRaining() {
@@ -3551,4 +3558,54 @@ public class Level implements ChunkManager, Metadatable {
     public int getUpdateLCG() {
         return (this.updateLCG = (this.updateLCG * 3) ^ LCG_CONSTANT);
     }
+
+//    private static void orderGetRidings(Entity entity, LongSet set) {
+//        if (entity.riding != null) {
+//            if(!set.add(entity.riding.getId())) {
+//                throw new RuntimeException("Circular entity link detected (id = " + entity.riding.getId() + ")");
+//            }
+//            orderGetRidings(entity.riding, set);
+//        }
+//    }
+//
+//    public List<Entity> orderChunkEntitiesForSpawn(int chunkX, int chunkZ) {
+//        return orderChunkEntitiesForSpawn(getChunk(chunkX, chunkZ, false));
+//    }
+//
+//    public List<Entity> orderChunkEntitiesForSpawn(BaseFullChunk chunk) {
+//        Comparator<Entity> comparator = (o1, o2) -> {
+//            if (o1.riding == null) {
+//                if(o2 == null) {
+//                    return 0;
+//                }
+//
+//                return -1;
+//            }
+//
+//            if (o2.riding == null) {
+//                return 1;
+//            }
+//
+//            LongSet ridings = new LongOpenHashSet();
+//            orderGetRidings(o1, ridings);
+//
+//            if(ridings.contains(o2.getId())) {
+//                return 1;
+//            }
+//
+//            ridings.clear();
+//            orderGetRidings(o2, ridings);
+//
+//            if(ridings.contains(o1.getId())) {
+//                return -1;
+//            }
+//
+//            return 0;
+//        };
+//
+//        List<Entity> sorted = new ArrayList<>(chunk.getEntities().values());
+//        sorted.sort(comparator);
+//
+//        return sorted;
+//    }
 }

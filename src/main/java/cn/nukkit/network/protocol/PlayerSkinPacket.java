@@ -1,9 +1,10 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.data.Skin;
-
 import java.util.UUID;
+import lombok.ToString;
 
+@ToString
 public class PlayerSkinPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PLAYER_SKIN_PACKET;
@@ -11,7 +12,7 @@ public class PlayerSkinPacket extends DataPacket {
     public UUID uuid;
     public String oldSkinName = "";
     public String newSkinName = "";
-    public Skin skin = new Skin();
+    public Skin skin;
     public boolean premiumSkin = false;
 
     @Override

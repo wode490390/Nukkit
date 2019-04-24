@@ -42,12 +42,12 @@ public class EntityBoat extends EntityVehicle {
 
     @Override
     public float getHeight() {
-        return 0.5f;
+        return 0.455f;
     }
 
     @Override
     public float getWidth() {
-        return 1.6f;
+        return 1.4f;
     }
 
     @Override
@@ -57,12 +57,12 @@ public class EntityBoat extends EntityVehicle {
 
     @Override
     protected float getGravity() {
-        return 0.1f;
+        return 0.03999999910593033f;
     }
 
     @Override
     public float getBaseOffset() {
-        return 0.35f;
+        return 0.375f;
     }
 
     @Override
@@ -198,5 +198,10 @@ public class EntityBoat extends EntityVehicle {
 
         super.mountEntity(player);
         return true;
+    }
+
+    @Override
+    public boolean canPassThrough() {
+        return false;
     }
 }

@@ -89,11 +89,7 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
         CompoundTag NBTItem = namedTag.getCompound("Item").copy();
         NBTItem.setName("Item");
         boolean item = NBTItem.getShort("id") == Item.AIR;
-        return new CompoundTag()
-                .putString("id", BlockEntity.ITEM_FRAME)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z)
+        return getDefaultCompound(this, ITEM_FRAME)
                 .putCompound("Item", item ? NBTIO.putItemHelper(new ItemBlock(new BlockAir())) : NBTItem)
                 .putByte("ItemRotation", item ? 0 : this.getItemRotation());
         // TODO: This crashes the client, why?

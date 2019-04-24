@@ -50,7 +50,7 @@ public class EnchantmentThorns extends Enchantment {
         }
 
         if (thornsLevel > 0 && ThreadLocalRandom.current().nextFloat() < 0.15 * thornsLevel) {
-            attacker.attack(new EntityDamageByEntityEvent(entity, attacker, EntityDamageEvent.DamageCause.MAGIC, thornsLevel > 10 ? thornsLevel - 10 : ThreadLocalRandom.current().nextInt(1, 5)));
+            attacker.attack(new EntityDamageByEntityEvent(entity, attacker, EntityDamageEvent.DamageCause.ENTITY_ATTACK, thornsLevel > 10 ? thornsLevel - 10 : ThreadLocalRandom.current().nextInt(1, 5), 0));
         }
     }
 }

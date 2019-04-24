@@ -1,12 +1,13 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.item.Item;
-
 import java.util.UUID;
+import lombok.ToString;
 
 /**
  * @author Nukkit Project Team
  */
+@ToString
 public class CraftingEventPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CRAFTING_EVENT_PACKET;

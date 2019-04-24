@@ -20,7 +20,7 @@ public class BlockEntityEnchantTable extends BlockEntitySpawnable implements Blo
 
     @Override
     public boolean isBlockEntityValid() {
-        return getBlock().getId() == Block.ENCHANT_TABLE;
+        return this.getBlock().getId() == Block.ENCHANT_TABLE;
     }
 
     @Override
@@ -60,8 +60,7 @@ public class BlockEntityEnchantTable extends BlockEntitySpawnable implements Blo
 
     @Override
     public CompoundTag getSpawnCompound() {
-        CompoundTag c = getDefaultCompound(this, ENCHANT_TABLE)
-                .putFloat(TAG_ROTT, rott);
+        CompoundTag c = getDefaultCompound(this, ENCHANT_TABLE);
 
         if (this.hasName()) {
             c.put("CustomName", this.namedTag.get("CustomName"));
@@ -69,37 +68,4 @@ public class BlockEntityEnchantTable extends BlockEntitySpawnable implements Blo
 
         return c;
     }
-
-    /*public int countBookshelf() {
-        int count = 0;
-        for (int y = 0; y <= 1; y++) {
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
-                    if (z == 0 && x == 0) {
-                        continue;
-                    }
-                    if (this.getLevel().getBlock(this.add(x, 0, z)).isTransparent()) {
-                        if (this.getLevel().getBlock(this.add(0, 1, 0)).isTransparent()) {
-                            //diagonal and straight
-                            if (this.getLevel().getBlock(this.add(x << 1, y, z << 1)).getId() == Block.BOOKSHELF) {
-                                count++;
-                            }
-
-                            if (x != 0 && z != 0) {
-                                //one block diagonal and one straight
-                                if (this.getLevel().getBlock(this.add(x << 1, y, z)).getId() == Block.BOOKSHELF) {
-                                    ++count;
-                                }
-
-                                if (this.getLevel().getBlock(this.add(x, y, z << 1)).getId() == Block.BOOKSHELF) {
-                                    ++count;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }*/
 }
