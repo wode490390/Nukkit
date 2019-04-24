@@ -2,11 +2,11 @@ package cn.nukkit.nbt.tag;
 
 import cn.nukkit.nbt.stream.NBTInputStream;
 import cn.nukkit.nbt.stream.NBTOutputStream;
-
 import java.io.IOException;
 import java.io.PrintStream;
 
 public abstract class Tag {
+
     public static final byte TAG_End = 0;
     public static final byte TAG_Byte = 1;
     public static final byte TAG_Short = 2;
@@ -19,6 +19,7 @@ public abstract class Tag {
     public static final byte TAG_List = 9;
     public static final byte TAG_Compound = 10;
     public static final byte TAG_Int_Array = 11;
+    public static final byte TAG_Long_Array = 12;
 
     private String name;
 
@@ -26,6 +27,7 @@ public abstract class Tag {
 
     abstract void load(NBTInputStream dis) throws IOException;
 
+    @Override
     public abstract String toString();
 
     public abstract byte getId();
@@ -40,7 +42,7 @@ public abstract class Tag {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Tag)) {
+        if (!(obj instanceof Tag)) {
             return false;
         }
         Tag o = (Tag) obj;
@@ -73,13 +75,17 @@ public abstract class Tag {
     }
 
     public String getName() {
-        if (name == null) return "";
+        if (name == null) {
+            return "";
+        }
         return name;
     }
 
     public static Tag readNamedTag(NBTInputStream dis) throws IOException {
         byte type = dis.readByte();
-        if (type == 0) return new EndTag();
+        if (type == 0) {
+            return new EndTag();
+        }
 
         String name = dis.readUTF();
 
@@ -91,7 +97,9 @@ public abstract class Tag {
 
     public static void writeNamedTag(Tag tag, NBTOutputStream dos) throws IOException {
         dos.writeByte(tag.getId());
-        if (tag.getId() == Tag.TAG_End) return;
+        if (tag.getId() == Tag.TAG_End) {
+            return;
+        }
         dos.writeUTF(tag.getName());
 
         tag.write(dos);
@@ -117,6 +125,8 @@ public abstract class Tag {
                 return new ByteArrayTag(name);
             case TAG_Int_Array:
                 return new IntArrayTag(name);
+            case TAG_Long_Array:
+                return new LongArrayTag(name);
             case TAG_String:
                 return new StringTag(name);
             case TAG_List:
@@ -147,6 +157,8 @@ public abstract class Tag {
                 return "TAG_Byte_Array";
             case TAG_Int_Array:
                 return "TAG_Int_Array";
+            case TAG_Long_Array:
+                return "TAG_Long_Array";
             case TAG_String:
                 return "TAG_String";
             case TAG_List:
@@ -158,5 +170,4 @@ public abstract class Tag {
     }
 
     public abstract Tag copy();
-
 }

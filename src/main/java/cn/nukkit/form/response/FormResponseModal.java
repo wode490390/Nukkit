@@ -2,8 +2,8 @@ package cn.nukkit.form.response;
 
 public class FormResponseModal extends FormResponse {
 
-    private int clickedButtonId;
-    private String clickedButtonText;
+    private final int clickedButtonId;
+    private final String clickedButtonText;
 
     public FormResponseModal(int clickedButtonId, String clickedButtonText) {
         this.clickedButtonId = clickedButtonId;
@@ -17,5 +17,4 @@ public class FormResponseModal extends FormResponse {
     public String getClickedButtonText() {
         return clickedButtonText;
     }
-
 }

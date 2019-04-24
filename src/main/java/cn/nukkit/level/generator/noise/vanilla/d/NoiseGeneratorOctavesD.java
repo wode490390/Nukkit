@@ -4,6 +4,7 @@ import cn.nukkit.math.MathHelper;
 import cn.nukkit.math.NukkitRandom;
 
 public class NoiseGeneratorOctavesD {
+
     /**
      * Collection of noise generation functions.  Output is combined to produce different octaves of noise.
      */
@@ -28,26 +29,26 @@ public class NoiseGeneratorOctavesD {
             noiseArray = new double[xSize * ySize * zSize];
         } else {
             for (int i = 0; i < noiseArray.length; ++i) {
-                noiseArray[i] = 0.0D;
+                noiseArray[i] = 0;
             }
         }
 
-        double d3 = 1.0D;
+        double d3 = 1d;
 
         for (int j = 0; j < this.octaves; ++j) {
-            double d0 = (double) xOffset * d3 * xScale;
-            double d1 = (double) yOffset * d3 * yScale;
-            double d2 = (double) zOffset * d3 * zScale;
+            double d0 = xOffset * d3 * xScale;
+            double d1 = yOffset * d3 * yScale;
+            double d2 = zOffset * d3 * zScale;
             long k = MathHelper.floor_double_long(d0);
             long l = MathHelper.floor_double_long(d2);
-            d0 = d0 - (double) k;
-            d2 = d2 - (double) l;
-            k = k % 16777216L;
-            l = l % 16777216L;
-            d0 = d0 + (double) k;
-            d2 = d2 + (double) l;
+            d0 -= k;
+            d2 -= l;
+            k %= 16777216L;
+            l %= 16777216L;
+            d0 += k;
+            d2 += l;
             this.generatorCollection[j].populateNoiseArray(noiseArray, d0, d1, d2, xSize, ySize, zSize, xScale * d3, yScale * d3, zScale * d3, d3);
-            d3 /= 2.0D;
+            d3 /= 2d;
         }
 
         return noiseArray;

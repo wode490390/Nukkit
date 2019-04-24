@@ -10,25 +10,31 @@ import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.raknet.RakNet;
 import cn.nukkit.raknet.protocol.EncapsulatedPacket;
-import cn.nukkit.raknet.protocol.packet.PING_DataPacket;
+import cn.nukkit.raknet.protocol.packet.ConnectedPing;
 import cn.nukkit.raknet.server.RakNetServer;
 import cn.nukkit.raknet.server.ServerHandler;
 import cn.nukkit.raknet.server.ServerInstance;
 import cn.nukkit.utils.Binary;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import cn.nukkit.utils.Zlib;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class RakNetInterface implements ServerInstance, AdvancedSourceInterface {
+
+    /**
+     * Sometimes this gets changed when the MCPE-layer protocol gets broken to the point where old and new can't
+     * communicate. It's important that we check this to avoid catastrophes.
+     */
+    public static final int MCPE_RAKNET_PROTOCOL_VERSION = 9;
 
     private final Server server;
 
@@ -46,12 +52,12 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
 
     private final ServerHandler handler;
 
-    private int[] channelCounts = new int[256];
+    private final int[] channelCounts = new int[256];
 
     public RakNetInterface(Server server) {
         this.server = server;
 
-        this.raknet = new RakNetServer(this.server.getLogger(), this.server.getPort(), this.server.getIp().equals("") ? "0.0.0.0" : this.server.getIp());
+        this.raknet = new RakNetServer(this.server.getPort(), this.server.getIp().isEmpty() ? "0.0.0.0" : this.server.getIp());
         this.handler = new ServerHandler(this.raknet, this);
     }
 
@@ -132,7 +138,7 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
             this.identifiers.put(player.rawHashCode(), identifier);
             this.server.addPlayer(identifier, player);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
         }
     }
 
@@ -142,12 +148,12 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
             DataPacket pk = null;
             try {
                 if (packet.buffer.length > 0) {
-                    if (packet.buffer[0] == PING_DataPacket.ID) {
-                        PING_DataPacket pingPacket = new PING_DataPacket();
+                    if (packet.buffer[0] == ConnectedPing.ID) {
+                        ConnectedPing pingPacket = new ConnectedPing();
                         pingPacket.buffer = packet.buffer;
                         pingPacket.decode();
 
-                        this.networkLatency.put(identifier, (int) pingPacket.pingID);
+                        this.networkLatency.put(identifier, (int) pingPacket.sendPingTime);
                         return;
                     }
 
@@ -158,13 +164,9 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
                     }
                 }
             } catch (Exception e) {
-                this.server.getLogger().logException(e);
+                log.throwing(e);
                 if (Nukkit.DEBUG > 1 && pk != null) {
-                    MainLogger logger = this.server.getLogger();
-//                    if (logger != null) {
-                    logger.debug("Packet " + pk.getClass().getName() + " 0x" + Binary.bytesToHexString(packet.buffer));
-                    //logger.logException(e);
-//                    }
+                    log.debug("Packet " + pk.getClass().getName() + " 0x" + Binary.bytesToHexString(packet.buffer));
                 }
 
                 if (this.players.containsKey(identifier)) {
@@ -310,6 +312,13 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
         }
 
         return null;
+    }
+
+    @Override
+    public void updatePing(String identifier, long pingMS) {
+        if (this.players.containsKey(identifier)) {
+            //TODO: this.players.get(identifier).updatePing(pingMS);
+        }
     }
 
     private DataPacket getPacket(byte[] buffer) {

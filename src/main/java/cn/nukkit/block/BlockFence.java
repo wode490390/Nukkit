@@ -1,5 +1,7 @@
 package cn.nukkit.block;
 
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.SimpleAxisAlignedBB;
@@ -38,7 +40,7 @@ public class BlockFence extends BlockTransparentMeta {
 
     @Override
     public double getResistance() {
-        return 15;
+        return 5;
     }
 
     @Override
@@ -49,16 +51,16 @@ public class BlockFence extends BlockTransparentMeta {
     @Override
     public String getName() {
         String[] names = new String[]{
-                "Oak Fence",
-                "Spruce Fence",
-                "Birch Fence",
-                "Jungle Fence",
-                "Acacia Fence",
-                "Dark Oak Fence",
+                "Oak",
+                "Spruce",
+                "Birch",
+                "Jungle",
+                "Acacia",
+                "Dark Oak",
                 "",
                 ""
         };
-        return names[this.getDamage() & 0x07];
+        return names[this.getDamage() & 0x7] + " Fence";
     }
 
     @Override
@@ -98,5 +100,10 @@ public class BlockFence extends BlockTransparentMeta {
     @Override
     public BlockColor getColor() {
         return BlockColor.WOOD_BLOCK_COLOR;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, this.getDamage() & 0x7);
     }
 }

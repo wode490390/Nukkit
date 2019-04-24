@@ -3,8 +3,13 @@ package cn.nukkit.metadata;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.utils.PluginException;
 import cn.nukkit.utils.ServerException;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * author: MagicDroidX
@@ -30,7 +35,7 @@ public abstract class MetadataStore {
     public List<MetadataValue> getMetadata(Object subject, String metadataKey) {
         String key = this.disambiguate((Metadatable) subject, metadataKey);
         if (this.metadataMap.containsKey(key)) {
-            Collection values = ((Map) this.metadataMap.get(key)).values();
+            Collection<MetadataValue> values = this.metadataMap.get(key).values();
             return Collections.unmodifiableList(new ArrayList<>(values));
         }
         return Collections.emptyList();
@@ -45,7 +50,7 @@ public abstract class MetadataStore {
             throw new PluginException("Plugin cannot be null");
         }
         String key = this.disambiguate((Metadatable) subject, metadataKey);
-        Map entry = this.metadataMap.get(key);
+        Map<Plugin, MetadataValue> entry = this.metadataMap.get(key);
         if (entry == null) {
             return;
         }
@@ -59,9 +64,9 @@ public abstract class MetadataStore {
         if (owningPlugin == null) {
             throw new PluginException("Plugin cannot be null");
         }
-        for (Map value : this.metadataMap.values()) {
+        for (Map<Plugin, MetadataValue> value : this.metadataMap.values()) {
             if (value.containsKey(owningPlugin)) {
-                ((MetadataValue) value.get(owningPlugin)).invalidate();
+                value.get(owningPlugin).invalidate();
             }
         }
     }

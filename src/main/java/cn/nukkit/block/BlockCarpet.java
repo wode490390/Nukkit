@@ -12,7 +12,8 @@ import cn.nukkit.utils.DyeColor;
  * Created on 2015/11/24 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockCarpet extends BlockFlowable {
+public class BlockCarpet extends BlockFlowableMeta {
+
     public BlockCarpet() {
         this(0);
     }
@@ -32,12 +33,7 @@ public class BlockCarpet extends BlockFlowable {
 
     @Override
     public double getHardness() {
-        return 0.1;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0.5;
+        return 0.10000000149011612;
     }
 
     @Override
@@ -96,5 +92,4 @@ public class BlockCarpet extends BlockFlowable {
     public DyeColor getDyeColor() {
         return DyeColor.getByWoolData(getDamage());
     }
-
 }

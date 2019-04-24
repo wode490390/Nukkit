@@ -2,6 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 
@@ -10,7 +11,7 @@ import cn.nukkit.math.BlockFace;
  *
  * @author PikyCZ
  */
-public class BlockEndRod extends BlockTransparentMeta {
+public class BlockEndRod extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockEndRod() {
         this(0);
@@ -28,16 +29,6 @@ public class BlockEndRod extends BlockTransparentMeta {
     @Override
     public int getId() {
         return END_ROD;
-    }
-
-    @Override
-    public double getHardness() {
-        return 0;
-    }
-
-    @Override
-    public double getResistance() {
-        return 0;
     }
 
     @Override
@@ -84,4 +75,13 @@ public class BlockEndRod extends BlockTransparentMeta {
         return true;
     }
 
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
+    }
 }

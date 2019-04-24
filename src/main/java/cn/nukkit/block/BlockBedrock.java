@@ -6,9 +6,14 @@ import cn.nukkit.item.Item;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockBedrock extends BlockSolid {
+public class BlockBedrock extends BlockSolidMeta {
 
     public BlockBedrock() {
+        this(0);
+    }
+
+    public BlockBedrock(int meta) {
+        super(meta);
     }
 
     @Override
@@ -23,7 +28,7 @@ public class BlockBedrock extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override

@@ -27,4 +27,9 @@ public class BlockSlime extends BlockSolid {
     public double getResistance() {
         return 0;
     }
+
+    @Override
+    public double getFrictionFactor() {
+        return 0.800000011920929;
+    }
 }

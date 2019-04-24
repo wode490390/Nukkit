@@ -5,8 +5,13 @@ import cn.nukkit.entity.Attribute;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.entity.mob.EntityCreeper;
-import cn.nukkit.network.protocol.*;
-
+import cn.nukkit.math.Vector3;
+import cn.nukkit.network.protocol.AddEntityPacket;
+import cn.nukkit.network.protocol.BossEventPacket;
+import cn.nukkit.network.protocol.MoveEntityAbsolutePacket;
+import cn.nukkit.network.protocol.RemoveEntityPacket;
+import cn.nukkit.network.protocol.SetEntityDataPacket;
+import cn.nukkit.network.protocol.UpdateAttributesPacket;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -52,7 +57,9 @@ public class DummyBossBar {
         }
 
         public Builder length(float length) {
-            if (length >= 0 && length <= 100) this.length = length;
+            if (length >= 0 && length <= 100) {
+                this.length = length;
+            }
             return this;
         }
 
@@ -129,12 +136,8 @@ public class DummyBossBar {
         pkAdd.type = EntityCreeper.NETWORK_ID;
         pkAdd.entityUniqueId = bossBarId;
         pkAdd.entityRuntimeId = bossBarId;
-        pkAdd.x = (float) player.x;
-        pkAdd.y = (float) -10; // Below the bedrock
-        pkAdd.z = (float) player.z;
-        pkAdd.speedX = 0;
-        pkAdd.speedY = 0;
-        pkAdd.speedZ = 0;
+        pkAdd.position = new Vector3(player.x, -10, player.z).asVector3f(); // Below the bedrock
+        pkAdd.motion = new Vector3().asVector3f();
         pkAdd.metadata = new EntityMetadata()
                 // Default Metadata tags
                 .putLong(Entity.DATA_FLAGS, 0)
@@ -149,8 +152,8 @@ public class DummyBossBar {
 
     private void sendAttributes() {
         UpdateAttributesPacket pkAttributes = new UpdateAttributesPacket();
-        pkAttributes.entityId = bossBarId;
-        Attribute attr = Attribute.getAttribute(Attribute.MAX_HEALTH);
+        pkAttributes.entityRuntimeId = bossBarId;
+        Attribute attr = Attribute.getAttribute(Attribute.HEALTH);
         attr.setMaxValue(100); // Max value - We need to change the max value first, or else the "setValue" will return a IllegalArgumentException
         attr.setValue(length); // Entity health
         pkAttributes.entries = new Attribute[]{attr};
@@ -160,7 +163,7 @@ public class DummyBossBar {
     private void sendShowBossBar() {
         BossEventPacket pkBoss = new BossEventPacket();
         pkBoss.bossEid = bossBarId;
-        pkBoss.type = BossEventPacket.TYPE_SHOW;
+        pkBoss.eventType = BossEventPacket.TYPE_SHOW;
         pkBoss.title = text;
         pkBoss.healthPercent = this.length;
         player.dataPacket(pkBoss);
@@ -169,14 +172,14 @@ public class DummyBossBar {
     private void sendHideBossBar() {
         BossEventPacket pkBoss = new BossEventPacket();
         pkBoss.bossEid = bossBarId;
-        pkBoss.type = BossEventPacket.TYPE_HIDE;
+        pkBoss.eventType = BossEventPacket.TYPE_HIDE;
         player.dataPacket(pkBoss);
     }
 
     private void sendSetBossBarTexture() {
         BossEventPacket pk = new BossEventPacket();
         pk.bossEid = this.bossBarId;
-        pk.type = BossEventPacket.TYPE_TEXTURE;
+        pk.eventType = BossEventPacket.TYPE_TEXTURE;
         pk.color = this.getMixedColor();
         player.dataPacket(pk);
     }
@@ -184,7 +187,7 @@ public class DummyBossBar {
     private void sendSetBossBarTitle() {
         BossEventPacket pkBoss = new BossEventPacket();
         pkBoss.bossEid = bossBarId;
-        pkBoss.type = BossEventPacket.TYPE_TITLE;
+        pkBoss.eventType = BossEventPacket.TYPE_TITLE;
         pkBoss.title = text;
         pkBoss.healthPercent = this.length;
         player.dataPacket(pkBoss);
@@ -196,34 +199,35 @@ public class DummyBossBar {
      */
     public void updateBossEntityPosition() {
         MoveEntityAbsolutePacket pk = new MoveEntityAbsolutePacket();
-        pk.eid = this.bossBarId;
-        pk.x = this.player.x;
-        pk.y = -10;
-        pk.z = this.player.z;
-        pk.headYaw = 0;
-        pk.yaw = 0;
-        pk.pitch = 0;
+        pk.entityRuntimeId = this.bossBarId;
+        pk.position = new Vector3(this.player.x, -10, this.player.z).asVector3f();
+        pk.xRot = 0;
+        pk.yRot = 0;
+        pk.zRot = 0;
         player.dataPacket(pk);
     }
 
     private void updateBossEntityNameTag() {
         SetEntityDataPacket pk = new SetEntityDataPacket();
-        pk.eid = this.bossBarId;
+        pk.entityRuntimeId = this.bossBarId;
         pk.metadata = new EntityMetadata().putString(Entity.DATA_NAMETAG, this.text);
         player.dataPacket(pk);
     }
 
     private void removeBossEntity() {
         RemoveEntityPacket pkRemove = new RemoveEntityPacket();
-        pkRemove.eid = bossBarId;
+        pkRemove.entityUniqueId = bossBarId;
         player.dataPacket(pkRemove);
     }
 
     public void create() {
         createBossEntity();
         sendAttributes();
+        updateBossEntityNameTag();
         sendShowBossBar();
-        if (color != null) this.sendSetBossBarTexture();
+        if (color != null) {
+            this.sendSetBossBarTexture();
+        }
     }
 
     /**

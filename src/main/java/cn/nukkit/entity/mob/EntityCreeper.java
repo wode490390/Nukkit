@@ -66,6 +66,7 @@ public class EntityCreeper extends EntityMob {
         }
     }
 
+    @Override
     public void onStruckByLightning(Entity entity) {
         this.setPowered(true);
     }

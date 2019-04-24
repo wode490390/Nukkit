@@ -36,6 +36,7 @@ public class BlockEntityMovingBlock extends BlockEntitySpawnable {
         super.initBlockEntity();
     }
 
+    @Override
     public Block getBlock() {
         return this.block;
     }

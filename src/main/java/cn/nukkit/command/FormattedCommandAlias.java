@@ -2,16 +2,16 @@ package cn.nukkit.command;
 
 import cn.nukkit.Server;
 import cn.nukkit.lang.TranslationContainer;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.TextFormat;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class FormattedCommandAlias extends Command {
 
     private final String[] formatStrings;
@@ -23,7 +23,7 @@ public class FormattedCommandAlias extends Command {
 
     public FormattedCommandAlias(String alias, List<String> formatStrings) {
         super(alias);
-        this.formatStrings = formatStrings.toArray(new String[formatStrings.size()]);
+        this.formatStrings = formatStrings.toArray(new String[0]);
     }
 
     @Override
@@ -38,10 +38,7 @@ public class FormattedCommandAlias extends Command {
                     sender.sendMessage(TextFormat.RED + e.getMessage());
                 } else {
                     sender.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.exception"));
-                    MainLogger logger = sender.getServer().getLogger();
-                    if (logger != null) {
-                        logger.logException(e);
-                    }
+                    log.throwing(e);
                 }
                 return false;
             }
@@ -55,13 +52,13 @@ public class FormattedCommandAlias extends Command {
     }
 
     private String buildCommand(String formatString, String[] args) {
-        int index = formatString.indexOf("$");
+        int index = formatString.indexOf('$');
         while (index != -1) {
             int start = index;
 
             if (index > 0 && formatString.charAt(start - 1) == '\\') {
                 formatString = formatString.substring(0, start - 1) + formatString.substring(start);
-                index = formatString.indexOf("$", index);
+                index = formatString.indexOf('$', index);
                 continue;
             }
 
@@ -75,7 +72,7 @@ public class FormattedCommandAlias extends Command {
             // Move index past the $
             index++;
             int argStart = index;
-            while (index < formatString.length() && inRange(((int) formatString.charAt(index)) - 48, 0, 9)) {
+            while (index < formatString.length() && inRange(formatString.charAt(index) - 48, 0, 9)) {
                 // Move index past current digit
                 index++;
             }
@@ -125,7 +122,7 @@ public class FormattedCommandAlias extends Command {
             index = start + replacement.length();
 
             // Move to the next replacement token
-            index = formatString.indexOf("$", index);
+            index = formatString.indexOf('$', index);
         }
 
         return formatString;
@@ -134,5 +131,4 @@ public class FormattedCommandAlias extends Command {
     private static boolean inRange(int i, int j, int k) {
         return i >= j && i <= k;
     }
-
 }

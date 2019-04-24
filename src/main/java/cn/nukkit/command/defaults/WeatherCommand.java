@@ -3,9 +3,11 @@ package cn.nukkit.command.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 
 /**
  * author: Angelic47
@@ -13,15 +15,13 @@ import cn.nukkit.level.Level;
  */
 public class WeatherCommand extends VanillaCommand {
 
-    private java.util.Random rand = new java.util.Random();
-
     public WeatherCommand(String name) {
         super(name, "%nukkit.command.weather.description", "%commands.weather.usage");
         this.setPermission("nukkit.command.weather");
         this.commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
-                new CommandParameter("clear|rain|thunder", CommandParameter.ARG_TYPE_STRING, false),
-                new CommandParameter("duration in seconds", CommandParameter.ARG_TYPE_INT, true)
+                new CommandParameter("clear|rain|thunder", CommandParamType.STRING, false),
+                new CommandParameter("duration in seconds", CommandParamType.INT, true)
         });
     }
 
@@ -41,7 +41,7 @@ public class WeatherCommand extends VanillaCommand {
         if (args.length > 1) {
             try {
                 seconds = Integer.parseInt(args[1]);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
                 return true;
             }
@@ -50,7 +50,7 @@ public class WeatherCommand extends VanillaCommand {
         }
 
         if (sender instanceof Player) {
-            level = ((Player) sender).getLevel();
+            level = ((Position) sender).getLevel();
         } else {
             level = sender.getServer().getDefaultLevel();
         }
@@ -81,6 +81,5 @@ public class WeatherCommand extends VanillaCommand {
                 sender.sendMessage(new TranslationContainer("commands.weather.usage", this.usageMessage));
                 return false;
         }
-
     }
 }

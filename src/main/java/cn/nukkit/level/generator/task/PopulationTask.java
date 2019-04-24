@@ -1,17 +1,18 @@
-    package cn.nukkit.level.generator.task;
+package cn.nukkit.level.generator.task;
 
-    import cn.nukkit.Server;
-    import cn.nukkit.level.Level;
-    import cn.nukkit.level.format.generic.BaseFullChunk;
-    import cn.nukkit.level.generator.Generator;
-    import cn.nukkit.level.generator.SimpleChunkManager;
-    import cn.nukkit.scheduler.AsyncTask;
+import cn.nukkit.Server;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.format.generic.BaseFullChunk;
+import cn.nukkit.level.generator.Generator;
+import cn.nukkit.level.generator.SimpleChunkManager;
+import cn.nukkit.scheduler.AsyncTask;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
 public class PopulationTask extends AsyncTask {
+
     private final long seed;
     private final Level level;
     private boolean state;
@@ -30,7 +31,9 @@ public class PopulationTask extends AsyncTask {
         int i = 0;
         for (int z = -1; z <= 1; z++) {
             for (int x = -1; x <= 1; x++, i++) {
-                if (i == 4) continue;
+                if (i == 4) {
+                    continue;
+                }
                 BaseFullChunk ck = level.getChunk(chunk.getX() + x, chunk.getZ() + z, true);
                 this.chunks[i] = ck;
             }
@@ -83,7 +86,9 @@ public class PopulationTask extends AsyncTask {
                 for (int x = -1; x < 2; x++) {
                     for (int z = -1; z < 2; z++, index++) {
                         BaseFullChunk ck = this.chunks[index];
-                        if (ck == centerChunk) continue;
+                        if (ck == centerChunk) {
+                            continue;
+                        }
                         if (ck == null) {
                             try {
                                 this.chunks[index] = (BaseFullChunk) centerChunk.getClass().getMethod("getEmptyChunk", int.class, int.class).invoke(null, centerChunk.getX() + x, centerChunk.getZ() + z);
@@ -103,7 +108,9 @@ public class PopulationTask extends AsyncTask {
                         generator.generateChunk(chunk.getX(), chunk.getZ());
                         BaseFullChunk newChunk = manager.getChunk(chunk.getX(), chunk.getZ());
                         newChunk.setGenerated();
-                        if (newChunk != chunk) manager.setChunk(chunk.getX(), chunk.getZ(), newChunk);
+                        if (newChunk != chunk) {
+                            manager.setChunk(chunk.getX(), chunk.getZ(), newChunk);
+                        }
                    }
                 }
 

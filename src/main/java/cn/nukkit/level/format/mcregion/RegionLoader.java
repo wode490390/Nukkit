@@ -3,7 +3,10 @@ package cn.nukkit.level.format.mcregion;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
 import cn.nukkit.level.format.generic.BaseRegionLoader;
-import cn.nukkit.utils.*;
+import cn.nukkit.utils.Binary;
+import cn.nukkit.utils.BinaryStream;
+import cn.nukkit.utils.ChunkException;
+import cn.nukkit.utils.Zlib;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -11,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-
+@Log4j2
 public class RegionLoader extends BaseRegionLoader {
 
     public RegionLoader(LevelProvider level, int regionX, int regionZ) {
@@ -29,6 +33,7 @@ public class RegionLoader extends BaseRegionLoader {
         return !(array[0] == 0 || array[1] == 0);
     }
 
+    @Override
     public Chunk readChunk(int x, int z) throws IOException {
         int index = getChunkOffset(x, z);
         if (index < 0 || index >= 4096) {
@@ -50,19 +55,19 @@ public class RegionLoader extends BaseRegionLoader {
                 table[0] = ++this.lastSector;
                 table[1] = 1;
                 this.locationTable.put(index, table);
-                MainLogger.getLogger().error("Corrupted chunk header detected");
+                log.error("Corrupted chunk header detected");
             }
             return null;
         }
 
         byte compression = raf.readByte();
         if (length > (table[1] << 12)) {
-            MainLogger.getLogger().error("Corrupted bigger chunk detected");
+            log.error("Corrupted bigger chunk detected");
             table[1] = length >> 12;
             this.locationTable.put(index, table);
             this.writeLocationIndex(index);
         } else if (compression != COMPRESSION_ZLIB && compression != COMPRESSION_GZIP) {
-            MainLogger.getLogger().error("Invalid compression type");
+            log.error("Invalid compression type");
             return null;
         }
 
@@ -72,7 +77,7 @@ public class RegionLoader extends BaseRegionLoader {
         if (chunk != null) {
             return chunk;
         } else {
-            MainLogger.getLogger().error("Corrupted chunk detected");
+            log.error("Corrupted chunk detected");
             return null;
         }
     }
@@ -318,5 +323,4 @@ public class RegionLoader extends BaseRegionLoader {
     public int getZ() {
         return z;
     }
-
 }

@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.item.EntityPrimedTNT;
 import cn.nukkit.event.block.BlockIgniteEvent;
 import cn.nukkit.event.entity.EntityCombustByBlockEvent;
 import cn.nukkit.event.entity.EntityDamageByBlockEvent;
@@ -14,8 +15,6 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockColor;
-
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -68,11 +67,6 @@ public class BlockLava extends BlockLiquid {
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         boolean ret = this.getLevel().setBlock(this, this, true, false);
         this.getLevel().scheduleUpdate(this, this.tickRate());
@@ -85,13 +79,11 @@ public class BlockLava extends BlockLiquid {
         int result = super.onUpdate(type);
 
         if (type == Level.BLOCK_UPDATE_RANDOM && this.level.gameRules.getBoolean(GameRule.DO_FIRE_TICK)) {
-            Random random = ThreadLocalRandom.current();
-
-            int i = random.nextInt(3);
+            int i = ThreadLocalRandom.current().nextInt(3);
 
             if (i > 0) {
                 for (int k = 0; k < i; ++k) {
-                    Vector3 v = this.add(random.nextInt(3) - 1, 1, random.nextInt(3) - 1);
+                    Vector3 v = this.add(ThreadLocalRandom.current().nextInt(3) - 1, 1, ThreadLocalRandom.current().nextInt(-1, 2));
                     Block block = this.getLevel().getBlock(v);
 
                     if (block.getId() == AIR) {
@@ -114,7 +106,7 @@ public class BlockLava extends BlockLiquid {
                 }
             } else {
                 for (int k = 0; k < 3; ++k) {
-                    Vector3 v = this.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
+                    Vector3 v = this.add(ThreadLocalRandom.current().nextInt(3) - 1, 0, ThreadLocalRandom.current().nextInt(-1, 2));
                     Block block = this.getLevel().getBlock(v);
 
                     if (block.up().getId() == AIR && block.getBurnChance() > 0) {
@@ -156,6 +148,9 @@ public class BlockLava extends BlockLiquid {
 
     @Override
     public int tickRate() {
+        if (this.getLevel().getDimension() == Level.DIMENSION_NETHER) {
+            return 5;
+        }
         return 30;
     }
 
@@ -192,6 +187,13 @@ public class BlockLava extends BlockLiquid {
             ((BlockLiquid) block).liquidCollide(this, new BlockStone());
         }else{
             super.flowIntoBlock(block, newFlowDecay);
+        }
+    }
+
+    @Override
+    public void addVelocityToEntity(Entity entity, Vector3 vector) {
+        if (!(entity instanceof EntityPrimedTNT)) {
+            super.addVelocityToEntity(entity, vector);
         }
     }
 }

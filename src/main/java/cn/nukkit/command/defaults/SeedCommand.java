@@ -3,6 +3,7 @@ package cn.nukkit.command.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.lang.TranslationContainer;
+import cn.nukkit.level.Position;
 
 /**
  * author: MagicDroidX
@@ -24,7 +25,7 @@ public class SeedCommand extends VanillaCommand {
 
         long seed;
         if (sender instanceof Player) {
-            seed = ((Player) sender).getLevel().getSeed();
+            seed = ((Position) sender).getLevel().getSeed();
         } else {
             seed = sender.getServer().getDefaultLevel().getSeed();
         }

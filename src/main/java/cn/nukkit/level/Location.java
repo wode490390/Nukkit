@@ -80,8 +80,11 @@ public class Location extends Position {
 
     @Override
     public Location getLocation() {
-        if (this.isValid()) return new Location(this.x, this.y, this.z, this.yaw, this.pitch, this.level);
-        else throw new LevelException("Undefined Level reference");
+        if (this.isValid()) {
+            return new Location(this.x, this.y, this.z, this.yaw, this.pitch, this.level);
+        } else {
+            throw new LevelException("Undefined Level reference");
+        }
     }
 
     @Override

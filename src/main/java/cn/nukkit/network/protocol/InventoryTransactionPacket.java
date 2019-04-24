@@ -5,8 +5,12 @@ import cn.nukkit.inventory.transaction.data.TransactionData;
 import cn.nukkit.inventory.transaction.data.UseItemData;
 import cn.nukkit.inventory.transaction.data.UseItemOnEntityData;
 import cn.nukkit.network.protocol.types.NetworkInventoryAction;
+import lombok.ToString;
 
+@ToString
 public class InventoryTransactionPacket extends DataPacket {
+
+    public static final byte NETWORK_ID = ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
 
     public static final int TYPE_NORMAL = 0;
     public static final int TYPE_MISMATCH = 1;
@@ -24,26 +28,23 @@ public class InventoryTransactionPacket extends DataPacket {
     public static final int USE_ITEM_ON_ENTITY_ACTION_INTERACT = 0;
     public static final int USE_ITEM_ON_ENTITY_ACTION_ATTACK = 1;
 
-
-    public static final int ACTION_MAGIC_SLOT_DROP_ITEM = 0;
-    public static final int ACTION_MAGIC_SLOT_PICKUP_ITEM = 1;
-
-    public static final int ACTION_MAGIC_SLOT_CREATIVE_DELETE_ITEM = 0;
-    public static final int ACTION_MAGIC_SLOT_CREATIVE_CREATE_ITEM = 1;
-
     public int transactionType;
-    public NetworkInventoryAction[] actions;
-    public TransactionData transactionData;
 
     /**
      * NOTE: THIS FIELD DOES NOT EXIST IN THE PROTOCOL, it's merely used for convenience for PocketMine-MP to easily
      * determine whether we're doing a crafting transaction.
      */
     public boolean isCraftingPart = false;
+    //public boolean isFinalCraftingPart = false;
+
+    public NetworkInventoryAction[] actions = new NetworkInventoryAction[0];
+
+    public TransactionData trData;
+
 
     @Override
     public byte pid() {
-        return ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -61,33 +62,34 @@ public class InventoryTransactionPacket extends DataPacket {
             case TYPE_MISMATCH:
                 break;
             case TYPE_USE_ITEM:
-                UseItemData useItemData = (UseItemData) this.transactionData;
+                UseItemData useItemData = (UseItemData) this.trData;
 
                 this.putUnsignedVarInt(useItemData.actionType);
                 this.putBlockVector3(useItemData.blockPos);
                 this.putBlockFace(useItemData.face);
                 this.putVarInt(useItemData.hotbarSlot);
                 this.putSlot(useItemData.itemInHand);
-                this.putVector3f(useItemData.playerPos.asVector3f());
-                this.putVector3f(useItemData.clickPos);
+                this.putVector3(useItemData.playerPos.asVector3f());
+                this.putVector3(useItemData.clickPos);
+                this.putUnsignedVarInt(useItemData.blockRuntimeId);
                 break;
             case TYPE_USE_ITEM_ON_ENTITY:
-                UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) this.transactionData;
+                UseItemOnEntityData useItemOnEntityData = (UseItemOnEntityData) this.trData;
 
                 this.putEntityRuntimeId(useItemOnEntityData.entityRuntimeId);
                 this.putUnsignedVarInt(useItemOnEntityData.actionType);
                 this.putVarInt(useItemOnEntityData.hotbarSlot);
                 this.putSlot(useItemOnEntityData.itemInHand);
-                this.putVector3f(useItemOnEntityData.playerPos.asVector3f());
-                this.putVector3f(useItemOnEntityData.clickPos.asVector3f());
+                this.putVector3(useItemOnEntityData.playerPos.asVector3f());
+                this.putVector3(useItemOnEntityData.clickPos.asVector3f());
                 break;
             case TYPE_RELEASE_ITEM:
-                ReleaseItemData releaseItemData = (ReleaseItemData) this.transactionData;
+                ReleaseItemData releaseItemData = (ReleaseItemData) this.trData;
 
                 this.putUnsignedVarInt(releaseItemData.actionType);
                 this.putVarInt(releaseItemData.hotbarSlot);
                 this.putSlot(releaseItemData.itemInHand);
-                this.putVector3f(releaseItemData.headRot.asVector3f());
+                this.putVector3(releaseItemData.headRot.asVector3f());
                 break;
             default:
                 throw new RuntimeException("Unknown transaction type " + this.transactionType);
@@ -112,14 +114,15 @@ public class InventoryTransactionPacket extends DataPacket {
                 UseItemData itemData = new UseItemData();
 
                 itemData.actionType = (int) this.getUnsignedVarInt();
-                itemData.blockPos = this.getBlockVector3();
+                itemData.blockPos = this.getBlockPosition();
                 itemData.face = this.getBlockFace();
                 itemData.hotbarSlot = this.getVarInt();
                 itemData.itemInHand = this.getSlot();
-                itemData.playerPos = this.getVector3f().asVector3();
-                itemData.clickPos = this.getVector3f();
+                itemData.playerPos = this.getVector3().asVector3();
+                itemData.clickPos = this.getVector3();
+                itemData.blockRuntimeId = this.getUnsignedVarInt();
 
-                this.transactionData = itemData;
+                this.trData = itemData;
                 break;
             case TYPE_USE_ITEM_ON_ENTITY:
                 UseItemOnEntityData useItemOnEntityData = new UseItemOnEntityData();
@@ -128,10 +131,10 @@ public class InventoryTransactionPacket extends DataPacket {
                 useItemOnEntityData.actionType = (int) this.getUnsignedVarInt();
                 useItemOnEntityData.hotbarSlot = this.getVarInt();
                 useItemOnEntityData.itemInHand = this.getSlot();
-                useItemOnEntityData.playerPos = this.getVector3f().asVector3();
-                useItemOnEntityData.clickPos = this.getVector3f().asVector3();
+                useItemOnEntityData.playerPos = this.getVector3().asVector3();
+                useItemOnEntityData.clickPos = this.getVector3().asVector3();
 
-                this.transactionData = useItemOnEntityData;
+                this.trData = useItemOnEntityData;
                 break;
             case TYPE_RELEASE_ITEM:
                 ReleaseItemData releaseItemData = new ReleaseItemData();
@@ -139,9 +142,9 @@ public class InventoryTransactionPacket extends DataPacket {
                 releaseItemData.actionType = (int) getUnsignedVarInt();
                 releaseItemData.hotbarSlot = getVarInt();
                 releaseItemData.itemInHand = getSlot();
-                releaseItemData.headRot = this.getVector3f().asVector3();
+                releaseItemData.headRot = this.getVector3().asVector3();
 
-                this.transactionData = releaseItemData;
+                this.trData = releaseItemData;
                 break;
             default:
                 throw new RuntimeException("Unknown transaction type " + this.transactionType);

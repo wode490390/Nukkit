@@ -22,14 +22,26 @@ public interface AxisAlignedBB extends Cloneable {
         double maxY = this.getMaxY();
         double maxZ = this.getMaxZ();
 
-        if (x < 0) minX += x;
-        if (x > 0) maxX += x;
+        if (x < 0) {
+            minX += x;
+        }
+        if (x > 0) {
+            maxX += x;
+        }
 
-        if (y < 0) minY += y;
-        if (y > 0) maxY += y;
+        if (y < 0) {
+            minY += y;
+        }
+        if (y > 0) {
+            maxY += y;
+        }
 
-        if (z < 0) minZ += z;
-        if (z > 0) maxZ += z;
+        if (z < 0) {
+            minZ += z;
+        }
+        if (z > 0) {
+            maxZ += z;
+        }
 
         return new SimpleAxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
@@ -306,4 +318,31 @@ public interface AxisAlignedBB extends Cloneable {
     double getMaxZ();
 
     AxisAlignedBB clone();
+
+    default void forEach(BBConsumer action) {
+        int minX = NukkitMath.floorDouble(this.getMinX());
+        int minY = NukkitMath.floorDouble(this.getMinY());
+        int minZ = NukkitMath.floorDouble(this.getMinZ());
+
+        int maxX = NukkitMath.floorDouble(this.getMaxX());
+        int maxY = NukkitMath.floorDouble(this.getMaxY());
+        int maxZ = NukkitMath.floorDouble(this.getMaxZ());
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    action.accept(x, y, z);
+                }
+            }
+        }
+    }
+
+    interface BBConsumer<T> {
+
+        void accept(int x, int y, int z);
+
+        default T get() {
+            return null;
+        }
+    }
 }

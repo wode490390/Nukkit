@@ -1,9 +1,12 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class MobEffectPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MOB_EFFECT_PACKET;
@@ -17,7 +20,7 @@ public class MobEffectPacket extends DataPacket {
     public static final byte EVENT_MODIFY = 2;
     public static final byte EVENT_REMOVE = 3;
 
-    public long eid;
+    public long entityRuntimeId;
     public int eventId;
     public int effectId;
     public int amplifier = 0;
@@ -32,7 +35,7 @@ public class MobEffectPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityRuntimeId(this.eid);
+        this.putEntityRuntimeId(this.entityRuntimeId);
         this.putByte((byte) this.eventId);
         this.putVarInt(this.effectId);
         this.putVarInt(this.amplifier);

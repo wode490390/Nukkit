@@ -2,12 +2,15 @@ package cn.nukkit.network.protocol;
 
 import cn.nukkit.entity.data.EntityMetadata;
 import cn.nukkit.utils.Binary;
+import lombok.ToString;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class SetEntityDataPacket extends DataPacket {
+
     public static final byte NETWORK_ID = ProtocolInfo.SET_ENTITY_DATA_PACKET;
 
     @Override
@@ -15,7 +18,7 @@ public class SetEntityDataPacket extends DataPacket {
         return NETWORK_ID;
     }
 
-    public long eid;
+    public long entityRuntimeId;
     public EntityMetadata metadata;
 
     @Override
@@ -26,7 +29,7 @@ public class SetEntityDataPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityRuntimeId(this.eid);
+        this.putEntityRuntimeId(this.entityRuntimeId);
         this.put(Binary.writeMetadata(this.metadata));
     }
 }

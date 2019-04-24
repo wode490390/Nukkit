@@ -4,8 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.Position;
-import cn.nukkit.level.Sound;
-
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -51,7 +50,7 @@ public class AnvilInventory extends ContainerInventory {
             player.getInventory().sendContents(player);
             sendContents(player);
 
-            player.getLevel().addSound(player, Sound.RANDOM_ANVIL_USE);
+            player.getLevel().addLevelSoundEvent(player, LevelSoundEventPacket.SOUND_RANDOM_ANVIL_USE);
             return true;
         } else if (local.getId() != 0 && second.getId() != 0) { //enchants combining
             if (!local.equals(second, true, false)) {
@@ -82,9 +81,9 @@ public class AnvilInventory extends ContainerInventory {
                         boolean another = false;
 
                         for (Enchantment baseEnchant : baseEnchants) {
-                            if (baseEnchant.getId() == enchantment.getId())
+                            if (baseEnchant.getId() == enchantment.getId()) {
                                 same = true;
-                            else {
+                            } else {
                                 another = true;
                             }
                         }
@@ -99,8 +98,9 @@ public class AnvilInventory extends ContainerInventory {
                     if (localEnchantment != null) {
                         int level = Math.max(localEnchantment.getLevel(), enchantment.getLevel());
 
-                        if (localEnchantment.getLevel() == enchantment.getLevel())
+                        if (localEnchantment.getLevel() == enchantment.getLevel()) {
                             level++;
+                        }
 
                         enchantment.setLevel(level);
                         result.addEnchantment(enchantment);
@@ -118,7 +118,7 @@ public class AnvilInventory extends ContainerInventory {
                 clearAll();
                 sendContents(player);
 
-                player.getLevel().addSound(player, Sound.RANDOM_ANVIL_USE);
+                player.getLevel().addLevelSoundEvent(player, LevelSoundEventPacket.SOUND_RANDOM_ANVIL_USE);
                 return true;
             }
         }

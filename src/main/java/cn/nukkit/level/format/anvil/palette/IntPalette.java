@@ -6,7 +6,8 @@ import java.util.Arrays;
  * @author https://github.com/boy0001/
  */
 public class IntPalette {
-    private static int[] INT0 = new int[0];
+
+    private static final int[] INT0 = new int[0];
     private int[] keys = INT0;
     private int lastIndex = Integer.MIN_VALUE;
 
@@ -57,7 +58,9 @@ public class IntPalette {
         int index;
         if (hasLast) {
             int lastKey = keys[lastTmp];
-            if (lastKey == key) return lastTmp;
+            if (lastKey == key) {
+                return lastTmp;
+            }
             if (lastKey > key) {
                 index = binarySearch0(0, lastTmp, key);
             } else {
@@ -69,7 +72,7 @@ public class IntPalette {
         if (index >= keys.length || index < 0) {
             return lastIndex = Integer.MIN_VALUE;
         } else {
-            return lastIndex = (int) index;
+            return lastIndex = index;
         }
     }
 
@@ -81,12 +84,13 @@ public class IntPalette {
             int mid = (low + high) >>> 1;
             int midVal = keys[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -95,6 +99,7 @@ public class IntPalette {
         return keys.length;
     }
 
+    @Override
     public IntPalette clone() {
         IntPalette p = new IntPalette();
         p.keys = this.keys != INT0 ? this.keys.clone() : INT0;

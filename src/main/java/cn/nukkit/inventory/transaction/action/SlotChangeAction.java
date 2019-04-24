@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.transaction.InventoryTransaction;
 import cn.nukkit.item.Item;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +13,7 @@ import java.util.Set;
 public class SlotChangeAction extends InventoryAction {
 
     protected Inventory inventory;
-    private int inventorySlot;
+    private final int inventorySlot;
 
     public SlotChangeAction(Inventory inventory, int inventorySlot, Item sourceItem, Item targetItem) {
         super(sourceItem, targetItem);
@@ -46,10 +45,11 @@ public class SlotChangeAction extends InventoryAction {
      * @param source player
      * @return valid
      */
+    @Override
     public boolean isValid(Player source) {
         Item check = inventory.getItem(this.inventorySlot);
 
-        return check.equalsExact(this.sourceItem);
+        return check.equals(this.sourceItem, false, false) && check.count == this.sourceItem.count;
     }
 
     /**
@@ -58,6 +58,7 @@ public class SlotChangeAction extends InventoryAction {
      * @param source player
      * @return successfully executed
      */
+    @Override
     public boolean execute(Player source) {
         return this.inventory.setItem(this.inventorySlot, this.targetItem, false);
     }
@@ -67,6 +68,7 @@ public class SlotChangeAction extends InventoryAction {
      *
      * @param source player
      */
+    @Override
     public void onExecuteSuccess(Player source) {
         Set<Player> viewers = new HashSet<>(this.inventory.getViewers());
         viewers.remove(source);
@@ -79,6 +81,7 @@ public class SlotChangeAction extends InventoryAction {
      *
      * @param source player
      */
+    @Override
     public void onExecuteFail(Player source) {
         this.inventory.sendSlot(this.inventorySlot, source);
     }

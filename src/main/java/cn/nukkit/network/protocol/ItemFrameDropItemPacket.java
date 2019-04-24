@@ -1,10 +1,12 @@
 package cn.nukkit.network.protocol;
 
 import cn.nukkit.math.BlockVector3;
+import lombok.ToString;
 
 /**
  * Created by Pub4Game on 03.07.2016.
  */
+@ToString
 public class ItemFrameDropItemPacket extends DataPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ITEM_FRAME_DROP_ITEM_PACKET;
@@ -15,10 +17,10 @@ public class ItemFrameDropItemPacket extends DataPacket {
 
     @Override
     public void decode() {
-        BlockVector3 v = this.getBlockVector3();
-        this.z = v.z;
-        this.y = v.y;
+        BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
     }
 
     @Override

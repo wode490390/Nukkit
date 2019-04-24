@@ -1,6 +1,5 @@
 package cn.nukkit.raknet.server;
 
-import cn.nukkit.utils.ThreadedLogger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -14,33 +13,37 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class UDPServerSocket extends ChannelInboundHandlerAdapter {
 
-    protected final ThreadedLogger logger;
     protected Bootstrap bootstrap;
     protected Channel channel;
 
+    private String bindAddress;
+    private int bindPort;
+
     protected ConcurrentLinkedQueue<DatagramPacket> packets = new ConcurrentLinkedQueue<>();
 
-    public UDPServerSocket(ThreadedLogger logger) {
-        this(logger, 19132, "0.0.0.0");
+    public UDPServerSocket() {
+        this(19132, "0.0.0.0");
     }
 
-    public UDPServerSocket(ThreadedLogger logger, int port) {
-        this(logger, port, "0.0.0.0");
+    public UDPServerSocket(int port) {
+        this(port, "0.0.0.0");
     }
 
-    public UDPServerSocket(ThreadedLogger logger, int port, String interfaz) {
-        this.logger = logger;
+    public UDPServerSocket(int port, String interfaz) {
+        this.bindAddress = interfaz;
+        this.bindPort = port;
         try {
             if (Epoll.isAvailable()) {
                 bootstrap = new Bootstrap()
@@ -48,21 +51,29 @@ public class UDPServerSocket extends ChannelInboundHandlerAdapter {
                         .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                         .handler(this)
                         .group(new EpollEventLoopGroup());
-                this.logger.info("Epoll is available. EpollEventLoop will be used.");
+                log.info("Epoll is available. EpollEventLoop will be used.");
             } else {
                 bootstrap = new Bootstrap()
                         .group(new NioEventLoopGroup())
                         .channel(NioDatagramChannel.class)
                         .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                         .handler(this);
-                this.logger.info("Epoll is unavailable. Reverting to NioEventLoop.");
+                log.info("Epoll is unavailable. Reverting to NioEventLoop.");
             }
-            channel = bootstrap.bind(interfaz, port).sync().channel();
+            channel = bootstrap.bind(this.bindAddress, this.bindPort).sync().channel();
         } catch (Exception e) {
-            this.logger.critical("**** FAILED TO BIND TO " + interfaz + ":" + port + "!");
-            this.logger.critical("Perhaps a server is already running on that port?");
+            log.fatal("**** FAILED TO BIND TO " + this.bindAddress + ":" + this.bindPort + "!");
+            log.fatal("Perhaps a server is already running on that port?");
             System.exit(1);
         }
+    }
+
+    public String getBindAddress() {
+        return this.bindAddress;
+    }
+
+    public int getBindPort() {
+        return this.bindPort;
     }
 
     public void close() {
@@ -96,6 +107,6 @@ public class UDPServerSocket extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        this.logger.warning(cause.getMessage(), cause);
+        log.warn(cause.getMessage(), cause);
     }
 }

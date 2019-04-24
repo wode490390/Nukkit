@@ -33,12 +33,7 @@ public class BlockWeightedPressurePlateLight extends BlockPressurePlateBase {
 
     @Override
     public double getHardness() {
-        return 0.5D;
-    }
-
-    @Override
-    public double getResistance() {
-        return 2.5D;
+        return 0.5;
     }
 
     @Override
@@ -47,8 +42,13 @@ public class BlockWeightedPressurePlateLight extends BlockPressurePlateBase {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     toItem()
             };
@@ -72,7 +72,7 @@ public class BlockWeightedPressurePlateLight extends BlockPressurePlateBase {
         int count = Math.min(this.level.getCollidingEntities(getCollisionBoundingBox()).length, this.getMaxWeight());
 
         if (count > 0) {
-            float f = (float) Math.min(this.getMaxWeight(), count) / (float) this.getMaxWeight();
+            float f = Math.min(this.getMaxWeight(), count) / (float) this.getMaxWeight();
             return NukkitMath.ceilFloat(f * 15.0F);
         } else {
             return 0;

@@ -1,10 +1,24 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class NPCRequestPacket extends DataPacket {
+
+    public static final byte NETWORK_ID = ProtocolInfo.NPC_REQUEST_PACKET;
+
+    public static final int TYPE_SET_ACTION = 0;
+    public static final int TYPE_EXECUTE_COMMAND_ACTION = 1;
+    public static final int TYPE_EXECUTE_CLOSING_COMMANDS = 2;
+
+    public long entityRuntimeId;
+    public int requestType;
+    public String commandString;
+    public int actionType;
 
     @Override
     public byte pid() {
-        return ProtocolInfo.NPC_REQUEST_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -14,6 +28,10 @@ public class NPCRequestPacket extends DataPacket {
 
     @Override
     public void encode() {
-        //TODO
+        this.reset();
+        this.putEntityRuntimeId(this.entityRuntimeId);
+        this.putByte((byte) this.requestType);
+        this.putString(this.commandString);
+        this.putByte((byte) this.actionType);
     }
 }

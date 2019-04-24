@@ -23,12 +23,12 @@
  */
 package co.aikar.timings;
 
+import cn.nukkit.timings.JsonUtil;
 import com.google.gson.JsonArray;
 
-import cn.nukkit.timings.JsonUtil;
-
 class TimingData {
-    private int id;
+
+    private final int id;
     int count = 0;
     private int lagCount = 0;
     long totalTime = 0;
@@ -76,6 +76,7 @@ class TimingData {
         this.curTickTotal = 0;
     }
 
+    @Override
     protected TimingData clone() {
         return new TimingData(this);
     }

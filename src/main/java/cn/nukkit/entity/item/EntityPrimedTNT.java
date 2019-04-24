@@ -8,16 +8,16 @@ import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityExplosionPrimeEvent;
 import cn.nukkit.level.Explosion;
 import cn.nukkit.level.GameRule;
-import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 
 /**
  * @author MagicDroidX
  */
 public class EntityPrimedTNT extends Entity implements EntityExplosive {
 
-    public static final int NETWORK_ID = 65;
+    public static final int NETWORK_ID = TNT;
 
     @Override
     public float getWidth() {
@@ -77,91 +77,107 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
         return source.getCause() == DamageCause.VOID && super.attack(source);
     }
 
+    @Override
+    public boolean isOnFire() {
+        return false;
+    }
+
+    @Override
+    public void setOnFire(int seconds) {
+
+    }
+
+    @Override
     protected void initEntity() {
         super.initEntity();
 
-        if (namedTag.contains("Fuse")) {
-            fuse = namedTag.getByte("Fuse");
+        if (this.namedTag.contains("Fuse")) {
+            this.fuse = this.namedTag.getByte("Fuse");
         } else {
-            fuse = 80;
+            this.fuse = 80;
         }
 
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_IGNITED, true);
-        this.setDataProperty(new IntEntityData(DATA_FUSE_LENGTH, fuse));
+        this.setDataProperty(new IntEntityData(DATA_FUSE_LENGTH, this.fuse));
 
-        this.level.addSound(this, Sound.RANDOM_FIZZ);
+        this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_FIZZ);
     }
 
 
+    @Override
     public boolean canCollideWith(Entity entity) {
         return false;
     }
 
+    @Override
     public void saveNBT() {
         super.saveNBT();
         namedTag.putByte("Fuse", fuse);
     }
 
+    @Override
     public boolean onUpdate(int currentTick) {
 
-        if (closed) {
+        if (this.closed) {
             return false;
         }
 
         this.timing.startTiming();
 
-        int tickDiff = currentTick - lastUpdate;
+        int tickDiff = currentTick - this.lastUpdate;
 
-        if (tickDiff <= 0 && !justCreated) {
+        if (tickDiff <= 0 && !this.justCreated) {
             return true;
         }
 
-        if (fuse % 5 == 0) {
-            this.setDataProperty(new IntEntityData(DATA_FUSE_LENGTH, fuse));
+        if (this.fuse % 5 == 0) {
+            this.setDataProperty(new IntEntityData(DATA_FUSE_LENGTH, this.fuse));
         }
 
-        lastUpdate = currentTick;
+        this.lastUpdate = currentTick;
 
         boolean hasUpdate = entityBaseTick(tickDiff);
 
-        if (isAlive()) {
+        if (this.isAlive()) {
 
-            motionY -= getGravity();
+            this.motionY -= this.getGravity();
 
-            move(motionX, motionY, motionZ);
+            this.move(this.motionX, this.motionY, this.motionZ);
 
-            float friction = 1 - getDrag();
+            float friction = 1 - this.getDrag();
 
-            motionX *= friction;
-            motionY *= friction;
-            motionZ *= friction;
+            this.motionX *= friction;
+            this.motionY *= friction;
+            this.motionZ *= friction;
 
-            updateMovement();
+            this.updateMovement();
 
-            if (onGround) {
-                motionY *= -0.5;
-                motionX *= 0.7;
-                motionZ *= 0.7;
+            if (this.onGround) {
+                this.motionY *= -0.5;
+                this.motionX *= 0.7;
+                this.motionZ *= 0.7;
             }
 
-            fuse -= tickDiff;
+            this.fuse -= tickDiff;
 
-            if (fuse <= 0) {
-                if (this.level.getGameRules().getBoolean(GameRule.TNT_EXPLODES))
-                    explode();
-                kill();
+            if (this.fuse <= 0) {
+                if (this.level.getGameRules().getBoolean(GameRule.TNT_EXPLODES)) {
+                    this.explode();
+                }
+                this.kill();
             }
 
         }
 
         this.timing.stopTiming();
 
-        return hasUpdate || fuse >= 0 || Math.abs(motionX) > 0.00001 || Math.abs(motionY) > 0.00001 || Math.abs(motionZ) > 0.00001;
+        return hasUpdate || this.fuse >= 0 || Math.abs(this.motionX) > 0.00001 || Math.abs(this.motionY) > 0.00001 || Math.abs(this.motionZ) > 0.00001;
     }
 
+    @Override
     public void explode() {
         EntityExplosionPrimeEvent event = new EntityExplosionPrimeEvent(this, 4);
-        server.getPluginManager().callEvent(event);
+        this.server.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
         }
@@ -173,6 +189,6 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
     }
 
     public Entity getSource() {
-        return source;
+        return this.source;
     }
 }

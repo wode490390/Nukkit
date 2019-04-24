@@ -1,25 +1,26 @@
 package cn.nukkit.lang;
 
-import cn.nukkit.Server;
 import cn.nukkit.utils.Utils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@Log4j2
 public class BaseLang {
+
     public static final String FALLBACK_LANGUAGE = "eng";
 
     protected final String langName;
 
     protected Map<String, String> lang = new HashMap<>();
     protected Map<String, String> fallbackLang = new HashMap<>();
-
 
     public BaseLang(String lang) {
         this(lang, null);
@@ -36,22 +37,26 @@ public class BaseLang {
         if (path == null) {
             path = "lang/";
             this.lang = this.loadLang(this.getClass().getClassLoader().getResourceAsStream(path + this.langName + "/lang.ini"));
-            if (useFallback) this.fallbackLang = this.loadLang(this.getClass().getClassLoader().getResourceAsStream(path + fallback + "/lang.ini"));
+            if (useFallback) {
+                this.fallbackLang = this.loadLang(this.getClass().getClassLoader().getResourceAsStream(path + fallback + "/lang.ini"));
+            }
         } else {
             this.lang = this.loadLang(path + this.langName + "/lang.ini");
-            if (useFallback) this.fallbackLang = this.loadLang(path + fallback + "/lang.ini");
+            if (useFallback) {
+                this.fallbackLang = this.loadLang(path + fallback + "/lang.ini");
+            }
         }
-        if (this.fallbackLang == null) this.fallbackLang = this.lang;
-
-
+        if (this.fallbackLang == null) {
+            this.fallbackLang = this.lang;
+        }
     }
 
     public Map<String, String> getLangMap() {
-        return lang;
+        return this.lang;
     }
 
     public Map<String, String> getFallbackLangMap() {
-        return fallbackLang;
+        return this.fallbackLang;
     }
 
     public String getName() {
@@ -59,7 +64,7 @@ public class BaseLang {
     }
 
     public String getLang() {
-        return langName;
+        return this.langName;
     }
 
     protected Map<String, String> loadLang(String path) {
@@ -68,7 +73,7 @@ public class BaseLang {
             Map<String, String> d = new HashMap<>();
             for (String line : content.split("\n")) {
                 line = line.trim();
-                if (line.equals("") || line.charAt(0) == '#') {
+                if (line.isEmpty() || line.charAt(0) == '#') {
                     continue;
                 }
                 String[] t = line.split("=");
@@ -81,14 +86,14 @@ public class BaseLang {
                     value += t[i] + "=";
                 }
                 value += t[t.length - 1];
-                if (value.equals("")) {
+                if (value.isEmpty()) {
                     continue;
                 }
                 d.put(key, value);
             }
             return d;
         } catch (IOException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
             return null;
         }
     }
@@ -99,7 +104,7 @@ public class BaseLang {
             Map<String, String> d = new HashMap<>();
             for (String line : content.split("\n")) {
                 line = line.trim();
-                if (line.equals("") || line.charAt(0) == '#') {
+                if (line.isEmpty() || line.charAt(0) == '#') {
                     continue;
                 }
                 String[] t = line.split("=");
@@ -112,14 +117,14 @@ public class BaseLang {
                     value += t[i] + "=";
                 }
                 value += t[t.length - 1];
-                if (value.equals("")) {
+                if (value.isEmpty()) {
                     continue;
                 }
                 d.put(key, value);
             }
             return d;
         } catch (IOException e) {
-            Server.getInstance().getLogger().logException(e);
+            log.throwing(e);
             return null;
         }
     }
@@ -129,7 +134,21 @@ public class BaseLang {
     }
 
     public String translateString(String str, String... params) {
-        return this.translateString(str, params, null);
+        if (params != null) {
+            return this.translateString(str, params, null);
+        }
+        return this.translateString(str, new String[0], null);
+    }
+
+    public String translateString(String str, Object... params) {
+        if (params != null) {
+            String[] paramsToString = new String[params.length];
+            for (int i = 0; i < params.length; i++) {
+                paramsToString[i] = Objects.toString(params[i]);
+            }
+            return this.translateString(str, paramsToString, null);
+        }
+        return this.translateString(str, new String[0], null);
     }
 
     public String translateString(String str, String param, String onlyPrefix) {

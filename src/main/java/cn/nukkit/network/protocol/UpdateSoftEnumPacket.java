@@ -1,14 +1,23 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class UpdateSoftEnumPacket extends DataPacket {
 
-    public final String[] values = new String[0];
-    public String name = "";
-    public Type type = Type.SET;
+    public static final byte NETWORK_ID = ProtocolInfo.UPDATE_SOFT_ENUM_PACKET;
+
+    public static final int TYPE_ADD = 0;
+    public static final int TYPE_REMOVE = 1;
+    public static final int TYPE_SET = 2;
+
+    public String enumName = "";
+    public String[] values = new String[0];
+    public int type = TYPE_SET;
 
     @Override
     public byte pid() {
-        return ProtocolInfo.UPDATE_SOFT_ENUM_PACKET;
+        return NETWORK_ID;
     }
 
     @Override
@@ -18,18 +27,11 @@ public class UpdateSoftEnumPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putString(name);
-        this.putUnsignedVarInt(values.length);
-
-        for (String value : values) {
+        this.putString(this.enumName);
+        this.putUnsignedVarInt(this.values.length);
+        for (String value : this.values) {
             this.putString(value);
         }
-        this.putByte((byte) type.ordinal());
-    }
-
-    public enum Type {
-        ADD,
-        REMOVE,
-        SET
+        this.putByte((byte) this.type);
     }
 }

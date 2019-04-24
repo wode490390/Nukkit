@@ -2,6 +2,8 @@ package cn.nukkit.entity.projectile;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
@@ -10,7 +12,8 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 public class EntityEnderPearl extends EntityProjectile {
-    public static final int NETWORK_ID = 87;
+
+    public static final int NETWORK_ID = ENDER_PEARL;
 
     @Override
     public int getNetworkId() {
@@ -61,9 +64,7 @@ public class EntityEnderPearl extends EntityProjectile {
         boolean hasUpdate = super.onUpdate(currentTick);
 
         if (this.isCollided && this.shootingEntity instanceof Player) {
-            this.shootingEntity.teleport(new Vector3(NukkitMath.floorDouble(this.x) + 0.5, this.y, NukkitMath.floorDouble(this.z) + 0.5), TeleportCause.ENDER_PEARL);
-            if ((((Player) this.shootingEntity).getGamemode() & 0x01) == 0) this.shootingEntity.attack(5);
-            this.level.addSound(this, Sound.MOB_ENDERMEN_PORTAL);
+            this.teleport();
         }
 
         if (this.age > 1200 || this.isCollided) {
@@ -74,5 +75,21 @@ public class EntityEnderPearl extends EntityProjectile {
         this.timing.stopTiming();
 
         return hasUpdate;
+    }
+
+    @Override
+    public void onCollideWithEntity(Entity entity) {
+        if (this.shootingEntity instanceof Player) {
+            this.teleport();
+        }
+        super.onCollideWithEntity(entity);
+    }
+
+    private void teleport() {
+        this.shootingEntity.teleport(new Vector3(NukkitMath.floorDouble(this.x) + 0.5, this.y, NukkitMath.floorDouble(this.z) + 0.5), TeleportCause.ENDER_PEARL);
+        if ((((Player) this.shootingEntity).getGamemode() & 0x01) == 0) {
+            this.shootingEntity.attack(new EntityDamageByEntityEvent(this, shootingEntity, EntityDamageEvent.DamageCause.PROJECTILE, 5f, 0f));
+        }
+        this.level.addSound(this, Sound.MOB_ENDERMEN_PORTAL);
     }
 }

@@ -1,9 +1,15 @@
 ![nukkit](.github/images/banner.png)
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
-[![Build Status](https://ci.nukkitx.com/job/NukkitX/job/Nukkit/job/master/badge/icon)](https://ci.nukkitx.com/job/NukkitX/job/Nukkit/job/master/)
-![Tests](https://img.shields.io/jenkins/t/https/ci.nukkitx.com/job/NukkitX/job/Nukkit/job/master.svg)
-[![Discord](https://img.shields.io/discord/393465748535640064.svg)](https://discord.gg/5PzMkyK)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](LICENSE)
+[![Build Status](https://img.shields.io/travis/com/nukkitv/Nukkit/master.svg)](https://circleci.com/gh/nukkitv/Nukkit/tree/master)
+![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/nukkitv/nukkit.svg)
+![Code Size](https://img.shields.io/github/languages/code-size/nukkitv/nukkit.svg)
+![Repo Size](https://img.shields.io/github/repo-size/nukkitv/nukkit.svg)
+
+ATTENTION
+-------------
+* Changes in the temporary repo can be merged to this repo when they are stable
+* The temporary repo is located [here](https://github.com/wode490390/Nukkit/tree/f181030e)
 
 Introduction
 -------------
@@ -16,17 +22,10 @@ It has a few key advantages over other server software:
 
 Nukkit is **under improvement** yet, we welcome contributions. 
 
-Links
+Get Nukkit
 --------------------
 
-* __[News](https://nukkitx.com)__
-* __[Forums](https://nukkitx.com/forums)__
-* __[Discord](https://discord.gg/5PzMkyK)__
-* __[Download](https://ci.nukkitx.com/job/NukkitX/job/Nukkit/job/master)__
-* __[Plugins](https://nukkitx.com/resources/categories/nukkit-plugins.1)__
-* __[Wiki](https://nukkitx.com/wiki/nukkit)__
-
-*Thank you for visiting our official sites. Our official websites are provided free of charge, and we do not like to place ads on the home page affecting your reading. If you like this project, please [donate to us](https://nukkitx.com/donate). All the donations will only be used for Nukkit websites and services.*
+* __[Download](https://circleci.com/gh/nukkitv/Nukkit/tree/master)__
 
 Build JAR file
 -------------
@@ -41,7 +40,10 @@ Simply run `java -jar nukkit-1.0-SNAPSHOT.jar`.
 
 Plugin API
 -------------
-Information on Nukkit's API can be found at the [wiki](https://nukkitx.com/wiki/nukkit/).
+#### **Example Plugin**
+Example Plugin which shows the API of Nukkit.
+
+* __[Example Plugin](http://github.com/nukkitv/ExamplePlugin)__
 
 Docker
 -------------

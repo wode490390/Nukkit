@@ -2,6 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
@@ -10,7 +11,8 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/8 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockPumpkin extends BlockSolidMeta {
+public class BlockPumpkin extends BlockSolidMeta implements BlockFaceable {
+
     public BlockPumpkin() {
         this(0);
     }
@@ -45,9 +47,40 @@ public class BlockPumpkin extends BlockSolidMeta {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         this.setDamage(player != null ? player.getDirection().getOpposite().getHorizontalIndex() : 0);
-        this.getLevel().setBlock(block, this, true, true);
+        this.getLevel().setBlock(block, this, true);
+        /*if (this.getFloorY() >= 2) {
+            Block down = this.down();
+            Block down2 = this.down(2);
+            if (down instanceof BlockSnow && down2 instanceof BlockSnow) {
+                this.getLevel().setBlock(this, get(AIR));
+                this.getLevel().setBlock(down, get(AIR));
+                this.getLevel().setBlock(down2, get(AIR));
+                Entity.createEntity(Entity.SNOW_GOLEM , this);
+            } else if (down instanceof BlockIron && down2 instanceof BlockIron) {
+                Block north = down.north();
+                Block south = down.south();
+                Block east = down.east();
+                Block west = down.west();
+                if (north instanceof BlockIron && south instanceof BlockIron) {
+                    this.getLevel().setBlock(this, get(AIR));
+                    this.getLevel().setBlock(north, get(AIR));
+                    this.getLevel().setBlock(south, get(AIR));
+                    Entity.createEntity(Entity.IRON_GOLEM , this);
+                } else if (east instanceof BlockIron && west instanceof BlockIron) {
+                    this.getLevel().setBlock(this, get(AIR));
+                    this.getLevel().setBlock(east, get(AIR));
+                    this.getLevel().setBlock(west, get(AIR));
+                    Entity.createEntity(Entity.IRON_GOLEM , this);
+                }
+            }
+        }*/
         return true;
     }
 
@@ -59,5 +92,10 @@ public class BlockPumpkin extends BlockSolidMeta {
     @Override
     public boolean canBePushed() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

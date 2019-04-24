@@ -26,6 +26,7 @@ public class CommandParameter {
     public String name;
     public CommandParamType type;
     public boolean optional;
+    public int byte1 = 0; //unknown, always zero except for in /gamerule command
 
     public CommandEnum enumData;
     public String postFix;

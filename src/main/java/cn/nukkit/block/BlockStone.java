@@ -8,6 +8,7 @@ import cn.nukkit.item.ItemTool;
  * Nukkit Project
  */
 public class BlockStone extends BlockSolidMeta {
+
     public static final int NORMAL = 0;
     public static final int GRANITE = 1;
     public static final int POLISHED_GRANITE = 2;
@@ -15,7 +16,6 @@ public class BlockStone extends BlockSolidMeta {
     public static final int POLISHED_DIORITE = 4;
     public static final int ANDESITE = 5;
     public static final int POLISHED_ANDESITE = 6;
-
 
     public BlockStone() {
         this(0);
@@ -46,6 +46,11 @@ public class BlockStone extends BlockSolidMeta {
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public String getName() {
         String[] names = new String[]{
                 "Stone",
@@ -55,14 +60,14 @@ public class BlockStone extends BlockSolidMeta {
                 "Polished Diorite",
                 "Andesite",
                 "Polished Andesite",
-                "Unknown Stone"
+                ""
         };
-        return names[this.getDamage() & 0x07];
+        return names[this.getDamage() & 0x7];
     }
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     Item.get(this.getDamage() == 0 ? Item.COBBLESTONE : Item.STONE, this.getDamage(), 1)
             };

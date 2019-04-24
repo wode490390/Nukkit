@@ -10,8 +10,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
-
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -28,7 +27,7 @@ public class ItemSpawnEgg extends Item {
     }
 
     public ItemSpawnEgg(Integer meta, int count) {
-        super(SPAWN_EGG, meta, count, "Spawn EntityEgg");
+        super(SPAWN_EGG, meta, count, "Spawn Entity Egg");
     }
 
     @Override
@@ -47,14 +46,14 @@ public class ItemSpawnEgg extends Item {
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<DoubleTag>("Pos")
                         .add(new DoubleTag("", block.getX() + 0.5))
-                        .add(new DoubleTag("", block.getY()))
+                        .add(new DoubleTag("", target.getBoundingBox() == null ? block.getY() : target.getBoundingBox().getMaxY() + 0.0001f))
                         .add(new DoubleTag("", block.getZ() + 0.5)))
                 .putList(new ListTag<DoubleTag>("Motion")
                         .add(new DoubleTag("", 0))
                         .add(new DoubleTag("", 0))
                         .add(new DoubleTag("", 0)))
                 .putList(new ListTag<FloatTag>("Rotation")
-                        .add(new FloatTag("", new Random().nextFloat() * 360))
+                        .add(new FloatTag("", ThreadLocalRandom.current().nextFloat() * 360))
                         .add(new FloatTag("", 0)));
 
         if (this.hasCustomName()) {

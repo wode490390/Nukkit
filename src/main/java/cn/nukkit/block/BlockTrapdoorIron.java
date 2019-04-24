@@ -34,11 +34,6 @@ public class BlockTrapdoorIron extends BlockTrapdoor {
     }
 
     @Override
-    public double getResistance() {
-        return 25;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }

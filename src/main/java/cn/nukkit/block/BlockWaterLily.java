@@ -2,7 +2,6 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
@@ -15,11 +14,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockWaterLily extends BlockFlowable {
 
     public BlockWaterLily() {
-        this(0);
-    }
 
-    public BlockWaterLily(int meta) {
-        super(meta);
     }
 
     @Override
@@ -64,10 +59,10 @@ public class BlockWaterLily extends BlockFlowable {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target instanceof BlockWater) {
+        if (target instanceof BlockWaterStill) {
             Block up = target.up();
             if (up.getId() == Block.AIR) {
-                this.getLevel().setBlock(up, this, true, true);
+                this.getLevel().setBlock(up, this, true);
                 return true;
             }
         }
@@ -77,17 +72,12 @@ public class BlockWaterLily extends BlockFlowable {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            if (!(this.down() instanceof BlockWater)) {
+            if (!(this.down() instanceof BlockWaterStill)) {
                 this.getLevel().useBreakOn(this);
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }
         return 0;
-    }
-
-    @Override
-    public Item toItem() {
-        return new ItemBlock(this, 0);
     }
 
     @Override

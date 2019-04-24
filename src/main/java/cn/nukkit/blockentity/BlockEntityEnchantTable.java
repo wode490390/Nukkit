@@ -10,13 +10,32 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class BlockEntityEnchantTable extends BlockEntitySpawnable implements BlockEntityNameable {
 
+    public static final String TAG_ROTT = "rott"; //float
+
+    public float rott = 0; //???
+
     public BlockEntityEnchantTable(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
 
     @Override
     public boolean isBlockEntityValid() {
-        return getBlock().getId() == Block.ENCHANT_TABLE;
+        return this.getBlock().getId() == Block.ENCHANT_TABLE;
+    }
+
+    @Override
+    protected void initBlockEntity() {
+        if (this.namedTag.contains(TAG_ROTT)) {
+            this.rott = this.namedTag.getFloat(TAG_ROTT);
+        }
+
+        super.initBlockEntity();
+    }
+
+    @Override
+    public void saveNBT() {
+        super.saveNBT();
+        this.namedTag.putFloat(TAG_ROTT, this.rott);
     }
 
     @Override
@@ -31,7 +50,7 @@ public class BlockEntityEnchantTable extends BlockEntitySpawnable implements Blo
 
     @Override
     public void setName(String name) {
-        if (name == null || name.equals("")) {
+        if (name == null || name.isEmpty()) {
             this.namedTag.remove("CustomName");
             return;
         }
@@ -41,11 +60,7 @@ public class BlockEntityEnchantTable extends BlockEntitySpawnable implements Blo
 
     @Override
     public CompoundTag getSpawnCompound() {
-        CompoundTag c = new CompoundTag()
-                .putString("id", BlockEntity.ENCHANT_TABLE)
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z);
+        CompoundTag c = getDefaultCompound(this, ENCHANT_TABLE);
 
         if (this.hasName()) {
             c.put("CustomName", this.namedTag.get("CustomName"));
@@ -53,5 +68,4 @@ public class BlockEntityEnchantTable extends BlockEntitySpawnable implements Blo
 
         return c;
     }
-
 }

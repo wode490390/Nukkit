@@ -3,11 +3,12 @@ package cn.nukkit.block;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.math.BlockFace;
 
 /**
  * @author CreeperFace
  */
-public class BlockBone extends BlockSolidMeta {
+public class BlockBone extends BlockSolidMeta implements BlockFaceable {
 
     public BlockBone() {
         this(0);
@@ -33,21 +34,27 @@ public class BlockBone extends BlockSolidMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 10;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
-    public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
-            return new Item[]{new ItemBlock(this)};
-        }
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
 
+    @Override
+    public Item[] getDrops(Item item) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
+            return new Item[]{
+                    new ItemBlock(this)
+            };
+        }
         return new Item[0];
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

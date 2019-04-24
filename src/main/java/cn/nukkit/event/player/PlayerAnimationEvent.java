@@ -3,20 +3,20 @@ package cn.nukkit.event.player;
 import cn.nukkit.Player;
 import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.HandlerList;
+import cn.nukkit.network.protocol.AnimatePacket;
 
 public class PlayerAnimationEvent extends PlayerEvent implements Cancellable {
+
     private static final HandlerList handlers = new HandlerList();
 
     public static HandlerList getHandlers() {
         return handlers;
     }
 
-    public static final int ARM_SWING = 1;
-
     private final int animationType;
 
     public PlayerAnimationEvent(Player player) {
-        this(player, ARM_SWING);
+        this(player, AnimatePacket.ACTION_SWING_ARM);
     }
 
     public PlayerAnimationEvent(Player player, int animation) {

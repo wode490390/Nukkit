@@ -1,7 +1,6 @@
 package cn.nukkit.block;
 
 import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
@@ -13,7 +12,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/8 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockLadder extends BlockTransparentMeta {
+public class BlockLadder extends BlockTransparentMeta implements BlockFaceable {
 
     public BlockLadder() {
         this(0);
@@ -57,11 +56,6 @@ public class BlockLadder extends BlockTransparentMeta {
     @Override
     public double getResistance() {
         return 2;
-    }
-
-    @Override
-    public void onEntityCollide(Entity entity) {
-        entity.resetFallDistance();
     }
 
     private double offMinX;
@@ -181,7 +175,12 @@ public class BlockLadder extends BlockTransparentMeta {
     @Override
     public Item[] getDrops(Item item) {
         return new Item[]{
-            Item.get(Item.LADDER, 0, 1)
+            Item.get(Item.LADDER)
         };
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

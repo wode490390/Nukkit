@@ -3,19 +3,19 @@ package cn.nukkit.item;
 import cn.nukkit.Player;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.ClientboundMapItemDataPacket;
-import cn.nukkit.utils.MainLogger;
-
-import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Created by CreeperFace on 18.3.2017.
  */
+@Log4j2
 public class ItemMap extends Item {
 
     public static int mapCount = 0;
@@ -33,7 +33,8 @@ public class ItemMap extends Item {
 
         if (!hasCompoundTag() || !getNamedTag().contains("map_uuid")) {
             CompoundTag tag = new CompoundTag();
-            tag.putString("map_uuid", "" + mapCount++);
+            tag.putLong("map_uuid", mapCount++);
+            tag.putBoolean("map_display_players", true);
             this.setNamedTag(tag);
         }
     }
@@ -58,7 +59,7 @@ public class ItemMap extends Item {
 
             this.getNamedTag().putByteArray("Colors", baos.toByteArray());
         } catch (IOException e) {
-            MainLogger.getLogger().logException(e);
+            log.throwing(e);
         }
     }
 
@@ -67,14 +68,14 @@ public class ItemMap extends Item {
             byte[] data = getNamedTag().getByteArray("Colors");
             return ImageIO.read(new ByteArrayInputStream(data));
         } catch (IOException e) {
-            MainLogger.getLogger().logException(e);
+            log.throwing(e);
         }
 
         return null;
     }
 
     public long getMapId() {
-        return Long.valueOf(getNamedTag().getString("map_uuid"));
+        return getNamedTag().getLong("map_uuid");
     }
 
     public void sendImage(Player p) {

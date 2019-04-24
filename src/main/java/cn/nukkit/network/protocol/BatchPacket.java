@@ -32,7 +32,9 @@ public class BatchPacket extends DataPacket {
             payload = null;
             if (encapsulatedPacket instanceof CacheEncapsulatedPacket && !encapsulatedPacket.hasSplit) {
                 CacheEncapsulatedPacket cached = (CacheEncapsulatedPacket) encapsulatedPacket;
-                if (cached.internalData != null) cached.buffer = null;
+                if (cached.internalData != null) {
+                    cached.buffer = null;
+                }
             }
         }
     }

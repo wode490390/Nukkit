@@ -1,19 +1,20 @@
 package cn.nukkit.command.simple;
 
-import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.lang.TranslationContainer;
-
 import java.lang.reflect.Method;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Tee7even
  */
+@Log4j2
 public class SimpleCommand extends Command {
-    private Object object;
-    private Method method;
+
+    private final Object object;
+    private final Method method;
     private boolean forbidConsole;
     private int maxArgs;
     private int minArgs;
@@ -37,7 +38,7 @@ public class SimpleCommand extends Command {
     }
 
     public void sendUsageMessage(CommandSender sender) {
-        if (!this.usageMessage.equals("")) {
+        if (!this.usageMessage.isEmpty()) {
             sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
         }
     }
@@ -66,7 +67,7 @@ public class SimpleCommand extends Command {
         try {
             success = (Boolean) this.method.invoke(this.object, sender, commandLabel, args);
         } catch (Exception exception) {
-            Server.getInstance().getLogger().logException(exception);
+            log.throwing(exception);
         }
 
         if (!success) {

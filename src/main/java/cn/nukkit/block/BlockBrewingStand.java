@@ -1,10 +1,10 @@
 package cn.nukkit.block;
 
-
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityBrewingStand;
 import cn.nukkit.inventory.ContainerInventory;
+import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBrewingStand;
 import cn.nukkit.item.ItemTool;
@@ -14,7 +14,6 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
-
 import java.util.Map;
 
 public class BlockBrewingStand extends BlockSolidMeta {
@@ -43,13 +42,13 @@ public class BlockBrewingStand extends BlockSolidMeta {
     }
 
     @Override
-    public double getResistance() {
-        return 2.5;
+    public int getToolType() {
+        return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
     }
 
     @Override
@@ -128,7 +127,7 @@ public class BlockBrewingStand extends BlockSolidMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
                     toItem()
             };
@@ -142,6 +141,7 @@ public class BlockBrewingStand extends BlockSolidMeta {
         return BlockColor.IRON_BLOCK_COLOR;
     }
 
+    @Override
     public boolean hasComparatorInputOverride() {
         return true;
     }
@@ -151,7 +151,7 @@ public class BlockBrewingStand extends BlockSolidMeta {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityBrewingStand) {
-            return ContainerInventory.calculateRedstone(((BlockEntityBrewingStand) blockEntity).getInventory());
+            return ContainerInventory.calculateRedstone(((InventoryHolder) blockEntity).getInventory());
         }
 
         return super.getComparatorInputOverride();

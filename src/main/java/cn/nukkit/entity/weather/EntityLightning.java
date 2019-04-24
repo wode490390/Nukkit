@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EntityLightning extends Entity implements EntityLightningStrike {
 
-    public static final int NETWORK_ID = 93;
+    public static final int NETWORK_ID = LIGHTNING_BOLT;
 
     protected boolean isEffect = true;
 
@@ -68,10 +68,12 @@ public class EntityLightning extends Entity implements EntityLightningStrike {
         }
     }
 
+    @Override
     public boolean isEffect() {
         return this.isEffect;
     }
 
+    @Override
     public void setEffect(boolean e) {
         this.isEffect = e;
     }
@@ -100,8 +102,8 @@ public class EntityLightning extends Entity implements EntityLightningStrike {
         this.entityBaseTick(tickDiff);
 
         if (this.state == 2) {
-            this.level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_THUNDER, 93, -1);
-            this.level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_EXPLODE, 93, -1);
+            this.level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_THUNDER);
+            this.level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_EXPLODE);
         }
 
         this.state--;

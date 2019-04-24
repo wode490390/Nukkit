@@ -3,8 +3,8 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityFlowerPot;
+import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemFlowerPot;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -13,7 +13,7 @@ import cn.nukkit.nbt.tag.Tag;
 /**
  * @author Nukkit Project Team
  */
-public class BlockFlowerPot extends BlockFlowable {
+public class BlockFlowerPot extends BlockFlowableMeta {
 
     public BlockFlowerPot() {
         this(0);
@@ -26,16 +26,13 @@ public class BlockFlowerPot extends BlockFlowable {
     protected static boolean canPlaceIntoFlowerPot(int id) {
         switch (id) {
             case SAPLING:
-            case COBWEB:
-            case TALL_GRASS:
             case DEAD_BUSH:
             case DANDELION:
             case ROSE:
             case RED_MUSHROOM:
             case BROWN_MUSHROOM:
             case CACTUS:
-            case SUGARCANE_BLOCK:
-                // TODO: 2016/2/4 case NETHER_WART:
+            //case BAMBOO:
                 return true;
             default:
                 return false;
@@ -64,7 +61,9 @@ public class BlockFlowerPot extends BlockFlowable {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (face != BlockFace.UP) return false;
+        if (face != BlockFace.UP) {
+            return false;
+        }
         CompoundTag nbt = new CompoundTag()
                 .putString("id", BlockEntity.FLOWER_POT)
                 .putInt("x", (int) this.x)
@@ -96,8 +95,9 @@ public class BlockFlowerPot extends BlockFlowable {
     @Override
     public boolean onActivate(Item item, Player player) {
         BlockEntity blockEntity = getLevel().getBlockEntity(this);
-        if (!(blockEntity instanceof BlockEntityFlowerPot)) return false;
-        if (blockEntity.namedTag.getShort("item") != 0 || blockEntity.namedTag.getInt("mData") != 0) return false;
+        if (!(blockEntity instanceof BlockEntityFlowerPot) || blockEntity.namedTag.getShort("item") != 0 || blockEntity.namedTag.getInt("mData") != 0) {
+            return false;
+        }
         int itemID;
         int itemMeta;
         if (!canPlaceIntoFlowerPot(item.getId())) {
@@ -115,7 +115,7 @@ public class BlockFlowerPot extends BlockFlowable {
 
         this.setDamage(1);
         this.getLevel().setBlock(this, this, true);
-        ((BlockEntityFlowerPot) blockEntity).spawnToAll();
+        ((BlockEntitySpawnable) blockEntity).spawnToAll();
 
         if (player.isSurvival()) {
             item.setCount(item.getCount() - 1);
@@ -126,26 +126,10 @@ public class BlockFlowerPot extends BlockFlowable {
 
     @Override
     public Item[] getDrops(Item item) {
-        boolean dropInside = false;
-        int insideID = 0;
-        int insideMeta = 0;
-        BlockEntity blockEntity = getLevel().getBlockEntity(this);
-        if (blockEntity instanceof BlockEntityFlowerPot) {
-            dropInside = true;
-            insideID = blockEntity.namedTag.getShort("item");
-            insideMeta = blockEntity.namedTag.getInt("data");
-        }
-
-        if (dropInside) {
-            return new Item[]{
-                    new ItemFlowerPot(),
-                    Item.get(insideID, insideMeta, 1)
-            };
-        } else {
-            return new Item[]{
-                    new ItemFlowerPot()
-            };
-        }
+        return new Item[]{
+                Item.get(Item.FLOWER_POT, 0),
+                this.getInside()
+        };
     }
 
     @Override
@@ -185,6 +169,17 @@ public class BlockFlowerPot extends BlockFlowable {
 
     @Override
     public Item toItem() {
-        return new ItemFlowerPot();
+        if (canPlaceIntoFlowerPot(this.getInside().getId())) {
+            return this.getInside();
+        }
+        return Item.get(Item.FLOWER_POT);
+    }
+
+    public Item getInside() {
+        BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
+        if (blockEntity instanceof BlockEntityFlowerPot) {
+            return Item.get(blockEntity.namedTag.getShort("item"), blockEntity.namedTag.getInt("data"));
+        }
+        return Item.get(Item.AIR);
     }
 }

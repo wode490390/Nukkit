@@ -1,16 +1,15 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 import cn.nukkit.utils.BlockColor;
 
 public class BlockEndPortal extends BlockFlowable {
 
     public BlockEndPortal() {
-        this(0);
-    }
 
-    public BlockEndPortal(int meta) {
-        super(0);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class BlockEndPortal extends BlockFlowable {
 
     @Override
     public double getResistance() {
-        return 18000000;
+        return 6000000;
     }
 
     @Override
@@ -66,5 +65,26 @@ public class BlockEndPortal extends BlockFlowable {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(get(AIR));
+    }
+
+    public static void spawnPlatform(Position pos) {
+        Level lvl = pos.getLevel();
+        int x = pos.getFloorX();
+        int y = pos.getFloorY();
+        int z = pos.getFloorZ();
+
+        for (int xx = x - 2; xx < x + 3; xx++) {
+            for (int zz = z - 2; zz < z + 3; zz++)  {
+                lvl.setBlockAt(xx, y - 1, zz, OBSIDIAN);
+                for (int yy = y; yy < y + 4; yy++) {
+                    lvl.setBlockAt(xx, yy, zz, AIR);
+                }
+            }
+        }
     }
 }

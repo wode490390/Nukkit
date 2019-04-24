@@ -17,4 +17,8 @@ public class ItemChorusFruit extends ItemEdible {
         super(CHORUS_FRUIT, meta, count, "Chorus Fruit");
     }
 
+    @Override
+    public int getCooldownTicks() {
+        return 20;
+    }
 }

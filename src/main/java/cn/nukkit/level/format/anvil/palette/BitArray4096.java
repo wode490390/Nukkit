@@ -21,7 +21,9 @@ public final class BitArray4096 {
     }
 
     public final void setAt(int index, int value) {
-        if (data.length == 0) return;
+        if (data.length == 0) {
+            return;
+        }
         int bitIndexStart = index * bitsPerEntry;
         int longIndexStart = bitIndexStart >> 6;
         int localBitIndexStart = bitIndexStart & 63;
@@ -36,7 +38,9 @@ public final class BitArray4096 {
     }
 
     public final int getAt(int index) {
-        if (data.length == 0) return 0;
+        if (data.length == 0) {
+            return 0;
+        }
         int bitIndexStart = index * bitsPerEntry;
 
         int longIndexStart = bitIndexStart >> 6;
@@ -97,7 +101,9 @@ public final class BitArray4096 {
 
     public BitArray4096 grow(int newBitsPerEntry) {
         int amtGrow = newBitsPerEntry - this.bitsPerEntry;
-        if (amtGrow <= 0) return this;
+        if (amtGrow <= 0) {
+            return this;
+        }
         BitArray4096 newBitArray = new BitArray4096(newBitsPerEntry);
 
         char[] buffer = ThreadCache.charCache4096.get();

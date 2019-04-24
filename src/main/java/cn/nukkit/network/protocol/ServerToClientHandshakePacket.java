@@ -1,15 +1,18 @@
 package cn.nukkit.network.protocol;
 
+import lombok.ToString;
+
+@ToString
 public class ServerToClientHandshakePacket extends DataPacket {
+
+    public static final byte NETWORK_ID = ProtocolInfo.SERVER_TO_CLIENT_HANDSHAKE_PACKET;
 
     @Override
     public byte pid() {
-        return ProtocolInfo.SERVER_TO_CLIENT_HANDSHAKE_PACKET;
+        return NETWORK_ID;
     }
 
-    public String publicKey;
-    public String serverToken;
-    public String privateKey;
+    public String jwt;
 
     @Override
     public void decode() {
@@ -18,6 +21,11 @@ public class ServerToClientHandshakePacket extends DataPacket {
 
     @Override
     public void encode() {
-        //TODO
+        this.putString(this.jwt);
+    }
+
+    @Override
+    public boolean canBeSentBeforeLogin() {
+        return true;
     }
 }

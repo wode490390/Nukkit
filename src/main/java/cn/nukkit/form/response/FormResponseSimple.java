@@ -4,8 +4,8 @@ import cn.nukkit.form.element.ElementButton;
 
 public class FormResponseSimple extends FormResponse {
 
-    private int clickedButtonId;
-    private ElementButton clickedButton;
+    private final int clickedButtonId;
+    private final ElementButton clickedButton;
 
     public FormResponseSimple(int clickedButtonId, ElementButton clickedButton) {
         this.clickedButtonId = clickedButtonId;
@@ -19,5 +19,4 @@ public class FormResponseSimple extends FormResponse {
     public ElementButton getClickedButton() {
         return clickedButton;
     }
-
 }

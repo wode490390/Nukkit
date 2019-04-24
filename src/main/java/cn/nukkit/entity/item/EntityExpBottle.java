@@ -6,15 +6,15 @@ import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.particle.EnchantParticle;
 import cn.nukkit.level.particle.Particle;
 import cn.nukkit.level.particle.SpellParticle;
-import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.nbt.tag.CompoundTag;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author xtypr
  */
 public class EntityExpBottle extends EntityProjectile {
 
-    public static final int NETWORK_ID = 68;
+    public static final int NETWORK_ID = XP_BOTTLE;
 
     @Override
     public int getNetworkId() {
@@ -62,7 +62,6 @@ public class EntityExpBottle extends EntityProjectile {
 
         this.timing.startTiming();
 
-        int tickDiff = currentTick - this.lastUpdate;
         boolean hasUpdate = super.onUpdate(currentTick);
 
         if (this.age > 1200) {
@@ -72,22 +71,31 @@ public class EntityExpBottle extends EntityProjectile {
 
         if (this.isCollided) {
             this.kill();
-            Particle particle1 = new EnchantParticle(this);
-            this.getLevel().addParticle(particle1);
-            Particle particle2 = new SpellParticle(this, 0x00385dc6);
-            this.getLevel().addParticle(particle2);
+            this.dropXp();
             hasUpdate = true;
-
-            NukkitRandom random = new NukkitRandom();
-            int add = 1;
-            for (int ii = 1; ii <= random.nextRange(3, 11); ii += add) {
-                getLevel().dropExpOrb(this, add);
-                add = random.nextRange(1, 3);
-            }
         }
 
         this.timing.stopTiming();
 
         return hasUpdate;
+    }
+
+    @Override
+    public void onCollideWithEntity(Entity entity) {
+        this.kill();
+        this.dropXp();
+    }
+
+    public void dropXp() {
+        Particle particle1 = new EnchantParticle(this);
+        this.getLevel().addParticle(particle1);
+        Particle particle2 = new SpellParticle(this, 0x00385dc6);
+        this.getLevel().addParticle(particle2);
+
+        int add = 1;
+        for (int ii = 1; ii <= ThreadLocalRandom.current().nextInt(3, 11); ii += add) {
+            this.getLevel().dropExpOrb(this, add);
+            add = ThreadLocalRandom.current().nextInt(1, 3);
+        }
     }
 }

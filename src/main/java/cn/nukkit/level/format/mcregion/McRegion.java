@@ -14,7 +14,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.ChunkException;
-
+import cn.nukkit.utils.ThreadCache;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,9 +48,9 @@ public class McRegion extends BaseLevelProvider {
     }
 
     public static boolean isValid(String path) {
-        boolean isValid = (new File(path + "/level.dat").exists()) && new File(path + "/region/").isDirectory();
+        boolean isValid = (new File(path, "level.dat").exists()) && new File(path + "/region/").isDirectory();
         if (isValid) {
-            for (File file : new File(path + "/region/").listFiles((dir, name) -> Pattern.matches("^.+\\.mc[r|a]$", name))) {
+            for (File file : new File(path, "region").listFiles((dir, name) -> Pattern.matches("^.+\\.mc[r|a]$", name))) {
                 if (!file.getName().endsWith(".mcr")) {
                     isValid = false;
                     break;
@@ -65,8 +65,8 @@ public class McRegion extends BaseLevelProvider {
     }
 
     public static void generate(String path, String name, long seed, Class<? extends Generator> generator, Map<String, String> options) throws IOException {
-        if (!new File(path + "/region").exists()) {
-            new File(path + "/region").mkdirs();
+        if (!new File(path, "region").exists()) {
+            new File(path, "region").mkdirs();
         }
 
         CompoundTag levelData = new CompoundTag("Data")
@@ -75,7 +75,7 @@ public class McRegion extends BaseLevelProvider {
                 .putLong("DayTime", 0)
                 .putInt("GameType", 0)
                 .putString("generatorName", Generator.getGeneratorName(generator))
-                .putString("generatorOptions", options.containsKey("preset") ? options.get("preset") : "")
+                .putString("generatorOptions", options.getOrDefault("preset", ""))
                 .putInt("generatorVersion", 1)
                 .putBoolean("hardcore", false)
                 .putBoolean("initialized", true)
@@ -93,7 +93,7 @@ public class McRegion extends BaseLevelProvider {
                 .putLong("Time", 0)
                 .putLong("SizeOnDisk", 0);
 
-        NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", levelData), new FileOutputStream(path + "level.dat"), ByteOrder.BIG_ENDIAN);
+        NBTIO.writeGZIPCompressed(new CompoundTag().putCompound("Data", levelData), new FileOutputStream(new File(path, "level.dat")), ByteOrder.BIG_ENDIAN);
     }
 
     @Override
@@ -124,19 +124,17 @@ public class McRegion extends BaseLevelProvider {
         }
 
         Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
-        BinaryStream extraData;
+        BinaryStream extraData = null;
         if (!extra.isEmpty()) {
-            extraData = new BinaryStream();
+            extraData = ThreadCache.binaryStream.get().reset();
             extraData.putLInt(extra.size());
             for (Map.Entry<Integer, Integer> entry : extra.entrySet()) {
                 extraData.putLInt(entry.getKey());
                 extraData.putLShort(entry.getValue());
             }
-        } else {
-            extraData = null;
         }
 
-        BinaryStream stream = new BinaryStream();
+        BinaryStream stream = ThreadCache.binaryStream.get().reset();
         stream.put(chunk.getBlockIdArray());
         stream.put(chunk.getBlockDataArray());
         stream.put(chunk.getBlockSkyLightArray());
@@ -179,6 +177,7 @@ public class McRegion extends BaseLevelProvider {
         return chunk;
     }
 
+    @Override
     public Chunk getEmptyChunk(int chunkX, int chunkZ) {
         return Chunk.getEmptyChunk(chunkX, chunkZ, this);
     }

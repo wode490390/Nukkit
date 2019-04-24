@@ -1,8 +1,9 @@
 package cn.nukkit.item;
 
-public class ItemHorseArmorLeather extends Item {
+public class ItemHorseArmorLeather extends ItemHorseArmor {
+
     public ItemHorseArmorLeather() {
-        this(0, 1);
+        this(0);
     }
 
     public ItemHorseArmorLeather(Integer meta) {
@@ -10,11 +11,6 @@ public class ItemHorseArmorLeather extends Item {
     }
 
     public ItemHorseArmorLeather(Integer meta, int count) {
-        super(LEATHER_HORSE_ARMOR, meta, count, "Leather Horse Armor");
-    }
-
-    @Override
-    public int getMaxStackSize() {
-        return 1;
+        super(LEATHER_HORSE_ARMOR, meta, 1, "Leather Horse Armor");
     }
 }

@@ -2,7 +2,6 @@ package cn.nukkit.raknet.protocol;
 
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.BinaryStream;
-
 import java.util.TreeMap;
 
 /**
@@ -10,6 +9,9 @@ import java.util.TreeMap;
  * Nukkit Project
  */
 public abstract class AcknowledgePacket extends Packet {
+
+    private static final byte RECORD_TYPE_RANGE = (byte) 0x00;
+    private static final byte RECORD_TYPE_SINGLE = (byte) 0x01;
 
     public TreeMap<Integer, Integer> packets;
 
@@ -39,11 +41,11 @@ public abstract class AcknowledgePacket extends Packet {
                 } else if (diff > 1) {
 
                     if (start == last) {
-                        payload.putByte((byte) 0x01);
+                        payload.putByte(RECORD_TYPE_SINGLE);
                         payload.put(Binary.writeLTriad(start));
                         start = last = current;
                     } else {
-                        payload.putByte((byte) 0x00);
+                        payload.putByte(RECORD_TYPE_RANGE);
                         payload.put(Binary.writeLTriad(start));
                         payload.put(Binary.writeLTriad(last));
                         start = last = current;
@@ -53,10 +55,10 @@ public abstract class AcknowledgePacket extends Packet {
             }
 
             if (start == last) {
-                payload.putByte((byte) 0x01);
+                payload.putByte(RECORD_TYPE_SINGLE);
                 payload.put(Binary.writeLTriad(start));
             } else {
-                payload.putByte((byte) 0x00);
+                payload.putByte(RECORD_TYPE_RANGE);
                 payload.put(Binary.writeLTriad(start));
                 payload.put(Binary.writeLTriad(last));
             }
@@ -73,7 +75,7 @@ public abstract class AcknowledgePacket extends Packet {
     @Override
     public void decode() {
         super.decode();
-        short count = this.getSignedShort();
+        short count = (short) this.getShort();
         this.packets = new TreeMap<>();
         int cnt = 0;
         for (int i = 0; i < count && !this.feof() && cnt < 4096; ++i) {

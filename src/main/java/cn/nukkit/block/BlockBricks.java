@@ -10,6 +10,7 @@ import cn.nukkit.utils.BlockColor;
 public class BlockBricks extends BlockSolid {
 
     public BlockBricks() {
+
     }
 
     @Override
@@ -28,20 +29,20 @@ public class BlockBricks extends BlockSolid {
     }
 
     @Override
-    public double getResistance() {
-        return 30;
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_PICKAXE;
     }
 
     @Override
+    public int getToolHarvestLevel() {
+        return ItemTool.TIER_WOODEN;
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
+        if (item.isPickaxe() && item.getTier() >= this.getToolHarvestLevel()) {
             return new Item[]{
-                    Item.get(Item.BRICKS_BLOCK, 0, 1)
+                    Item.get(Item.BRICKS_BLOCK)
             };
         } else {
             return new Item[0];
