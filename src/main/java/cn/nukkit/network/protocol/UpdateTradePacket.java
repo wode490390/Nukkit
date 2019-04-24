@@ -10,13 +10,13 @@ public class UpdateTradePacket extends DataPacket {
 
     public byte windowId;
     public byte windowType = WindowTypes.TRADING; //trading id
-    public int varint1; //unknown
-    public int varint2; //unknown
-    public int varint3; //unknown
-    public boolean isWilling;
+    public int varint1; //unknown, hardcoded to 0
+    public int tradeTier;
     public long traderEid;
     public long playerEid;
     public String displayName;
+    public boolean screen2;
+    public boolean isWilling;
     public byte[] offers;
 
     @Override
@@ -32,15 +32,15 @@ public class UpdateTradePacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putByte(windowId);
-        this.putByte(windowType);
-        this.putVarInt(varint1);
-        this.putVarInt(varint2);
-        this.putVarInt(varint3);
-        this.putBoolean(isWilling);
-        this.putEntityUniqueId(traderEid);
-        this.putEntityUniqueId(playerEid);
-        this.putString(displayName);
+        this.putByte(this.windowId);
+        this.putByte(this.windowType);
+        this.putVarInt(this.varint1);
+        this.putVarInt(this.tradeTier);
+        this.putEntityUniqueId(this.traderEid);
+        this.putEntityUniqueId(this.playerEid);
+        this.putString(this.displayName);
+        this.putBoolean(this.screen2);
+        this.putBoolean(this.isWilling);
         this.put(this.offers);
     }
 }

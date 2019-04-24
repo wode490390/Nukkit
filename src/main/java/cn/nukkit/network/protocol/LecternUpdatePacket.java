@@ -9,6 +9,7 @@ public class LecternUpdatePacket extends DataPacket {
     public static final byte NETWORK_ID = ProtocolInfo.LECTERN_UPDATE_PACKET;
 
     public int page;
+    public int totalPages;
     public int x;
     public int y;
     public int z;
@@ -22,6 +23,7 @@ public class LecternUpdatePacket extends DataPacket {
     @Override
     public void decode() {
         this.page = this.getByte();
+        this.totalPages = this.getByte();
         BlockVector3 v = this.getBlockPosition();
         this.x = v.x;
         this.y = v.y;

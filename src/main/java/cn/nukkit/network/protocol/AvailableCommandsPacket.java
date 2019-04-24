@@ -59,21 +59,21 @@ public class AvailableCommandsPacket extends DataPacket {
     public static final int ARG_TYPE_TARGET = 0x6;
     public static final int ARG_TYPE_WILDCARD_TARGET = 0x7;
 
-    public static final int ARG_TYPE_FILE_PATH = 0xf;
+    public static final int ARG_TYPE_FILE_PATH = 0xe;
 
-    public static final int ARG_TYPE_INT_RANGE = 0x13;
+    public static final int ARG_TYPE_INT_RANGE = 0x12;
 
-    public static final int ARG_TYPE_STRING = 0x1c;
+    public static final int ARG_TYPE_STRING = 0x1b;
 
-    public static final int ARG_TYPE_POSITION = 0x1e;
+    public static final int ARG_TYPE_POSITION = 0x1d;
 
-    public static final int ARG_TYPE_MESSAGE = 0x21;
+    public static final int ARG_TYPE_MESSAGE = 0x20;
 
-    public static final int ARG_TYPE_RAWTEXT = 0x23;
+    public static final int ARG_TYPE_RAWTEXT = 0x22;
 
-    public static final int ARG_TYPE_JSON = 0x26;
+    public static final int ARG_TYPE_JSON = 0x25;
 
-    public static final int ARG_TYPE_COMMAND = 0x2d;
+    public static final int ARG_TYPE_COMMAND = 0x2c;
 
     public Map<String, CommandDataVersions> commands;
     public final Map<String, List<String>> softEnums = new HashMap<>();
