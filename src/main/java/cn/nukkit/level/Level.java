@@ -2253,6 +2253,16 @@ public class Level implements ChunkManager, Metadatable {
         return null;
     }
 
+    public BlockEntity getBlockEntityIfLoaded(Vector3 pos) {
+        FullChunk chunk = this.getChunkIfLoaded((int) pos.x >> 4, (int) pos.z >> 4);
+
+        if (chunk != null) {
+            return chunk.getTile((int) pos.x & 0x0f, (int) pos.y & 0xff, (int) pos.z & 0x0f);
+        }
+
+        return null;
+    }
+
     public Map<Long, Entity> getChunkEntities(int X, int Z) {
         FullChunk chunk;
         return (chunk = this.getChunk(X, Z)) != null ? chunk.getEntities() : new HashMap<>();
@@ -2364,6 +2374,11 @@ public class Level implements ChunkManager, Metadatable {
         }
 
         return null;
+    }
+
+    public BaseFullChunk getChunkIfLoaded(int chunkX, int chunkZ) {
+        long index = Level.chunkHash(chunkX, chunkZ);
+        return this.provider.getLoadedChunk(index);
     }
 
     public void generateChunkCallback(int x, int z, BaseFullChunk chunk) {
