@@ -23,8 +23,6 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public abstract class EntityProjectile extends Entity {
 
-    public static final int DATA_SHOOTER_ID = 17;
-
     public Entity shootingEntity;
 
     protected double getDamage() {

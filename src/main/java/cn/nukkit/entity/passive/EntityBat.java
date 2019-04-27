@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityBat extends EntityAnimal {
 
-    public static final int NETWORK_ID = 19;
+    public static final int NETWORK_ID = BAT;
 
     public EntityBat(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

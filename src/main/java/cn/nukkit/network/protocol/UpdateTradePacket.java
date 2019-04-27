@@ -9,14 +9,14 @@ public class UpdateTradePacket extends DataPacket {
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_TRADE_PACKET;
 
     public byte windowId;
-    public byte windowType = WindowTypes.TRADING; //trading id
-    public int varint1; //unknown, hardcoded to 0
+    public byte windowType = WindowTypes.TRADING; //Mojang hardcoded this -_-
+    public int thisIsAlwaysZero = 0; //hardcoded to 0
     public int tradeTier;
     public long traderEid;
     public long playerEid;
     public String displayName;
-    public boolean screen2;
     public boolean isWilling;
+    public boolean isV2Trading;
     public byte[] offers;
 
     @Override
@@ -34,13 +34,13 @@ public class UpdateTradePacket extends DataPacket {
         this.reset();
         this.putByte(this.windowId);
         this.putByte(this.windowType);
-        this.putVarInt(this.varint1);
+        this.putVarInt(this.thisIsAlwaysZero);
         this.putVarInt(this.tradeTier);
         this.putEntityUniqueId(this.traderEid);
         this.putEntityUniqueId(this.playerEid);
         this.putString(this.displayName);
-        this.putBoolean(this.screen2);
         this.putBoolean(this.isWilling);
+        this.putBoolean(this.isV2Trading);
         this.put(this.offers);
     }
 }

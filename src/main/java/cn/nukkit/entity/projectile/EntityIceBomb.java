@@ -30,7 +30,7 @@ public class EntityIceBomb extends EntityProjectile {
 
     @Override
     protected float getGravity() {
-        return 0.03f;
+        return 0.025f;
     }
 
     @Override

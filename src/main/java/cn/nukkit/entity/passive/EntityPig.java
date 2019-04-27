@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityPig extends EntityAnimal {
 
-    public static final int NETWORK_ID = 12;
+    public static final int NETWORK_ID = PIG;
 
     public EntityPig(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -44,7 +44,9 @@ public class EntityPig extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.RAW_PORKCHOP)};
+        return new Item[]{
+                Item.get(Item.RAW_PORKCHOP)
+        };
     }
 
     @Override

@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntitySpider extends EntityMob {
 
-    public static final int NETWORK_ID = 35;
+    public static final int NETWORK_ID = SPIDER;
 
     @Override
     public int getNetworkId() {
@@ -43,6 +43,9 @@ public class EntitySpider extends EntityMob {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.STRING, Item.SPIDER_EYE)};
+        return new Item[]{
+                Item.get(Item.STRING),
+                Item.get(Item.SPIDER_EYE)
+        };
     }
 }

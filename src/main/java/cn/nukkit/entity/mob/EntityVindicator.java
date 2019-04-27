@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityVindicator extends EntityMob {
 
-    public static final int NETWORK_ID = 57;
+    public static final int NETWORK_ID = VINDICATOR;
 
     public EntityVindicator(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -43,6 +43,8 @@ public class EntityVindicator extends EntityMob {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.IRON_AXE)};
+        return new Item[]{
+                Item.get(Item.IRON_AXE)
+        };
     }
 }

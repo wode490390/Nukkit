@@ -17,8 +17,8 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
 
     public EncapsulatedPacket encapsulatedPacket;
     public byte reliability;
-    public Integer orderIndex = null;
-    public Integer orderChannel = null;
+    public Integer orderIndex;
+    public Integer orderChannel;
 
     public abstract byte pid();
 

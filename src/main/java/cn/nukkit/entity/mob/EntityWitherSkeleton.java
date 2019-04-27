@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityWitherSkeleton extends EntityMob {
 
-    public static final int NETWORK_ID = 48;
+    public static final int NETWORK_ID = WITHER_SKELETON;
 
     @Override
     public int getNetworkId() {
@@ -22,20 +22,21 @@ public class EntityWitherSkeleton extends EntityMob {
     @Override
     protected void initEntity() {
         super.initEntity();
+        this.setMaxHealth(20);
     }
 
     @Override
     public float getWidth() {
-        return 0.7f;
+        return 0.72f;
     }
 
     @Override
     public float getHeight() {
-        return 2.4f;
+        return 2.01f;
     }
 
     @Override
     public String getName() {
-        return "WitherSkeleton";
+        return "Wither Skeleton";
     }
 }

@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityMooshroom extends EntityAnimal {
 
-    public static final int NETWORK_ID = 16;
+    public static final int NETWORK_ID = MOOSHROOM;
 
     public EntityMooshroom(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -26,9 +26,9 @@ public class EntityMooshroom extends EntityAnimal {
     @Override
     public float getHeight() {
         if (isBaby()) {
-            return 0.7f;
+            return 0.65f;
         }
-        return 1.4f;
+        return 1.3f;
     }
 
     @Override
@@ -38,7 +38,10 @@ public class EntityMooshroom extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.LEATHER), Item.get(Item.RAW_BEEF)};
+        return new Item[]{
+                Item.get(Item.LEATHER),
+                Item.get(Item.RAW_BEEF)
+        };
     }
 
     @Override
@@ -49,6 +52,6 @@ public class EntityMooshroom extends EntityAnimal {
     @Override
     protected void initEntity() {
         super.initEntity();
-        setMaxHealth(10);
+        this.setMaxHealth(10);
     }
 }

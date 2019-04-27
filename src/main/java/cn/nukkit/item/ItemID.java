@@ -2,6 +2,8 @@ package cn.nukkit.item;
 
 public interface ItemID {
 
+    int GLOW_STICK = 166; //edu
+
     int IRON_SHOVEL = 256;
     int IRON_PICKAXE = 257;
     int IRON_AXE = 258;
@@ -197,9 +199,9 @@ public interface ItemID {
     int BLEACH = 451; //edu
     int IRON_NUGGET = 452;
     int ICE_BOMB = 453; //edu
-    //int CHALKBOARD = 454; //Edu
+
     int TRIDENT = 455;
-    //int PORTFOLIO = 456; //Edu
+
     int BEETROOT = 457;
     int BEETROOT_SEEDS = 458, BEETROOT_SEED = 458;
     int BEETROOT_SOUP = 459;
@@ -222,7 +224,6 @@ public interface ItemID {
     int DARK_OAK_SIGN = 476;
     int SWEET_BERRIES = 477;
 
-    //int CAMERA = 498; //Edu
     int COMPOUND = 499; //edu
     int RECORD_13 = 500;
     int RECORD_CAT = 501;
@@ -238,4 +239,6 @@ public interface ItemID {
     int RECORD_WAIT = 511;
 
     int SHIELD = 513;
+
+    int CAMPFIRE = 720;
 }

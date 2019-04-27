@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityOcelot extends EntityAnimal {
 
-    public static final int NETWORK_ID = 22;
+    public static final int NETWORK_ID = OCELOT;
 
     public EntityOcelot(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -44,7 +44,7 @@ public class EntityOcelot extends EntityAnimal {
     @Override
     public void initEntity() {
         super.initEntity();
-        setMaxHealth(10);
+        this.setMaxHealth(10);
     }
 
     @Override

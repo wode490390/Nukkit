@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityPolarBear extends EntityAnimal {
 
-    public static final int NETWORK_ID = 28;
+    public static final int NETWORK_ID = POLAR_BEAR;
 
     public EntityPolarBear(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -44,6 +44,9 @@ public class EntityPolarBear extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.RAW_FISH), Item.get(Item.RAW_SALMON)};
+        return new Item[]{
+                Item.get(Item.RAW_FISH),
+                Item.get(Item.RAW_SALMON)
+        };
     }
 }

@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityRabbit extends EntityAnimal {
 
-    public static final int NETWORK_ID = 18;
+    public static final int NETWORK_ID = RABBIT;
 
     public EntityRabbit(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -18,17 +18,17 @@ public class EntityRabbit extends EntityAnimal {
     @Override
     public float getWidth() {
         if (this.isBaby()) {
-            return 0.2f;
+            return 0.335f;
         }
-        return 0.4f;
+        return 0.67f;
     }
 
     @Override
     public float getHeight() {
         if (this.isBaby()) {
-            return 0.25f;
+            return 0.335f;
         }
-        return 0.5f;
+        return 0.67f;
     }
 
     @Override
@@ -38,7 +38,11 @@ public class EntityRabbit extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.RAW_RABBIT), Item.get(Item.RABBIT_HIDE), Item.get(Item.RABBIT_FOOT)};
+        return new Item[]{
+                Item.get(Item.RAW_RABBIT),
+                Item.get(Item.RABBIT_HIDE),
+                Item.get(Item.RABBIT_FOOT)
+        };
     }
 
     @Override
@@ -49,6 +53,6 @@ public class EntityRabbit extends EntityAnimal {
     @Override
     protected void initEntity() {
         super.initEntity();
-        setMaxHealth(10);
+        this.setMaxHealth(3);
     }
 }

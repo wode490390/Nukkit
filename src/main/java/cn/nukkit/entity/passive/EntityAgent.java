@@ -1,13 +1,14 @@
 package cn.nukkit.entity.passive;
 
+import cn.nukkit.entity.Entity;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class EntityPanda extends EntityAnimal {
+public class EntityAgent extends Entity {
 
-    public static final int NETWORK_ID = PANDA;
+    public static final int NETWORK_ID = AGENT;
 
-    public EntityPanda(FullChunk chunk, CompoundTag nbt) {
+    public EntityAgent(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
 
@@ -18,17 +19,21 @@ public class EntityPanda extends EntityAnimal {
 
     @Override
     public float getWidth() {
-        return 1.7f;
+        return 0.6f;
     }
 
     @Override
     public float getHeight() {
-        return 1.5f;
+        return 0.93f;
     }
 
     @Override
     public void initEntity() {
         super.initEntity();
-        this.setMaxHealth(20);
+    }
+
+    @Override
+    public boolean isEducation() {
+        return true;
     }
 }

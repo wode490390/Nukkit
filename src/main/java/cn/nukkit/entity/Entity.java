@@ -92,6 +92,10 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public static final int DATA_TYPE_LONG = 7;
     public static final int DATA_TYPE_VECTOR3F = 8;
 
+    /*
+     * Readers beware: this isn't a nice list. Some of the properties have different types for different entities, and
+     * are used for entirely different things.
+     */
     public static final int DATA_FLAGS = 0;
     public static final int DATA_HEALTH = 1; //int (minecart/boat)
     public static final int DATA_VARIANT = 2; //int
@@ -103,23 +107,28 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public static final int DATA_POTION_COLOR = 8; //int (ARGB!)
     public static final int DATA_POTION_AMBIENT = 9; //byte
     public static final int DATA_JUMP_DURATION = 10; //long
+    /* 10 (byte) */
     public static final int DATA_HURT_TIME = 11; //int (minecart/boat)
     public static final int DATA_HURT_DIRECTION = 12; //int (minecart/boat)
     public static final int DATA_PADDLE_TIME_LEFT = 13; //float
     public static final int DATA_PADDLE_TIME_RIGHT = 14; //float
     public static final int DATA_EXPERIENCE_VALUE = 15; //int (xp orb)
-    public static final int DATA_DISPLAY_ITEM = 16; //int (id | (data << 16))
-    public static final int DATA_DISPLAY_OFFSET = 17; //int
-    public static final int DATA_HAS_DISPLAY = 18; //byte (must be 1 for minecart to show block inside)
-
-    //TODO: add more properties
-
+    public static final int DATA_MINECART_DISPLAY_BLOCK = 16, DATA_DISPLAY_ITEM = 16; //int (id | (data << 16))
+    public static final int DATA_HORSE_FLAGS = 16; //int
+    /* 16 (byte) used by wither skull */
+    public static final int DATA_MINECART_DISPLAY_OFFSET = 17, DATA_DISPLAY_OFFSET = 17; //int
+    public static final int DATA_SHOOTER_ID = 17; //long (used by arrows)
+    public static final int DATA_MINECART_HAS_DISPLAY = 18, DATA_HAS_DISPLAY = 18; //byte (must be 1 for minecart to show block inside)
+    public static final int DATA_HORSE_TYPE = 19; //byte
+    /* 20 (unknown)
+     * 21 (unknown) */
+    public static final int DATA_CHARGE_AMOUNT = 22; //byte, used for ghasts and also crossbow charging
     public static final int DATA_ENDERMAN_HELD_ITEM_ID = 23; //short
     public static final int DATA_ENTITY_AGE = 24; //short
-
+    /* 25 (int) used by horse, (byte) used by witch */
     public static final int DATA_PLAYER_FLAGS = 26; //byte
-    /* 27 (int) player "index"? */
-    public static final int DATA_PLAYER_BED_POSITION = 28; //block coords
+    public static final int DATA_PLAYER_INDEX = 27; //int, used for marker colours and agent nametag colours
+    public static final int DATA_PLAYER_BED_POSITION = 28; //blockpos
     public static final int DATA_FIREBALL_POWER_X = 29; //float
     public static final int DATA_FIREBALL_POWER_Y = 30; //float
     public static final int DATA_FIREBALL_POWER_Z = 31; //float
@@ -130,8 +139,8 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public static final int DATA_POTION_AUX_VALUE = 36; //short
     public static final int DATA_LEAD_HOLDER_EID = 37; //long
     public static final int DATA_SCALE = 38; //float
-    public static final int DATA_INTERACTIVE_TAG = 39; //string (button text)
-    public static final int DATA_SKIN_ID = 40; // int ???
+    public static final int DATA_HAS_NPC_COMPONENT = 39; //byte (???)
+    public static final int DATA_SKIN_ID = 40; //string
     public static final int DATA_NPC_SKIN_ID = 41; //string
     public static final int DATA_URL_TAG = 42; //string
     public static final int DATA_MAX_AIR = 43; //short
@@ -168,24 +177,33 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public static final int DATA_CONTROLLING_RIDER_SEAT_NUMBER = 74; //byte
     public static final int DATA_STRENGTH = 75; //int
     public static final int DATA_MAX_STRENGTH = 76; //int
-    // 77 (int)
+    /* 77 (int) */
     public static final int DATA_LIMITED_LIFE = 78;
     public static final int DATA_ARMOR_STAND_POSE_INDEX = 79; //int
     public static final int DATA_ENDER_CRYSTAL_TIME_OFFSET = 80; //int
     public static final int DATA_ALWAYS_SHOW_NAMETAG = 81; //byte: -1 = default, 0 = only when looked at, 1 = always
     public static final int DATA_COLOR_2 = 82; //byte
-    // 83 (unknown)
+    /* 83 (unknown) */
     public static final int DATA_SCORE_TAG = 84; //string
     public static final int DATA_BALLOON_ATTACHED_ENTITY = 85; //long, entity unique ID of owner
     public static final int DATA_PUFFERFISH_SIZE = 86; //byte
     public static final int DATA_BOAT_BUBBLE_TIME = 87; //int (time in bubble column)
     public static final int DATA_PLAYER_AGENT_EID = 88; //long
     /* 89 (float) related to panda sitting
-     * 90 (float) related to panda sitting
-     * 91 (unknown) */
+     * 90 (float) related to panda sitting */
+    public static final int DATA_EAT_COUNTER = 91; //int (used by pandas)
     public static final int DATA_FLAGS2 = 92; //long (extended data flags)
     /* 93 (float) related to panda lying down
      * 94 (float) related to panda lying down */
+    public static final int DATA_AREA_EFFECT_CLOUD_DURATION = 95; //int
+    public static final int DATA_AREA_EFFECT_CLOUD_SPAWN_TIME = 96; //int
+    public static final int DATA_AREA_EFFECT_CLOUD_RADIUS_PER_TICK = 97; //float, usually negative
+    public static final int DATA_AREA_EFFECT_CLOUD_RADIUS_CHANGE_ON_PICKUP = 98; //float
+    public static final int DATA_AREA_EFFECT_CLOUD_PICKUP_COUNT = 99; //int
+    public static final int DATA_INTERACTIVE_TAG = 100; //string (button text)
+    public static final int DATA_TRADE_TIER = 101; //int
+    public static final int DATA_MAX_TRADE_TIER = 102; //int
+    public static final int DATA_TRADE_XP = 103; //int
 
     // Flags
     public static final int DATA_FLAG_ONFIRE = 0;
@@ -259,6 +277,25 @@ public abstract class Entity extends Location implements Metadatable, EntityID {
     public static final int DATA_FLAG_IN_SCAFFOLDING = 68;
     public static final int DATA_FLAG_OVER_SCAFFOLDING = 69;
     public static final int DATA_FLAG_FALL_THROUGH_SCAFFOLDING = 70;
+    public static final int DATA_FLAG_BLOCKING = 71; //shield
+    public static final int DATA_FLAG_DISABLE_BLOCKING = 72;
+    //73 is set when a player is attacked while using shield, unclear on purpose
+    //74 related to shield usage, needs further investigation
+    public static final int DATA_FLAG_SLEEPING = 75;
+    //76 related to sleeping, unclear usage
+    public static final int DATA_FLAG_TRADE_INTEREST = 77;
+    public static final int DATA_FLAG_DOOR_BREAKER = 78; //...
+    public static final int DATA_FLAG_BREAKING_OBSTRUCTION = 79;
+    public static final int DATA_FLAG_DOOR_OPENER = 80; //...
+    public static final int DATA_FLAG_ILLAGER_CAPTAIN = 81;
+    public static final int DATA_FLAG_STUNNED = 82;
+    public static final int DATA_FLAG_ROARING = 83;
+    public static final int DATA_FLAG_DELAYED_ATTACKING = 84;
+    public static final int DATA_FLAG_AVOIDING_MOBS = 85;
+    //86 used by RangedAttackGoal
+    //87 used by NearestAttackableTargetGoal
+    public static final int DATA_PLAYER_FLAG_SLEEP = 1;
+    public static final int DATA_PLAYER_FLAG_DEAD = 2; //TODO: CHECK
 
     public static long entityCount = 1;
 

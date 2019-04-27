@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityEvoker extends EntityMob {
 
-    public static final int NETWORK_ID = 104;
+    public static final int NETWORK_ID = EVOCATION_ILLAGER;
 
     public EntityEvoker(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityVex extends EntityMob {
 
-    public static final int NETWORK_ID = 105;
+    public static final int NETWORK_ID = VEX;
 
     public EntityVex(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

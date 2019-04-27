@@ -1,17 +1,15 @@
 package cn.nukkit.entity.passive;
 
-import cn.nukkit.item.Item;
+import cn.nukkit.entity.EntityAgeable;
+import cn.nukkit.entity.EntityCreature;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-/**
- * Author: BeYkeRYkt Nukkit Project
- */
-public class EntityWolf extends EntityAnimal {
+public class EntityWanderingTrader extends EntityCreature implements EntityAgeable {
 
-    public static final int NETWORK_ID = WOLF;
+    public static final int NETWORK_ID = WANDERING_TRADER;
 
-    public EntityWolf(FullChunk chunk, CompoundTag nbt) {
+    public EntityWanderingTrader(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
 
@@ -22,12 +20,12 @@ public class EntityWolf extends EntityAnimal {
 
     @Override
     public float getHeight() {
-        return 0.8f;
+        return 1.8f;
     }
 
     @Override
     public String getName() {
-        return "Wolf";
+        return "Wandering Trader";
     }
 
     @Override
@@ -38,11 +36,6 @@ public class EntityWolf extends EntityAnimal {
     @Override
     public void initEntity() {
         super.initEntity();
-        this.setMaxHealth(8);
-    }
-
-    @Override
-    public boolean isBreedingItem(Item item) {
-        return false; //only certain food
+        this.setMaxHealth(20);
     }
 }

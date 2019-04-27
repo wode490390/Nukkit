@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityChicken extends EntityAnimal {
 
-    public static final int NETWORK_ID = 10;
+    public static final int NETWORK_ID = CHICKEN;
 
     public EntityChicken(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -18,17 +18,17 @@ public class EntityChicken extends EntityAnimal {
     @Override
     public float getWidth() {
         if (this.isBaby()) {
-            return 0.2f;
+            return 0.3f;
         }
-        return 0.4f;
+        return 0.6f;
     }
 
     @Override
     public float getHeight() {
         if (this.isBaby()) {
-            return 0.35f;
+            return 0.4f;
         }
-        return 0.7f;
+        return 0.8f;
     }
 
     @Override
@@ -38,7 +38,10 @@ public class EntityChicken extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.RAW_CHICKEN), Item.get(Item.FEATHER)};
+        return new Item[]{
+                Item.get(Item.RAW_CHICKEN),
+                Item.get(Item.FEATHER)
+        };
     }
 
     @Override
@@ -49,7 +52,7 @@ public class EntityChicken extends EntityAnimal {
     @Override
     protected void initEntity() {
         super.initEntity();
-        setMaxHealth(4);
+        this.setMaxHealth(4);
     }
 
     @Override

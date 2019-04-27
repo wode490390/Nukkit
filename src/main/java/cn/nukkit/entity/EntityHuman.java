@@ -19,11 +19,6 @@ import java.util.UUID;
  */
 public class EntityHuman extends EntityHumanType {
 
-    public static final int DATA_PLAYER_FLAG_SLEEP = 1;
-    public static final int DATA_PLAYER_FLAG_DEAD = 2;
-
-    public static final int DATA_PLAYER_BUTTON_TEXT = 40;
-
     protected UUID uuid;
     protected byte[] rawUUID;
 

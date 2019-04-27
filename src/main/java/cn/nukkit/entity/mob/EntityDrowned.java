@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityDrowned extends EntityMob {
 
-    public static final int NETWORK_ID = 110;
+    public static final int NETWORK_ID = DROWNED;
 
     public EntityDrowned(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -33,7 +33,7 @@ public class EntityDrowned extends EntityMob {
 
     @Override
     public float getHeight() {
-        return 1.95f;
+        return 1.8f;
     }
 
     @Override

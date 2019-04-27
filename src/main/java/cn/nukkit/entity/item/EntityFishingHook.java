@@ -37,7 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EntityFishingHook extends EntityProjectile {
 
-    public static final int NETWORK_ID = 77;
+    public static final int NETWORK_ID = FISHING_HOOK;
 
     public static final int WAIT_CHANCE = 120;
     public static final int CHANCE = 40;

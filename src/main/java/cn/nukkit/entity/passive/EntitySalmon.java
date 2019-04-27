@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntitySalmon extends EntityAnimal {
 
-    public static final int NETWORK_ID = 109;
+    public static final int NETWORK_ID = SALMON;
 
     public EntitySalmon(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -26,17 +26,17 @@ public class EntitySalmon extends EntityAnimal {
 
     @Override
     public float getWidth() {
-        return 0.7f;
+        return 0.5f;
     }
 
     @Override
     public float getHeight() {
-        return 0.4f;
+        return 0.5f;
     }
 
     @Override
     public void initEntity() {
         super.initEntity();
-        this.setMaxHealth(3);
+        this.setMaxHealth(6);
     }
 }

@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityShulker extends EntityMob {
 
-    public static final int NETWORK_ID = 54;
+    public static final int NETWORK_ID = SHULKER;
 
     @Override
     public int getNetworkId() {
@@ -27,12 +27,12 @@ public class EntityShulker extends EntityMob {
 
     @Override
     public float getWidth() {
-        return 1f;
+        return 1;
     }
 
     @Override
     public float getHeight() {
-        return 1f;
+        return 1;
     }
 
     @Override

@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntitySlime extends EntityMob {
 
-    public static final int NETWORK_ID = 37;
+    public static final int NETWORK_ID = SLIME;
 
     @Override
     public int getNetworkId() {
@@ -28,12 +28,12 @@ public class EntitySlime extends EntityMob {
 
     @Override
     public float getWidth() {
-        return 2.04f;
+        return 2.08f;
     }
 
     @Override
     public float getHeight() {
-        return 2.04f;
+        return 2.08f;
     }
 
     @Override
@@ -43,6 +43,8 @@ public class EntitySlime extends EntityMob {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.SLIMEBALL)};
+        return new Item[]{
+                Item.get(Item.SLIMEBALL)
+        };
     }
 }

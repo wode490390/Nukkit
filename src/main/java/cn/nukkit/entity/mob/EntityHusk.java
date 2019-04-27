@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityHusk extends EntityMob {
 
-    public static final int NETWORK_ID = 47;
+    public static final int NETWORK_ID = HUSK;
 
     @Override
     public int getNetworkId() {
@@ -32,7 +32,7 @@ public class EntityHusk extends EntityMob {
 
     @Override
     public float getHeight() {
-        return 1.95f;
+        return 1.8f;
     }
 
     @Override

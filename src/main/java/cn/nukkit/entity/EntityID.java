@@ -43,22 +43,22 @@ public interface EntityID {
     int WITHER_SKELETON = 48;
     int GUARDIAN = 49;
     int ELDER_GUARDIAN = 50;
-    int NPC = 51; //Edu
+
     int WITHER = 52;
     int ENDER_DRAGON = 53;
     int SHULKER = 54;
     int ENDERMITE = 55;
-    int AGENT = 56; //Edu
+    int AGENT = 56; //edu
     int VINDICATOR = 57;
     int PHANTOM = 58;
+    int RAVAGER = 59;
 
     int ARMOR_STAND = 61;
-    int TRIPOD_CAMERA = 62; //Edu
-    int PLAYER = 63;
+
     int ITEM = 64;
     int TNT = 65;
     int FALLING_BLOCK = 66;
-    int MOVING_BLOCK = 67;
+
     int XP_BOTTLE = 68;
     int XP_ORB = 69;
     int EYE_OF_ENDER_SIGNAL = 70;
@@ -69,7 +69,7 @@ public interface EntityID {
     int CAT = 75;
     int SHULKER_BULLET = 76;
     int FISHING_HOOK = 77;
-    int CHALKBOARD = 78; //Edu
+
     int DRAGON_FIREBALL = 79;
     int ARROW = 80;
     int SNOWBALL = 81;
@@ -83,6 +83,7 @@ public interface EntityID {
     int WITHER_SKULL = 89;
     int BOAT = 90;
     int WITHER_SKULL_DANGEROUS = 91;
+
     int LIGHTNING_BOLT = 93;
     int SMALL_FIREBALL = 94;
     int AREA_EFFECT_CLOUD = 95;
@@ -96,8 +97,8 @@ public interface EntityID {
     int EVOCATION_FANG = 103;
     int EVOCATION_ILLAGER = 104;
     int VEX = 105;
-    int ICE_BOMB = 106; //Edu
-    int BALLOON = 107; //Edu
+    int ICE_BOMB = 106; //edu
+    int BALLOON = 107; //edu
     int PUFFERFISH = 108;
     int SALMON = 109;
     int DROWNED = 110;
@@ -105,6 +106,12 @@ public interface EntityID {
     int COD = 112;
     int PANDA = 113;
     int PILLAGER = 114;
+    int VILLAGER_V2 = 115;
+    int ZOMBIE_VILLAGER_V2 = 116;
 
     int WANDERING_TRADER = 118;
+
+    int PLAYER = 257;
+    int TRIPOD_CAMERA = 258; //edu
+    int NPC = 259; //edu
 }

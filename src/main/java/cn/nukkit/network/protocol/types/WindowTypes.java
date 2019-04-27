@@ -2,6 +2,8 @@ package cn.nukkit.network.protocol.types;
 
 public interface WindowTypes {
 
+    int NONE = -9;
+
     int INVENTORY = -1;
     int CONTAINER = 0;
     int WORKBENCH = 1;
@@ -21,4 +23,13 @@ public interface WindowTypes {
     int TRADING = 15;
     int COMMAND_BLOCK = 16;
     int JUKEBOX = 17;
+
+    int COMPOUND_CREATOR = 20;
+    int ELEMENT_CONSTRUCTOR = 21;
+    int MATERIAL_REDUCER = 22;
+    int LAB_TABLE = 23;
+
+    int BLAST_FURNACE = 27;
+    int SMOKER = 28;
+    int STONECUTTER = 29;
 }

@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityLlama extends EntityAnimal {
 
-    public static final int NETWORK_ID = 29;
+    public static final int NETWORK_ID = LLAMA;
 
     public EntityLlama(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityZombieHorse extends EntityAnimal {
 
-    public static final int NETWORK_ID = 27;
+    public static final int NETWORK_ID = ZOMBIE_HORSE;
 
     public EntityZombieHorse(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -38,6 +38,8 @@ public class EntityZombieHorse extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.ROTTEN_FLESH, 1, 1)};
+        return new Item[]{
+                Item.get(Item.ROTTEN_FLESH)
+        };
     }
 }

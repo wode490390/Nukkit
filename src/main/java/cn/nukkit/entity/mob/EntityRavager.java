@@ -3,40 +3,37 @@ package cn.nukkit.entity.mob;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-/**
- * @author PikyCZ
- */
-public class EntityBlaze extends EntityMob {
+public class EntityRavager extends EntityMob {
 
-    public static final int NETWORK_ID = BLAZE;
+    public static final int NETWORK_ID = RAVAGER;
+
+    public EntityRavager(FullChunk chunk, CompoundTag nbt) {
+        super(chunk, nbt);
+    }
 
     @Override
     public int getNetworkId() {
         return NETWORK_ID;
     }
 
-    public EntityBlaze(FullChunk chunk, CompoundTag nbt) {
-        super(chunk, nbt);
-    }
-
     @Override
     protected void initEntity() {
         super.initEntity();
-        this.setMaxHealth(20);
-    }
-
-    @Override
-    public float getWidth() {
-        return 0.5f;
+        this.setMaxHealth(100);
     }
 
     @Override
     public float getHeight() {
-        return 1.8f;
+        return 1.9f;
+    }
+
+    @Override
+    public float getWidth() {
+        return 1.2f;
     }
 
     @Override
     public String getName() {
-        return "Blaze";
+        return "Ravager";
     }
 }

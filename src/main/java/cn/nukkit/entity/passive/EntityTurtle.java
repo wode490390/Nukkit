@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityTurtle extends EntityAnimal {
 
-    public static final int NETWORK_ID = 74;
+    public static final int NETWORK_ID = TURTLE;
 
     public EntityTurtle(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

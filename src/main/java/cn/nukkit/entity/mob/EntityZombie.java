@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityZombie extends EntityMob {
 
-    public static final int NETWORK_ID = 32;
+    public static final int NETWORK_ID = ZOMBIE;
 
     @Override
     public int getNetworkId() {
@@ -32,7 +32,7 @@ public class EntityZombie extends EntityMob {
 
     @Override
     public float getHeight() {
-        return 1.95f;
+        return 1.8f;
     }
 
     @Override

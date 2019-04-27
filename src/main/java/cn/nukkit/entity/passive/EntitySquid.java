@@ -11,7 +11,7 @@ import cn.nukkit.utils.DyeColor;
  */
 public class EntitySquid extends EntityWaterAnimal {
 
-    public static final int NETWORK_ID = 17;
+    public static final int NETWORK_ID = SQUID;
 
     public EntitySquid(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -24,12 +24,12 @@ public class EntitySquid extends EntityWaterAnimal {
 
     @Override
     public float getWidth() {
-        return 0.8f;
+        return 0.95f;
     }
 
     @Override
     public float getHeight() {
-        return 0.8f;
+        return 0.95f;
     }
 
     @Override
@@ -40,6 +40,8 @@ public class EntitySquid extends EntityWaterAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{new ItemDye(DyeColor.BLACK.getDyeData())};
+        return new Item[]{
+                Item.get(Item.DYE, DyeColor.BLACK.getDyeData())
+        };
     }
 }

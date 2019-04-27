@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityEnderDragon extends EntityMob {
 
-    public static final int NETWORK_ID = 53;
+    public static final int NETWORK_ID = ENDER_DRAGON;
 
     @Override
     public int getNetworkId() {
@@ -21,12 +21,12 @@ public class EntityEnderDragon extends EntityMob {
 
     @Override
     public float getWidth() {
-        return 13f;
+        return 13;
     }
 
     @Override
     public float getHeight() {
-        return 4f;
+        return 4;
     }
 
     @Override
@@ -37,6 +37,6 @@ public class EntityEnderDragon extends EntityMob {
 
     @Override
     public String getName() {
-        return "EnderDragon";
+        return "Ender Dragon";
     }
 }

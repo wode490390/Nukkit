@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityStray extends EntityMob {
 
-    public static final int NETWORK_ID = 46;
+    public static final int NETWORK_ID = STRAY;
 
     @Override
     public int getNetworkId() {
@@ -33,7 +33,7 @@ public class EntityStray extends EntityMob {
 
     @Override
     public float getHeight() {
-        return 1.99f;
+        return 1.95f;
     }
 
     @Override
@@ -43,6 +43,9 @@ public class EntityStray extends EntityMob {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.BONE, Item.ARROW)};
+        return new Item[]{
+                Item.get(Item.BONE),
+                Item.get(Item.ARROW)
+        };
     }
 }

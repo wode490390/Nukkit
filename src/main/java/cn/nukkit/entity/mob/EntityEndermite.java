@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityEndermite extends EntityMob {
 
-    public static final int NETWORK_ID = 55;
+    public static final int NETWORK_ID = ENDERMITE;
 
     @Override
     public int getNetworkId() {

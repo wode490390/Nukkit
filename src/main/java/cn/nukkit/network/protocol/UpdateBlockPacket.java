@@ -50,6 +50,7 @@ public class UpdateBlockPacket extends DataPacket {
     }
 
     public static class Entry {
+
         public final int x;
         public final int z;
         public final int y;

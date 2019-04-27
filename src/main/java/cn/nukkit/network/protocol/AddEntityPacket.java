@@ -26,6 +26,7 @@ public class AddEntityPacket extends DataPacket {
             .put(Entity.STRAY, "minecraft:stray")
             .put(Entity.WITCH, "minecraft:witch")
             .put(Entity.ZOMBIE_VILLAGER, "minecraft:zombie_villager")
+            .put(Entity.ZOMBIE_VILLAGER_V2, "minecraft:zombie_villager_v2")
             .put(Entity.BLAZE, "minecraft:blaze")
             .put(Entity.MAGMA_CUBE, "minecraft:magma_cube")
             .put(Entity.GHAST, "minecraft:ghast")
@@ -52,6 +53,8 @@ public class AddEntityPacket extends DataPacket {
             .put(Entity.SALMON, "minecraft:salmon")
             .put(Entity.PIG, "minecraft:pig")
             .put(Entity.VILLAGER, "minecraft:villager")
+            .put(Entity.VILLAGER_V2, "minecraft:villager_v2")
+            .put(Entity.WANDERING_TRADER, "minecraft:wandering_trader")
             .put(Entity.COD, "minecraft:cod")
             .put(Entity.PUFFERFISH, "minecraft:pufferfish")
             .put(Entity.COW, "minecraft:cow")
@@ -118,7 +121,7 @@ public class AddEntityPacket extends DataPacket {
             .put(Entity.PHANTOM, "minecraft:phantom")
             .put(Entity.TRIPOD_CAMERA, "minecraft:tripod_camera")
             .put(Entity.PILLAGER, "minecraft:pillager")
-            .put(Entity.WANDERING_TRADER, "minecraft:wandering_trader")
+            .put(Entity.RAVAGER, "minecraft:ravager")
             .build();
 
     @Override

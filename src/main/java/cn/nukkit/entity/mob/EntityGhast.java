@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityGhast extends EntityMob {
 
-    public static final int NETWORK_ID = 41;
+    public static final int NETWORK_ID = GHAST;
 
     @Override
     public int getNetworkId() {

@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityWitch extends EntityMob {
 
-    public static final int NETWORK_ID = 45;
+    public static final int NETWORK_ID = WITCH;
 
     @Override
     public int getNetworkId() {

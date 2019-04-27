@@ -58,19 +58,10 @@ public class ItemBlock extends Item {
     @Override
     public int getMaxStackSize() {
         int id = this.getBlock().getId();
-        if (id == Block.SHULKER_BOX || id == Block.UNDYED_SHULKER_BOX || id == Block.GLOW_STICK) {
+        if (id == Block.SHULKER_BOX || id == Block.UNDYED_SHULKER_BOX) {
             return 1;
         }
 
         return super.getMaxStackSize();
-    }
-
-    @Override
-    public int getMaxDurability() {
-        if (this.getBlock().getId() == Block.GLOW_STICK) {
-            return 100;
-        }
-
-        return super.getMaxDurability();
     }
 }

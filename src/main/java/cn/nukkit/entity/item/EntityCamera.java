@@ -1,4 +1,4 @@
-package cn.nukkit.entity.passive;
+package cn.nukkit.entity.item;
 
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.format.FullChunk;
@@ -40,7 +40,7 @@ public class EntityCamera extends Entity {
     @Override
     public void initEntity() {
         super.initEntity();
-        this.setMaxHealth(2);
+        this.setMaxHealth(4);
     }
 
     @Override

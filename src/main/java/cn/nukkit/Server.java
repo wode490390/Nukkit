@@ -2302,8 +2302,9 @@ public class Server {
         Entity.registerEntity("Guardian", EntityGuardian.class);
         Entity.registerEntity("Husk", EntityHusk.class);
         Entity.registerEntity("MagmaCube", EntityMagmaCube.class);
-        Entity.registerEntity("Pillager", EntityPillager.class);
         Entity.registerEntity("Phantom", EntityPhantom.class);
+        Entity.registerEntity("Pillager", EntityPillager.class);
+        Entity.registerEntity("Ravager", EntityRavager.class);
         Entity.registerEntity("Shulker", EntityShulker.class);
         Entity.registerEntity("Silverfish", EntitySilverfish.class);
         Entity.registerEntity("Skeleton", EntitySkeleton.class);
@@ -2318,6 +2319,7 @@ public class Server {
         Entity.registerEntity("Zombie", EntityZombie.class);
         Entity.registerEntity("ZombiePigman", EntityZombiePigman.class);
         Entity.registerEntity("ZombieVillager", EntityZombieVillager.class);
+        Entity.registerEntity("ZombieVillagerV1", EntityZombieVillagerV1.class);
         //Passive
         Entity.registerEntity("Bat", EntityBat.class);
         Entity.registerEntity("Cat", EntityCat.class);
@@ -2344,7 +2346,8 @@ public class Server {
         Entity.registerEntity("TropicalFish", EntityTropicalFish.class);
         Entity.registerEntity("Turtle", EntityTurtle.class);
         Entity.registerEntity("Villager", EntityVillager.class);
-        Entity.registerEntity("WanderingTrader", WanderingTrader.class);
+        Entity.registerEntity("VillagerV1", EntityVillagerV1.class);
+        Entity.registerEntity("WanderingTrader", EntityWanderingTrader.class);
         Entity.registerEntity("Wolf", EntityWolf.class);
         Entity.registerEntity("ZombieHorse", EntityZombieHorse.class);
         //Projectile
@@ -2357,17 +2360,11 @@ public class Server {
         //Other
         Entity.registerEntity("LightningBolt", EntityLightning.class);
         Entity.registerEntity("Human", EntityHuman.class, true);
-        //Experimental
-        if (this.allowExperimental) {
-            // nothing
-        }
-        /*//Education
-        if (this.allowEducation) {
-            Entity.registerEntity("Agent", EntityAgent.class, true);
-            Entity.registerEntity("IceBomb", EntityIceBomb.class, true);
-            Entity.registerEntity("NPC", EntityNPC.class, true);
-            Entity.registerEntity("TripodCamera", EntityCamera.class, true);
-        }*/
+        //Education
+        Entity.registerEntity("Agent", EntityAgent.class, true);
+        Entity.registerEntity("IceBomb", EntityIceBomb.class, true);
+        Entity.registerEntity("NPC", EntityNPC.class, true);
+        Entity.registerEntity("TripodCamera", EntityCamera.class, true);
     }
 
     private void registerBlockEntities() {

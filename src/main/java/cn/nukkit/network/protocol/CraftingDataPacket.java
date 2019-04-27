@@ -25,8 +25,10 @@ public class CraftingDataPacket extends DataPacket {
     public static final int ENTRY_SHAPED = 1;
     public static final int ENTRY_FURNACE = 2;
     public static final int ENTRY_FURNACE_DATA = 3;
-    public static final int ENTRY_ENCHANT_LIST = 4;
-    public static final int ENTRY_SHULKER_BOX = 5;
+    public static final int ENTRY_ENCHANT_LIST = 4, ENTRY_MULTI = 4;
+    public static final int ENTRY_SHULKER_BOX = 5; //TODO
+    public static final int ENTRY_SHAPELESS_CHEMISTRY = 6; //TODO
+    public static final int ENTRY_SHAPED_CHEMISTRY = 7; //TODO
 
     public static final String CRAFTING_TAG_CRAFTING_TABLE = "crafting_table";
     public static final String CRAFTING_TAG_CARTOGRAPHY_TABLE = "cartography_table";
@@ -37,7 +39,7 @@ public class CraftingDataPacket extends DataPacket {
     public static final String CRAFTING_TAG_SMOKER = "smoker";
 
     public List<Object> entries = new ArrayList<>();
-    public boolean cleanRecipes;
+    public boolean cleanRecipes = false;
 
     private static int writeEntry(Object entry, BinaryStream stream) {
         if (entry instanceof ShapelessRecipe) {
@@ -54,12 +56,11 @@ public class CraftingDataPacket extends DataPacket {
 
     private static int writeShapelessRecipe(ShapelessRecipe recipe, BinaryStream stream) {
         stream.putUnsignedVarInt(recipe.getIngredientCount());
-
         for (Item item : recipe.getIngredientList()) {
             stream.putSlot(item);
         }
 
-        stream.putUnsignedVarInt(1);
+        stream.putUnsignedVarInt(1); //TODO: results
         stream.putSlot(recipe.getResult());
         stream.putUUID(recipe.getId());
         stream.putString(CRAFTING_TAG_CRAFTING_TABLE);
@@ -77,7 +78,7 @@ public class CraftingDataPacket extends DataPacket {
             }
         }
 
-        stream.putUnsignedVarInt(1);
+        stream.putUnsignedVarInt(1); //TODO: results
         stream.putSlot(recipe.getResult());
 
         stream.putUUID(recipe.getId());
@@ -87,20 +88,15 @@ public class CraftingDataPacket extends DataPacket {
     }
 
     private static int writeFurnaceRecipe(FurnaceRecipe recipe, BinaryStream stream) {
+        stream.putVarInt(recipe.getInput().getId());
+        int result = CraftingDataPacket.ENTRY_FURNACE;
         if (recipe.getInput().hasMeta()) { //Data recipe
-            stream.putVarInt(recipe.getInput().getId());
             stream.putVarInt(recipe.getInput().getDamage());
-            stream.putSlot(recipe.getResult());
-            stream.putString(CRAFTING_TAG_FURNACE);
-
-            return CraftingDataPacket.ENTRY_FURNACE_DATA;
-        } else {
-            stream.putVarInt(recipe.getInput().getId());
-            stream.putSlot(recipe.getResult());
-            stream.putString(CRAFTING_TAG_FURNACE);
-
-            return CraftingDataPacket.ENTRY_FURNACE;
+            result =  CraftingDataPacket.ENTRY_FURNACE_DATA;
         }
+        stream.putSlot(recipe.getResult());
+        stream.putString(CRAFTING_TAG_FURNACE);
+        return result;
     }
 
     private static int writeEnchantList(EnchantmentList list, BinaryStream stream) {
@@ -119,24 +115,24 @@ public class CraftingDataPacket extends DataPacket {
     }
 
     public void addShapelessRecipe(ShapelessRecipe... recipe) {
-        Collections.addAll(entries, recipe);
+        Collections.addAll(this.entries, recipe);
     }
 
     public void addShapedRecipe(ShapedRecipe... recipe) {
-        Collections.addAll(entries, recipe);
+        Collections.addAll(this.entries, recipe);
     }
 
     public void addFurnaceRecipe(FurnaceRecipe... recipe) {
-        Collections.addAll(entries, recipe);
+        Collections.addAll(this.entries, recipe);
     }
 
     public void addEnchantList(EnchantmentList... list) {
-        Collections.addAll(entries, list);
+        Collections.addAll(this.entries, list);
     }
 
     @Override
     public DataPacket clean() {
-        entries = new ArrayList<>();
+        this.entries = new ArrayList<>();
         return super.clean();
     }
 
@@ -148,11 +144,11 @@ public class CraftingDataPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putUnsignedVarInt(entries.size());
+        this.putUnsignedVarInt(this.entries.size());
 
         BinaryStream writer = new BinaryStream();
 
-        for (Object entry : entries) {
+        for (Object entry : this.entries) {
             int entryType = writeEntry(entry, writer);
             if (entryType >= 0) {
                 this.putVarInt(entryType);
@@ -164,7 +160,7 @@ public class CraftingDataPacket extends DataPacket {
             writer.reset();
         }
 
-        this.putBoolean(cleanRecipes);
+        this.putBoolean(this.cleanRecipes);
     }
 
     @Override

@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityPhantom extends EntityMob {
 
-    public static final int NETWORK_ID = 58;
+    public static final int NETWORK_ID = PHANTOM;
 
     public EntityPhantom(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -43,6 +43,8 @@ public class EntityPhantom extends EntityMob {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(470)};
+        return new Item[]{
+                Item.get(Item.PHANTOM_MEMBRANE)
+        };
     }
 }

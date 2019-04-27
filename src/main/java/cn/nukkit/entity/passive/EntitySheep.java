@@ -8,7 +8,6 @@ import cn.nukkit.item.ItemDye;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.DyeColor;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -16,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EntitySheep extends EntityAnimal {
 
-    public static final int NETWORK_ID = 13;
+    public static final int NETWORK_ID = SHEEP;
 
     public boolean sheared = false;
     public int color = 0;

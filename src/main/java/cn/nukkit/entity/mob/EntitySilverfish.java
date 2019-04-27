@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntitySilverfish extends EntityMob {
 
-    public static final int NETWORK_ID = 39;
+    public static final int NETWORK_ID = SILVERFISH;
 
     @Override
     public int getNetworkId() {

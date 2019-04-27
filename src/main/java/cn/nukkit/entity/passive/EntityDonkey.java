@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityDonkey extends EntityAnimal {
 
-    public static final int NETWORK_ID = 24;
+    public static final int NETWORK_ID = DONKEY;
 
     public EntityDonkey(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -23,9 +23,9 @@ public class EntityDonkey extends EntityAnimal {
     @Override
     public float getWidth() {
         if (this.isBaby()) {
-            return 0.6982f;
+            return 0.7f;
         }
-        return 1.3965f;
+        return 1.4f;
     }
 
     @Override

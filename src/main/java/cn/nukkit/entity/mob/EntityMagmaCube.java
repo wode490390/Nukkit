@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityMagmaCube extends EntityMob {
 
-    public static final int NETWORK_ID = 42;
+    public static final int NETWORK_ID = MAGMA_CUBE;
 
     @Override
     public int getNetworkId() {
@@ -27,12 +27,12 @@ public class EntityMagmaCube extends EntityMob {
 
     @Override
     public float getWidth() {
-        return 2.04f;
+        return 2.08f;
     }
 
     @Override
     public float getHeight() {
-        return 2.04f;
+        return 2.08f;
     }
 
     @Override

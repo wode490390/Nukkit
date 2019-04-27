@@ -87,6 +87,20 @@ public class Item implements Cloneable, BlockID, ItemID {
     public static void init() {
         if (list == null) {
             list = new Class[65535];
+
+            for (int i = 0; i < 256; ++i) {
+                if (Block.list[i] != null) {
+                    list[i] = Block.list[i];
+                }
+            }
+            for (int i = 256; i < 512; ++i) {
+                if (Block.list[i] != null) {
+                    list[(0xff - i) & 0xffff] = Block.list[i];
+                }
+            }
+
+            list[GLOW_STICK] = ItemGlowStick.class; //166
+
             list[IRON_SHOVEL] = ItemShovelIron.class; //256
             list[IRON_PICKAXE] = ItemPickaxeIron.class; //257
             list[IRON_AXE] = ItemAxeIron.class; //258
@@ -324,16 +338,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
             list[SHIELD] = ItemShield.class; //513
 
-            for (int i = 0; i < 256; ++i) {
-                if (Block.list[i] != null) {
-                    list[i] = Block.list[i];
-                }
-            }
-            for (int i = 256; i < 512; ++i) {
-                if (Block.list[i] != null) {
-                    list[(0xff - i) & 0xffff] = Block.list[i];
-                }
-            }
+            list[CAMPFIRE] = ItemCampfire.class; //720
         }
 
         initCreativeItems();

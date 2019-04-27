@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityDolphin extends EntityAnimal {
 
-    public static final int NETWORK_ID = 31;
+    public static final int NETWORK_ID = DOLPHIN;
 
     public EntityDolphin(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -43,6 +43,8 @@ public class EntityDolphin extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.RAW_FISH)};
+        return new Item[]{
+                Item.get(Item.RAW_FISH)
+        };
     }
 }

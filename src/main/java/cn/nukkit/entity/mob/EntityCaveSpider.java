@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityCaveSpider extends EntityMob {
 
-    public static final int NETWORK_ID = 40;
+    public static final int NETWORK_ID = CAVE_SPIDER;
 
     @Override
     public int getNetworkId() {
@@ -37,6 +37,6 @@ public class EntityCaveSpider extends EntityMob {
 
     @Override
     public String getName() {
-        return "CaveSpider";
+        return "Cave Spider";
     }
 }

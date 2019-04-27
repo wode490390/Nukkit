@@ -34,31 +34,23 @@ public class EntityThrownTrident extends EntityProjectile {
 
     @Override
     public float getWidth() {
-        return 0.05f;
-    }
-
-    @Override
-    public float getLength() {
-        return 0.5f;
+        return 0.25f;
     }
 
     @Override
     public float getHeight() {
-        return 0.05f;
+        return 0.35f;
     }
 
     @Override
     public float getGravity() {
-        return 0.04f;
+        return 0.10f;
     }
 
     @Override
     public float getDrag() {
         return 0.01f;
     }
-
-    protected float gravity = 0.04f;
-    protected float drag = 0.01f;
 
     public EntityThrownTrident(FullChunk chunk, CompoundTag nbt) {
         this(chunk, nbt, null);
@@ -77,7 +69,7 @@ public class EntityThrownTrident extends EntityProjectile {
         super.initEntity();
 
         this.damage = namedTag.contains("damage") ? namedTag.getDouble("damage") : 8;
-        closeOnCollide = false;
+        this.closeOnCollide = false;
     }
 
     public void setCritical() {

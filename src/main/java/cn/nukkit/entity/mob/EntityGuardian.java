@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityGuardian extends EntityMob {
 
-    public static final int NETWORK_ID = 49;
+    public static final int NETWORK_ID = GUARDIAN;
 
     @Override
     public int getNetworkId() {

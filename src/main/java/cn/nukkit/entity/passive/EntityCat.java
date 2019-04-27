@@ -5,7 +5,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 
 public class EntityCat extends EntityAnimal {
 
-    public static final int NETWORK_ID = 75;
+    public static final int NETWORK_ID = CAT;
 
     public EntityCat(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);

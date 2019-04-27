@@ -9,7 +9,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityParrot extends EntityAnimal {
 
-    public static final int NETWORK_ID = 30;
+    public static final int NETWORK_ID = PARROT;
 
     public EntityParrot(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -32,7 +32,7 @@ public class EntityParrot extends EntityAnimal {
 
     @Override
     public float getHeight() {
-        return 0.9f;
+        return 1;
     }
 
     @Override
@@ -43,6 +43,8 @@ public class EntityParrot extends EntityAnimal {
 
     @Override
     public Item[] getDrops() {
-        return new Item[]{Item.get(Item.FEATHER)};
+        return new Item[]{
+                Item.get(Item.FEATHER)
+        };
     }
 }

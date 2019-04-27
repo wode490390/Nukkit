@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityPufferfish extends EntityAnimal {
 
-    public static final int NETWORK_ID = 108;
+    public static final int NETWORK_ID = PUFFERFISH;
 
     public EntityPufferfish(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -26,17 +26,17 @@ public class EntityPufferfish extends EntityAnimal {
 
     @Override
     public float getWidth() {
-        return 0.35f;
+        return 0.8f;
     }
 
     @Override
     public float getHeight() {
-        return 0.35f;
+        return 0.8f;
     }
 
     @Override
     public void initEntity() {
         super.initEntity();
-        this.setMaxHealth(3);
+        this.setMaxHealth(6);
     }
 }

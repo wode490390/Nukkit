@@ -47,7 +47,7 @@ public interface BlockID {
     int PISTON = 33;
     int PISTON_HEAD = 34;
     int WOOL = 35;
-    int ELEMENT_0 = 36;
+    int ELEMENT_0 = 36; //edu
     int DANDELION = 37;
     int POPPY = 38;
     int ROSE = 38;
@@ -227,7 +227,7 @@ public interface BlockID {
     int DARK_OAK_WOOD_STAIRS = 164;
     int DARK_OAK_WOODEN_STAIRS = 164;
     int SLIME_BLOCK = 165;
-    int GLOW_STICK = 166;
+
     int IRON_TRAPDOOR = 167;
     int PRISMARINE = 168;
     int SEA_LANTERN = 169;
@@ -251,7 +251,9 @@ public interface BlockID {
     int FENCE_GATE_ACACIA = 187;
     int REPEATING_COMMAND_BLOCK = 188;
     int CHAIN_COMMAND_BLOCK = 189;
-
+    int HARD_GLASS_PANE = 190; //edu
+    int HARD_STAINED_GLASS_PANE = 191; //edu
+    int CHEMICAL_HEAT = 192; //edu
     int SPRUCE_DOOR_BLOCK = 193;
     int BIRCH_DOOR_BLOCK = 194;
     int JUNGLE_DOOR_BLOCK = 195;
@@ -261,9 +263,9 @@ public interface BlockID {
     int ITEM_FRAME_BLOCK = 199;
     int CHORUS_FLOWER = 200;
     int PURPUR_BLOCK = 201;
-
+    int COLORED_TORCH_RG = 202; //edu
     int PURPUR_STAIRS = 203;
-
+    int COLORED_TORCH_BP = 204; //edu
     int UNDYED_SHULKER_BOX = 205;
     int END_BRICKS = 206;
     int FROSTED_ICE = 207;
@@ -287,6 +289,7 @@ public interface BlockID {
     int GRAY_GLAZED_TERRACOTTA = 227;
     int SILVER_GLAZED_TERRACOTTA = 228;
     int CYAN_GLAZED_TERRACOTTA = 229;
+
     int BLUE_GLAZED_TERRACOTTA = 231;
     int BROWN_GLAZED_TERRACOTTA = 232;
     int GREEN_GLAZED_TERRACOTTA = 233;
@@ -294,7 +297,8 @@ public interface BlockID {
     int BLACK_GLAZED_TERRACOTTA = 235;
     int CONCRETE = 236;
     int CONCRETE_POWDER = 237;
-
+    int CHEMISTRY_TABLE = 238; //edu
+    int UNDERWATER_TORCH = 239; //edu
     int CHORUS_PLANT = 240;
     int STAINED_GLASS = 241;
 
@@ -303,10 +307,14 @@ public interface BlockID {
     int STONECUTTER = 245;
     int GLOWING_OBSIDIAN = 246;
     int NETHER_REACTOR_CORE = 247;
-
+    int INFO_UPDATE = 248;
+    int INFO_UPDATE2 = 249;
     int MOVING_BLOCK = 250;
     int OBSERVER = 251;
     int STRUCTURE_BLOCK = 252;
+    int HARD_GLASS = 253; //edu
+    int HARD_STAINED_GLASS = 254; //edu
+    int RESERVED6 = 255;
 
     int PRISMARINE_STAIRS = 257;
     int DARK_PRISMARINE_STAIRS = 258;
@@ -330,7 +338,124 @@ public interface BlockID {
     int STRIPPED_OAK_WOOD = 265;
     int STRIPPED_OAK_TRUNK = 265;
     int BLUE_ICE = 266;
-
+    int ELEMENT_1 = 267; //edu
+    int ELEMENT_2 = 268; //edu
+    int ELEMENT_3 = 269; //edu
+    int ELEMENT_4 = 270; //edu
+    int ELEMENT_5 = 271; //edu
+    int ELEMENT_6 = 272; //edu
+    int ELEMENT_7 = 273; //edu
+    int ELEMENT_8 = 274; //edu
+    int ELEMENT_9 = 275; //edu
+    int ELEMENT_10 = 276; //edu
+    int ELEMENT_11 = 277; //edu
+    int ELEMENT_12 = 278; //edu
+    int ELEMENT_13 = 279; //edu
+    int ELEMENT_14 = 280; //edu
+    int ELEMENT_15 = 281; //edu
+    int ELEMENT_16 = 282; //edu
+    int ELEMENT_17 = 283; //edu
+    int ELEMENT_18 = 284; //edu
+    int ELEMENT_19 = 285; //edu
+    int ELEMENT_20 = 286; //edu
+    int ELEMENT_21 = 287; //edu
+    int ELEMENT_22 = 288; //edu
+    int ELEMENT_23 = 289; //edu
+    int ELEMENT_24 = 290; //edu
+    int ELEMENT_25 = 291; //edu
+    int ELEMENT_26 = 292; //edu
+    int ELEMENT_27 = 293; //edu
+    int ELEMENT_28 = 294; //edu
+    int ELEMENT_29 = 295; //edu
+    int ELEMENT_30 = 296; //edu
+    int ELEMENT_31 = 297; //edu
+    int ELEMENT_32 = 298; //edu
+    int ELEMENT_33 = 299; //edu
+    int ELEMENT_34 = 300; //edu
+    int ELEMENT_35 = 301; //edu
+    int ELEMENT_36 = 302; //edu
+    int ELEMENT_37 = 303; //edu
+    int ELEMENT_38 = 304; //edu
+    int ELEMENT_39 = 305; //edu
+    int ELEMENT_40 = 306; //edu
+    int ELEMENT_41 = 307; //edu
+    int ELEMENT_42 = 308; //edu
+    int ELEMENT_43 = 309; //edu
+    int ELEMENT_44 = 310; //edu
+    int ELEMENT_45 = 311; //edu
+    int ELEMENT_46 = 312; //edu
+    int ELEMENT_47 = 313; //edu
+    int ELEMENT_48 = 314; //edu
+    int ELEMENT_49 = 315; //edu
+    int ELEMENT_50 = 316; //edu
+    int ELEMENT_51 = 317; //edu
+    int ELEMENT_52 = 318; //edu
+    int ELEMENT_53 = 319; //edu
+    int ELEMENT_54 = 320; //edu
+    int ELEMENT_55 = 321; //edu
+    int ELEMENT_56 = 322; //edu
+    int ELEMENT_57 = 323; //edu
+    int ELEMENT_58 = 324; //edu
+    int ELEMENT_59 = 325; //edu
+    int ELEMENT_60 = 326; //edu
+    int ELEMENT_61 = 327; //edu
+    int ELEMENT_62 = 328; //edu
+    int ELEMENT_63 = 329; //edu
+    int ELEMENT_64 = 330; //edu
+    int ELEMENT_65 = 331; //edu
+    int ELEMENT_66 = 332; //edu
+    int ELEMENT_67 = 333; //edu
+    int ELEMENT_68 = 334; //edu
+    int ELEMENT_69 = 335; //edu
+    int ELEMENT_70 = 336; //edu
+    int ELEMENT_71 = 337; //edu
+    int ELEMENT_72 = 338; //edu
+    int ELEMENT_73 = 339; //edu
+    int ELEMENT_74 = 340; //edu
+    int ELEMENT_75 = 341; //edu
+    int ELEMENT_76 = 342; //edu
+    int ELEMENT_77 = 343; //edu
+    int ELEMENT_78 = 344; //edu
+    int ELEMENT_79 = 345; //edu
+    int ELEMENT_80 = 346; //edu
+    int ELEMENT_81 = 347; //edu
+    int ELEMENT_82 = 348; //edu
+    int ELEMENT_83 = 349; //edu
+    int ELEMENT_84 = 350; //edu
+    int ELEMENT_85 = 351; //edu
+    int ELEMENT_86 = 352; //edu
+    int ELEMENT_87 = 353; //edu
+    int ELEMENT_88 = 354; //edu
+    int ELEMENT_89 = 355; //edu
+    int ELEMENT_90 = 356; //edu
+    int ELEMENT_91 = 357; //edu
+    int ELEMENT_92 = 358; //edu
+    int ELEMENT_93 = 359; //edu
+    int ELEMENT_94 = 360; //edu
+    int ELEMENT_95 = 361; //edu
+    int ELEMENT_96 = 362; //edu
+    int ELEMENT_97 = 363; //edu
+    int ELEMENT_98 = 364; //edu
+    int ELEMENT_99 = 365; //edu
+    int ELEMENT_100 = 366; //edu
+    int ELEMENT_101 = 367; //edu
+    int ELEMENT_102 = 368; //edu
+    int ELEMENT_103 = 369; //edu
+    int ELEMENT_104 = 370; //edu
+    int ELEMENT_105 = 371; //edu
+    int ELEMENT_106 = 372; //edu
+    int ELEMENT_107 = 373; //edu
+    int ELEMENT_108 = 374; //edu
+    int ELEMENT_109 = 375; //edu
+    int ELEMENT_110 = 376; //edu
+    int ELEMENT_111 = 377; //edu
+    int ELEMENT_112 = 378; //edu
+    int ELEMENT_113 = 379; //edu
+    int ELEMENT_114 = 380; //edu
+    int ELEMENT_115 = 381; //edu
+    int ELEMENT_116 = 382; //edu
+    int ELEMENT_117 = 383; //edu
+    int ELEMENT_118 = 384; //edu
     int SEAGRASS = 385;
     int CORAL = 386;
     int TUBE_CORAL = 386;
@@ -411,7 +536,7 @@ public interface BlockID {
     int BLAST_FURNACE = 451;
     int STONECUTTER_BLOCK = 452;
     int SMOKER = 453;
-
+    int LIT_SMOKER = 454;
     int CARTOGRAPHY_TABLE = 455;
     int FLETCHING_TABLE = 456;
     int SMITHING_TABLE = 457;
@@ -421,9 +546,10 @@ public interface BlockID {
     int BELL = 461;
     int SWEET_BERRY_BUSH = 462;
     int LANTERN = 463;
-    int CAMPFIRE = 464;
+    int CAMPFIRE_BLOCK = 464;
     int LAVA_CAULDRON = 465;
     int JIGSAW = 466;
     int BARK = 467;
     int COMPOSTER = 468;
+    int LIT_BLAST_FURNACE = 469;
 }

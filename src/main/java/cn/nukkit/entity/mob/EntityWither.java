@@ -8,7 +8,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
  */
 public class EntityWither extends EntityMob {
 
-    public static final int NETWORK_ID = 52;
+    public static final int NETWORK_ID = WITHER;
 
     @Override
     public int getNetworkId() {
@@ -21,18 +21,18 @@ public class EntityWither extends EntityMob {
 
     @Override
     public float getWidth() {
-        return 0.9f;
+        return 1;
     }
 
     @Override
     public float getHeight() {
-        return 3.5f;
+        return 3;
     }
 
     @Override
     protected void initEntity() {
         super.initEntity();
-        this.setMaxHealth(300);
+        this.setMaxHealth(600);
     }
 
     @Override

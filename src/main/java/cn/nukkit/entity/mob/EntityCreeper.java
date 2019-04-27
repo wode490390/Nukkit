@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EntityCreeper extends EntityMob {
 
-    public static final int NETWORK_ID = 33;
+    public static final int NETWORK_ID = CREEPER;
 
     public static final int DATA_SWELL_DIRECTION = 16;
     public static final int DATA_SWELL = 17;
@@ -35,7 +35,7 @@ public class EntityCreeper extends EntityMob {
 
     @Override
     public float getHeight() {
-        return 1.7f;
+        return 1.8f;
     }
 
     public EntityCreeper(FullChunk chunk, CompoundTag nbt) {

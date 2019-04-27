@@ -41,6 +41,7 @@ public abstract class ItemTool extends Item {
     public static final int DURABILITY_FISHING_ROD = 384;
     public static final int DURABILITY_SPARKLER = 100;
     public static final int DURABILITY_SHIELD = 337;
+    public static final int DURABILITY_GLOW_STICK = 100;
 
     public ItemTool(int id) {
         super(id);
@@ -150,7 +151,7 @@ public abstract class ItemTool extends Item {
 
     @Override
     public boolean isTool() {
-        return (this.id == SHIELD || this.id == FISHING_ROD || this.id == CARROT_ON_A_STICK || this.id == FLINT_STEEL || this.id == SHEARS || this.id == BOW || this.id == CROSSBOW || this.id == SPARKLER || this.isPickaxe() || this.isAxe() || this.isShovel() || this.isSword() || this.isHoe());
+        return (this.id == SHIELD || this.id == FISHING_ROD || this.id == CARROT_ON_A_STICK || this.id == FLINT_STEEL || this.id == SHEARS || this.id == BOW || this.id == CROSSBOW || this.id == SPARKLER || this.id == GLOW_STICK || this.isPickaxe() || this.isAxe() || this.isShovel() || this.isSword() || this.isHoe());
     }
 
     @Override
