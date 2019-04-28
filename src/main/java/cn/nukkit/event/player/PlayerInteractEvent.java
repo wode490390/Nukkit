@@ -31,6 +31,8 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancellable {
 
     protected final Action action;
 
+    protected long unkownEntityId = -1;
+
     public PlayerInteractEvent(Player player, Item item, Vector3 block, BlockFace face) {
         this(player, item, block, face, Action.RIGHT_CLICK_BLOCK);
     }
@@ -68,6 +70,15 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancellable {
 
     public BlockFace getFace() {
         return blockFace;
+    }
+
+    public PlayerInteractEvent setUnkownEntityId(long unkownEntityId) {
+        this.unkownEntityId = unkownEntityId;
+        return this;
+    }
+
+    public long getUnkownEntityId() {
+        return unkownEntityId;
     }
 
     public enum Action {

@@ -2951,7 +2951,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             Entity target = this.level.getEntity(useItemOnEntityData.entityRuntimeId);
                             if (target == null) {
                                 item = this.inventory.getItemInHand();
-                                PlayerInteractEvent interactEvent = new PlayerInteractEvent(this, item, this.getDirectionVector(), BlockFace.UP, Action.CLICK_UNKNOWN_ENTITY);
+                                PlayerInteractEvent interactEvent = new PlayerInteractEvent(this, item, this.getDirectionVector(), BlockFace.UP, Action.CLICK_UNKNOWN_ENTITY).setUnkownEntityId(useItemOnEntityData.entityRuntimeId);
                                 this.server.getPluginManager().callEvent(interactEvent);
                                 return;
                             }
