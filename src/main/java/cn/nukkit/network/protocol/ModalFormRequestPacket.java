@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class ModalFormRequestPacket extends DataPacket {
+public class ModalFormRequestPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MODAL_FORM_REQUEST_PACKET;
 

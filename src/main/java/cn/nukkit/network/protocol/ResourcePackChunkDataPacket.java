@@ -4,7 +4,7 @@ import java.util.UUID;
 import lombok.ToString;
 
 @ToString(exclude = "data")
-public class ResourcePackChunkDataPacket extends DataPacket {
+public class ResourcePackChunkDataPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_CHUNK_DATA_PACKET;
 

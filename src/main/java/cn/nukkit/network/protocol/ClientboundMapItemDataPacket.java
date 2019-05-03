@@ -11,7 +11,7 @@ import lombok.ToString;
  * Created by CreeperFace on 5.3.2017.
  */
 @ToString
-public class ClientboundMapItemDataPacket extends DataPacket {
+public class ClientboundMapItemDataPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CLIENTBOUND_MAP_ITEM_DATA_PACKET;
 

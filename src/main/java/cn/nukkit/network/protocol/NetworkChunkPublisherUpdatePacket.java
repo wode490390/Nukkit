@@ -4,7 +4,7 @@ import cn.nukkit.math.BlockVector3;
 import lombok.ToString;
 
 @ToString
-public class NetworkChunkPublisherUpdatePacket extends DataPacket {
+public class NetworkChunkPublisherUpdatePacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET;
 

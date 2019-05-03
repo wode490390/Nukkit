@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class ServerSettingsRequestPacket extends DataPacket {
+public class ServerSettingsRequestPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SERVER_SETTINGS_REQUEST_PACKET;
 

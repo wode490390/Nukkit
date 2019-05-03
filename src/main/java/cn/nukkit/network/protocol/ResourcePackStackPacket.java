@@ -4,7 +4,7 @@ import cn.nukkit.resourcepacks.ResourcePack;
 import lombok.ToString;
 
 @ToString
-public class ResourcePackStackPacket extends DataPacket {
+public class ResourcePackStackPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_STACK_PACKET;
 

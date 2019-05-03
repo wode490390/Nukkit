@@ -12,7 +12,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class AddPlayerPacket extends DataPacket {
+public class AddPlayerPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ADD_PLAYER_PACKET;
 

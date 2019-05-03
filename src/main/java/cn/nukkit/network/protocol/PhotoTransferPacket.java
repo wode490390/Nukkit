@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class PhotoTransferPacket extends DataPacket {
+public class PhotoTransferPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PHOTO_TRANSFER_PACKET;
 

@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class EntityEventPacket extends DataPacket {
+public class EntityEventPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final int NETWORK_ID = ProtocolInfo.ENTITY_EVENT_PACKET;
 

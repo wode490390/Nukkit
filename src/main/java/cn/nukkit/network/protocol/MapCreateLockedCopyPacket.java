@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-public class MapCreateLockedCopyPacket extends DataPacket {
+public class MapCreateLockedCopyPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MAP_CREATE_LOCKED_COPY_PACKET;
 

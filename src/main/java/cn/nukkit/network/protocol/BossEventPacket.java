@@ -6,7 +6,7 @@ import lombok.ToString;
  * Created by CreeperFace on 30. 10. 2016.
  */
 @ToString
-public class BossEventPacket extends DataPacket {
+public class BossEventPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.BOSS_EVENT_PACKET;
 

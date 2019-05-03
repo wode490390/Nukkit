@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class MobEffectPacket extends DataPacket {
+public class MobEffectPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MOB_EFFECT_PACKET;
 

@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.ToString;
 
 @ToString
-public class PlayerSkinPacket extends DataPacket {
+public class PlayerSkinPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PLAYER_SKIN_PACKET;
 

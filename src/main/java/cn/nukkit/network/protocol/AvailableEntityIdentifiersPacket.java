@@ -4,7 +4,7 @@ import java.util.Base64;
 import lombok.ToString;
 
 @ToString(exclude = "namedtag")
-public class AvailableEntityIdentifiersPacket extends DataPacket {
+public class AvailableEntityIdentifiersPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.AVAILABLE_ENTITY_IDENTIFIERS_PACKET;
 

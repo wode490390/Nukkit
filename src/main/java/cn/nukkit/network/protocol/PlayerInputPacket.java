@@ -6,7 +6,7 @@ import lombok.ToString;
  * @author Nukkit Project Team
  */
 @ToString
-public class PlayerInputPacket extends DataPacket {
+public class PlayerInputPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PLAYER_INPUT_PACKET;
 

@@ -20,7 +20,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class AvailableCommandsPacket extends DataPacket {
+public class AvailableCommandsPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.AVAILABLE_COMMANDS_PACKET;
 

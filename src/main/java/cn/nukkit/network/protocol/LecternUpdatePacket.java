@@ -4,7 +4,7 @@ import cn.nukkit.math.BlockVector3;
 import lombok.ToString;
 
 @ToString
-public class LecternUpdatePacket extends DataPacket {
+public class LecternUpdatePacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.LECTERN_UPDATE_PACKET;
 

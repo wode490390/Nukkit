@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString(exclude = "data")
-public class FullChunkDataPacket extends DataPacket {
+public class FullChunkDataPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.FULL_CHUNK_DATA_PACKET;
 

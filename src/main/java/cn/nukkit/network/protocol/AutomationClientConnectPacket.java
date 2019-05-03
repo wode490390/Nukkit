@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class AutomationClientConnectPacket extends DataPacket {
+public class AutomationClientConnectPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.AUTOMATION_CLIENT_CONNECT_PACKET;
 

@@ -9,7 +9,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class SetEntityDataPacket extends DataPacket {
+public class SetEntityDataPacket extends DataPacket implements ClientboundPacket, ServerboundPacket { //TODO: check why this is serverbound
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_ENTITY_DATA_PACKET;
 

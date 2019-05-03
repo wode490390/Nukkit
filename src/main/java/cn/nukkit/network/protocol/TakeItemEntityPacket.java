@@ -6,7 +6,7 @@ import lombok.ToString;
  * Created on 15-10-14.
  */
 @ToString
-public class TakeItemEntityPacket extends DataPacket {
+public class TakeItemEntityPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.TAKE_ITEM_ENTITY_PACKET;
 

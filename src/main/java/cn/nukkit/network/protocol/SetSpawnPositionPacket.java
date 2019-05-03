@@ -6,7 +6,7 @@ import lombok.ToString;
  * @author Nukkit Project Team
  */
 @ToString
-public class SetSpawnPositionPacket extends DataPacket {
+public class SetSpawnPositionPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_SPAWN_POSITION_PACKET;
 

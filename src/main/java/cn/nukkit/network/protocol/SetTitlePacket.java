@@ -6,7 +6,7 @@ import lombok.ToString;
  * @author Tee7even
  */
 @ToString
-public class SetTitlePacket extends DataPacket {
+public class SetTitlePacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_TITLE_PACKET;
 

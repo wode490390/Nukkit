@@ -6,7 +6,7 @@ import lombok.ToString;
  * Created on 15-10-13.
  */
 @ToString
-public class PlayStatusPacket extends DataPacket {
+public class PlayStatusPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.PLAY_STATUS_PACKET;
 

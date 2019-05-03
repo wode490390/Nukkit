@@ -6,7 +6,7 @@ import lombok.ToString;
  * @author Nukkit Project Team
  */
 @ToString
-public class SetDifficultyPacket extends DataPacket {
+public class SetDifficultyPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_DIFFICULTY_PACKET;
 

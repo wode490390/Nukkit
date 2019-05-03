@@ -8,7 +8,7 @@ import lombok.ToString;
  * @author Nukkit Project Team
  */
 @ToString
-public class CraftingEventPacket extends DataPacket {
+public class CraftingEventPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CRAFTING_EVENT_PACKET;
 

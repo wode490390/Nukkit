@@ -7,7 +7,7 @@ import lombok.ToString;
  * @author Nukkit Project Team
  */
 @ToString
-public class RespawnPacket extends DataPacket {
+public class RespawnPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESPAWN_PACKET;
 

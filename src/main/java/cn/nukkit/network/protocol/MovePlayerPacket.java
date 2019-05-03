@@ -7,7 +7,7 @@ import lombok.ToString;
  * Created on 15-10-14.
  */
 @ToString
-public class MovePlayerPacket extends DataPacket {
+public class MovePlayerPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MOVE_PLAYER_PACKET;
 

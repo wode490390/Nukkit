@@ -8,7 +8,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class GameRulesChangedPacket extends DataPacket {
+public class GameRulesChangedPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.GAME_RULES_CHANGED_PACKET;
 
