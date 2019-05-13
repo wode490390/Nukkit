@@ -4606,16 +4606,22 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.dataPacket(spawnPosition);
 
             // Remove old chunks
+            this.forceSendEmptyChunks();
             for (long index : new ArrayList<>(this.usedChunks.keySet())) {
                 int chunkX = Level.getHashX(index);
                 int chunkZ = Level.getHashZ(index);
                 this.unloadChunk(chunkX, chunkZ, oldLevel);
             }
+
+            int dimensionId = level.getDimension();
+            if (oldLevel.getDimension() != dimensionId) {
+                this.setDimension(dimensionId);
+            }
+
             this.usedChunks.clear();
 
-            SetTimePacket setTime = new SetTimePacket();
-            setTime.time = level.getTime();
-            this.dataPacket(setTime);
+            level.sendTime(this);
+            level.sendWeather(this);
 
             GameRulesChangedPacket gameRulesChanged = new GameRulesChangedPacket();
             gameRulesChanged.gameRules = level.getGameRules();
