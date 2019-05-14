@@ -85,25 +85,28 @@ public abstract class EntityHumanType extends EntityCreature implements Inventor
             }
 
             int slotCount = Player.SURVIVAL_SLOTS + 9;
+            ListTag<CompoundTag> inventory = this.namedTag.getList("Inventory", CompoundTag.class);
+            this.namedTag.putList(inventory);
             for (int slot = 9; slot < slotCount; ++slot) {
                 Item item = this.inventory.getItem(slot - 9);
-                this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, slot));
+                inventory.add(NBTIO.putItemHelper(item, slot));
             }
 
             for (int slot = 100; slot < 104; ++slot) {
                 Item item = this.inventory.getItem(this.inventory.getSize() + slot - 100);
                 if (item != null && item.getId() != Item.AIR) {
-                    this.namedTag.getList("Inventory", CompoundTag.class).add(NBTIO.putItemHelper(item, slot));
+                    inventory.add(NBTIO.putItemHelper(item, slot));
                 }
             }
         }
 
-        this.namedTag.putList(new ListTag<CompoundTag>("EnderItems"));
+        ListTag<CompoundTag> enderItems = this.namedTag.getList("EnderItems", CompoundTag.class);
+        this.namedTag.putList(enderItems);
         if (this.enderChestInventory != null) {
             for (int slot = 0; slot < 27; ++slot) {
                 Item item = this.enderChestInventory.getItem(slot);
                 if (item != null && item.getId() != Item.AIR) {
-                    this.namedTag.getList("EnderItems", CompoundTag.class).add(NBTIO.putItemHelper(item, slot));
+                    enderItems.add(NBTIO.putItemHelper(item, slot));
                 }
             }
         }
