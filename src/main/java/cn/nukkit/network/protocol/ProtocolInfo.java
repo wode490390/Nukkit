@@ -138,6 +138,8 @@ public interface ProtocolInfo {
     int LEVEL_SOUND_EVENT_PACKET_V3 = 0x7b;
     int LECTERN_UPDATE_PACKET = 0x7c;
     int VIDEO_STREAM_CONNECT_PACKET = 0x7d;
+    int MAP_CREATE_LOCKED_COPY_PACKET = 0x7e;
+    int ON_SCREEN_TEXTURE_ANIMATION_PACKET = 0x7f;
 
     //NetEase Common Mod
     int PACKET_CHANGE_MODEL = 0xc9;
