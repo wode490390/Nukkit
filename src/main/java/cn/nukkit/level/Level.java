@@ -1780,9 +1780,6 @@ public class Level implements ChunkManager, Metadatable {
         if (y < 0 || y >= 256) {
             return false;
         }
-        if (block.getId() > 0xff) {
-            return false; // TODO: chunk support
-        }
         BaseFullChunk chunk = this.getChunk(x >> 4, z >> 4, true);
         Block blockPrevious;
 //        synchronized (chunk) {
@@ -2389,9 +2386,6 @@ public class Level implements ChunkManager, Metadatable {
 
     @Override
     public synchronized void setBlockIdAt(int x, int y, int z, int id) {
-        if (id > 0xff) {
-            return; // TODO: chunk support
-        }
         this.getChunk(x >> 4, z >> 4, true).setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0x1ff);
         this.addBlockChange(x, y, z);
         this.temporalVector.setComponents(x, y, z);
@@ -2402,9 +2396,6 @@ public class Level implements ChunkManager, Metadatable {
 
     @Override
     public synchronized void setBlockAt(int x, int y, int z, int id, int data) {
-        if (id > 0xff) {
-            return; // TODO: chunk support
-        }
         BaseFullChunk chunk = this.getChunk(x >> 4, z >> 4, true);
         chunk.setBlockId(x & 0x0f, y & 0xff, z & 0x0f, id & 0x1ff);
         chunk.setBlockData(x & 0x0f, y & 0xff, z & 0x0f, data & 0xf);

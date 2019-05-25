@@ -12,6 +12,9 @@ public class MathHelper {
         }
     }
 
+    private static final int BIG_ENOUGH_INT = 30_000_000;
+    private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
+
     private MathHelper() {
 
     }
@@ -104,5 +107,13 @@ public class MathHelper {
 
     public static float denormalizeClamp(float lowerBnd, float upperBnd, float slide) {
         return slide < 0.0f ? lowerBnd : (slide > 1.0f ? upperBnd : lowerBnd + (upperBnd - lowerBnd) * slide);
+    }
+
+    public static int fastCeil(float val) {
+        return BIG_ENOUGH_INT - (int) (BIG_ENOUGH_FLOOR - val);
+    }
+
+    public static int fastFloor(float val) {
+        return (int) (val + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
     }
 }
