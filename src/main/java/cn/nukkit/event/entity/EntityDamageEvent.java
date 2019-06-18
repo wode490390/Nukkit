@@ -100,6 +100,14 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
         return damage;
     }
 
+    public Map<DamageModifier, Float> getModifiers() {
+        return modifiers;
+    }
+
+    public Map<DamageModifier, Float> getOriginals() {
+        return originals;
+    }
+
     public enum DamageModifier {
         /**
          * Raw amount of damage
