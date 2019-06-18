@@ -3163,7 +3163,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.craftingType = CRAFTING_SMALL;
 
         if (this.removeFormat) {
-            message = TextFormat.clean(message);
+            message = TextFormat.clean(message, true);
         }
 
         for (String msg : message.split("\n")) {

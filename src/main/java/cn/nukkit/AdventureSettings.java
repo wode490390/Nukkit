@@ -4,7 +4,6 @@ import cn.nukkit.network.protocol.AdventureSettingsPacket;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Nukkit Project
