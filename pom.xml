@@ -167,7 +167,7 @@
         <dependency>
             <groupId>com.nukkitx.network</groupId>
             <artifactId>raknet</artifactId>
-            <version>1.6.3-SNAPSHOT</version>
+            <version>1.6.3</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
