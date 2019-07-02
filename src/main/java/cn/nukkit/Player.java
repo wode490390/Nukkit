@@ -2260,7 +2260,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     Item item = this.inventory.getItem(mobEquipmentPacket.hotbarSlot);
 
-                    if (!item.equals(mobEquipmentPacket.item, false, false)) {
+                    if (!item.equals(mobEquipmentPacket.item)) {
                         this.server.getLogger().debug("Tried to equip " + mobEquipmentPacket.item + " but have " + item + " in target slot");
                         this.inventory.sendContents(this);
                         return;
@@ -2916,7 +2916,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                                     if (this.isCreative()) {
                                         item = this.inventory.getItemInHand();
-                                    } else if (!this.inventory.getItemInHand().equals(useItemData.itemInHand, false, false)) {
+                                    } else if (!this.inventory.getItemInHand().equals(useItemData.itemInHand)) {
                                         this.inventory.sendHeldItem(this);
                                         break packetswitch;
                                     } else {
