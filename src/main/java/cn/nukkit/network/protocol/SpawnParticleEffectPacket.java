@@ -5,7 +5,7 @@ import cn.nukkit.network.protocol.types.DimensionIds;
 import lombok.ToString;
 
 @ToString
-public class SpawnParticleEffectPacket extends DataPacket {
+public class SpawnParticleEffectPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SPAWN_PARTICLE_EFFECT_PACKET;
 

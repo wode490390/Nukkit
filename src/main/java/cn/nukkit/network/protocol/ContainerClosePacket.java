@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class ContainerClosePacket extends DataPacket {
+public class ContainerClosePacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CONTAINER_CLOSE_PACKET;
 

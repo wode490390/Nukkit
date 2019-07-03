@@ -4,7 +4,7 @@ import cn.nukkit.network.protocol.types.WindowTypes;
 import lombok.ToString;
 
 @ToString
-public class UpdateTradePacket extends DataPacket {
+public class UpdateTradePacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_TRADE_PACKET;
 

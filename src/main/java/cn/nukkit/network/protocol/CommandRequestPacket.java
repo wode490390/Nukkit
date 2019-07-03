@@ -8,7 +8,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class CommandRequestPacket extends DataPacket {
+public class CommandRequestPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.COMMAND_REQUEST_PACKET;
 

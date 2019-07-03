@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class UpdateEquipmentPacket extends DataPacket {
+public class UpdateEquipmentPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.UPDATE_EQUIPMENT_PACKET;
 

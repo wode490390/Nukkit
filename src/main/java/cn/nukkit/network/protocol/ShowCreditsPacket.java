@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class ShowCreditsPacket extends DataPacket {
+public class ShowCreditsPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SHOW_CREDITS_PACKET;
 

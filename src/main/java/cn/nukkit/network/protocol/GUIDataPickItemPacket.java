@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class GUIDataPickItemPacket extends DataPacket {
+public class GUIDataPickItemPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.GUI_DATA_PICK_ITEM_PACKET;
 

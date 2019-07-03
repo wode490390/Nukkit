@@ -1,6 +1,6 @@
 package cn.nukkit.network.protocol;
 
-public class OnScreenTextureAnimationPacket extends DataPacket {
+public class OnScreenTextureAnimationPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ON_SCREEN_TEXTURE_ANIMATION_PACKET;
 

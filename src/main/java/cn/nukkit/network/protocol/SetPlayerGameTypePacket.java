@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class SetPlayerGameTypePacket extends DataPacket {
+public class SetPlayerGameTypePacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public final static byte NETWORK_ID = ProtocolInfo.SET_PLAYER_GAME_TYPE_PACKET;
 

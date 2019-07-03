@@ -4,7 +4,7 @@ import lombok.ToString;
 
 // A wild TransferPacket appeared!
 @ToString
-public class TransferPacket extends DataPacket {
+public class TransferPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.TRANSFER_PACKET;
 

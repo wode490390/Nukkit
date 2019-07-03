@@ -6,7 +6,7 @@ import lombok.ToString;
  * @author Nukkit Project Team
  */
 @ToString
-public class HurtArmorPacket extends DataPacket {
+public class HurtArmorPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.HURT_ARMOR_PACKET;
 

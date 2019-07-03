@@ -4,7 +4,7 @@ import cn.nukkit.math.Vector3f;
 import lombok.ToString;
 
 @ToString
-public class SpawnExperienceOrbPacket extends DataPacket {
+public class SpawnExperienceOrbPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SPAWN_EXPERIENCE_ORB_PACKET;
 

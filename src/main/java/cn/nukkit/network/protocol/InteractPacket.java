@@ -6,7 +6,7 @@ import lombok.ToString;
  * Created on 15-10-15.
  */
 @ToString
-public class InteractPacket extends DataPacket {
+public class InteractPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.INTERACT_PACKET;
 

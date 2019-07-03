@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class NetworkStackLatencyPacket extends DataPacket {
+public class NetworkStackLatencyPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.NETWORK_STACK_LATENCY_PACKET;
 

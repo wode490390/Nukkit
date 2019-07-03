@@ -8,7 +8,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class MoveEntityAbsolutePacket extends DataPacket {
+public class MoveEntityAbsolutePacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MOVE_ENTITY_ABSOLUTE_PACKET;
 

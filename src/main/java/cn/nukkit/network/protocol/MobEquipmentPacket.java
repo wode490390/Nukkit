@@ -8,7 +8,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class MobEquipmentPacket extends DataPacket {
+public class MobEquipmentPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.MOB_EQUIPMENT_PACKET;
 

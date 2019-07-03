@@ -7,7 +7,7 @@ import lombok.ToString;
  * Created by Pub4Game on 03.07.2016.
  */
 @ToString
-public class ItemFrameDropItemPacket extends DataPacket {
+public class ItemFrameDropItemPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.ITEM_FRAME_DROP_ITEM_PACKET;
 

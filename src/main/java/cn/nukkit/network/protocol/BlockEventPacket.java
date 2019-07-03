@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class BlockEventPacket extends DataPacket {
+public class BlockEventPacket extends DataPacket implements ClientboundPacket {
 
     public static final int TYPE_CHEST = 1;
 

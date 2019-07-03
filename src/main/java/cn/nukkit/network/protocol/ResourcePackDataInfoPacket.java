@@ -4,7 +4,7 @@ import java.util.UUID;
 import lombok.ToString;
 
 @ToString(exclude = "sha256")
-public class ResourcePackDataInfoPacket extends DataPacket {
+public class ResourcePackDataInfoPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_DATA_INFO_PACKET;
 

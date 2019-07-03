@@ -4,7 +4,7 @@ import java.util.UUID;
 import lombok.ToString;
 
 @ToString
-public class ResourcePackClientResponsePacket extends DataPacket {
+public class ResourcePackClientResponsePacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RESOURCE_PACK_CLIENT_RESPONSE_PACKET;
 

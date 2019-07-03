@@ -4,7 +4,7 @@ import cn.nukkit.math.BlockVector3;
 import lombok.ToString;
 
 @ToString
-public class LabTablePacket extends DataPacket {
+public class LabTablePacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.LAB_TABLE_PACKET;
 

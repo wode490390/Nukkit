@@ -7,7 +7,7 @@ import lombok.ToString;
  * Nukkit Project
  */
 @ToString
-public class RequestChunkRadiusPacket extends DataPacket {
+public class RequestChunkRadiusPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.REQUEST_CHUNK_RADIUS_PACKET;
 

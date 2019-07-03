@@ -10,7 +10,7 @@ import lombok.ToString;
  * Created on 15-10-13.
  */
 @ToString
-public class StartGamePacket extends DataPacket {
+public class StartGamePacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.START_GAME_PACKET;
 

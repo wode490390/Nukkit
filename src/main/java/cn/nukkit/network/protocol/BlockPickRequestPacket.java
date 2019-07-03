@@ -4,7 +4,7 @@ import cn.nukkit.math.BlockVector3;
 import lombok.ToString;
 
 @ToString
-public class BlockPickRequestPacket extends DataPacket {
+public class BlockPickRequestPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.BLOCK_PICK_REQUEST_PACKET;
 

@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class SetDisplayObjectivePacket extends DataPacket {
+public class SetDisplayObjectivePacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.SET_DISPLAY_OBJECTIVE_PACKET;
 

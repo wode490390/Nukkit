@@ -4,7 +4,7 @@ import cn.nukkit.math.BlockVector3;
 import lombok.ToString;
 
 @ToString
-public class CommandBlockUpdatePacket extends DataPacket {
+public class CommandBlockUpdatePacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.COMMAND_BLOCK_UPDATE_PACKET;
 

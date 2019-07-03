@@ -3,7 +3,7 @@ package cn.nukkit.network.protocol;
 import lombok.ToString;
 
 @ToString
-public class RiderJumpPacket extends DataPacket {
+public class RiderJumpPacket extends DataPacket implements ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.RIDER_JUMP_PACKET;
 

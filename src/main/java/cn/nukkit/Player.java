@@ -1919,7 +1919,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public void checkInteractNearby() {
         int interactDistance = isCreative() ? 5 : 3;
-        if (canInteract(this, interactDistance)) {
+        if (this.canInteract(this, interactDistance)) {
             if (getEntityPlayerLookingAt(interactDistance) != null) {
                 EntityInteractable onInteract = this.getEntityPlayerLookingAt(interactDistance);
                 this.setButtonText(onInteract.getInteractButtonText());
@@ -2009,7 +2009,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public boolean canInteract(Vector3 pos, double maxDistance) {
-        return this.canInteract(pos, maxDistance, 0.6);
+        return this.canInteract(pos, maxDistance, 6);
     }
 
     public boolean canInteract(Vector3 pos, double maxDistance, double maxDiff) {

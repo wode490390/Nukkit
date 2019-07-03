@@ -8,7 +8,7 @@ import cn.nukkit.network.protocol.types.NetworkInventoryAction;
 import lombok.ToString;
 
 @ToString
-public class InventoryTransactionPacket extends DataPacket {
+public class InventoryTransactionPacket extends DataPacket implements ClientboundPacket, ServerboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.INVENTORY_TRANSACTION_PACKET;
 

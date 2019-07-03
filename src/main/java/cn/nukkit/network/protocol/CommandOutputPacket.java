@@ -5,7 +5,7 @@ import cn.nukkit.network.protocol.types.CommandOutputMessage;
 import lombok.ToString;
 
 @ToString
-public class CommandOutputPacket extends DataPacket {
+public class CommandOutputPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.COMMAND_OUTPUT_PACKET;
 

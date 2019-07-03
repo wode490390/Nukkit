@@ -8,7 +8,7 @@ import lombok.ToString;
  * Package cn.nukkit.network.protocol in project nukkit .
  */
 @ToString
-public class ChangeDimensionPacket extends DataPacket {
+public class ChangeDimensionPacket extends DataPacket implements ClientboundPacket {
 
     public static final byte NETWORK_ID = ProtocolInfo.CHANGE_DIMENSION_PACKET;
 
