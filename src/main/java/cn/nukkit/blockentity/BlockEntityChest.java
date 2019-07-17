@@ -29,6 +29,10 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
     public BlockEntityChest(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    protected void initBlockEntity() {
         this.inventory = new ChestInventory(this);
 
         if (!this.namedTag.contains("Items") || !(this.namedTag.get("Items") instanceof ListTag)) {
@@ -44,6 +48,8 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
             Item item = NBTIO.getItemHelper(compound);
             this.inventory.slots.put(compound.getByte("Slot"), item);
         }
+
+        super.initBlockEntity();
     }
 
     @Override
