@@ -861,6 +861,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         Timings.playerChunkSendTimer.stopTiming();
     }
 
+    protected void sendRecipeList() {
+        this.dataPacket(CraftingManager.packet);
+    }
+
     protected void doFirstSpawn() {
 
         this.setEnableClientCommand(true);
@@ -917,7 +921,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.noDamageTicks = 60;
 
-        this.getServer().sendRecipeList(this);
+        this.sendRecipeList();
 
         if (this.gamemode == Player.SPECTATOR) {
             InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();

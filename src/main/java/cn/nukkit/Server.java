@@ -920,9 +920,10 @@ public class Server {
         player.dataPacket(pk);
     }
 
+    /* 魔改迁移至Player::sendRecipeList
     public void sendRecipeList(Player player) {
         player.dataPacket(CraftingManager.packet);
-    }
+    }*/
 
     private void checkTickUpdates(int currentTick, long tickTime) {
         for (Player p : new ArrayList<>(this.players.values())) {
