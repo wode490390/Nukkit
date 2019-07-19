@@ -2754,5 +2754,9 @@
   {
     "name": "minecraft:item.campfire",
     "id": -209
+  },
+  {
+    "name": "wode_item",
+    "id": 490
   }
 ]
