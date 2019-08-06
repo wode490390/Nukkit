@@ -28,5 +28,10 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
 
+      - run:
+          command: |
+            mkdir artifacts;
+            cp target/*.jar artifacts;
+
       - store_artifacts:
-          path: target
+          path: target/artifacts
