@@ -1,28 +1,32 @@
 version: 2
 jobs:
   build:
+
+    working_directory: ~/nukkit
+
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:8u222-stretch
+
     steps:
+
       - checkout
+
+      - run: git submodule update --init
+
       - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
-          - v1-dependencies-
-      - run:
-          command: |
-            git submodule sync
-            git submodule update --init
-            mvn clean package
-      - store_artifacts:
-          path: ./target/nukkit-1.0-SNAPSHOT.jar
+          key: nukkit-{{ checksum "pom.xml" }}
+
       - run: mvn dependency:go-offline
+
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-workflows:
-  version: 2
-  build:
-    jobs:
-      - build
+          key: nukkit-{{ checksum "pom.xml" }}
+
+      - run: mvn clean package
+
+      - store_test_results:
+          path: target/surefire-reports
+
+      - store_artifacts:
+          path: target
