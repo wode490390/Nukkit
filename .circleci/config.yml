@@ -34,4 +34,4 @@ jobs:
             cp target/*.jar artifacts;
 
       - store_artifacts:
-          path: target/artifacts
+          path: artifacts
