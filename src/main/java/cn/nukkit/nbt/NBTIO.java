@@ -16,11 +16,11 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * A Named Binary Tag library for Nukkit Project
+ */
 public class NBTIO {
 
-    /**
-     * A Named Binary Tag library for Nukkit Project
-     */
     public static CompoundTag putItemHelper(Item item) {
         return putItemHelper(item, null);
     }
@@ -55,8 +55,9 @@ public class NBTIO {
             item.setCount(tag.getByte("Count"));
         }
 
-        if (tag.contains("tag") && tag.get("tag") instanceof CompoundTag) {
-            item.setNamedTag(tag.getCompound("tag"));
+        Tag tagTag = tag.get("tag");
+        if (tagTag instanceof CompoundTag) {
+            item.setNamedTag((CompoundTag) tagTag);
         }
 
         return item;
@@ -249,5 +250,4 @@ public class NBTIO {
         write(tag, tmpFile);
         Files.move(tmpFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
     }
-
 }
