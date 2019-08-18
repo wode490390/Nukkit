@@ -66,8 +66,8 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
 
     protected boolean isInit;
 
+    protected BatchPacket chunkPacketOld;
     protected BatchPacket chunkPacket;
-    protected BatchPacket chunkPacket16;
 
     @Override
     public BaseFullChunk clone() {
@@ -118,19 +118,19 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         return chunkPacket;
     }
 
-    public void setChunkPacket16(BatchPacket packet) {
+    public void setChunkPacketOld(BatchPacket packet) {
         if (packet != null) {
             packet.trim();
         }
-        this.chunkPacket16 = packet;
+        this.chunkPacketOld = packet;
     }
 
-    public BatchPacket getChunkPacket16() {
-        BatchPacket pk = chunkPacket16;
+    public BatchPacket getChunkPacketOld() {
+        BatchPacket pk = chunkPacketOld;
         if (pk != null) {
             pk.trim();
         }
-        return chunkPacket16;
+        return chunkPacketOld;
     }
 
     public void initChunk() {

@@ -2577,12 +2577,12 @@ public class Level implements ChunkManager, Metadatable {
         this.chunkSendQueue.get(index).put(player.getLoaderId(), player);
     }
 
-    private void sendChunk(int x, int z, long index, DataPacket packet, DataPacket packet16) {
+    private void sendChunk(int x, int z, long index, DataPacket packet, DataPacket packetOld) {
         if (this.chunkSendTasks.contains(index)) {
             for (Player player : this.chunkSendQueue.get(index).values()) {
                 if (player.isConnected() && player.usedChunks.containsKey(index)) {
-                    if (player.getProtocol() < 282) player.sendChunk(x, z, packet);
-                    else player.sendChunk(x, z, packet16);
+                    if (player.getProtocol() < 361) player.sendChunk(x, z, packetOld);
+                    else player.sendChunk(x, z, packet);
                 }
             }
 
@@ -2605,9 +2605,9 @@ public class Level implements ChunkManager, Metadatable {
             BaseFullChunk chunk = getChunk(x, z);
             if (chunk != null) {
                 BatchPacket packet = chunk.getChunkPacket();
-                BatchPacket packet16 = chunk.getChunkPacket16();
-                if (packet != null && packet16 != null) {
-                    this.sendChunk(x, z, index, packet, packet16);
+                BatchPacket packetOld = chunk.getChunkPacketOld();
+                if (packet != null && packetOld != null) {
+                    this.sendChunk(x, z, index, packet, packetOld);
                     continue;
                 }
             }
@@ -2621,19 +2621,19 @@ public class Level implements ChunkManager, Metadatable {
         this.timings.syncChunkSendTimer.stopTiming();
     }
 
-    public void chunkRequestCallback(long timestamp, int x, int z, byte[] payload) {
+    public void chunkRequestCallback(long timestamp, int x, int z, int subChunkCount, byte[] payload, byte[] payloadOld) {
         this.timings.syncChunkSendTimer.startTiming();
         long index = Level.chunkHash(x, z);
 
         if (this.cacheChunks) {
-            BatchPacket data = getChunkCacheFromData(x, z, payload, 0);
-            BatchPacket data16 = getChunkCacheFromData(x, z, payload, 1);
+            BatchPacket data = getChunkCacheFromData(x, z, subChunkCount, payload);
+            BatchPacket dataOld = getChunkCacheFromData(x, z, subChunkCount, payload, true);
             BaseFullChunk chunk = getChunk(x, z, false);
             if (chunk != null && chunk.getChanges() <= timestamp) {
                 chunk.setChunkPacket(data);
-                chunk.setChunkPacket16(data16);
+                chunk.setChunkPacketOld(dataOld);
             }
-            this.sendChunk(x, z, index, data, data16);
+            this.sendChunk(x, z, index, data, dataOld);
             this.timings.syncChunkSendTimer.stopTiming();
             return;
         }
@@ -2641,7 +2641,8 @@ public class Level implements ChunkManager, Metadatable {
         if (this.chunkSendTasks.contains(index)) {
             for (Player player : this.chunkSendQueue.get(index).values()) {
                 if (player.isConnected() && player.usedChunks.containsKey(index)) {
-                    player.sendChunk(x, z, payload);
+                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, payloadOld);
+                    else player.sendChunk(x, z, subChunkCount, payload);
                 }
             }
 
@@ -3375,18 +3376,18 @@ public class Level implements ChunkManager, Metadatable {
         return getGameRules().getInt("spawnRadius");
     }
 
-    private static ChunkCacher chunkCacher = new ChunkCacher() {
-        @Override
-        public BatchPacket getData(int x, int z, byte[] payload, int protocol) {
+    public static BatchPacket getChunkCacheFromData(int x, int z, int subChunkCount, byte[] payload) {
+        return getChunkCacheFromData(x, z, subChunkCount, payload, false);
+    }
+
+    public static BatchPacket getChunkCacheFromData(int x, int z, int subChunkCount, byte[] payload, boolean isOld) {
+        DataPacket packet;
+        if (isOld) {
             FullChunkDataPacket pk = new FullChunkDataPacket() {
                 @Override
                 public void reset() {
-                    if (protocol == 0) {
-                        super.reset();
-                    } else {
-                        this.superReset();
-                        this.putUnsignedVarInt(this.pid());
-                    }
+                    this.superReset();
+                    this.putUnsignedVarInt(this.pid());
                 }
             };
             pk.chunkX = x;
@@ -3394,28 +3395,29 @@ public class Level implements ChunkManager, Metadatable {
             pk.data = payload;
             pk.encode();
             pk.isEncoded = true;
-
-            BatchPacket batch = new BatchPacket();
-            byte[][] batchPayload = new byte[2][];
-            byte[] buf = pk.getBuffer();
-            batchPayload[0] = Binary.writeUnsignedVarInt(buf.length);
-            batchPayload[1] = buf;
-            byte[] data = Binary.appendBytes(batchPayload);
-            try {
-                batch.payload = Zlib.deflate(data, Server.getInstance().networkCompressionLevel);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return batch;
+            packet = pk;
+        } else {
+            LevelChunkPacket pk = new LevelChunkPacket();
+            pk.chunkX = x;
+            pk.chunkZ = z;
+            pk.subChunkCount = subChunkCount;
+            pk.data = payload;
+            pk.encode();
+            pk.isEncoded = true;
+            packet = pk;
         }
-    };
-
-    public static BatchPacket getChunkCacheFromData(int x, int z, byte[] data, int protocol) {
-        return chunkCacher.getData(x, z, data, protocol);
-    }
-
-    public interface ChunkCacher {
-        BatchPacket getData(int x, int z, byte[] payload, int protocol);
+        BatchPacket batch = new BatchPacket();
+        byte[][] batchPayload = new byte[2][];
+        byte[] buf = packet.getBuffer();
+        batchPayload[0] = Binary.writeUnsignedVarInt(buf.length);
+        batchPayload[1] = buf;
+        byte[] data = Binary.appendBytes(batchPayload);
+        try {
+            batch.payload = Zlib.deflate(data, Server.getInstance().networkCompressionLevel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return batch;
     }
 
 }
