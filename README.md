@@ -8,7 +8,9 @@
 Javadoc是JDK提供的一个工具，它可以从程序源代码中抽取类、方法、成员等注释形成一个和源代码配套的API帮助文档。
 在开始标注前, 请先掌握Javadoc文档注释样式.
 参阅:
+
 1.http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html (英文)
+
 2.http://www.cnblogs.com/xt0810/p/3630996.html
 # 许可说明
 本文档使用[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)许可协议发布。其它所有源代码属Nukkit所有，以[GPLv3](https://github.com/NukkitX/Nukkit/blob/master/LICENSE)许可协议发布.
