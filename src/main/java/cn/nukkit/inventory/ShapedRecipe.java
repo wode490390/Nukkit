@@ -1,7 +1,6 @@
 package cn.nukkit.inventory;
 
 import cn.nukkit.item.Item;
-import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
 import io.netty.util.collection.CharObjectHashMap;
 
@@ -13,23 +12,30 @@ import java.util.*;
  */
 public class ShapedRecipe implements CraftingRecipe {
 
+    private String recipeId;
     private Item primaryResult;
     private List<Item> extraResults = new ArrayList<>();
 
     private long least,most;
 
     private final String[] shape;
+    private final int priority;
 
     private final CharObjectHashMap<Item> ingredients = new CharObjectHashMap<>();
+
+
+    public ShapedRecipe(Item primaryResult, String[] shape, Map<Character, Item> ingredients, List<Item> extraResults) {
+        this(null, 1, primaryResult, shape, ingredients, extraResults);
+    }
 
     /**
      * Constructs a ShapedRecipe instance.
      *
-     * @param primaryResult
+     * @param primaryResult    Primary result of the recipe
      * @param shape<br>        Array of 1, 2, or 3 strings representing the rows of the recipe.
      *                         This accepts an array of 1, 2 or 3 strings. Each string should be of the same length and must be at most 3
      *                         characters long. Each character represents a unique type of ingredient. Spaces are interpreted as air.
-     * @param ingredients<br>  Char => Item map of items to be set into the shape.
+     * @param ingredients<br>  Char =&gt; Item map of items to be set into the shape.
      *                         This accepts an array of Items, indexed by character. Every unique character (except space) in the shape
      *                         array MUST have a corresponding item in this list. Space character is automatically treated as air.
      * @param extraResults<br> List of additional result items to leave in the crafting grid afterwards. Used for things like cake recipe
@@ -37,7 +43,9 @@ public class ShapedRecipe implements CraftingRecipe {
      *                         <p>
      *                         Note: Recipes **do not** need to be square. Do NOT add padding for empty rows/columns.
      */
-    public ShapedRecipe(Item primaryResult, String[] shape, Map<Character, Item> ingredients, List<Item> extraResults) {
+    public ShapedRecipe(String recipeId, int priority, Item primaryResult, String[] shape, Map<Character, Item> ingredients, List<Item> extraResults) {
+        this.recipeId = recipeId;
+        this.priority = priority;
         int rowCount = shape.length;
         if (rowCount > 3 || rowCount <= 0) {
             throw new RuntimeException("Shaped recipes may only have 1, 2 or 3 rows, not " + rowCount);
@@ -50,9 +58,7 @@ public class ShapedRecipe implements CraftingRecipe {
 
 
         //for($shape as $y => $row) {
-        for (int y = 0; y < rowCount; y++) {
-            String row = shape[y];
-
+        for (String row : shape) {
             if (row.length() != columnCount) {
                 throw new RuntimeException("Shaped recipe rows must all have the same length (expected " + columnCount + ", got " + row.length() + ")");
             }
@@ -90,6 +96,11 @@ public class ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
+    public String getRecipeId() {
+        return this.recipeId;
+    }
+
+    @Override
     public UUID getId() {
         return new UUID(least, most);
     }
@@ -98,6 +109,9 @@ public class ShapedRecipe implements CraftingRecipe {
     public void setId(UUID uuid) {
         this.least = uuid.getLeastSignificantBits();
         this.most = uuid.getMostSignificantBits();
+        if (this.recipeId == null) {
+            this.recipeId = getId().toString();
+        }
     }
 
     public ShapedRecipe setIngredient(String key, Item item) {
@@ -155,6 +169,11 @@ public class ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
+    public RecipeType getType() {
+        return RecipeType.SHAPED;
+    }
+
+    @Override
     public List<Item> getExtraResults() {
         return extraResults;
     }
@@ -168,9 +187,12 @@ public class ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public boolean matchItems(Item[][] input, Item[][] output) {
-        MainLogger logger = MainLogger.getLogger();
+    public int getPriority() {
+        return this.priority;
+    }
 
+    @Override
+    public boolean matchItems(Item[][] input, Item[][] output) {
         if (!matchInputMap(Utils.clone2dArray(input))) {
 
             Item[][] reverse = Utils.clone2dArray(input);
@@ -237,6 +259,14 @@ public class ShapedRecipe implements CraftingRecipe {
         }
 
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner joiner = new StringJoiner(", ");
+
+        ingredients.forEach((character, item) -> joiner.add(item.getName() + ":" + item.getDamage()));
+        return joiner.toString();
     }
 
     @Override
