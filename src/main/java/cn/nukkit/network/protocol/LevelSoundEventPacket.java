@@ -109,6 +109,7 @@ public class LevelSoundEventPacket extends DataPacket {
 	public static final int SOUND_RECORD_WARD = 100;
 	public static final int SOUND_RECORD_11 = 101;
 	public static final int SOUND_RECORD_WAIT = 102;
+	public static final int SOUND_STOP_RECORD = 103;
 	public static final int SOUND_GUARDIAN_FLOP = 104;
 	public static final int SOUND_ELDERGUARDIAN_CURSE = 105;
 	public static final int SOUND_MOB_WARNING = 106;
@@ -179,6 +180,7 @@ public class LevelSoundEventPacket extends DataPacket {
     public float z;
     public int extraData = -1; //TODO: Check name
     public int pitch = 1; //TODO: Check name
+	public String entityIdentifier = ":";
     public boolean isBabyMob;
     public boolean isGlobal;
 

@@ -20,6 +20,7 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
         return handlers;
     }
 
+    private int attackCooldown = 10;
     private final DamageCause cause;
 
     private final Map<DamageModifier, Float> modifiers;
@@ -98,6 +99,14 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
         }
 
         return damage;
+    }
+
+    public int getAttackCooldown() {
+        return this.attackCooldown;
+    }
+
+    public void setAttackCooldown(int attackCooldown) {
+        this.attackCooldown = attackCooldown;
     }
 
     public Map<DamageModifier, Float> getModifiers() {
@@ -201,6 +210,10 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
         /**
          * Damage caused by being struck by lightning
          */
-        LIGHTNING
+        LIGHTNING,
+        /**
+         * Damage caused by hunger
+         */
+        HUNGER
     }
 }

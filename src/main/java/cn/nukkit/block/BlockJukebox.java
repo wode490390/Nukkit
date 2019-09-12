@@ -40,16 +40,17 @@ public class BlockJukebox extends BlockSolid {
     @Override
     public boolean onActivate(Item item, Player player) {
         BlockEntity blockEntity = this.getLevel().getBlockEntity(this);
-        if (blockEntity == null || !(blockEntity instanceof BlockEntityJukebox)) {
+        if (!(blockEntity instanceof BlockEntityJukebox)) {
             blockEntity = this.createBlockEntity();
         }
 
         BlockEntityJukebox jukebox = (BlockEntityJukebox) blockEntity;
         if (jukebox.getRecordItem().getId() != 0) {
             jukebox.dropItem();
-        } else if (item instanceof ItemRecord) {
+        } else if (item.getId() >= 500 && item.getId() <= 511) {
             jukebox.setRecordItem(item);
             jukebox.play();
+            player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
         }
 
         return false;

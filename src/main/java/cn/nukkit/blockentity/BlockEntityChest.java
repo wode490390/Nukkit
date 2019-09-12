@@ -29,6 +29,10 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
     public BlockEntityChest(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    protected void initBlockEntity() {
         this.inventory = new ChestInventory(this);
 
         if (!this.namedTag.contains("Items") || !(this.namedTag.get("Items") instanceof ListTag)) {
@@ -44,6 +48,8 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
             Item item = NBTIO.getItemHelper(compound);
             this.inventory.slots.put(compound.getByte("Slot"), item);
         }
+
+        super.initBlockEntity();
     }
 
     @Override
@@ -72,8 +78,8 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
 
     @Override
     public boolean isBlockEntityValid() {
-        // TODO: 2016/2/4 TRAPPED_CHEST?
-        return getBlock().getId() == Block.CHEST;
+        int blockID = this.getBlock().getId();
+        return blockID == Block.CHEST || blockID == Block.TRAPPED_CHEST;
     }
 
     @Override
@@ -199,7 +205,7 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
     }
 
     public boolean pairWith(BlockEntityChest chest) {
-        if (this.isPaired() || chest.isPaired()) {
+        if (this.isPaired() || chest.isPaired() || this.getBlock().getId() != chest.getBlock().getId()) {
             return false;
         }
 

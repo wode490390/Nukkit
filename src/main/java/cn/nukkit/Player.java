@@ -847,6 +847,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         Timings.playerChunkSendTimer.stopTiming();
     }
 
+    protected void sendRecipeList() {
+        this.dataPacket(CraftingManager.packet);
+    }
+
     protected void doFirstSpawn() {
 
         this.setEnableClientCommand(true);
@@ -903,7 +907,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.noDamageTicks = 60;
 
-        this.getServer().sendRecipeList(this);
+        this.sendRecipeList();
 
         if (this.gamemode == Player.SPECTATOR) {
             InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();
@@ -2237,7 +2241,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     Item item = this.inventory.getItem(mobEquipmentPacket.hotbarSlot);
 
-                    if (!item.equals(mobEquipmentPacket.item, false, false)) {
+                    if (!item.equals(mobEquipmentPacket.item)) {
                         this.server.getLogger().debug("Tried to equip " + mobEquipmentPacket.item + " but have " + item + " in target slot");
                         this.inventory.sendContents(this);
                         return;
@@ -2893,7 +2897,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                                     if (this.isCreative()) {
                                         item = this.inventory.getItemInHand();
-                                    } else if (!this.inventory.getItemInHand().equals(useItemData.itemInHand, false, false)) {
+                                    } else if (!this.inventory.getItemInHand().equals(useItemData.itemInHand)) {
                                         this.inventory.sendHeldItem(this);
                                         break packetswitch;
                                     } else {
@@ -4530,7 +4534,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 Server.broadcastPacket(entity.getViewers().values(), pk);
                 this.dataPacket(pk);
 
-                this.inventory.addItem(item.clone());
+                if (!this.isCreative()) {
+                    this.inventory.addItem(item.clone());
+                }
                 entity.kill();
                 return true;
             } else if (entity instanceof EntityItem) {

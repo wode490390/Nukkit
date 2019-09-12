@@ -4,16 +4,10 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.block.SignChangeEvent;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.BlockEntityDataPacket;
 import cn.nukkit.utils.TextFormat;
 
-import java.io.IOException;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -22,26 +16,46 @@ import java.util.Objects;
  */
 public class BlockEntitySign extends BlockEntitySpawnable {
 
+    private String[] text;
+
     public BlockEntitySign(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
 
-        if (!nbt.contains("Text")) {
-            List<String> lines = new ArrayList<>();
+    @Override
+    protected void initBlockEntity() {
+        text = new String[4];
+
+        if (!namedTag.contains("Text")) {
 
             for (int i = 1; i <= 4; i++) {
                 String key = "Text" + i;
 
-                if (nbt.contains(key)) {
-                    String line = nbt.getString(key);
+                if (namedTag.contains(key)) {
+                    String line = namedTag.getString(key);
 
-                    lines.add(line);
+                    this.text[i - 1] = line;
 
-                    nbt.remove(key);
+                    this.namedTag.remove(key);
                 }
             }
+        } else {
+            String[] lines = namedTag.getString("Text").split("\n", 4);
 
-            nbt.putString("Text", String.join("\n", lines));
+            for (int i = 0; i < text.length; i++) {
+                if (i < lines.length)
+                    text[i] = lines[i];
+                else
+                    text[i] = "";
+            }
         }
+
+        // Check old text to sanitize
+        if (text != null) {
+            sanitizeText(text);
+        }
+
+        super.initBlockEntity();
     }
 
     @Override
@@ -57,29 +71,24 @@ public class BlockEntitySign extends BlockEntitySpawnable {
     }
 
     public boolean setText(String... lines) {
-        String[] text = new String[4];
-        Arrays.fill(text, "");
-
-        System.arraycopy(lines, 0, text, 0, Math.min(lines.length, 4));
+        for (int i = 0; i < 4; i++) {
+            if (i < lines.length)
+                text[i] = lines[i];
+            else
+                text[i] = "";
+        }
 
         this.namedTag.putString("Text", String.join("\n", text));
         this.spawnToAll();
 
         if (this.chunk != null) {
-            this.chunk.setChanged();
+            setDirty();
         }
 
         return true;
     }
 
     public String[] getText() {
-        String[] text = new String[4];
-        Arrays.fill(text, "");
-
-        String[] origin = this.namedTag.getString("Text").split("\n");
-
-        System.arraycopy(origin, 0, text, 0, Math.min(4, origin.length));
-
         return text;
     }
 
@@ -88,17 +97,22 @@ public class BlockEntitySign extends BlockEntitySpawnable {
         if (!nbt.getString("id").equals(BlockEntity.SIGN)) {
             return false;
         }
-        String[] text = nbt.getString("Text").split("\n", 4);
+        String[] lines = new String[4];
+        Arrays.fill(lines, "");
+        String[] splitLines = nbt.getString("Text").split("\n", 4);
+        System.arraycopy(splitLines, 0, lines, 0, splitLines.length);
 
-        SignChangeEvent signChangeEvent = new SignChangeEvent(this.getBlock(), player, text);
+        sanitizeText(lines);
+
+        SignChangeEvent signChangeEvent = new SignChangeEvent(this.getBlock(), player, lines);
 
         if (!this.namedTag.contains("Creator") || !Objects.equals(player.getUniqueId().toString(), this.namedTag.getString("Creator"))) {
             signChangeEvent.setCancelled();
         }
 
         if (player.getRemoveFormat()) {
-            for (int i = 0; i < text.length; i++) {
-                text[i] = TextFormat.clean(text[i]);
+            for (int i = 0; i < lines.length; i++) {
+                lines[i] = TextFormat.clean(lines[i]);
             }
         }
 
@@ -113,25 +127,6 @@ public class BlockEntitySign extends BlockEntitySpawnable {
     }
 
     @Override
-    public void spawnTo(Player player) {
-        if (this.closed) {
-            return;
-        }
-
-        CompoundTag tag = player.getProtocol() <= 113 ? this.getSpawnCompound11() : this.getSpawnCompound();
-        BlockEntityDataPacket pk = new BlockEntityDataPacket();
-        pk.x = (int) this.x;
-        pk.y = (int) this.y;
-        pk.z = (int) this.z;
-        try {
-            pk.namedTag = NBTIO.write(tag, ByteOrder.LITTLE_ENDIAN, true);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        player.dataPacket(pk);
-    }
-
-    @Override
     public CompoundTag getSpawnCompound() {
         return new CompoundTag()
                 .putString("id", BlockEntity.SIGN)
@@ -142,18 +137,13 @@ public class BlockEntitySign extends BlockEntitySpawnable {
 
     }
 
-    public CompoundTag getSpawnCompound11() {
-        String[] text = this.getText();
-
-        return new CompoundTag()
-                .putString("id", BlockEntity.SIGN)
-                .putString("Text1", text[0])
-                .putString("Text2", text[1])
-                .putString("Text3", text[2])
-                .putString("Text4", text[3])
-                .putInt("x", (int) this.x)
-                .putInt("y", (int) this.y)
-                .putInt("z", (int) this.z);
-
+    private static void sanitizeText(String[] lines) {
+        for (int i = 0; i < lines.length; i++) {
+            // Don't allow excessive text per line.
+            if (lines[i] != null) {
+                lines[i] = lines[i].substring(0, Math.min(255, lines[i].length()));
+            }
+        }
     }
+
 }
