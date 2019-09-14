@@ -5,8 +5,13 @@ import cn.nukkit.entity.data.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockVector3;
 import cn.nukkit.math.NukkitMath;
+import cn.nukkit.nbt.NBTIO;
+import cn.nukkit.nbt.tag.CompoundTag;
+import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
@@ -122,8 +127,17 @@ public class Binary {
                     stream.put(s.getBytes(StandardCharsets.UTF_8));
                     break;
                 case Entity.DATA_TYPE_SLOT:
-                    SlotEntityData slot = (SlotEntityData) d;
-                    stream.putSlot(slot.getData());
+                    if (d instanceof SlotEntityData) {
+                        SlotEntityData slot = (SlotEntityData) d;
+                        stream.putSlot(slot.getData());
+                    } else if (d instanceof NBTEntityData) {
+                        NBTEntityData slot = (NBTEntityData) d;
+                        try {
+                            stream.put(NBTIO.write(slot.getData(), ByteOrder.LITTLE_ENDIAN, true));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     break;
                 case Entity.DATA_TYPE_POS:
                     IntPositionEntityData pos = (IntPositionEntityData) d;
@@ -171,8 +185,22 @@ public class Binary {
                     value = new StringEntityData(key, stream.getString());
                     break;
                 case Entity.DATA_TYPE_SLOT:
-                    Item item = stream.getSlot();
-                    value = new SlotEntityData(key, item.getId(), item.getDamage(), item.getCount());
+                    //TODO 这样的话，读进来既可能是SlotEntityData，又可能是NBTEntityData。但是目前该API还未被使用，以后用到了再说吧
+                    int offsetBefore = stream.getOffset();
+                    try {
+                        Item item = stream.getSlot();
+                        value = new SlotEntityData(key, item.getId(), item.getDamage(), item.getCount());
+                    } catch (Exception e) {
+                        stream.setOffset(offsetBefore);
+                        FastByteArrayInputStream fbais = new FastByteArrayInputStream(stream.get());
+                        try {
+                            CompoundTag tag = NBTIO.read(fbais, ByteOrder.LITTLE_ENDIAN, true);
+                            value = new NBTEntityData(key, tag);
+                        } catch (IOException e0) {
+                            throw new RuntimeException(e);
+                        }
+                        stream.setOffset(offsetBefore + (int) fbais.position());
+                    }
                     break;
                 case Entity.DATA_TYPE_POS:
                     BlockVector3 v3 = stream.getSignedBlockPosition();
