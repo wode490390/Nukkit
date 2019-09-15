@@ -727,6 +727,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return false;
     }
 
+    // Remove old chunks
+    public void removeAllChunks() {
+        for(long index :new ArrayList<>(this.usedChunks.keySet())) {
+            int chunkX = Level.getHashX(index);
+            int chunkZ = Level.getHashZ(index);
+            this.unloadChunk(chunkX, chunkZ, this.level);
+        }
+    }
+
     public void unloadChunk(int x, int z) {
         this.unloadChunk(x, z, null);
     }
