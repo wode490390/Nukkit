@@ -750,6 +750,7 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void sendTime(Player... players) {
+        if (players.length == 0) return;
         /*if (this.stopTime) { //TODO
             SetTimePacket pk0 = new SetTimePacket();
             pk0.time = (int) this.time;

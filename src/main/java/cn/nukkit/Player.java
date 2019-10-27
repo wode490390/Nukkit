@@ -134,6 +134,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     private String clientSecret;
 
     public Vector3 speed = null;
+    public boolean attackCriticalThisJump = false;
 
     public final HashSet<String> achievements = new HashSet<>();
 
@@ -448,6 +449,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
         this.inAirTicks = 0;
         this.highestPosition = this.y;
+        this.attackCriticalThisJump = false;
     }
 
     @Override
@@ -3870,7 +3872,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
             //Critical hit
 
-            if (!damager.onGround && damager instanceof Player && ((Player) damager).speed != null && ((Player) damager).speed.y > 0) add = true;
+            if (!damager.onGround && damager instanceof Player && ((Player) damager).speed != null && ((Player) damager).speed.y > 0 && !((Player) damager).attackCriticalThisJump) add = true;
             if (add) source.setDamage((float) (source.getDamage() * 1.3));
         }
 
@@ -3886,6 +3888,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     if (((EntityDamageByEntityEvent) source).getDamager() instanceof Player) {
                         if (((Player) ((EntityDamageByEntityEvent) source).getDamager()).getLoginChainData().getDeviceOS() == 7)  //win10
                             (((EntityDamageByEntityEvent) source).getDamager()).addEffect(Effect.getEffect(Effect.SLOWNESS).setDuration(10).setAmplifier(1).setVisible(false));
+                        ((Player)(((EntityDamageByEntityEvent) source).getDamager())).attackCriticalThisJump = true;
                     }
                     Random random = new Random();
                     for (int i = 0; i < 10; i++) {
