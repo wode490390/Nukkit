@@ -1,18 +1,27 @@
 package cn.nukkit.entity.data;
 
 import cn.nukkit.nbt.stream.FastByteArrayOutputStream;
+import cn.nukkit.utils.Binary;
+import cn.nukkit.utils.SerializedImage;
+import cn.nukkit.utils.SkinAnimation;
+import com.google.common.base.Preconditions;
+import lombok.ToString;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.*;
+import java.util.List;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
+@ToString
 public class Skin {
     private static final int PIXEL_SIZE = 4;
 
@@ -21,14 +30,26 @@ public class Skin {
     public static final int SKIN_128_64_SIZE = 128 * 64 * PIXEL_SIZE;
     public static final int SKIN_128_128_SIZE = 128 * 128 * PIXEL_SIZE;
 
-    public static final String GEOMETRY_CUSTOM = "geometry.humanoid.custom";
-    public static final String GEOMETRY_CUSTOM_SLIM = "geometry.humanoid.customSlim";
+    public static final byte[] FULL_WHITE_SKIN = new byte[DOUBLE_SKIN_SIZE];
 
-    private String skinId = "Steve";
-    private byte[] skinData = new byte[SINGLE_SKIN_SIZE];
-    private byte[] capeData = new byte[0];
-    private String geometryName = GEOMETRY_CUSTOM;
-    private String geometryData = "";
+    public static final String GEOMETRY_CUSTOM = convertLegacyGeometryName("geometry.humanoid.custom");
+    public static final String GEOMETRY_CUSTOM_SLIM = convertLegacyGeometryName("geometry.humanoid.customSlim");
+
+    private String skinId;
+    private String skinResourcePatch = GEOMETRY_CUSTOM;
+    private SerializedImage skinData;
+    private final List<SkinAnimation> animations = new ArrayList<>();
+    private SerializedImage capeData;
+    private String geometryData;
+    private String animationData;
+    private boolean premium;
+    private boolean persona;
+    private boolean capeOnClassic;
+    private String capeId;
+
+    static {
+        Arrays.fill(FULL_WHITE_SKIN, (byte) 0xff);
+    }
 
     public Skin() { }
 
@@ -41,20 +62,48 @@ public class Skin {
         this.setSkinId(skinId);
     }
 
-    public boolean isValid() {
-        return isValidSkin(skinData.length);
+    private static boolean isValidSkin(int length) {
+        return length == SINGLE_SKIN_SIZE ||
+                length == DOUBLE_SKIN_SIZE ||
+                length == SKIN_128_64_SIZE ||
+                length == SKIN_128_128_SIZE;
     }
 
-    public byte[] getSkinData() {
+    public boolean isValidLegacy() {
+        return isValidSkin(skinData.data.length);
+    }
+
+    public boolean isValid() {
+        return isValidSkin() && isValidResourcePatch();
+    }
+
+    private boolean isValidSkin() {
+        return skinData != null && skinData.width >= 64 && skinData.height >= 32 &&
+                skinData.data.length >= SINGLE_SKIN_SIZE;
+    }
+
+    private boolean isValidResourcePatch() {
+        if (skinResourcePatch == null) {
+            return false;
+        }
+        try {
+            JSONObject object = (JSONObject) JSONValue.parse(skinResourcePatch);
+            JSONObject geometry = (JSONObject) object.get("geometry");
+            return geometry.containsKey("default") && geometry.get("default") instanceof String;
+        } catch (ClassCastException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    public SerializedImage getSkinData() {
+        if (skinData == null) {
+            return SerializedImage.EMPTY;
+        }
         return skinData;
     }
 
-    public String getGeometryName() {
-        return geometryName;
-    }
-
     public String getSkinId() {
-        return skinId;
+        return skinId != null ? skinId : getGeometryName();
     }
 
     public Skin setSkinId(String skinId) {
@@ -72,32 +121,82 @@ public class Skin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return setSkinData(image);
+        setSkinData(image);
+        return this;
+    }
+
+    public Skin setSkinData(byte[] skinData) {
+        return setSkinData(SerializedImage.fromLegacy(skinData));
     }
 
     public Skin setSkinData(BufferedImage image) {
         return setSkinData(parseBufferedImage(image));
     }
 
-    public Skin setSkinData(byte[] data) {
-        if (data == null || !isValidSkin(data.length)) {
-            throw new IllegalArgumentException("Invalid skin");
-        }
-        this.skinData = data;
+    public Skin setSkinData(SerializedImage skinData) {
+        Objects.requireNonNull(skinData, "skinData");
+        this.skinData = skinData;
         return this;
     }
 
-    public Skin setGeometryName(String model) {
-        if (model == null || model.trim().isEmpty()) {
-            model = GEOMETRY_CUSTOM;
+    public Skin setSkinResourcePatch(String skinResourcePatch) {
+        if (skinResourcePatch == null || skinResourcePatch.trim().isEmpty()) {
+            this.skinResourcePatch = GEOMETRY_CUSTOM;
+            return this;
         }
-
-        this.geometryName = model;
+        this.skinResourcePatch = skinResourcePatch;
         return this;
     }
 
-    public byte[] getCapeData() {
+    public String getGeometryName() {
+        if (skinResourcePatch == null) {
+            return "geometry.humanoid.custom";
+        }
+        try {
+            JSONObject object = (JSONObject) JSONValue.parse(skinResourcePatch);
+            JSONObject geometry = (JSONObject) object.get("geometry");
+            return geometry.getAsString("default");
+        } catch (ClassCastException | NullPointerException e) {
+            return "geometry.humanoid.custom";
+        }
+    }
+
+    public Skin setGeometryName(String geometryName) {
+        if (geometryName == null || geometryName.trim().isEmpty()) {
+            skinResourcePatch = GEOMETRY_CUSTOM;
+            return this;
+        }
+        this.skinResourcePatch = "{\"geometry\" : {\"default\" : \"" + geometryName + "\"}}";
+        return this;
+    }
+
+    public String getSkinResourcePatch() {
+        if (this.skinResourcePatch == null) {
+            return "";
+        }
+        return skinResourcePatch;
+    }
+
+    public SerializedImage getCapeData() {
+        if (capeData == null) {
+            return SerializedImage.EMPTY;
+        }
         return capeData;
+    }
+
+    public String getCapeId() {
+        if (capeId == null) {
+            return "";
+        }
+        return capeId;
+    }
+
+    public Skin setCapeId(String capeId) {
+        if (capeId == null || capeId.trim().isEmpty()) {
+            capeId = null;
+        }
+        this.capeId = capeId;
+        return this;
     }
 
     public Skin setCapeData(InputStream inputStream) {
@@ -107,45 +206,93 @@ public class Skin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return setCapeData(image);
+        setCapeData(image);
+        return this;
+    }
+
+    public Skin setCapeData(byte[] capeData) {
+        Objects.requireNonNull(capeData, "capeData");
+        Preconditions.checkArgument(capeData.length == SINGLE_SKIN_SIZE || capeData.length == 0, "Invalid legacy cape");
+        return setCapeData(new SerializedImage(64, 32, capeData));
     }
 
     public Skin setCapeData(BufferedImage image) {
         return setCapeData(parseBufferedImage(image));
     }
 
-    public Skin setCapeData(byte[] capeData) {
-        if (capeData == null) {
-            this.capeData = new byte[0];
-        } else {
-            this.capeData = capeData;
-        }
+    public Skin setCapeData(SerializedImage capeData) {
+        Objects.requireNonNull(capeData, "capeData");
+        this.capeData = capeData;
         return this;
     }
 
     public String getGeometryData() {
+        if (geometryData == null) {
+            return "";
+        }
         return geometryData;
     }
 
     public Skin setGeometryData(String geometryData) {
-        if (geometryData == null) {
-            this.geometryData = "";
+        Preconditions.checkNotNull(geometryData, "geometryData");
+        if (!geometryData.equals(this.geometryData)) {
+            this.geometryData = geometryData;
         }
-        this.geometryData = geometryData;
         return this;
     }
 
-    public Skin copy() {
-        Skin skin = new Skin();
-        skin.skinId = this.skinId;
-        skin.skinData = Arrays.copyOf(this.skinData, this.skinData.length);
-        skin.capeData = Arrays.copyOf(this.capeData, this.capeData.length);
-        skin.geometryName = this.geometryName;
-        skin.geometryData = this.geometryData;
-        return skin;
+    public String getAnimationData() {
+        if (animationData == null) {
+            return "";
+        }
+        return animationData;
     }
 
-    private static byte[] parseBufferedImage(BufferedImage image) {
+    public Skin setAnimationData(String animationData) {
+        Preconditions.checkNotNull(animationData, "animationData");
+        if (!animationData.equals(this.animationData)) {
+            this.animationData = animationData;
+        }
+        return this;
+    }
+
+    public List<SkinAnimation> getAnimations() {
+        return animations;
+    }
+
+    public boolean isPremium() {
+        return premium;
+    }
+
+    public Skin setPremium(boolean premium) {
+        this.premium = premium;
+        return this;
+    }
+
+    public boolean isPersona() {
+        return persona;
+    }
+
+    public Skin setPersona(boolean persona) {
+        this.persona = persona;
+        return this;
+    }
+
+    public boolean isCapeOnClassic() {
+        return capeOnClassic;
+    }
+
+    public Skin setCapeOnClassic(boolean capeOnClassic) {
+        this.capeOnClassic = capeOnClassic;
+        return this;
+    }
+
+    public String getFullSkinId() {
+        String skinId = getSkinId();
+        return UUID.nameUUIDFromBytes(Binary.appendBytes(skinId.getBytes(), getSkinData().data)).toString(); //TODO: Client sends full skin ID as normal skin ID. Find out what this is actually for.
+    }
+
+    private static SerializedImage parseBufferedImage(BufferedImage image) {
         FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -157,13 +304,10 @@ public class Skin {
             }
         }
         image.flush();
-        return outputStream.toByteArray();
+        return new SerializedImage(image.getWidth(), image.getHeight(), outputStream.toByteArray());
     }
 
-    private static boolean isValidSkin(int length) {
-        return length == SINGLE_SKIN_SIZE ||
-                length == DOUBLE_SKIN_SIZE ||
-                length == SKIN_128_64_SIZE ||
-                length == SKIN_128_128_SIZE;
+    private static String convertLegacyGeometryName(String geometryName) {
+        return "{\"geometry\" : {\"default\" : \"" + geometryName + "\"}}";
     }
 }

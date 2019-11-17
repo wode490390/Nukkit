@@ -5,7 +5,6 @@ import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.entity.data.LongEntityData;
 import cn.nukkit.entity.data.Vector3fEntityData;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.event.entity.*;
@@ -339,8 +338,8 @@ public class EntityFishingHook extends EntityProjectile {
             SetEntityLinkPacket pk;
 
             pk = new SetEntityLinkPacket();
-            pk.rider = entity.getId();
-            pk.riding = this.getId();
+            pk.vehicleUniqueId = entity.getId();
+            pk.riderUniqueId = this.getId();
             pk.type = 2;
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 

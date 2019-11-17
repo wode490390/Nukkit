@@ -15,7 +15,6 @@ import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.particle.HugeExplodeSeedParticle;
 import cn.nukkit.level.sound.ExplodeSound;
 import cn.nukkit.math.*;
-import cn.nukkit.network.protocol.ExplodePacket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -194,14 +193,6 @@ public class Explosion {
             send.add(new Vector3(block.x - source.x, block.y - source.y, block.z - source.z));
         }
 
-        ExplodePacket pk = new ExplodePacket();
-        pk.x = (float) this.source.x;
-        pk.y = (float) this.source.y;
-        pk.z = (float) this.source.z;
-        pk.radius = (float) this.size;
-        pk.records = send.stream().toArray(Vector3[]::new);
-
-        this.level.addChunkPacket((int) source.x >> 4, (int) source.z >> 4, pk);
         this.level.addParticle(new HugeExplodeSeedParticle(this.source));
         this.level.addSound(new ExplodeSound(new Vector3(this.source.x, this.source.y, this.source.z)));
 

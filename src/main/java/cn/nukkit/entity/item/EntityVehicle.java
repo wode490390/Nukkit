@@ -85,8 +85,8 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
             SetEntityLinkPacket pk;
 
             pk = new SetEntityLinkPacket();
-            pk.rider = getId();         // To the?
-            pk.riding = entity.getId(); // From who?
+            pk.vehicleUniqueId = getId();         // To the?
+            pk.riderUniqueId = entity.getId(); // From who?
             pk.type = TYPE_REMOVE;      // Byte for leave
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 
@@ -108,8 +108,8 @@ public abstract class EntityVehicle extends Entity implements EntityRideable, En
             SetEntityLinkPacket pk;
 
             pk = new SetEntityLinkPacket();
-            pk.rider = getId();         // To the?
-            pk.riding = entity.getId(); // From who?
+            pk.vehicleUniqueId = getId();         // To the?
+            pk.riderUniqueId = entity.getId(); // From who?
             pk.type = TYPE_RIDE;   // Type
             Server.broadcastPacket(this.hasSpawned.values(), pk);
 

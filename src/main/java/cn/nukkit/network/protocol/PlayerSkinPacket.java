@@ -20,28 +20,13 @@ public class PlayerSkinPacket extends DataPacket {
     @Override
     public void decode() {
         uuid = getUUID();
-        skin = new Skin();
-        skin.setSkinId(getString());
-        newSkinName = getString();
-        oldSkinName = getString();
-        skin.setSkinData(getByteArray());
-        skin.setCapeData(getByteArray());
-        skin.setGeometryName(getString());
-        skin.setGeometryData(getString());
-        premium = getBoolean();
+        skin = getSkin();
     }
 
     @Override
     public void encode() {
         reset();
         putUUID(uuid);
-        putString(skin.getSkinId());
-        putString(newSkinName);
-        putString(oldSkinName);
-        putByteArray(skin.getSkinData());
-        putByteArray(skin.getCapeData());
-        putString(skin.getGeometryName());
-        putString(skin.getGeometryData());
-        putBoolean(premium);
+        putSkin(skin);
     }
 }

@@ -99,7 +99,7 @@ public class LoginPacket extends DataPacket {
     }
 
     @Override
-    public Skin getSkin() {
+    public Skin getSkinLegacy() {
         return this.skin;
     }
 }

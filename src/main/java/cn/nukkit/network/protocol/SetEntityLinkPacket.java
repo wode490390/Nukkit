@@ -11,10 +11,10 @@ public class SetEntityLinkPacket extends DataPacket {
     public static final byte TYPE_RIDE = 1;
     public static final byte TYPE_PASSENGER = 2;
 
-    public long rider;
-    public long riding;
+    public long vehicleUniqueId;
+    public long riderUniqueId;
     public byte type;
-    public byte unknownByte;
+    public byte immediate;
 
     @Override
     public void decode() {
@@ -24,10 +24,10 @@ public class SetEntityLinkPacket extends DataPacket {
     @Override
     public void encode() {
         this.reset();
-        this.putEntityUniqueId(this.rider);
-        this.putEntityUniqueId(this.riding);
+        this.putEntityUniqueId(this.vehicleUniqueId);
+        this.putEntityUniqueId(this.riderUniqueId);
         this.putByte(this.type);
-        this.putByte(this.unknownByte);
+        this.putByte(this.immediate);
     }
 
     @Override
