@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.player.PlayerEatFoodEvent;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 
@@ -44,7 +43,7 @@ public abstract class Food {
             .addChanceEffect(0.3F, Effect.getEffect(Effect.HUNGER).setDuration(30 * 20))
             .addRelative(Item.RAW_CHICKEN));
     public static final Food chicken_cooked = registerDefaultFood(new FoodNormal(6, 7.2F).addRelative(Item.COOKED_CHICKEN));
-    public static final Food chorus_fruit = registerDefaultFood(new FoodNormal(4, 2.4F));
+    public static final Food chorus_fruit = registerDefaultFood(new FoodChorusFruit());
     public static final Food cookie = registerDefaultFood(new FoodNormal(2, 0.4F).addRelative(Item.COOKIE));
     public static final Food melon_slice = registerDefaultFood(new FoodNormal(2, 1.2F).addRelative(Item.MELON_SLICE));
     public static final Food milk = registerDefaultFood(new FoodMilk().addRelative(Item.BUCKET, 1));
@@ -80,6 +79,7 @@ public abstract class Food {
             .addEffect(Effect.getEffect(Effect.NAUSEA).setAmplifier(1).setDuration(15 * 20))
             .addEffect(Effect.getEffect(Effect.POISON).setAmplifier(4).setDuration(60 * 20))
             .addRelative(Item.PUFFERFISH));
+    public static final Food dried_kelp = registerDefaultFood(new FoodNormal(1, 0.6F).addRelative(Item.DRIED_KELP));
 
     //Opened API for plugins
     public static Food registerFood(Food food, Plugin plugin) {
@@ -125,7 +125,6 @@ public abstract class Food {
         PlayerEatFoodEvent event = new PlayerEatFoodEvent(player, this);
         player.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
-        player.getLevel().addSound(player, SoundEnum.RANDOM_BURP);
         return event.getFood().onEatenBy(player);
     }
 

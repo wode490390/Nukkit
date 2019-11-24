@@ -23,6 +23,8 @@ public class SerializedImage {
     public static SerializedImage fromLegacy(byte[] skinData) {
         Objects.requireNonNull(skinData, "skinData");
         switch (skinData.length) {
+            case 0:
+                return SerializedImage.EMPTY;
             case SINGLE_SKIN_SIZE:
                 return new SerializedImage(64, 32, skinData);
             case DOUBLE_SKIN_SIZE:

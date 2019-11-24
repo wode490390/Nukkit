@@ -1942,6 +1942,10 @@ public class Server {
         return (Boolean) this.getConfig("player.save-player-data", true);
     }
 
+    public int getPlayerSkinChangeCooldown() {
+        return this.getConfig("player.skin-change-cooldown", 30);
+    }
+
     /**
      * Checks the current thread against the expected primary thread for the server.
      * <p>

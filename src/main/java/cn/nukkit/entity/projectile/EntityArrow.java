@@ -3,9 +3,10 @@ package cn.nukkit.entity.projectile;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: MagicDroidX
@@ -15,6 +16,12 @@ public class EntityArrow extends EntityProjectile {
     public static final int NETWORK_ID = 80;
 
     public static final int DATA_SOURCE_ID = 17;
+
+    public static final int PICKUP_NONE = 0;
+    public static final int PICKUP_ANY = 1;
+    public static final int PICKUP_CREATIVE = 2;
+
+    protected int pickupMode;
 
     @Override
     public int getNetworkId() {
@@ -67,6 +74,7 @@ public class EntityArrow extends EntityProjectile {
         super.initEntity();
 
         this.damage = namedTag.contains("damage") ? namedTag.getDouble("damage") : 2;
+        this.pickupMode = namedTag.contains("pickup") ? namedTag.getByte("pickup") : PICKUP_ANY;
     }
 
     public void setCritical() {
@@ -86,7 +94,7 @@ public class EntityArrow extends EntityProjectile {
         int base = super.getResultDamage();
 
         if (this.isCritical()) {
-            base += this.level.rand.nextInt(base / 2 + 2);
+            base += ThreadLocalRandom.current().nextInt(base / 2 + 2);
         }
 
         return base;
@@ -109,7 +117,6 @@ public class EntityArrow extends EntityProjectile {
 
         if (this.onGround || this.hadCollision) {
             this.setCritical(false);
-            this.getLevel().addSound(this, SoundEnum.RANDOM_BOWHIT, 1, 1);
         }
 
         if (this.age > 1200) {
@@ -140,5 +147,20 @@ public class EntityArrow extends EntityProjectile {
         player.dataPacket(pk);
 
         super.spawnTo(player);
+    }
+
+    @Override
+    public void saveNBT() {
+        super.saveNBT();
+
+        this.namedTag.putByte("pickup", this.pickupMode);
+    }
+
+    public int getPickupMode() {
+        return this.pickupMode;
+    }
+
+    public void setPickupMode(int pickupMode) {
+        this.pickupMode = pickupMode;
     }
 }

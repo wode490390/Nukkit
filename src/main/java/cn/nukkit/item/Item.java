@@ -554,6 +554,7 @@ public class Item implements Cloneable {
     public static final int CLOWNFISH = 461;
     public static final int PUFFERFISH = 462;
     public static final int COOKED_SALMON = 463;
+    public static final int DRIED_KELP = 464;
 
     public static final int GOLDEN_APPLE_ENCHANTED = 466;
 
@@ -798,7 +799,7 @@ public class Item implements Cloneable {
             list[JUNGLE_DOOR] = ItemDoorJungle.class; //429
             list[ACACIA_DOOR] = ItemDoorAcacia.class; //430
             list[DARK_OAK_DOOR] = ItemDoorDarkOak.class; //431
-            //TODO: list[CHORUS_FRUIT] = ItemChorusFruit.class; //432
+            list[CHORUS_FRUIT] = ItemChorusFruit.class; //432
             //TODO: list[POPPED_CHORUS_FRUIT] = ItemChorusFruitPopped.class; //433
 
             //TODO: list[DRAGON_BREATH] = ItemDragonBreath.class; //437
@@ -1518,14 +1519,6 @@ public class Item implements Cloneable {
      * Returns whether the item was changed, for example count decrease or durability change.
      */
     public boolean onClickAir(Player player, Vector3 directionVector) {
-        return false;
-    }
-
-    /**
-     * Called when a player is using this item and releases it. Used to handle bow shoot actions.
-     * Returns whether the item was changed, for example count decrease or durability change.
-     */
-    public boolean onReleaseUsing(Player player) {
         return false;
     }
 
