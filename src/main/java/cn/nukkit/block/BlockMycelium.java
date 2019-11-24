@@ -81,4 +81,9 @@ public class BlockMycelium extends BlockSolid {
     public BlockColor getColor() {
         return BlockColor.GRASS_BLOCK_COLOR;
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

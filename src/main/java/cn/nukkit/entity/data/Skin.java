@@ -62,6 +62,17 @@ public class Skin {
         this.setSkinId(skinId);
     }
 
+    private static boolean isValidSkin(int length) {
+        return length == SINGLE_SKIN_SIZE ||
+                length == DOUBLE_SKIN_SIZE ||
+                length == SKIN_128_64_SIZE ||
+                length == SKIN_128_128_SIZE;
+    }
+
+    public boolean isValidLegacy() {
+        return isValidSkin(skinData.data.length);
+    }
+
     public boolean isValid() {
         return isValidSkin() && isValidResourcePatch();
     }

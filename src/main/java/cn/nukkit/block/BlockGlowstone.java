@@ -65,4 +65,9 @@ public class BlockGlowstone extends BlockTransparent {
     public BlockColor getColor() {
         return BlockColor.AIR_BLOCK_COLOR;
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

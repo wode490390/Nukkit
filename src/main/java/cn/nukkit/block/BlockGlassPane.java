@@ -46,4 +46,9 @@ public class BlockGlassPane extends BlockThin {
     public BlockColor getColor() {
         return BlockColor.AIR_BLOCK_COLOR;
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

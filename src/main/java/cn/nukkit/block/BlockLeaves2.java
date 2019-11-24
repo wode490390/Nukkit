@@ -39,4 +39,9 @@ public class BlockLeaves2 extends BlockLeaves {
     protected Item getSapling() {
         return new ItemBlock(get(SAPLING), (this.getDamage() & 0x03) + 4);
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

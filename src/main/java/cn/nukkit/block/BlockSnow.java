@@ -61,4 +61,9 @@ public class BlockSnow extends BlockSolid {
     public boolean canHarvestWithHand() {
         return false;
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

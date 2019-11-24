@@ -263,7 +263,7 @@ public class BinaryStream {
 
     public void putSkinLegacy(Skin skin) {
         this.putString(skin.getSkinId());
-        if (skin.isValidLegacy()) {
+        if (skin.isValid()) {
             this.putByteArray(skin.getSkinData().data);
         } else {
             this.putByteArray(Skin.FULL_WHITE_SKIN);

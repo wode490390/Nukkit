@@ -1,8 +1,6 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.inventory.FurnaceRecipe;
-import cn.nukkit.inventory.ShapedRecipe;
-import cn.nukkit.inventory.ShapelessRecipe;
+import cn.nukkit.inventory.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.item.enchantment.EnchantmentEntry;
@@ -28,6 +26,10 @@ public class CraftingDataPacket extends DataPacket {
     public static final int ENTRY_SHULKER_BOX = 5;
 
     public List<Object> entries = new ArrayList<>();
+    //private List<Recipe> entries = new ArrayList<>();
+    public List<BrewingRecipe> brewingEntries = new ArrayList<>();
+    public List<ContainerRecipe> containerEntries = new ArrayList<>();
+
     public boolean cleanRecipes;
 
     private static int writeEntry(Object entry, BinaryStream stream) {
@@ -119,6 +121,14 @@ public class CraftingDataPacket extends DataPacket {
 
     public void addEnchantList(EnchantmentList... list) {
         Collections.addAll(entries, (EnchantmentList[]) list);
+    }
+
+    public void addBrewingRecipe(BrewingRecipe... recipe) {
+        Collections.addAll(brewingEntries, recipe);
+    }
+
+    public void addContainerRecipe(ContainerRecipe... recipe) {
+        Collections.addAll(containerEntries, recipe);
     }
 
     @Override

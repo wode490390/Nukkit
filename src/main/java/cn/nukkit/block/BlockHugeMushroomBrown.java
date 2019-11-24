@@ -53,4 +53,9 @@ public class BlockHugeMushroomBrown extends BlockSolid {
             return new Item[0];
         }
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

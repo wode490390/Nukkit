@@ -48,4 +48,9 @@ public class BlockOreRedstoneGlowing extends BlockOreRedstone {
     public boolean canHarvestWithHand() {
         return false;
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

@@ -76,4 +76,9 @@ public class BlockStone extends BlockSolid {
         return false;
     }
 
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
+
 }

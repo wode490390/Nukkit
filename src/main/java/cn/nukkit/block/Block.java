@@ -1253,4 +1253,8 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
         String name = getClass().getName();
         return name.substring(16, name.length());
     }
+
+    public boolean canSilkTouch() {
+        return false;
+    }
 }

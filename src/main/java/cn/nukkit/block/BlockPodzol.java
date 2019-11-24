@@ -24,4 +24,8 @@ public class BlockPodzol extends BlockDirt {
         return "Podzol";
     }
 
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

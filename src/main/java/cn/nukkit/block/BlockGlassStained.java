@@ -34,4 +34,9 @@ public class BlockGlassStained extends BlockGlass {
     public DyeColor getDyeColor() {
         return DyeColor.getByWoolData(meta);
     }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
+    }
 }

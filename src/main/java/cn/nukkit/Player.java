@@ -140,7 +140,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public int craftingType = CRAFTING_SMALL;
 
-    protected PlayerCursorInventory cursorInventory;
+    protected PlayerUIInventory playerUIInventory;
     protected PlayerOffhandInventory offhandInventory;
     protected CraftingGrid craftingGrid;
     protected CraftingTransaction craftingTransaction;
@@ -236,6 +236,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected boolean forceResources = false;
 
     public EntityFishingHook fishing = null;
+
+    protected double lastRightClickTime = 0.0;
+    protected Vector3 lastRightClickPos = null;
 
     public int getStartActionTick() {
         return startAction;
@@ -2969,7 +2972,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                             switch (type) {
                                 case InventoryTransactionPacket.USE_ITEM_ON_ENTITY_ACTION_INTERACT:
-                                    PlayerInteractEntityEvent playerInteractEntityEvent = new PlayerInteractEntityEvent(this, target, item);
+                                    PlayerInteractEntityEvent playerInteractEntityEvent = new PlayerInteractEntityEvent(this, target, item, useItemOnEntityData.clickPos);
                                     if (this.isSpectator()) playerInteractEntityEvent.setCancelled();
                                     getServer().getPluginManager().callEvent(playerInteractEntityEvent);
 
@@ -4332,22 +4335,24 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected void addDefaultWindows() {
         this.addWindow(this.getInventory(), ContainerIds.INVENTORY, true);
 
-        this.cursorInventory = new PlayerCursorInventory(this);
+        this.playerUIInventory = new PlayerUIInventory(this);
+        this.addWindow(this.playerUIInventory, ContainerIds.UI, true);
         this.offhandInventory = new PlayerOffhandInventory(this);
-        this.addWindow(this.cursorInventory, ContainerIds.CURSOR, true);
         this.addWindow(this.offhandInventory, ContainerIds.OFFHAND, true);
 
-        this.craftingGrid = new CraftingGrid(this);
+        this.craftingGrid = this.playerUIInventory.getCraftingGrid();
+        this.addWindow(this.craftingGrid, ContainerIds.NONE);
 
         //TODO: more windows
     }
 
-    public PlayerCursorInventory getCursorInventory() {
-        return this.cursorInventory;
+
+    public PlayerUIInventory getUIInventory() {
+        return playerUIInventory;
     }
 
-    public PlayerOffhandInventory getOffhandInventory() {
-        return offhandInventory;
+    public PlayerCursorInventory getCursorInventory() {
+        return this.playerUIInventory.getCursorInventory();
     }
 
     public CraftingGrid getCraftingGrid() {
@@ -4356,29 +4361,43 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     public void setCraftingGrid(CraftingGrid grid) {
         this.craftingGrid = grid;
+        this.addWindow(grid, ContainerIds.NONE);
     }
 
     public void resetCraftingGridType() {
         if (this.craftingGrid != null) {
-            Item[] drops = this.inventory.addItem(this.craftingGrid.getContents().values().stream().toArray(Item[]::new));
+            Item[] drops = this.inventory.addItem(this.craftingGrid.getContents().values().toArray(new Item[0]));
 
             if (drops.length > 0) {
                 for (Item drop : drops) {
                     this.dropItem(drop);
                 }
             }
-            this.craftingGrid.clearAll();
 
-            if (this.craftingGrid instanceof BigCraftingGrid) {
-                this.craftingGrid = new CraftingGrid(this);
-
-                ContainerClosePacket pk = new ContainerClosePacket(); //be sure, big crafting is really closed
-                pk.windowId = ContainerIds.NONE;
-                this.dataPacket(pk);
+            drops = this.inventory.addItem(this.getCursorInventory().getItem(0));
+            if (drops.length > 0) {
+                for (Item drop : drops) {
+                    this.dropItem(drop);
+                }
             }
 
-            this.craftingType = 0;
+            this.playerUIInventory.clearAll();
+
+            if (this.craftingGrid instanceof BigCraftingGrid) {
+                this.craftingGrid = this.playerUIInventory.getCraftingGrid();
+                this.addWindow(this.craftingGrid, ContainerIds.NONE);
+//
+//                ContainerClosePacket pk = new ContainerClosePacket(); //be sure, big crafting is really closed
+//                pk.windowId = ContainerIds.NONE;
+//                this.dataPacket(pk);
+            }
+
+            this.craftingType = CRAFTING_SMALL;
         }
+    }
+
+    public PlayerOffhandInventory getOffhandInventory() {
+        return offhandInventory;
     }
 
     public void removeAllWindows() {
