@@ -4,17 +4,20 @@ import cn.nukkit.entity.EntitySmite;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class EntityZombieVillager extends EntityMob implements EntitySmite {
+/**
+ * @author PikyCZ
+ */
+public class EntityZombieVillagerV1 extends EntityMob implements EntitySmite {
 
-    public static final int NETWORK_ID = 116;
-
-    public EntityZombieVillager(FullChunk chunk, CompoundTag nbt) {
-        super(chunk, nbt);
-    }
+    public static final int NETWORK_ID = 44;
 
     @Override
     public int getNetworkId() {
         return NETWORK_ID;
+    }
+
+    public EntityZombieVillagerV1(FullChunk chunk, CompoundTag nbt) {
+        super(chunk, nbt);
     }
 
     @Override

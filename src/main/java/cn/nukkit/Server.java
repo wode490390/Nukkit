@@ -12,10 +12,7 @@ import cn.nukkit.entity.data.Skin;
 import cn.nukkit.entity.item.*;
 import cn.nukkit.entity.mob.*;
 import cn.nukkit.entity.passive.*;
-import cn.nukkit.entity.projectile.EntityArrow;
-import cn.nukkit.entity.projectile.EntityEgg;
-import cn.nukkit.entity.projectile.EntityEnderPearl;
-import cn.nukkit.entity.projectile.EntitySnowball;
+import cn.nukkit.entity.projectile.*;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.level.LevelInitEvent;
 import cn.nukkit.event.level.LevelLoadEvent;
@@ -1958,64 +1955,92 @@ public class Server {
 
     private void registerEntities() {
         Entity.registerEntity("Arrow", EntityArrow.class);
-        Entity.registerEntity("Item", EntityItem.class);
+        Entity.registerEntity("EnderPearl", EntityEnderPearl.class);
         Entity.registerEntity("FallingSand", EntityFallingBlock.class);
+        Entity.registerEntity("Firework", EntityFirework.class);
+        Entity.registerEntity("Item", EntityItem.class);
+        Entity.registerEntity("Painting", EntityPainting.class);
         Entity.registerEntity("PrimedTnt", EntityPrimedTNT.class);
         Entity.registerEntity("Snowball", EntitySnowball.class);
-        Entity.registerEntity("EnderPearl", EntityEnderPearl.class);
-        Entity.registerEntity("Painting", EntityPainting.class);
-        //todo mobs
-        Entity.registerEntity("Creeper", EntityCreeper.class);
-        Entity.registerEntity("Zombie", EntityZombie.class);
+        //Monsters
         Entity.registerEntity("Blaze", EntityBlaze.class);
         Entity.registerEntity("CaveSpider", EntityCaveSpider.class);
+        Entity.registerEntity("Creeper", EntityCreeper.class);
+        Entity.registerEntity("Drowned", EntityDrowned.class);
         Entity.registerEntity("ElderGuardian", EntityElderGuardian.class);
         Entity.registerEntity("EnderDragon", EntityEnderDragon.class);
         Entity.registerEntity("Enderman", EntityEnderman.class);
         Entity.registerEntity("Endermite", EntityEndermite.class);
-        Entity.registerEntity("Firework", EntityFirework.class);
+        Entity.registerEntity("Evoker", EntityEvoker.class);
         Entity.registerEntity("Ghast", EntityGhast.class);
         Entity.registerEntity("Guardian", EntityGuardian.class);
         Entity.registerEntity("Husk", EntityHusk.class);
         Entity.registerEntity("MagmaCube", EntityMagmaCube.class);
+        Entity.registerEntity("Phantom", EntityPhantom.class);
+        Entity.registerEntity("Pillager", EntityPillager.class);
+        Entity.registerEntity("Ravager", EntityRavager.class);
         Entity.registerEntity("Shulker", EntityShulker.class);
-        Entity.registerEntity("Silferfish", EntitySilverfish.class);
+        Entity.registerEntity("Silverfish", EntitySilverfish.class);
         Entity.registerEntity("Skeleton", EntitySkeleton.class);
-        Entity.registerEntity("SkeletonHorse", EntitySkeletonHorse.class);
         Entity.registerEntity("Slime", EntitySlime.class);
         Entity.registerEntity("Spider", EntitySpider.class);
         Entity.registerEntity("Stray", EntityStray.class);
+        Entity.registerEntity("Vex", EntityVex.class);
+        Entity.registerEntity("Vindicator", EntityVindicator.class);
         Entity.registerEntity("Witch", EntityWitch.class);
-        //TODO: more mobs
+        Entity.registerEntity("Wither", EntityWither.class);
+        Entity.registerEntity("WitherSkeleton", EntityWitherSkeleton.class);
+        Entity.registerEntity("Zombie", EntityZombie.class);
+        Entity.registerEntity("ZombiePigman", EntityZombiePigman.class);
+        Entity.registerEntity("ZombieVillager", EntityZombieVillager.class);
+        Entity.registerEntity("ZombieVillagerV1", EntityZombieVillagerV1.class);
+        //Passive
         Entity.registerEntity("Bat", EntityBat.class);
+        Entity.registerEntity("Cat", EntityCat.class);
         Entity.registerEntity("Chicken", EntityChicken.class);
+        Entity.registerEntity("Cod", EntityCod.class);
         Entity.registerEntity("Cow", EntityCow.class);
+        Entity.registerEntity("Dolphin", EntityDolphin.class);
         Entity.registerEntity("Donkey", EntityDonkey.class);
         Entity.registerEntity("Horse", EntityHorse.class);
         Entity.registerEntity("Llama", EntityLlama.class);
         Entity.registerEntity("Mooshroom", EntityMooshroom.class);
         Entity.registerEntity("Mule", EntityMule.class);
-        Entity.registerEntity("PolarBear", EntityPolarBear.class);
-        Entity.registerEntity("Pig", EntityPig.class);
-        Entity.registerEntity("Rabbit", EntityRabbit.class);
-        Entity.registerEntity("Sheep", EntitySheep.class);
-        Entity.registerEntity("Squid", EntitySquid.class);
-        Entity.registerEntity("Wolf", EntityWolf.class);
         Entity.registerEntity("Ocelot", EntityOcelot.class);
+        Entity.registerEntity("Panda", EntityPanda.class);
+        Entity.registerEntity("Parrot", EntityParrot.class);
+        Entity.registerEntity("Pig", EntityPig.class);
+        Entity.registerEntity("PolarBear", EntityPolarBear.class);
+        Entity.registerEntity("Pufferfish", EntityPufferfish.class);
+        Entity.registerEntity("Rabbit", EntityRabbit.class);
+        Entity.registerEntity("Salmon", EntitySalmon.class);
+        Entity.registerEntity("Sheep", EntitySheep.class);
+        Entity.registerEntity("SkeletonHorse", EntitySkeletonHorse.class);
+        Entity.registerEntity("Squid", EntitySquid.class);
+        Entity.registerEntity("TropicalFish", EntityTropicalFish.class);
+        Entity.registerEntity("Turtle", EntityTurtle.class);
         Entity.registerEntity("Villager", EntityVillager.class);
-
-        Entity.registerEntity("ThrownExpBottle", EntityExpBottle.class);
-        Entity.registerEntity("XpOrb", EntityXPOrb.class);
-        Entity.registerEntity("ThrownPotion", EntityPotion.class);
+        Entity.registerEntity("VillagerV1", EntityVillagerV1.class);
+        Entity.registerEntity("WanderingTrader", EntityWanderingTrader.class);
+        Entity.registerEntity("Wolf", EntityWolf.class);
+        Entity.registerEntity("ZombieHorse", EntityZombieHorse.class);
+        //Projectile
         Entity.registerEntity("Egg", EntityEgg.class);
+        Entity.registerEntity("ThrownExpBottle", EntityExpBottle.class);
+        Entity.registerEntity("ThrownPotion", EntityPotion.class);
+        Entity.registerEntity("ThrownTrident", EntityThrownTrident.class);
+        Entity.registerEntity("XpOrb", EntityXPOrb.class);
 
         Entity.registerEntity("Human", EntityHuman.class, true);
-
-        Entity.registerEntity("MinecartRideable", EntityMinecartEmpty.class);
-        // TODO: 2016/1/30 all finds of minecart
+        //Vehicle
         Entity.registerEntity("Boat", EntityBoat.class);
+        Entity.registerEntity("MinecartChest", EntityMinecartChest.class);
+        Entity.registerEntity("MinecartHopper", EntityMinecartHopper.class);
+        Entity.registerEntity("MinecartRideable", EntityMinecartEmpty.class);
+        Entity.registerEntity("MinecartTnt", EntityMinecartTNT.class);
 
-        //Entity.registerEntity("Lightning", EntityLightning.class); lightning shouldn't be saved as entity
+        Entity.registerEntity("EndCrystal", EntityEndCrystal.class);
+        Entity.registerEntity("FishingHook", EntityFishingHook.class);
     }
 
     private void registerBlockEntities() {

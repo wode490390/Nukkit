@@ -10,7 +10,6 @@ public class PlayerSkinPacket extends DataPacket {
     public Skin skin;
     public String newSkinName;
     public String oldSkinName;
-    public boolean premium;
 
     @Override
     public int pid() {
@@ -21,6 +20,8 @@ public class PlayerSkinPacket extends DataPacket {
     public void decode() {
         uuid = getUUID();
         skin = getSkin();
+        newSkinName = getString();
+        oldSkinName = getString();
     }
 
     @Override
@@ -28,5 +29,7 @@ public class PlayerSkinPacket extends DataPacket {
         reset();
         putUUID(uuid);
         putSkin(skin);
+        putString(newSkinName);
+        putString(oldSkinName);
     }
 }

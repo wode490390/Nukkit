@@ -198,6 +198,10 @@ public class NBTIO {
         }
     }
 
+    public static byte[] write(CompoundTag tag, ByteOrder endianness, boolean network) throws IOException {
+        return write((Tag) tag, endianness, network);
+    }
+
     public static byte[] writeNetwork(Tag tag) throws IOException {
         FastByteArrayOutputStream baos = ThreadCache.fbaos.get().reset();
         try (NBTOutputStream stream = new NBTOutputStream(baos, ByteOrder.LITTLE_ENDIAN, true)) {
