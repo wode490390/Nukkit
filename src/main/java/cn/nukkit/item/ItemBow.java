@@ -86,7 +86,7 @@ public class ItemBow extends ItemTool {
                 .putDouble("damage", damage);
 
         double p = (double) ticksUsed / 20;
-        log.debug("Ticks used {}", ticksUsed);
+        //log.debug("Ticks used {}", ticksUsed);
 
         double f = Math.min((p * p + p * 2) / 2, 1) * 2;
         EntityShootBowEvent entityShootBowEvent = new EntityShootBowEvent(player, this, new EntityArrow(player.chunk, nbt, player, f == 2), f);
