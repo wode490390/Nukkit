@@ -117,7 +117,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     @Override
     public boolean attack(EntityDamageEvent source) {
         if (this.attackTime > 0) {
-            if (source instanceof EntityDamageByEntityEvent) return false;
+            return false;
         }
         if (this.noDamageTicks > 0) {
             EntityDamageEvent lastCause = this.getLastDamageCause();

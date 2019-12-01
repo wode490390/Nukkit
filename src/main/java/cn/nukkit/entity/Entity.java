@@ -2086,6 +2086,10 @@ public abstract class Entity extends Location implements Metadatable {
         return server;
     }
 
+    public boolean isClosed() {
+        return closed;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
