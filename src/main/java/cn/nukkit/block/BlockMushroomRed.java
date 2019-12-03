@@ -64,6 +64,10 @@ public class BlockMushroomRed extends BlockFlowable {
     @Override
     public boolean onActivate(Item item, Player player) {
         if (item.getId() == Item.DYE && item.getDamage() == DyeColor.WHITE.getDyeData()) {
+            if (player != null && (player.gamemode & 0x01) == 0) {
+                item.count--;
+            }
+
             if (this.level.rand.nextFloat() < 0.4) {
                 this.grow();
             }

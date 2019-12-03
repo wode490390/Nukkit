@@ -193,4 +193,9 @@ public class BlockItemFrame extends BlockTransparent {
 
         return null;
     }
+
+    @Override
+    public double getHardness() {
+        return 0.25;
+    }
 }

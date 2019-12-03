@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
@@ -114,6 +115,12 @@ public class Skin {
         return this;
     }
 
+    public Skin generateSkinId(String name) {
+        byte[] data = Binary.appendBytes(getSkinData().data, getSkinResourcePatch().getBytes(StandardCharsets.UTF_8));
+        this.skinId = UUID.nameUUIDFromBytes(data) + "." + name;
+        return this;
+    }
+
     public Skin setSkinData(InputStream inputStream) {
         BufferedImage image;
         try {
@@ -141,8 +148,7 @@ public class Skin {
 
     public Skin setSkinResourcePatch(String skinResourcePatch) {
         if (skinResourcePatch == null || skinResourcePatch.trim().isEmpty()) {
-            this.skinResourcePatch = GEOMETRY_CUSTOM;
-            return this;
+            skinResourcePatch = GEOMETRY_CUSTOM;
         }
         this.skinResourcePatch = skinResourcePatch;
         return this;

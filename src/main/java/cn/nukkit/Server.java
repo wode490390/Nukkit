@@ -898,7 +898,9 @@ public class Server {
 
     public void updatePlayerListData(UUID uuid, long entityId, String name, Skin skin, String xboxUserId, Collection<Player> players) {
         this.updatePlayerListData(uuid, entityId, name, skin, xboxUserId,
-                players.toArray(new Player[0]));
+                players.stream()
+                        .filter(p -> !p.getUniqueId().equals(uuid))
+                        .toArray(Player[]::new));
     }
 
     public void removePlayerListData(UUID uuid) {
@@ -1568,7 +1570,7 @@ public class Server {
 
     public Level getLevelByName(String name) {
         for (Level level : this.getLevels().values()) {
-            if (level.getFolderName().equals(name)) {
+            if (level.getFolderName().equalsIgnoreCase(name)) {
                 return level;
             }
         }
