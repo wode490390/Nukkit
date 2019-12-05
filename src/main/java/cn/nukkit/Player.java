@@ -2608,20 +2608,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
                     switch (entityEventPacket.event) {
                         case EntityEventPacket.EATING_ITEM:
-                            if (entityEventPacket.data == 0) {
+                            if (entityEventPacket.data == 0 || entityEventPacket.eid != this.id) {
                                 break;
                             }
-
-                            this.getLevel().addSound(this.add(0, this.getEyeHeight(), 0), SoundEnum.RANDOM_EAT);
-
+                            //this.getLevel().addSound(this.add(0, this.getEyeHeight(), 0), SoundEnum.RANDOM_EAT);
                             entityEventPacket.eid = this.id;
-                            this.dataPacket(entityEventPacket);
+                            entityEventPacket.isEncoded = false;
 
-                            EntityEventPacket pk = new EntityEventPacket();
-                            pk.event = entityEventPacket.event;
-                            pk.eid = this.id;
-                            pk.data = entityEventPacket.data;
-                            Server.broadcastPacket(this.getViewers().values(), pk);
+                            this.dataPacket(entityEventPacket);
+                            Server.broadcastPacket(this.getViewers().values(), entityEventPacket);
 
                             break;
                     }
