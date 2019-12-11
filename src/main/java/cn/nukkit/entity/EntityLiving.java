@@ -117,6 +117,14 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     @Override
     public boolean attack(EntityDamageEvent source) {
         if (this.attackTime > 0) {
+            EntityDamageEvent lastCause = this.getLastDamageCause();
+            if (lastCause != null && lastCause.getDamage() >= source.getDamage()) {
+                //叠刀时的自我安慰
+                EntityEventPacket pk = new EntityEventPacket();
+                pk.eid = this.getId();
+                pk.event = EntityEventPacket.HURT_ANIMATION;
+                Server.broadcastPacket(this.hasSpawned.values(), pk);
+            }
             return false;
         }
         if (this.noDamageTicks > 0) {

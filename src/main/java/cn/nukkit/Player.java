@@ -1172,7 +1172,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             AnimatePacket pk = new AnimatePacket();
             pk.eid = this.id;
-            pk.action = 3; //Wake up
+            pk.action = AnimatePacket.Action.WAKE_UP; //Wake up
             this.dataPacket(pk);
         }
     }
@@ -3898,7 +3898,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             //Critical hit
 
             if (!damager.onGround && damager instanceof Player && ((Player) damager).speed != null && ((Player) damager).speed.y > 0 && !((Player) damager).attackCriticalThisJump) add = true;
-            if (add) source.setDamage((float) (source.getDamage() * 1.3));
+            if (add) {
+                source.setDamage((float) (source.getDamage() * 1.3));
+                AnimatePacket animate = new AnimatePacket();
+                animate.action = AnimatePacket.Action.CRITICAL_HIT;
+                animate.eid = getId();
+                this.getLevel().addChunkPacket(damager.getChunkX(), damager.getChunkZ(), animate);
+                this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_ATTACK_STRONG);
+            }
         }
 
         if (super.attack(source)) { //!source.isCancelled()
@@ -3915,11 +3922,12 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             (((EntityDamageByEntityEvent) source).getDamager()).addEffect(Effect.getEffect(Effect.SLOWNESS).setDuration(10).setAmplifier(1).setVisible(false));
                         ((Player)(((EntityDamageByEntityEvent) source).getDamager())).attackCriticalThisJump = true;
                     }
+                    /*
                     Random random = new Random();
                     for (int i = 0; i < 10; i++) {
                         CriticalParticle par = new CriticalParticle(new Vector3(this.x + random.nextDouble() * 2 - 1, this.y + random.nextDouble() * 2, this.z + random.nextDouble() * 2 - 1));
                         this.getLevel().addParticle(par);
-                    }
+                    }*/
                 }
             }
             return true;
