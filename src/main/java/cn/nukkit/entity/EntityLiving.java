@@ -10,10 +10,12 @@ import cn.nukkit.event.entity.*;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.utils.BlockIterator;
 import co.aikar.timings.Timings;
@@ -105,26 +107,11 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     }
 
     @Override
-    public void heal(EntityRegainHealthEvent source) {
-        super.heal(source);
-        if (source.isCancelled()) {
-            return;
-        }
-
-        this.attackTime = 0;
-    }
-
-    @Override
     public boolean attack(EntityDamageEvent source) {
         if (this.attackTime > 0) {
-            EntityDamageEvent lastCause = this.getLastDamageCause();
-            if (lastCause != null && lastCause.getDamage() >= source.getDamage()) {
-                //叠刀时的自我安慰
-                EntityEventPacket pk = new EntityEventPacket();
-                pk.eid = this.getId();
-                pk.event = EntityEventPacket.HURT_ANIMATION;
-                Server.broadcastPacket(this.hasSpawned.values(), pk);
-            }
+            //叠刀时的自我安慰
+            if (source instanceof EntityDamageByEntityEvent && source.getCause() == DamageCause.ENTITY_ATTACK && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player)
+                this.getLevel().addSound(this.add(0, 15, 0), SoundEnum.GAME_PLAYER_HURT, 1, 1, (Player) ((EntityDamageByEntityEvent) source).getDamager());
             return false;
         }
         if (this.noDamageTicks > 0) {
