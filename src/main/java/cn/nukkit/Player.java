@@ -135,7 +135,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     private String clientSecret;
 
     public Vector3 speed = null;
-    public boolean attackCriticalThisJump = false;
+    public int attackCriticalThisJump = 0;
 
     public final HashSet<String> achievements = new HashSet<>();
 
@@ -464,7 +464,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
         this.inAirTicks = 0;
         this.highestPosition = this.y;
-        this.attackCriticalThisJump = false;
+        this.attackCriticalThisJump = 0;
     }
 
     @Override
@@ -3890,6 +3890,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
         }
         boolean add = false;
+        boolean doubleCritical = false;
         if (source instanceof EntityDamageByEntityEvent) {
             Entity damager = ((EntityDamageByEntityEvent) source).getDamager();
             if (damager instanceof Player) {
@@ -3897,9 +3898,29 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
             //Critical hit
 
-            if (!damager.onGround && damager instanceof Player && ((Player) damager).speed != null && ((Player) damager).speed.y > 0 && !((Player) damager).attackCriticalThisJump) add = true;
+            if (!damager.onGround && damager instanceof Player) {
+                if (((Player) damager).speed != null && ((Player) damager).speed.y > 0) {
+                    //((Player) damager).sendMessage("speed = " + ((Player) damager).speed.y);
+                    if (((Player) damager).attackCriticalThisJump <= 0) add = true;
+                    else doubleCritical = true;
+                }
+            }
             if (add) {
                 source.setDamage((float) (source.getDamage() * 1.3));
+                AnimatePacket animate = new AnimatePacket();
+                animate.action = AnimatePacket.Action.CRITICAL_HIT;
+                animate.eid = getId();
+                this.getLevel().addChunkPacket(damager.getChunkX(), damager.getChunkZ(), animate);
+                this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_ATTACK_STRONG);
+            }
+            if (doubleCritical) {
+                //正在叠刀
+                Player damagerPlayer = (Player)((EntityDamageByEntityEvent) source).getDamager();
+                if (damagerPlayer.attackCriticalThisJump < 2) {
+                    this.attackTime = 0;
+                    source.setDamage((float) (source.getDamage() * 0.2));
+                }
+                damagerPlayer.sendPopup("叠刀 × " + damagerPlayer.attackCriticalThisJump);
                 AnimatePacket animate = new AnimatePacket();
                 animate.action = AnimatePacket.Action.CRITICAL_HIT;
                 animate.eid = getId();
@@ -3920,7 +3941,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     if (((EntityDamageByEntityEvent) source).getDamager() instanceof Player) {
                         if (((Player) ((EntityDamageByEntityEvent) source).getDamager()).getLoginChainData().getDeviceOS() == 7)  //win10
                             (((EntityDamageByEntityEvent) source).getDamager()).addEffect(Effect.getEffect(Effect.SLOWNESS).setDuration(10).setAmplifier(1).setVisible(false));
-                        ((Player)(((EntityDamageByEntityEvent) source).getDamager())).attackCriticalThisJump = true;
+                        ((Player)(((EntityDamageByEntityEvent) source).getDamager())).attackCriticalThisJump++;
                     }
                     /*
                     Random random = new Random();
@@ -3929,6 +3950,13 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.getLevel().addParticle(par);
                     }*/
                 }
+                if (doubleCritical) {
+                    if (((EntityDamageByEntityEvent) source).getDamager() instanceof Player) {
+                        Player damagerPlayer = (Player)((EntityDamageByEntityEvent) source).getDamager();
+                        damagerPlayer.attackCriticalThisJump++;
+                    }
+                }
+
             }
             return true;
         } else {
