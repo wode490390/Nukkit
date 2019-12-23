@@ -5,7 +5,9 @@ import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockAir;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.item.EntityPainting;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.item.Item;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.BlockVector3;
@@ -117,6 +119,12 @@ public class BlockEntityPistonArm extends BlockEntitySpawnable {
         //TODO: event
 
         if (entity instanceof Player) {
+            return;
+        }
+
+        if (entity instanceof EntityPainting) {
+            this.level.dropItem(entity, Item.get(Item.PAINTING));
+            entity.close();
             return;
         }
 
