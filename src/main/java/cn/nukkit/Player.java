@@ -665,7 +665,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public String getAddress() {
-        return this.socketAddress.getAddress().getHostAddress();
+        return this.socketAddress.isUnresolved() ? this.socketAddress.getHostName() : this.socketAddress.getAddress().getHostAddress();
     }
 
     public int getPort() {
