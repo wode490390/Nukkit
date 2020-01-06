@@ -182,4 +182,5 @@ public class Position extends Vector3 {
     public FullChunk getChunk() {
         return isValid() ? level.getChunk(getChunkX(), getChunkZ()) : null;
     }
+
 }

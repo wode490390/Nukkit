@@ -1245,6 +1245,17 @@ public abstract class Block extends Position implements Metadatable, Cloneable {
         return b1 != null && b2 != null && b1.getId() == b2.getId() && (!checkDamage || b1.getDamage() == b2.getDamage());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Block)) {
+            return false;
+        }
+
+        Block other = (Block) obj;
+
+        return super.equals(other) && equals(this, other);
+    }
+
     public Item toItem() {
         return new ItemBlock(this, this.meta, 1);
     }
