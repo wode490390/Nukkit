@@ -10,6 +10,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 
 /**
  * @author CreeperFace
@@ -53,7 +54,7 @@ public abstract class ProjectileItem extends Item {
                     projectile.kill();
                 } else {
                     projectile.spawnToAll();
-                    player.getLevel().addSound(new LaunchSound(player), player.getViewers().values());
+                    player.getLevel().addLevelSoundEvent(player, LevelSoundEventPacket.SOUND_BOW);
                 }
             } else {
                 projectile.spawnToAll();
