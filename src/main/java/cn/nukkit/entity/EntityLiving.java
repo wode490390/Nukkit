@@ -109,10 +109,15 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     @Override
     public boolean attack(EntityDamageEvent source) {
         if (this.attackTime > 0) {
-            //叠刀时的自我安慰
-            if (source instanceof EntityDamageByEntityEvent && source.getCause() == DamageCause.ENTITY_ATTACK && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player)
-                this.getLevel().addSound(this.add(0, 15, 0), SoundEnum.GAME_PLAYER_HURT, 1, 1, (Player) ((EntityDamageByEntityEvent) source).getDamager());
-            return false;
+            EntityDamageEvent lastCause = this.getLastDamageCause();
+            if (lastCause != null && lastCause.getDamage() == 0) {
+                //上次伤害是0，这次允许输出
+            } else {
+                //叠刀时的自我安慰
+                if (source instanceof EntityDamageByEntityEvent && source.getCause() == DamageCause.ENTITY_ATTACK && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player)
+                    this.getLevel().addSound(this.add(0, 15, 0), SoundEnum.GAME_PLAYER_HURT, 1, 1, (Player) ((EntityDamageByEntityEvent) source).getDamager());
+                return false;
+            }
         }
         if (this.noDamageTicks > 0) {
             EntityDamageEvent lastCause = this.getLastDamageCause();
