@@ -50,7 +50,7 @@ public class BlockSeaLantern extends BlockTransparent {
 
     @Override
     public BlockColor getColor() {
-        return BlockColor.AIR_BLOCK_COLOR;
+        return BlockColor.QUARTZ_BLOCK_COLOR;
     }
 
     @Override

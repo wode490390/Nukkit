@@ -74,26 +74,21 @@ public class BlockDoubleSlabStone extends BlockSolid {
 
     @Override
     public BlockColor getColor() {
-        switch (this.meta & 0x07) {
-            case BlockDoubleSlabStone.STONE:
-                return BlockColor.STONE_BLOCK_COLOR;
+        switch (this.getDamage() & 0x07) {
+            default:
+                case BlockDoubleSlabStone.STONE:
+                case BlockDoubleSlabStone.COBBLESTONE:
+                case BlockDoubleSlabStone.BRICK:
+                case BlockDoubleSlabStone.STONE_BRICK:
+                    return BlockColor.STONE_BLOCK_COLOR;
             case BlockDoubleSlabStone.SANDSTONE:
                 return BlockColor.SAND_BLOCK_COLOR;
             case BlockDoubleSlabStone.WOODEN:
                 return BlockColor.WOOD_BLOCK_COLOR;
-            case BlockDoubleSlabStone.COBBLESTONE:
-                return BlockColor.STONE_BLOCK_COLOR;
-            case BlockDoubleSlabStone.BRICK:
-                return BlockColor.STONE_BLOCK_COLOR;
-            case BlockDoubleSlabStone.STONE_BRICK:
-                return BlockColor.STONE_BLOCK_COLOR;
             case BlockDoubleSlabStone.QUARTZ:
                 return BlockColor.QUARTZ_BLOCK_COLOR;
             case BlockDoubleSlabStone.NETHER_BRICK:
                 return BlockColor.NETHERRACK_BLOCK_COLOR;
-
-            default:
-                return BlockColor.STONE_BLOCK_COLOR;     //unreachable
         }
     }
 

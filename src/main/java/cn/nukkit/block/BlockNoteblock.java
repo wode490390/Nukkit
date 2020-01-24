@@ -6,6 +6,7 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.sound.NoteBoxSound;
 import cn.nukkit.network.protocol.BlockEventPacket;
+import cn.nukkit.utils.BlockColor;
 
 /**
  * Created by Snake1999 on 2016/1/17.
@@ -125,5 +126,10 @@ public class BlockNoteblock extends BlockSolid {
         }
 
         return 0;
+    }
+
+    @Override
+    public BlockColor getColor() {
+        return BlockColor.WOOD_BLOCK_COLOR;
     }
 }

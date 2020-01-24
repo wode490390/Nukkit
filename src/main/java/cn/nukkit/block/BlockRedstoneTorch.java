@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.utils.BlockColor;
 
 /**
  * author: Angelic47
@@ -102,5 +103,10 @@ public class BlockRedstoneTorch extends BlockTorch {
     @Override
     public boolean isPowerSource() {
         return true;
+    }
+
+    @Override
+    public BlockColor getColor() {
+        return BlockColor.AIR_BLOCK_COLOR;
     }
 }

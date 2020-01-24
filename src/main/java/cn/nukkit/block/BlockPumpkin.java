@@ -53,7 +53,7 @@ public class BlockPumpkin extends BlockSolid {
 
     @Override
     public BlockColor getColor() {
-        return BlockColor.FOLIAGE_BLOCK_COLOR;
+        return BlockColor.ORANGE_BLOCK_COLOR;
     }
 
     @Override

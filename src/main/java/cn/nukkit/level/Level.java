@@ -960,8 +960,8 @@ public class Level implements ChunkManager, Metadatable {
                 bolt.setEffect(false);
             }
 
-            this.addLevelSoundEvent(LevelSoundEventPacket.SOUND_THUNDER, 93, -1, vector, false);
-            this.addLevelSoundEvent(LevelSoundEventPacket.SOUND_EXPLODE, 93, -1, vector, false);
+            this.addLevelSoundEvent(LevelSoundEventPacket.SOUND_THUNDER, EntityLightning.NETWORK_ID, -1, vector, false);
+            this.addLevelSoundEvent(LevelSoundEventPacket.SOUND_EXPLODE, EntityLightning.NETWORK_ID, -1, vector, false);
         }
     }
 
@@ -1885,6 +1885,8 @@ public class Level implements ChunkManager, Metadatable {
         }
         Block target = this.getBlock(vector);
         Item[] drops;
+        int dropExp = target.getDropExp();
+
         if (item == null) {
             item = new ItemBlock(new BlockAir(), 0, 0);
         }
@@ -1971,6 +1973,7 @@ public class Level implements ChunkManager, Metadatable {
             player.lastBreak = System.currentTimeMillis();
 
             drops = ev.getDrops();
+            dropExp = ev.getDropExp();
         } else if (!target.isBreakable(item)) {
             return null;
         } else if (item.getEnchantment(Enchantment.ID_SILK_TOUCH) != null) {
@@ -2013,7 +2016,7 @@ public class Level implements ChunkManager, Metadatable {
         }
 
         if (this.gameRules.getBoolean("doTileDrops")) {
-            int dropExp = target.getDropExp();
+
             if (!isSilkTouch && player != null && drops.length != 0) {
                 player.addExperience(dropExp);
                 if (player.isSurvival()) {

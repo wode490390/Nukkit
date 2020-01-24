@@ -9,6 +9,7 @@ import cn.nukkit.event.inventory.BrewEvent;
 import cn.nukkit.event.inventory.StartBrewEvent;
 import cn.nukkit.inventory.BrewingInventory;
 import cn.nukkit.inventory.BrewingRecipe;
+import cn.nukkit.inventory.ContainerRecipe;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
@@ -17,6 +18,7 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.ContainerSetDataPacket;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +37,7 @@ public class BlockEntityBrewingStand extends BlockEntitySpawnable implements Inv
 
     public static final List<Integer> ingredients = new ArrayList<Integer>() {
         {
-            addAll(Arrays.asList(Item.NETHER_WART, Item.GOLD_NUGGET, Item.GHAST_TEAR, Item.GLOWSTONE_DUST, Item.REDSTONE_DUST, Item.GUNPOWDER, Item.MAGMA_CREAM, Item.BLAZE_POWDER, Item.GOLDEN_CARROT, Item.SPIDER_EYE, Item.FERMENTED_SPIDER_EYE, Item.GLISTERING_MELON, Item.SUGAR, Item.RAW_FISH));
+            addAll(Arrays.asList(Item.NETHER_WART, Item.GHAST_TEAR, Item.GLOWSTONE_DUST, Item.REDSTONE_DUST, Item.GUNPOWDER, Item.MAGMA_CREAM, Item.BLAZE_POWDER, Item.GOLDEN_CARROT, Item.SPIDER_EYE, Item.FERMENTED_SPIDER_EYE, Item.GLISTERING_MELON, Item.SUGAR, Item.RABBIT_FOOT, Item.PUFFERFISH, 469, 470, 437));
         }
     };
 
@@ -228,10 +230,17 @@ public class BlockEntityBrewingStand extends BlockEntitySpawnable implements Inv
                 if (!e.isCancelled()) {
                     for (int i = 1; i <= 3; i++) {
                         Item potion = this.inventory.getItem(i);
-                        BrewingRecipe recipe = Server.getInstance().getCraftingManager().matchBrewingRecipe(ingredient, potion);
 
-                        if (recipe != null) {
-                            this.inventory.setItem(i, recipe.getResult());
+                        ContainerRecipe containerRecipe = Server.getInstance().getCraftingManager().matchContainerRecipe(ingredient, potion);
+                        if (containerRecipe != null) {
+                            Item result = containerRecipe.getResult();
+                            result.setDamage(potion.getDamage());
+                            this.inventory.setItem(i, result);
+                        } else {
+                            BrewingRecipe recipe = Server.getInstance().getCraftingManager().matchBrewingRecipe(ingredient, potion);
+                            if (recipe != null) {
+                                this.inventory.setItem(i, recipe.getResult());
+                            }
                         }
                     }
 
@@ -302,7 +311,8 @@ public class BlockEntityBrewingStand extends BlockEntitySpawnable implements Inv
         for (int i = 1; i <= 3; ++i) {
             Item potion = this.inventory.getItem(i);
 
-            if (potion.getId() == Item.POTION && potion.getCount() > 0) {
+            int id = potion.getId();
+            if ((id == Item.POTION || id == Item.SPLASH_POTION || id == Item.LINGERING_POTION) && potion.getCount() > 0) {
                 meta |= 1 << i;
             }
         }

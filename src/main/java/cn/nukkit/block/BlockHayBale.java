@@ -66,6 +66,6 @@ public class BlockHayBale extends BlockSolid {
 
     @Override
     public BlockColor getColor() {
-        return BlockColor.GRASS_BLOCK_COLOR;
+        return BlockColor.YELLOW_BLOCK_COLOR;
     }
 }
