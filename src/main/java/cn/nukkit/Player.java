@@ -72,6 +72,7 @@ import cn.nukkit.resourcepacks.ResourcePack;
 import cn.nukkit.utils.*;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
+import com.nukkitx.network.raknet.RakNetReliability;
 
 import java.awt.*;
 import java.io.IOException;
@@ -790,7 +791,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.usedChunks.put(Level.chunkHash(x, z), true);
         this.chunkLoadCount++;
 
-        this.dataPacket(packet);
+        this.dataPacket(packet.setReliability(RakNetReliability.RELIABLE));
 
         if (this.spawned) {
             for (Entity entity : this.level.getChunkEntities(x, z).values()) {
@@ -3265,6 +3266,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         TextPacket pk = new TextPacket();
         pk.type = TextPacket.TYPE_RAW;
         pk.message = this.server.getLanguage().translateString(message);
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3295,6 +3297,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             pk.type = TextPacket.TYPE_RAW;
             pk.message = this.server.getLanguage().translateString(message, parameters);
         }
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3307,6 +3310,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk.type = TextPacket.TYPE_CHAT;
         pk.source = source;
         pk.message = this.server.getLanguage().translateString(message);
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3319,6 +3323,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk.type = TextPacket.TYPE_POPUP;
         pk.source = message;
         pk.message = subtitle;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3326,12 +3331,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         TextPacket pk = new TextPacket();
         pk.type = TextPacket.TYPE_TIP;
         pk.message = message;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
     public void clearTitle() {
         SetTitlePacket pk = new SetTitlePacket();
         pk.type = SetTitlePacket.TYPE_CLEAR;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3341,6 +3348,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public void resetTitleSettings() {
         SetTitlePacket pk = new SetTitlePacket();
         pk.type = SetTitlePacket.TYPE_RESET;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3348,6 +3356,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         SetTitlePacket pk = new SetTitlePacket();
         pk.type = SetTitlePacket.TYPE_SUBTITLE;
         pk.text = subtitle;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3357,6 +3366,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk.fadeInTime = fadein;
         pk.stayTime = duration;
         pk.fadeOutTime = fadeout;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -3376,6 +3386,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             pk.fadeInTime = fadein;
             pk.stayTime = duration;
             pk.fadeOutTime = fadeout;
+            pk.setChannel(DataPacket.CHANNEL_TEXT);
             this.dataPacket(pk);
         }
         SetTitlePacket pk2 = new SetTitlePacket();
@@ -3384,6 +3395,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk2.fadeInTime = fadein;
         pk2.stayTime = duration;
         pk2.fadeOutTime = fadeout;
+        pk2.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk2);
     }
 
@@ -3398,6 +3410,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk.fadeInTime = fadein;
         pk.stayTime = duration;
         pk.fadeOutTime = fadeout;
+        pk.setChannel(DataPacket.CHANNEL_TEXT);
         this.dataPacket(pk);
     }
 
@@ -4013,6 +4026,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         pk.pitch = (float) pitch;
         pk.yaw = (float) yaw;
         pk.mode = mode;
+        pk.setChannel(DataPacket.CHANNEL_MOVING);
 
         if (targets != null) {
             Server.broadcastPacket(targets, pk);

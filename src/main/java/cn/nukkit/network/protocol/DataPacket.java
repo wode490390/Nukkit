@@ -12,8 +12,14 @@ import com.nukkitx.network.raknet.RakNetReliability;
  */
 public abstract class DataPacket extends BinaryStream implements Cloneable {
 
+    public static final int CHANNEL_BASE = 0;
+    public static final int CHANNEL_PLAYER_MOVING = 1;
+    public static final int CHANNEL_MOVING = 2;
+    public static final int CHANNEL_TEXT = 3;
+    public static final int CHANNEL_BATCH = 4;
+
     public boolean isEncoded = false;
-    private int channel = 0;
+    private int channel = CHANNEL_BASE;
 
     public RakNetReliability reliability = RakNetReliability.RELIABLE_ORDERED;
 
@@ -30,12 +36,18 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
         this.putShort(0);
     }
 
-    public void setChannel(int channel) {
+    public DataPacket setChannel(int channel) {
         this.channel = channel;
+        return this;
     }
 
     public int getChannel() {
         return channel;
+    }
+
+    public DataPacket setReliability(RakNetReliability reliability) {
+        this.reliability = reliability;
+        return this;
     }
 
     public DataPacket clean() {

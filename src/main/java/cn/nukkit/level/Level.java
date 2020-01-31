@@ -58,6 +58,7 @@ import co.aikar.timings.TimingsHistory;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
+import com.nukkitx.network.raknet.RakNetReliability;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.*;
@@ -3162,6 +3163,7 @@ public class Level implements ChunkManager, Metadatable {
         pk.motionX = (float) x;
         pk.motionY = (float) y;
         pk.motionZ = (float) z;
+        pk.setChannel(DataPacket.CHANNEL_MOVING);
 
         this.addChunkPacket(chunkX, chunkZ, pk);
     }
@@ -3175,6 +3177,7 @@ public class Level implements ChunkManager, Metadatable {
         pk.yaw = (float) yaw;
         pk.headYaw = (float) yaw;
         pk.pitch = (float) pitch;
+        pk.setChannel(DataPacket.CHANNEL_MOVING);
 
         this.addChunkPacket(chunkX, chunkZ, pk);
     }
