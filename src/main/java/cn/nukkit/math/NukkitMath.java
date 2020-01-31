@@ -46,20 +46,19 @@ public class NukkitMath {
         return ((double) Math.round(d * Math.pow(10, precision))) / Math.pow(10, precision);
     }
 
-    public static double clamp(double check, double min, double max) {
-        return check > max ? max : (check < min ? min : check);
+    public static double clamp(double value, double min, double max) {
+        return value < min ? min : (value > max ? max : value);
     }
 
-    public static double getDirection(double d0, double d1) {
-        if (d0 < 0.0D) {
-            d0 = -d0;
-        }
+    public static int clamp(int value, int min, int max) {
+        return value < min ? min : (value > max ? max : value);
+    }
 
-        if (d1 < 0.0D) {
-            d1 = -d1;
-        }
+    public static double getDirection(double diffX, double diffZ) {
+        diffX = Math.abs(diffX);
+        diffZ = Math.abs(diffZ);
 
-        return d0 > d1 ? d0 : d1;
+        return diffX > diffZ ? diffX : diffZ;
     }
 
 }

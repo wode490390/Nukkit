@@ -8,6 +8,7 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.utils.BlockColor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -205,5 +206,10 @@ public class BlockVine extends BlockTransparent {
     @Override
     public int getToolType() {
         return ItemTool.TYPE_SHEARS;
+    }
+
+    @Override
+    public BlockColor getColor() {
+        return BlockColor.FOLIAGE_BLOCK_COLOR;
     }
 }
