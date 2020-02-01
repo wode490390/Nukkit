@@ -1,7 +1,6 @@
 package cn.nukkit.level.generator;
 
 import cn.nukkit.level.format.generic.BaseFullChunk;
-
 import java.util.Arrays;
 
 public class PopChunkManager extends SimpleChunkManager {

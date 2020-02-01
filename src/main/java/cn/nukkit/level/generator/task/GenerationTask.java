@@ -25,7 +25,7 @@ public class GenerationTask extends AsyncTask {
 
     @Override
     public void onRun() {
-        Generator generator = level.getGeneratorClass();
+        Generator generator = level.getGenerator();
         this.state = false;
         if (generator == null) {
             return;
