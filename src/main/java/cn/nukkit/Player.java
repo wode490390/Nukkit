@@ -47,12 +47,10 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.generic.BaseFullChunk;
-import cn.nukkit.level.particle.CriticalParticle;
 import cn.nukkit.level.particle.PunchBlockParticle;
 import cn.nukkit.level.sound.ExperienceOrbSound;
 import cn.nukkit.level.sound.ItemFrameItemRemovedSound;
 import cn.nukkit.level.sound.LaunchSound;
-import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.*;
 import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.nbt.NBTIO;
@@ -69,6 +67,7 @@ import cn.nukkit.plugin.Plugin;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.potion.Potion;
 import cn.nukkit.resourcepacks.ResourcePack;
+import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.*;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
@@ -83,6 +82,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * author: MagicDroidX & Box
@@ -237,6 +237,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected Map<String, ResourcePack> resourcePacks;
     protected Map<String, ResourcePack> behaviourPacks;
     protected boolean forceResources = false;
+
+    protected AsyncTask preLoginEventTask = null;
+    protected boolean shouldLogin = false;
 
     public EntityFishingHook fishing = null;
 
@@ -1972,6 +1975,20 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         this.dataPacket(infoPacket);
     }
 
+    public void completePreLoginEventTask(PlayerAsyncPreLoginEvent e) {
+        if (!this.closed) {
+            if (e.getLoginResult() == PlayerAsyncPreLoginEvent.LoginResult.KICK) {
+                this.close(e.getKickMessage(), e.getKickMessage());
+            } else if (this.shouldLogin) {
+                this.completeLoginSequence();
+            }
+
+            for (Consumer<Server> action : e.getScheduledActions()) {
+                action.accept(server);
+            }
+        }
+    }
+
     protected void completeLoginSequence() {
         PlayerLoginEvent ev;
         this.server.getPluginManager().callEvent(ev = new PlayerLoginEvent(this, "Plugin reason"));
@@ -2144,6 +2161,25 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         break;
                     }
 
+                    Player playerInstance = this;
+                    this.preLoginEventTask = new AsyncTask() {
+
+                        private PlayerAsyncPreLoginEvent e;
+
+                        @Override
+                        public void onRun() {
+                            e = new PlayerAsyncPreLoginEvent(playerInstance, username, uuid, getAddress(), getPort());
+                            server.getPluginManager().callEvent(e);
+                        }
+
+                        @Override
+                        public void onCompletion(Server server) {
+                            playerInstance.completePreLoginEventTask(e);
+                        }
+                    };
+
+                    this.server.getScheduler().scheduleAsyncTask(this.preLoginEventTask);
+
                     this.processLogin();
                     break;
                 case ProtocolInfo.RESOURCE_PACK_CLIENT_RESPONSE_PACKET:
@@ -2177,7 +2213,11 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             this.dataPacket(stackPacket);
                             break;
                         case ResourcePackClientResponsePacket.STATUS_COMPLETED:
-                            this.completeLoginSequence();
+                            if (this.preLoginEventTask.isFinished()) {
+                                this.completeLoginSequence();
+                            } else {
+                                this.shouldLogin = true;
+                            }
                             break;
                     }
                     break;
