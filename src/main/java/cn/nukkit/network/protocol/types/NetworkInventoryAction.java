@@ -1,6 +1,7 @@
 package cn.nukkit.network.protocol.types;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.inventory.AnvilInventory;
 import cn.nukkit.inventory.BeaconInventory;
 import cn.nukkit.inventory.EnchantInventory;
@@ -195,21 +196,29 @@ public class NetworkInventoryAction {
                     switch (this.windowId) {
                         case SOURCE_TYPE_ANVIL_INPUT:
                             //System.out.println("action input");
+                            //Server.getInstance().getLogger().info(this.toString());
                             this.inventorySlot = 0;
                             return new SlotChangeAction(anvil, this.inventorySlot, this.oldItem, this.newItem);
                         case SOURCE_TYPE_ANVIL_MATERIAL:
                             //System.out.println("material");
+                            //Server.getInstance().getLogger().info(this.toString());
                             this.inventorySlot = 1;
                             return new SlotChangeAction(anvil, this.inventorySlot, this.oldItem, this.newItem);
                         case SOURCE_TYPE_ANVIL_OUTPUT:
                             //System.out.println("action output");
+                            //Server.getInstance().getLogger().info(this.toString());
                             break;
                         case SOURCE_TYPE_ANVIL_RESULT:
                             this.inventorySlot = 2;
                             anvil.clear(0);
-                            anvil.clear(1);
+                            Item material = anvil.getItem(1);
+                            if (!material.isNull()) {
+                                material.setCount(material.getCount() - 1);
+                                anvil.setItem(1, material);
+                            }
                             anvil.setItem(2, this.oldItem);
                             //System.out.println("action result");
+                            //Server.getInstance().getLogger().info(this.toString());
                             return new SlotChangeAction(anvil, this.inventorySlot, this.oldItem, this.newItem);
                     }
                 }
