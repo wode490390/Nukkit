@@ -1,5 +1,7 @@
 package cn.nukkit.math;
 
+import java.util.Objects;
+
 /**
  * author: MagicDroidX
  * Nukkit Project
@@ -134,4 +136,17 @@ public class Vector2 {
         return "Vector2(x=" + this.x + ",y=" + this.y + ")";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector2 vector2 = (Vector2) o;
+        return Double.compare(vector2.x, x) == 0 &&
+                Double.compare(vector2.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }
