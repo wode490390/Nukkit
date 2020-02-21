@@ -856,12 +856,18 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             this.usedChunks.put(index, false);
             this.level.registerChunkLoader(this, chunkX, chunkZ, false);
 
-            if (!this.level.populateChunk(chunkX, chunkZ)) {
-                if (this.spawned && this.teleportPosition == null) {
-                    continue;
-                } else {
-                    break;
+            try {
+                if (!this.level.populateChunk(chunkX, chunkZ)) {
+                    if (this.spawned && this.teleportPosition == null) {
+                        continue;
+                    } else {
+                        break;
+                    }
                 }
+            } catch (Exception e) {
+                this.sendMessage(TextFormat.RED + "Chunk " + chunkX + "," + chunkZ + " load&send failed!");
+                this.sendMessage(Utils.getExceptionMessage(e));
+                getServer().getLogger().alert("Chunk " + chunkX + "," + chunkZ + " load&send failed!", e);
             }
 
             this.loadQueue.remove(index);
@@ -1831,7 +1837,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     public boolean canInteract(Vector3 pos, double maxDistance) {
-        return this.canInteract(pos, maxDistance, 0.6);
+        return this.canInteract(pos, maxDistance, 6.0);
     }
 
     public boolean canInteract(Vector3 pos, double maxDistance, double maxDiff) {

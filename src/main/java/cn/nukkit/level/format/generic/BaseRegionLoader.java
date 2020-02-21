@@ -1,5 +1,6 @@
 package cn.nukkit.level.format.generic;
 
+import cn.nukkit.Server;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
 
@@ -54,7 +55,12 @@ abstract public class BaseRegionLoader {
 
             this.lastUsed = System.currentTimeMillis();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            try {
+                if (this.randomAccessFile != null) this.randomAccessFile.close();
+            } catch (IOException e0) {
+                Server.getInstance().getLogger().alert("Level BaseRegionLoader close error", e);
+            }
+            throw new RuntimeException("Level BaseRegionLoader throws IOException", e);
         }
     }
 
@@ -97,7 +103,7 @@ abstract public class BaseRegionLoader {
     public abstract int getZ();
 
     public Integer[] getLocationIndexes() {
-        return this.locationTable.keySet().stream().toArray(Integer[]::new);
+        return this.locationTable.keySet().toArray(new Integer[0]);
     }
 
 }
