@@ -138,7 +138,7 @@ public class Nukkit {
             }
         }
 
-        ServerKiller killer = new ServerKiller(8);
+        ServerKiller killer = new ServerKiller(16);
         killer.start();
 
         if (TITLE) {

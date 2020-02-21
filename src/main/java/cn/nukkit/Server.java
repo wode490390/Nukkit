@@ -84,6 +84,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author MagicDroidX
@@ -187,11 +188,11 @@ public class Server {
     private Config properties;
     private Config config;
 
-    private final Map<InetSocketAddress, Player> players = new HashMap<>();
+    private final Map<InetSocketAddress, Player> players = new ConcurrentHashMap<>();
 
-    private final Map<UUID, Player> playerList = new HashMap<>();
+    private final Map<UUID, Player> playerList = new ConcurrentHashMap<>();
 
-    private final Map<Integer, Level> levels = new HashMap<>();
+    private final Map<Integer, Level> levels = new ConcurrentHashMap<>();
 
     private final ServiceManager serviceManager = new NKServiceManager();
 
