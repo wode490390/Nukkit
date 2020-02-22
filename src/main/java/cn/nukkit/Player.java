@@ -22,6 +22,7 @@ import cn.nukkit.event.entity.ProjectileLaunchEvent;
 import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryPickupArrowEvent;
 import cn.nukkit.event.inventory.InventoryPickupItemEvent;
+import cn.nukkit.event.level.ChunkLoadExceptionEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -866,8 +867,10 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                 }
             } catch (Exception e) {
                 this.sendMessage(TextFormat.RED + "Chunk " + chunkX + "," + chunkZ + " load&send failed!");
-                this.sendMessage(Utils.getExceptionMessage(e));
+                this.sendMessage(e.getMessage());
+                if (e.getCause() != null) this.sendMessage(Utils.getExceptionMessage(e.getCause()));
                 getServer().getLogger().alert("Chunk " + chunkX + "," + chunkZ + " load&send failed!", e);
+                getServer().getPluginManager().callEvent(new ChunkLoadExceptionEvent(chunk, e));
             }
 
             this.loadQueue.remove(index);
