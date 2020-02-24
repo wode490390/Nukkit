@@ -1,8 +1,9 @@
 package cn.nukkit.pack;
 
-import cn.nukkit.Nukkit;
 import cn.nukkit.utils.SemVersion;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.Data;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.UUID;
 
 @Data
 public final class PackManifest {
+
+    private static final JsonMapper JSON_MAPPER = (JsonMapper) new JsonMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     @JsonProperty("format_version")
     private String formatVersion;
@@ -26,7 +29,7 @@ public final class PackManifest {
     private List<Dependency> dependencies = Collections.emptyList();
 
     public static PackManifest load(InputStream stream) throws IOException {
-        return Nukkit.JSON_MAPPER.readValue(stream, PackManifest.class);
+        return JSON_MAPPER.readValue(stream, PackManifest.class);
     }
 
     public boolean isValid() {
