@@ -23,6 +23,7 @@ public class UpdateBlockPacket extends DataPacket {
     public int blockId;
     public int blockData;
     public int flags;
+    public int dataLayer = 0;
 
     @Override
     public int pid() {

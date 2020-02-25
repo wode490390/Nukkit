@@ -1023,18 +1023,11 @@ public class Level implements ChunkManager, Metadatable {
         this.sendBlockExtraData(x, y, z, id, data, this.getChunkPlayers(x >> 4, z >> 4).values());
     }
 
-    public void sendBlockExtraData(int x, int y, int z, int id, int data, Player[] players) {
-        LevelEventPacket pk = new LevelEventPacket();
-        pk.evid = LevelEventPacket.EVENT_SET_DATA;
-        pk.x = x + 0.5f;
-        pk.y = y + 0.5f;
-        pk.z = z + 0.5f;
-        pk.data = (data << 8) | id;
-
-        Server.broadcastPacket(players, pk);
+    public void sendBlockExtraData(int x, int y, int z, int id, int data, Collection<Player> players) {
+        sendBlockExtraData(x, y, z, id, data, players.toArray(new Player[0]));
     }
 
-    public void sendBlockExtraData(int x, int y, int z, int id, int data, Collection<Player> players) {
+    public void sendBlockExtraData(int x, int y, int z, int id, int data, Player[] players) {
         LevelEventPacket pk = new LevelEventPacket();
         pk.evid = LevelEventPacket.EVENT_SET_DATA;
         pk.x = x + 0.5f;
@@ -1050,76 +1043,58 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void sendBlocks(Player[] target, Vector3[] blocks, int flags) {
-        this.sendBlocks(target, blocks, flags, false);
+        this.sendBlocks(target, blocks, flags, 0);
     }
 
     public void sendBlocks(Player[] target, Vector3[] blocks, int flags, boolean optimizeRebuilds) {
-        List<UpdateBlockPacket> packets = new ArrayList<>();
-        if (optimizeRebuilds) {
-            Map<Long, Boolean> chunks = new HashMap<>();
-            for (Vector3 b : blocks) {
-                if (b == null) {
-                    continue;
-                }
-                boolean first = false;
+        this.sendBlocks(target, blocks, flags, 0, optimizeRebuilds);
+    }
 
+    public void sendBlocks(Player[] target, Vector3[] blocks, int flags, int dataLayer) {
+        this.sendBlocks(target, blocks, flags, dataLayer, false);
+    }
+
+    public void sendBlocks(Player[] target, Vector3[] blocks, int flags, int dataLayer, boolean optimizeRebuilds) {
+        int size = 0;
+        for (Vector3 block : blocks) {
+            if (block != null) size++;
+        }
+        int packetIndex = 0;
+        UpdateBlockPacket[] packets = new UpdateBlockPacket[size];
+        LongSet chunks = null;
+        if (optimizeRebuilds) {
+            chunks = new LongOpenHashSet();
+        }
+        for (Vector3 b : blocks) {
+            if (b == null) {
+                continue;
+            }
+            boolean first = !optimizeRebuilds;
+
+            if (optimizeRebuilds) {
                 long index = Level.chunkHash((int) b.x >> 4, (int) b.z >> 4);
-                if (!chunks.containsKey(index)) {
-                    chunks.put(index, true);
+                if (!chunks.contains(index)) {
+                    chunks.add(index);
                     first = true;
                 }
-
-                if (b instanceof Block) {
-                    UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket();
-                    updateBlockPacket.x = (int) ((Block) b).x;
-                    updateBlockPacket.y = (int) ((Block) b).y;
-                    updateBlockPacket.z = (int) ((Block) b).z;
-                    updateBlockPacket.blockId = ((Block) b).getId();
-                    updateBlockPacket.blockData = ((Block) b).getDamage();
-                    updateBlockPacket.flags = first ? flags : UpdateBlockPacket.FLAG_NONE;
-                    packets.add(updateBlockPacket);
-                } else {
-                    int fullBlock = this.getFullBlock((int) b.x, (int) b.y, (int) b.z);
-                    UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket();
-                    updateBlockPacket.x = (int) b.x;
-                    updateBlockPacket.y = (int) b.y;
-                    updateBlockPacket.z = (int) b.z;
-                    updateBlockPacket.blockId = fullBlock >> 4;
-                    updateBlockPacket.blockData = fullBlock & 0xf;
-                    updateBlockPacket.flags = first ? flags : UpdateBlockPacket.FLAG_NONE;
-                    packets.add(updateBlockPacket);
-                }
             }
-        } else {
-            for (Vector3 b : blocks) {
-                if (b == null) {
-                    continue;
-                }
-                UpdateBlockPacket packet = new UpdateBlockPacket();
-                if (b instanceof Block) {
-                    UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket();
-                    updateBlockPacket.x = (int) ((Block) b).x;
-                    updateBlockPacket.y = (int) ((Block) b).y;
-                    updateBlockPacket.z = (int) ((Block) b).z;
-                    updateBlockPacket.blockId = ((Block) b).getId();
-                    updateBlockPacket.blockData = ((Block) b).getDamage();
-                    updateBlockPacket.flags = flags;
-                    packets.add(updateBlockPacket);
-                } else {
-                    int fullBlock = this.getFullBlock((int) b.x, (int) b.y, (int) b.z);
-                    UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket();
-                    updateBlockPacket.x = (int) b.x;
-                    updateBlockPacket.y = (int) b.y;
-                    updateBlockPacket.z = (int) b.z;
-                    updateBlockPacket.blockId = fullBlock >> 4;
-                    updateBlockPacket.blockData = fullBlock & 0xf;
-                    updateBlockPacket.flags = flags;
-                    packets.add(updateBlockPacket);
-                }
-                packets.add(packet);
+            UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket();
+            updateBlockPacket.x = (int) b.x;
+            updateBlockPacket.y = (int) b.y;
+            updateBlockPacket.z = (int) b.z;
+            updateBlockPacket.flags = first ? flags : UpdateBlockPacket.FLAG_NONE;
+            if (b instanceof Block) {
+                updateBlockPacket.blockId = ((Block) b).getId();
+                updateBlockPacket.blockData = ((Block) b).getDamage();
+            } else {
+                int fullBlock = this.getFullBlock((int) b.x, (int) b.y, (int) b.z);
+                updateBlockPacket.blockId = fullBlock >> 4;
+                updateBlockPacket.blockData = fullBlock & 0xf;
             }
+            updateBlockPacket.dataLayer = dataLayer;
+            packets[packetIndex++] = updateBlockPacket;
         }
-        this.server.batchPackets(target, packets.toArray(new DataPacket[packets.size()]));
+        this.server.batchPackets(target, packets);
     }
 
     private void tickChunks() {
@@ -1563,16 +1538,29 @@ public class Level implements ChunkManager, Metadatable {
         return this.getChunk(x >> 4, z >> 4, false).getFullBlock(x & 0x0f, y & 0xff, z & 0x0f);
     }
 
-    public Block getBlock(Vector3 pos) {
+    public synchronized Block getBlock(Vector3 pos) {
         return this.getBlock(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ());
     }
 
+    public synchronized Block getBlock(Vector3 pos, boolean load) {
+        return this.getBlock(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ(), load);
+    }
+
     public synchronized Block getBlock(int x, int y, int z) {
+        return getBlock(x, y, z, true);
+    }
+
+    public synchronized Block getBlock(int x, int y, int z, boolean load) {
         int fullState;
         if (y >= 0 && y < 256) {
             int cx = x >> 4;
             int cz = z >> 4;
-            BaseFullChunk chunk = getChunk(cx, cz);
+            BaseFullChunk chunk;
+            if (load) {
+                chunk = getChunk(cx, cz);
+            } else {
+                chunk = getChunkIfLoaded(cx, cz);
+            }
             if (chunk != null) {
                 fullState = chunk.getFullBlock(x & 0xF, y, z & 0xF);
             } else {
@@ -1751,7 +1739,7 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public synchronized boolean setBlock(Vector3 pos, Block block, boolean direct, boolean update) {
-        return setBlock((int) pos.x, (int) pos.y, (int) pos.z, block, direct, update);
+        return setBlock(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ(), block, direct, update);
     }
 
     public synchronized boolean setBlock(int x, int y, int z, Block block, boolean direct, boolean update) {
@@ -1778,7 +1766,13 @@ public class Level implements ChunkManager, Metadatable {
         int cz = z >> 4;
         long index = Level.chunkHash(cx, cz);
         if (direct) {
-            this.sendBlocks(sends, new Block[]{block}, UpdateBlockPacket.FLAG_ALL_PRIORITY);
+            if (sends == null || sends.length == 0) {
+                this.sendBlocks(this.getChunkPlayers(cx, cz).values().toArray(new Player[0]), new Block[]{block}, UpdateBlockPacket.FLAG_ALL_PRIORITY);
+                this.sendBlocks(this.getChunkPlayers(cx, cz).values().toArray(new Player[0]), new Block[]{Block.get(Block.AIR, 0, block)}, UpdateBlockPacket.FLAG_ALL_PRIORITY, 1);
+            } else {
+                this.sendBlocks(sends, new Block[]{block}, UpdateBlockPacket.FLAG_ALL_PRIORITY);
+                this.sendBlocks(sends, new Block[]{Block.get(Block.AIR, 0, block)}, UpdateBlockPacket.FLAG_ALL_PRIORITY, 1);
+            }
         } else {
             addBlockChange(index, x, y, z);
         }

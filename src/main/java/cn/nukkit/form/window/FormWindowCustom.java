@@ -120,7 +120,8 @@ public class FormWindowCustom extends FormWindow {
                 sliderResponses.put(i, answer);
                 responses.put(i, answer);
             } else if (e instanceof ElementStepSlider) {
-                String answer = ((ElementStepSlider) e).getSteps().get(Integer.parseInt(elementData));
+                int index = Integer.parseInt(elementData);
+                String answer = ((ElementStepSlider) e).getSteps().get(Math.max(index, 0));
                 stepSliderResponses.put(i, new FormResponseData(Integer.parseInt(elementData), answer));
                 responses.put(i, answer);
             } else if (e instanceof ElementToggle) {
