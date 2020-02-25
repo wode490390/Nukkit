@@ -26,10 +26,6 @@ public abstract class BlockCrops extends BlockFlowable {
         return true;
     }
 
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
@@ -57,7 +53,7 @@ public abstract class BlockCrops extends BlockFlowable {
                     return false;
                 }
 
-                this.getLevel().setBlock(this, ev.getNewState(), true, true);
+                this.getLevel().setBlock(this, ev.getNewState(), false, true);
                 this.level.addParticle(new BoneMealParticle(this));
 
                 if (player != null && (player.gamemode & 0x01) == 0) {
@@ -87,7 +83,7 @@ public abstract class BlockCrops extends BlockFlowable {
                     Server.getInstance().getPluginManager().callEvent(ev);
 
                     if (!ev.isCancelled()) {
-                        this.getLevel().setBlock(this, ev.getNewState(), true, true);
+                        this.getLevel().setBlock(this, ev.getNewState(), false, true);
                     } else {
                         return Level.BLOCK_UPDATE_RANDOM;
                     }

@@ -7,11 +7,6 @@ import cn.nukkit.utils.BlockColor;
 public class BlockBricksEndStone extends BlockSolid {
 
     public BlockBricksEndStone() {
-        this(0);
-    }
-
-    public BlockBricksEndStone(int meta) {
-        super(0);
     }
 
     @Override

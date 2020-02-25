@@ -1,6 +1,7 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 
@@ -8,7 +9,7 @@ import cn.nukkit.utils.BlockColor;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockDoubleSlabStone extends BlockSolid {
+public class BlockDoubleSlabStone extends BlockSolidMeta {
     public static final int STONE = 0;
     public static final int SANDSTONE = 1;
     public static final int WOODEN = 2;
@@ -58,14 +59,19 @@ public class BlockDoubleSlabStone extends BlockSolid {
                 "Quartz",
                 "Nether Brick"
         };
-        return "Double " + names[this.meta & 0x07] + " Slab";
+        return "Double " + names[this.getDamage() & 0x07] + " Slab";
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockSlabStone(), this.getDamage() & 0x07);
     }
 
     @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    Item.get(Item.SLAB, this.meta & 0x07, 2)
+                    Item.get(Item.SLAB, this.getDamage() & 0x07, 2)
             };
         } else {
             return new Item[0];

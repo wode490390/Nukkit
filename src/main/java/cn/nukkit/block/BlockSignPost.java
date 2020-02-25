@@ -12,11 +12,12 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.Faceable;
 
 /**
  * @author Nukkit Project Team
  */
-public class BlockSignPost extends BlockTransparent {
+public class BlockSignPost extends BlockTransparentMeta implements Faceable {
 
     public BlockSignPost() {
         this(0);
@@ -70,11 +71,11 @@ public class BlockSignPost extends BlockTransparent {
                     .putString("Text4", "");
 
             if (face == BlockFace.UP) {
-                meta = (int) Math.floor(((player.yaw + 180) * 16 / 360) + 0.5) & 0x0f;
-                getLevel().setBlock(block, new BlockSignPost(meta), true);
+                setDamage((int) Math.floor(((player.yaw + 180) * 16 / 360) + 0.5) & 0x0f);
+                getLevel().setBlock(block, new BlockSignPost(getDamage()), true);
             } else {
-                meta = face.getIndex();
-                getLevel().setBlock(block, new BlockWallSign(meta), true);
+                setDamage(face.getIndex());
+                getLevel().setBlock(block, new BlockWallSign(getDamage()), true);
             }
 
             if (player != null) {
@@ -87,9 +88,8 @@ public class BlockSignPost extends BlockTransparent {
                 }
             }
 
-            new BlockEntitySign(getLevel().getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
-
-            return true;
+            BlockEntitySign sign = (BlockEntitySign) BlockEntity.createBlockEntity(BlockEntity.SIGN, getLevel().getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
+            return sign != null;
         }
 
         return false;
@@ -121,5 +121,10 @@ public class BlockSignPost extends BlockTransparent {
     @Override
     public BlockColor getColor() {
         return BlockColor.AIR_BLOCK_COLOR;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromIndex(this.getDamage() & 0x07);
     }
 }

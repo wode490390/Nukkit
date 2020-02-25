@@ -7,18 +7,18 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBed;
 import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Level;
-import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DyeColor;
+import cn.nukkit.utils.Faceable;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockBed extends BlockTransparent {
+public class BlockBed extends BlockTransparentMeta implements Faceable {
 
     public BlockBed() {
         this(0);
@@ -54,15 +54,8 @@ public class BlockBed extends BlockTransparent {
     }
 
     @Override
-    protected AxisAlignedBB recalculateBoundingBox() {
-        return new AxisAlignedBB(
-                this.x,
-                this.y,
-                this.z,
-                this.x + 1,
-                this.y + 0.5625,
-                this.z + 1
-        );
+    public double getMaxY() {
+        return this.y + 0.5625;
     }
 
     @Override
@@ -198,5 +191,10 @@ public class BlockBed extends BlockTransparent {
         }
 
         return DyeColor.WHITE;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

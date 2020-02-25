@@ -29,8 +29,13 @@ public class BlockPotato extends BlockCrops {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemPotato();
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (meta >= 0x07) {
+        if (getDamage() >= 0x07) {
             return new Item[]{
                     new ItemPotato(0, new Random().nextInt(3) + 1)
             };

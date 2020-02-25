@@ -10,7 +10,7 @@ import cn.nukkit.utils.TerracottaColor;
  * Created on 2015/11/24 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockTerracotta extends BlockSolid {
+public class BlockTerracotta extends BlockSolidMeta {
     public BlockTerracotta() {
         this(0);
     }
@@ -21,10 +21,6 @@ public class BlockTerracotta extends BlockSolid {
 
     public BlockTerracotta(TerracottaColor dyeColor) {
         this(dyeColor.getTerracottaData());
-    }
-
-    public BlockTerracotta(DyeColor dyeColor) {
-        this(dyeColor.getWoolData());
     }
 
     @Override

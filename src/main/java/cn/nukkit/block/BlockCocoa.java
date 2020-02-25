@@ -10,18 +10,22 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.BoneMealParticle;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.SimpleAxisAlignedBB;
+import cn.nukkit.utils.DyeColor;
+import cn.nukkit.utils.Faceable;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by CreeperFace on 27. 10. 2016.
  */
-public class BlockCocoa extends BlockTransparent {
+public class BlockCocoa extends BlockTransparentMeta implements Faceable {
 
-    protected static final AxisAlignedBB[] EAST = new AxisAlignedBB[]{new AxisAlignedBB(0.6875D, 0.4375D, 0.375D, 0.9375D, 0.75D, 0.625D), new AxisAlignedBB(0.5625D, 0.3125D, 0.3125D, 0.9375D, 0.75D, 0.6875D), new AxisAlignedBB(0.5625D, 0.3125D, 0.3125D, 0.9375D, 0.75D, 0.6875D)};
-    protected static final AxisAlignedBB[] WEST = new AxisAlignedBB[]{new AxisAlignedBB(0.0625D, 0.4375D, 0.375D, 0.3125D, 0.75D, 0.625D), new AxisAlignedBB(0.0625D, 0.3125D, 0.3125D, 0.4375D, 0.75D, 0.6875D), new AxisAlignedBB(0.0625D, 0.3125D, 0.3125D, 0.4375D, 0.75D, 0.6875D)};
-    protected static final AxisAlignedBB[] NORTH = new AxisAlignedBB[]{new AxisAlignedBB(0.375D, 0.4375D, 0.0625D, 0.625D, 0.75D, 0.3125D), new AxisAlignedBB(0.3125D, 0.3125D, 0.0625D, 0.6875D, 0.75D, 0.4375D), new AxisAlignedBB(0.3125D, 0.3125D, 0.0625D, 0.6875D, 0.75D, 0.4375D)};
-    protected static final AxisAlignedBB[] SOUTH = new AxisAlignedBB[]{new AxisAlignedBB(0.375D, 0.4375D, 0.6875D, 0.625D, 0.75D, 0.9375D), new AxisAlignedBB(0.3125D, 0.3125D, 0.5625D, 0.6875D, 0.75D, 0.9375D), new AxisAlignedBB(0.3125D, 0.3125D, 0.5625D, 0.6875D, 0.75D, 0.9375D)};
+    protected static final AxisAlignedBB[] EAST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.6875D, 0.4375D, 0.375D, 0.9375D, 0.75D, 0.625D), new SimpleAxisAlignedBB(0.5625D, 0.3125D, 0.3125D, 0.9375D, 0.75D, 0.6875D), new SimpleAxisAlignedBB(0.5625D, 0.3125D, 0.3125D, 0.9375D, 0.75D, 0.6875D)};
+    protected static final AxisAlignedBB[] WEST = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.0625D, 0.4375D, 0.375D, 0.3125D, 0.75D, 0.625D), new SimpleAxisAlignedBB(0.0625D, 0.3125D, 0.3125D, 0.4375D, 0.75D, 0.6875D), new SimpleAxisAlignedBB(0.0625D, 0.3125D, 0.3125D, 0.4375D, 0.75D, 0.6875D)};
+    protected static final AxisAlignedBB[] NORTH = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.375D, 0.4375D, 0.0625D, 0.625D, 0.75D, 0.3125D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.0625D, 0.6875D, 0.75D, 0.4375D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.0625D, 0.6875D, 0.75D, 0.4375D)};
+    protected static final AxisAlignedBB[] SOUTH = new SimpleAxisAlignedBB[]{new SimpleAxisAlignedBB(0.375D, 0.4375D, 0.6875D, 0.625D, 0.75D, 0.9375D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.5625D, 0.6875D, 0.75D, 0.9375D), new SimpleAxisAlignedBB(0.3125D, 0.3125D, 0.5625D, 0.6875D, 0.75D, 0.9375D)};
+    protected static final AxisAlignedBB[] ALL = new SimpleAxisAlignedBB[12];
 
     public BlockCocoa() {
         this(0);
@@ -42,23 +46,52 @@ public class BlockCocoa extends BlockTransparent {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox() {
-        if (boundingBox == null) {
-            this.boundingBox = recalculateBoundingBox();
-        }
+    public void setDamage(int meta) {
+        super.setDamage(meta);
+    }
 
-        return this.boundingBox;
+
+    @Override
+    public double getMinX() {
+        return this.x + getRelativeBoundingBox().getMinX();
     }
 
     @Override
-    protected AxisAlignedBB recalculateBoundingBox() {
+    public double getMaxX() {
+        return this.x + getRelativeBoundingBox().getMaxX();
+    }
+
+    @Override
+    public double getMinY() {
+        return this.y + getRelativeBoundingBox().getMinY();
+    }
+
+    @Override
+    public double getMaxY() {
+        return this.y + getRelativeBoundingBox().getMaxY();
+    }
+
+    @Override
+    public double getMinZ() {
+        return this.z + getRelativeBoundingBox().getMinZ();
+    }
+
+    @Override
+    public double getMaxZ() {
+        return this.z + getRelativeBoundingBox().getMaxZ();
+    }
+
+    private AxisAlignedBB getRelativeBoundingBox() {
+        int damage = this.getDamage();
+        if (damage > 11) {
+            this.setDamage(damage = 11);
+        }
+        AxisAlignedBB boundingBox = ALL[damage];
+        if (boundingBox != null) return boundingBox;
+
         AxisAlignedBB[] bbs;
 
-        if (this.meta > 11) {
-            this.meta = 11;
-        }
-
-        switch (meta) {
+        switch (getDamage()) {
             case 0:
             case 4:
             case 8:
@@ -84,17 +117,12 @@ public class BlockCocoa extends BlockTransparent {
                 break;
         }
 
-        return bbs[this.meta / 4].getOffsetBoundingBox(x, y, z);
-    }
-
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
+        return ALL[damage] = bbs[this.getDamage() >> 2];
     }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target.getId() == Block.WOOD && target.getDamage() == BlockWood.JUNGLE) {
+        if (target.getId() == Block.WOOD && (target.getDamage() & 0x03) == BlockWood.JUNGLE) {
             if (face != BlockFace.DOWN && face != BlockFace.UP) {
                 int[] faces = new int[]{
                         0,
@@ -105,7 +133,7 @@ public class BlockCocoa extends BlockTransparent {
                         1,
                 };
 
-                this.meta = faces[face.getIndex()];
+                this.setDamage(faces[face.getIndex()]);
                 this.level.setBlock(block, this, true, true);
                 return true;
             }
@@ -120,7 +148,7 @@ public class BlockCocoa extends BlockTransparent {
                     3, 4, 2, 5, 3, 4, 2, 5, 3, 4, 2, 5
             };
 
-            Block side = this.getSide(BlockFace.fromIndex(faces[this.meta]));
+            Block side = this.getSide(BlockFace.fromIndex(faces[this.getDamage()]));
 
             if (side.getId() != Block.WOOD && side.getDamage() != BlockWood.JUNGLE) {
                 this.getLevel().useBreakOn(this);
@@ -128,9 +156,9 @@ public class BlockCocoa extends BlockTransparent {
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (ThreadLocalRandom.current().nextInt(2) == 1) {
-                if (this.meta / 4 < 2) {
+                if (this.getDamage() / 4 < 2) {
                     BlockCocoa block = (BlockCocoa) this.clone();
-                    block.meta += 4;
+                    block.setDamage(block.getDamage() + 4);
                     BlockGrowEvent ev = new BlockGrowEvent(this, block);
                     Server.getInstance().getPluginManager().callEvent(ev);
 
@@ -157,8 +185,8 @@ public class BlockCocoa extends BlockTransparent {
     public boolean onActivate(Item item, Player player) {
         if (item.getId() == Item.DYE && item.getDamage() == 0x0f) {
             Block block = this.clone();
-            if (this.meta / 4 < 2) {
-                block.meta += 4;
+            if (this.getDamage() / 4 < 2) {
+                block.setDamage(block.getDamage() + 4);
                 BlockGrowEvent ev = new BlockGrowEvent(this, block);
                 Server.getInstance().getPluginManager().callEvent(ev);
 
@@ -195,8 +223,13 @@ public class BlockCocoa extends BlockTransparent {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemDye(DyeColor.BROWN.getDyeData());
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
-        if (this.meta >= 8) {
+        if (this.getDamage() >= 8) {
             return new Item[]{
                     new ItemDye(3, 3)
             };
@@ -205,5 +238,10 @@ public class BlockCocoa extends BlockTransparent {
                     new ItemDye(3, 1)
             };
         }
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 }

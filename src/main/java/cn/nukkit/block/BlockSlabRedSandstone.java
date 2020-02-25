@@ -39,7 +39,7 @@ public class BlockSlabRedSandstone extends BlockSlab {
                 ""
         };
 
-        return ((this.meta & 0x08) > 0 ? "Upper " : "") + names[this.meta & 0x07] + " Slab";
+        return ((this.getDamage() & 0x08) > 0 ? "Upper " : "") + names[this.getDamage() & 0x07] + " Slab";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BlockSlabRedSandstone extends BlockSlab {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(this, this.meta & 0x07);
+        return new ItemBlock(this, this.getDamage() & 0x07);
     }
 
     @Override

@@ -2,9 +2,10 @@ package cn.nukkit.block;
 
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.item.EntityMinecartAbstract;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
-import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.SimpleAxisAlignedBB;
 
 /**
  * Created on 2015/11/22 by CreeperFace.
@@ -68,7 +69,7 @@ public class BlockRailDetector extends BlockRail {
         boolean wasPowered = isActive();
         boolean isPowered = false;
 
-        for (Entity entity : level.getNearbyEntities(new AxisAlignedBB(
+        for (Entity entity : level.getNearbyEntities(new SimpleAxisAlignedBB(
                 getFloorX() + 0.125D,
                 getFloorY(),
                 getFloorZ() + 0.125D,
@@ -93,5 +94,12 @@ public class BlockRailDetector extends BlockRail {
         }
 
         level.updateComparatorOutputLevel(this);
+    }
+
+    @Override
+    public Item[] getDrops(Item item) {
+        return new Item[]{
+                Item.get(Item.DETECTOR_RAIL, 0, 1)
+        };
     }
 }

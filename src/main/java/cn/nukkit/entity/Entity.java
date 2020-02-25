@@ -375,7 +375,7 @@ public abstract class Entity extends Location implements Metadatable {
         this.setLevel(chunk.getProvider().getLevel());
         this.server = chunk.getProvider().getLevel().getServer();
 
-        this.boundingBox = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
+        this.boundingBox = new SimpleAxisAlignedBB(0, 0, 0, 0, 0, 0);
 
         ListTag<DoubleTag> posList = this.namedTag.getList("Pos", DoubleTag.class);
         ListTag<FloatTag> rotationList = this.namedTag.getList("Rotation", FloatTag.class);
@@ -1183,6 +1183,7 @@ public abstract class Entity extends Location implements Metadatable {
         pk.yaw = (float) yaw;
         pk.headYaw = (float) yaw;
         pk.pitch = (float) pitch;
+        pk.setChannel(DataPacket.CHANNEL_MOVING);
         Server.broadcastPacket(this.getViewers().values(), pk);
         //this.level.addEntityMovement(this.chunk.getX(), this.chunk.getZ(), this.id, x, y, z, yaw, pitch, headYaw);
     }
@@ -1557,15 +1558,15 @@ public abstract class Entity extends Location implements Metadatable {
             this.boundingBox = newBB;
         }
 
-        this.x = (this.boundingBox.minX + this.boundingBox.maxX) / 2;
-        this.y = this.boundingBox.minY - this.ySize;
-        this.z = (this.boundingBox.minZ + this.boundingBox.maxZ) / 2;
+        this.x = (this.boundingBox.getMinX() + this.boundingBox.getMaxX()) / 2;
+        this.y = this.boundingBox.getMinY() - this.ySize;
+        this.z = (this.boundingBox.getMinZ() + this.boundingBox.getMaxZ()) / 2;
 
         this.checkChunks();
 
         if (!this.onGround || dy != 0) {
             AxisAlignedBB bb = this.boundingBox.clone();
-            bb.minY -= 0.75;
+            bb.setMinY(bb.getMinY() - 0.75);
 
             this.onGround = this.level.getCollisionBlocks(bb).length > 0;
         }
@@ -1582,7 +1583,7 @@ public abstract class Entity extends Location implements Metadatable {
 
         if (this.keepMovement) {
             this.boundingBox.offset(dx, dy, dz);
-            this.setPosition(this.temporalVector.setComponents((this.boundingBox.minX + this.boundingBox.maxX) / 2, this.boundingBox.minY, (this.boundingBox.minZ + this.boundingBox.maxZ) / 2));
+            this.setPosition(this.temporalVector.setComponents((this.boundingBox.getMinX() + this.boundingBox.getMaxX()) / 2, this.boundingBox.getMinY(), (this.boundingBox.getMinZ() + this.boundingBox.getMaxZ()) / 2));
             this.onGround = this.isPlayer;
             return true;
         } else {
@@ -1664,9 +1665,9 @@ public abstract class Entity extends Location implements Metadatable {
 
             }
 
-            this.x = (this.boundingBox.minX + this.boundingBox.maxX) / 2;
-            this.y = this.boundingBox.minY - this.ySize;
-            this.z = (this.boundingBox.minZ + this.boundingBox.maxZ) / 2;
+            this.x = (this.boundingBox.getMinX() + this.boundingBox.getMaxX()) / 2;
+            this.y = this.boundingBox.getMinY() - this.ySize;
+            this.z = (this.boundingBox.getMinZ() + this.boundingBox.getMaxZ()) / 2;
 
             this.checkChunks();
 
@@ -1700,12 +1701,12 @@ public abstract class Entity extends Location implements Metadatable {
 
     public List<Block> getBlocksAround() {
         if (this.blocksAround == null) {
-            int minX = NukkitMath.floorDouble(this.boundingBox.minX);
-            int minY = NukkitMath.floorDouble(this.boundingBox.minY);
-            int minZ = NukkitMath.floorDouble(this.boundingBox.minZ);
-            int maxX = NukkitMath.ceilDouble(this.boundingBox.maxX);
-            int maxY = NukkitMath.ceilDouble(this.boundingBox.maxY);
-            int maxZ = NukkitMath.ceilDouble(this.boundingBox.maxZ);
+            int minX = NukkitMath.floorDouble(this.boundingBox.getMinX());
+            int minY = NukkitMath.floorDouble(this.boundingBox.getMinY());
+            int minZ = NukkitMath.floorDouble(this.boundingBox.getMinZ());
+            int maxX = NukkitMath.ceilDouble(this.boundingBox.getMaxX());
+            int maxY = NukkitMath.ceilDouble(this.boundingBox.getMaxY());
+            int maxZ = NukkitMath.ceilDouble(this.boundingBox.getMaxZ());
 
             this.blocksAround = new ArrayList<>();
 

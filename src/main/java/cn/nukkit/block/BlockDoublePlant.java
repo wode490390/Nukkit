@@ -23,6 +23,15 @@ public class BlockDoublePlant extends BlockFlowable {
     public static final int PEONY = 5;
     public static final int TOP_HALF_BITMASK = 0x8;
 
+    private static final String[] NAMES = new String[]{
+            "Sunflower",
+            "Lilac",
+            "Double Tallgrass",
+            "Large Fern",
+            "Rose Bush",
+            "Peony"
+    };
+
     public BlockDoublePlant() {
         this(0);
     }
@@ -43,15 +52,7 @@ public class BlockDoublePlant extends BlockFlowable {
 
     @Override
     public String getName() {
-        String[] names = new String[]{
-                "Sunflower",
-                "Lilac",
-                "Double Tallgrass",
-                "Large Fern",
-                "Rose Bush",
-                "Peony"
-        };
-        return names[this.getDamage() & 0x07];
+        return NAMES[this.getDamage() > 5 ? 0 : this.getDamage()];
     }
 
     @Override
@@ -103,7 +104,7 @@ public class BlockDoublePlant extends BlockFlowable {
 
     @Override
     public Item[] getDrops(Item item) {
-        if ((this.getDamage() & 0x08) != 0x08) {
+        if ((this.getDamage() & TOP_HALF_BITMASK) != TOP_HALF_BITMASK) {
             switch (this.getDamage() & 0x07) {
                 case TALL_GRASS:
                 case LARGE_FERN:

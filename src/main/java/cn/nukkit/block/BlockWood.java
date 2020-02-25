@@ -11,7 +11,7 @@ import cn.nukkit.utils.BlockColor;
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockWood extends BlockSolid {
+public class BlockWood extends BlockSolidMeta {
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
     public static final int BIRCH = 2;
@@ -50,7 +50,7 @@ public class BlockWood extends BlockSolid {
                 "Jungle Wood"
         };
 
-        return names[this.meta & 0x03];
+        return names[this.getDamage() & 0x03];
     }
 
     @Override
@@ -64,11 +64,6 @@ public class BlockWood extends BlockSolid {
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         short[] faces = new short[]{
                 0,
@@ -79,7 +74,7 @@ public class BlockWood extends BlockSolid {
                 0b0100
         };
 
-        this.meta = ((this.meta & 0x03) | faces[face.getIndex()]);
+        this.setDamage(((this.getDamage() & 0x03) | faces[face.getIndex()]));
         this.getLevel().setBlock(block, this, true, true);
 
         return true;
@@ -87,7 +82,7 @@ public class BlockWood extends BlockSolid {
 
     @Override
     public Item toItem() {
-        return new ItemBlock(this, this.meta & 0x03);
+        return new ItemBlock(this, this.getDamage() & 0x03);
     }
 
     @Override

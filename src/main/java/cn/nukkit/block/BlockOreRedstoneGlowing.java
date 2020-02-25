@@ -1,5 +1,8 @@
 package cn.nukkit.block;
 
+import cn.nukkit.event.block.BlockFadeEvent;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
 
 //和pm源码有点出入，这里参考了wiki
@@ -11,11 +14,6 @@ import cn.nukkit.level.Level;
 public class BlockOreRedstoneGlowing extends BlockOreRedstone {
 
     public BlockOreRedstoneGlowing() {
-        this(0);
-    }
-
-    public BlockOreRedstoneGlowing(int meta) {
-        super(0);
     }
 
     @Override
@@ -34,9 +32,18 @@ public class BlockOreRedstoneGlowing extends BlockOreRedstone {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockOreRedstone());
+    }
+
+    @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_SCHEDULED || type == Level.BLOCK_UPDATE_RANDOM) {
-            this.getLevel().setBlock(this, new BlockOreRedstone(this.meta), false, false);
+            BlockFadeEvent event = new BlockFadeEvent(this, get(REDSTONE_ORE));
+            level.getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                level.setBlock(this, event.getNewState(), false, false);
+            }
 
             return Level.BLOCK_UPDATE_WEAK;
         }

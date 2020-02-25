@@ -74,7 +74,7 @@ public class BlockUpdateScheduler {
             for (BlockUpdateEntry update : tickSet) {
                 Vector3 pos = update.pos;
 
-                if (pos.getX() >= boundingBox.minX && pos.getX() < boundingBox.maxX && pos.getZ() >= boundingBox.minZ && pos.getZ() < boundingBox.maxZ) {
+                if (pos.getX() >= boundingBox.getMinX() && pos.getX() < boundingBox.getMaxX() && pos.getZ() >= boundingBox.getMinZ() && pos.getZ() < boundingBox.getMaxZ()) {
                     if (set == null) {
                         set = new LinkedHashSet<>();
                     }

@@ -9,11 +9,6 @@ import cn.nukkit.item.ItemTool;
 public class BlockMobSpawner extends BlockSolid {
 
     public BlockMobSpawner() {
-        this(0);
-    }
-
-    public BlockMobSpawner(int meta) {
-        super(0);
     }
 
     @Override
@@ -43,13 +38,7 @@ public class BlockMobSpawner extends BlockSolid {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
-            return new Item[]{
-                    toItem()
-            };
-        } else {
-            return new Item[0];
-        }
+        return new Item[0];
     }
 
     @Override

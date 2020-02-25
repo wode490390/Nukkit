@@ -1672,10 +1672,7 @@ public class Server {
         }
 
         if (provider == null) {
-            if ((provider = LevelProviderManager.getProviderByName
-                    ((String) this.getConfig("level-settings.default-format", "anvil"))) == null) {
-                provider = LevelProviderManager.getProviderByName("anvil");
-            }
+            provider = LevelProviderManager.getProviderByName(this.getConfig().get("level-settings.default-format", "anvil"));
         }
 
         String path;
@@ -1694,12 +1691,9 @@ public class Server {
             this.levels.put(level.getId(), level);
 
             level.initLevel();
-            level.getGameRules().setGameRule("spawnRadius", "" + this.getSpawnRadius());
-
             level.setTickRate(this.baseTickRate);
         } catch (Exception e) {
-            this.getLogger().error(this.getLanguage().translateString("nukkit.level.generationError", new String[]{name, Utils.getExceptionMessage(e)}));
-            this.getLogger().logException(e);
+            log.error(this.getLanguage().translateString("nukkit.level.generationError", new String[]{name, Utils.getExceptionMessage(e)}));
             return false;
         }
 
@@ -1736,7 +1730,6 @@ public class Server {
             Chunk.Entry entry = Level.getChunkXZ(index);
             level.populateChunk(entry.chunkX, entry.chunkZ, true);
         }*/
-
         return true;
     }
 
@@ -2069,6 +2062,9 @@ public class Server {
         BlockEntity.registerBlockEntity(BlockEntity.HOPPER, BlockEntityHopper.class);
         BlockEntity.registerBlockEntity(BlockEntity.BED, BlockEntityBed.class);
         BlockEntity.registerBlockEntity(BlockEntity.JUKEBOX, BlockEntityJukebox.class);
+        BlockEntity.registerBlockEntity(BlockEntity.SHULKER_BOX, BlockEntityShulkerBox.class);
+        BlockEntity.registerBlockEntity(BlockEntity.BANNER, BlockEntityBanner.class);
+        BlockEntity.registerBlockEntity(BlockEntity.MUSIC, BlockEntityMusic.class);
     }
 
     public static Server getInstance() {

@@ -11,11 +11,6 @@ public class BlockOreIron extends BlockSolid {
 
 
     public BlockOreIron() {
-        this(0);
-    }
-
-    public BlockOreIron(int meta) {
-        super(0);
     }
 
     @Override
@@ -57,10 +52,5 @@ public class BlockOreIron extends BlockSolid {
     @Override
     public boolean canHarvestWithHand() {
         return false;
-    }
-
-    @Override
-    public boolean canSilkTouch() {
-        return true;
     }
 }

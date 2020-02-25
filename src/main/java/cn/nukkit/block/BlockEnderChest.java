@@ -4,19 +4,20 @@ import cn.nukkit.Player;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityEnderChest;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
-import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.Faceable;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class BlockEnderChest extends BlockTransparent {
+public class BlockEnderChest extends BlockTransparentMeta implements Faceable {
 
     private Set<Player> viewers = new HashSet<>();
 
@@ -64,21 +65,34 @@ public class BlockEnderChest extends BlockTransparent {
     }
 
     @Override
-    public AxisAlignedBB recalculateBoundingBox() {
-        return new AxisAlignedBB(
-                this.x + 0.0625,
-                this.y,
-                this.z + 0.0625,
-                this.x + 0.9375,
-                this.y + 0.9475,
-                this.z + 0.9375
-        );
+    public double getMinX() {
+        return this.x + 0.0625;
+    }
+
+    @Override
+    public double getMinZ() {
+        return this.z + 0.0625;
+    }
+
+    @Override
+    public double getMaxX() {
+        return this.x + 0.9375;
+    }
+
+    @Override
+    public double getMaxY() {
+        return this.y + 0.9475;
+    }
+
+    @Override
+    public double getMaxZ() {
+        return this.z + 0.9375;
     }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         int[] faces = {2, 5, 3, 4};
-        this.meta = faces[player != null ? player.getDirection().getHorizontalIndex() : 0];
+        this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
 
         this.getLevel().setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag("")
@@ -98,8 +112,8 @@ public class BlockEnderChest extends BlockTransparent {
             }
         }
 
-        new BlockEntityEnderChest(this.getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
-        return true;
+        BlockEntityEnderChest ender = (BlockEntityEnderChest) BlockEntity.createBlockEntity(BlockEntity.ENDER_CHEST, this.getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+        return ender != null;
     }
 
     @Override
@@ -120,7 +134,10 @@ public class BlockEnderChest extends BlockTransparent {
                         .putInt("x", (int) this.x)
                         .putInt("y", (int) this.y)
                         .putInt("z", (int) this.z);
-                chest = new BlockEntityEnderChest(this.getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+                chest = (BlockEntityEnderChest) BlockEntity.createBlockEntity(BlockEntity.ENDER_CHEST, this.getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+                if (chest == null) {
+                    return false;
+                }
             }
 
             if (chest.namedTag.contains("Lock") && chest.namedTag.get("Lock") instanceof StringTag) {
@@ -169,5 +186,15 @@ public class BlockEnderChest extends BlockTransparent {
     @Override
     public boolean canSilkTouch() {
         return true;
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 }

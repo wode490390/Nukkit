@@ -1,5 +1,8 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.utils.BlockColor;
 
 /**
@@ -9,11 +12,6 @@ import cn.nukkit.utils.BlockColor;
 public class BlockDaylightDetector extends BlockTransparent {
 
     public BlockDaylightDetector() {
-        this(0);
-    }
-
-    public BlockDaylightDetector(int meta) {
-        super(meta);
     }
 
     @Override
@@ -36,7 +34,12 @@ public class BlockDaylightDetector extends BlockTransparent {
         return BlockColor.WOOD_BLOCK_COLOR;
     }
 
-    //这个函数提供一个结构的建议，可重命名也可删
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    //This function is a suggestion that can be renamed or deleted
     protected boolean invertDetect() {
         return false;
     }

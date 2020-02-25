@@ -5,12 +5,13 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityPistonArm;
 import cn.nukkit.event.block.BlockPistonChangeEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.sound.PistonInSound;
-import cn.nukkit.level.sound.PistonOutSound;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.LevelSoundEventPacket;
+import cn.nukkit.utils.Faceable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * @author CreeperFace
  */
-public abstract class BlockPistonBase extends BlockSolid {
+public abstract class BlockPistonBase extends BlockSolidMeta implements Faceable {
 
     public boolean sticky;
 
@@ -46,14 +47,14 @@ public abstract class BlockPistonBase extends BlockSolid {
             double y = player.y + player.getEyeHeight();
 
             if (y - this.y > 2) {
-                this.meta = BlockFace.UP.getIndex();
+                this.setDamage(BlockFace.UP.getIndex());
             } else if (this.y - y > 0) {
-                this.meta = BlockFace.DOWN.getIndex();
+                this.setDamage(BlockFace.DOWN.getIndex());
             } else {
-                this.meta = player.getHorizontalFacing().getIndex();
+                this.setDamage(player.getHorizontalFacing().getIndex());
             }
         } else {
-            this.meta = player.getHorizontalFacing().getIndex();
+            this.setDamage(player.getHorizontalFacing().getIndex());
         }
         this.level.setBlock(block, this, true, false);
 
@@ -64,8 +65,9 @@ public abstract class BlockPistonBase extends BlockSolid {
                 .putInt("z", (int) this.z)
                 .putBoolean("Sticky", this.sticky);
 
-        BlockEntityPistonArm be = new BlockEntityPistonArm(this.level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+        BlockEntityPistonArm be = (BlockEntityPistonArm) BlockEntity.createBlockEntity(BlockEntity.PISTON_ARM, this.level.getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
 
+        if (be == null) return false;
         //this.checkState();
         return true;
     }
@@ -120,7 +122,7 @@ public abstract class BlockPistonBase extends BlockSolid {
                     return;
                 }
 
-                this.level.addSound(new PistonOutSound(this));
+                this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_PISTON_OUT);
             } else {
             }
         } else if (!isPowered && isExtended()) {
@@ -140,12 +142,12 @@ public abstract class BlockPistonBase extends BlockSolid {
                 this.level.setBlock(getLocation().getSide(facing), new BlockAir(), true, false);
             }
 
-            this.level.addSound(new PistonInSound(this));
+            this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_PISTON_IN);
         }
     }
 
     public BlockFace getFacing() {
-        return BlockFace.fromIndex(this.meta).getOpposite();
+        return BlockFace.fromIndex(this.getDamage()).getOpposite();
     }
 
     private boolean isPowered() {
@@ -186,12 +188,8 @@ public abstract class BlockPistonBase extends BlockSolid {
             return false;
         } else {
             List<Block> blocks = calculator.getBlocksToMove();
-            List<Block> newBlocks = new ArrayList<>();
 
-            for (int i = 0; i < blocks.size(); ++i) {
-                Block block = blocks.get(i);
-                newBlocks.add(block);
-            }
+            List<Block> newBlocks = new ArrayList<>(blocks);
 
             List<Block> destroyBlocks = calculator.getBlocksToDestroy();
             BlockFace side = extending ? direction : direction.getOpposite();
@@ -215,7 +213,7 @@ public abstract class BlockPistonBase extends BlockSolid {
             if (extending) {
                 //extension block entity
 
-                this.level.setBlock(pistonHead, new BlockPistonHead(this.meta));
+                this.level.setBlock(pistonHead, new BlockPistonHead(this.getDamage()));
             }
 
             return true;
@@ -223,26 +221,18 @@ public abstract class BlockPistonBase extends BlockSolid {
     }
 
     public static boolean canPush(Block block, BlockFace face, boolean destroyBlocks) {
-        if (!block.canBePushed()) {
-            return false;
-        } else if (block.getY() >= 0 && (face != BlockFace.DOWN || block.getY() != 0)) {
-            if (block.getY() <= 255 && (face != BlockFace.UP || block.getY() != 255)) {
-                if (!(block instanceof BlockPistonBase)) {
+        if (block.canBePushed() && block.getY() >= 0 && (face != BlockFace.DOWN || block.getY() != 0) &&
+                block.getY() <= 255 && (face != BlockFace.UP || block.getY() != 255)) {
+            if (!(block instanceof BlockPistonBase)) {
 
-                    if (block instanceof BlockFlowable) {
-                        return destroyBlocks;
-                    }
-                } else if (((BlockPistonBase) block).isExtended()) {
-                    return false;
+                if (block instanceof BlockFlowable) {
+                    return destroyBlocks;
                 }
-
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+            } else return !((BlockPistonBase) block).isExtended();
+            return true;
         }
+        return false;
+
     }
 
     public class BlocksCalculator {
@@ -283,9 +273,7 @@ public abstract class BlockPistonBase extends BlockSolid {
             } else if (!this.addBlockLine(this.blockToMove)) {
                 return false;
             } else {
-                for (int i = 0; i < this.toMove.size(); ++i) {
-                    Block b = this.toMove.get(i);
-
+                for (Block b : this.toMove) {
                     if (b.getId() == SLIME_BLOCK && !this.addBranchingBlocks(b)) {
                         return false;
                     }
@@ -379,12 +367,9 @@ public abstract class BlockPistonBase extends BlockSolid {
         }
 
         private void reorderListAtCollision(int count, int index) {
-            List<Block> list = new ArrayList<>();
-            List<Block> list1 = new ArrayList<>();
-            List<Block> list2 = new ArrayList<>();
-            list.addAll(this.toMove.subList(0, index));
-            list1.addAll(this.toMove.subList(this.toMove.size() - count, this.toMove.size()));
-            list2.addAll(this.toMove.subList(index, this.toMove.size() - count));
+            List<Block> list = new ArrayList<>(this.toMove.subList(0, index));
+            List<Block> list1 = new ArrayList<>(this.toMove.subList(this.toMove.size() - count, this.toMove.size()));
+            List<Block> list2 = new ArrayList<>(this.toMove.subList(index, this.toMove.size() - count));
             this.toMove.clear();
             this.toMove.addAll(list);
             this.toMove.addAll(list1);
@@ -408,5 +393,15 @@ public abstract class BlockPistonBase extends BlockSolid {
         public List<Block> getBlocksToDestroy() {
             return this.toDestroy;
         }
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 }

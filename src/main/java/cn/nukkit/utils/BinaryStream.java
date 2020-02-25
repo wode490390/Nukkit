@@ -4,6 +4,7 @@ import cn.nukkit.entity.Attribute;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemDurable;
+import cn.nukkit.level.GameRule;
 import cn.nukkit.level.GameRules;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.BlockVector3;
@@ -645,10 +646,14 @@ public class BinaryStream {
         this.putBoolean(rule.unknown2);
     }
 
-    public void putGameRules(GameRules rules) {
-        if (rules == null) {
-            this.putUnsignedVarInt(0);
-        } else rules.writeBinaryStream(this);
+
+    public void putGameRules(GameRules gameRules) {
+        Map<GameRule, GameRules.Value> rules = gameRules.getGameRules();
+        this.putUnsignedVarInt(rules.size());
+        rules.forEach((gameRule, value) -> {
+            putString(gameRule.getName().toLowerCase());
+            value.write(this);
+        });
     }
 
     /**

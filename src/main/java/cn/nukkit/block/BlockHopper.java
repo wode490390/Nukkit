@@ -11,11 +11,12 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.utils.Faceable;
 
 /**
  * @author CreeperFace
  */
-public class BlockHopper extends BlockTransparent {
+public class BlockHopper extends BlockTransparentMeta implements Faceable {
 
     public BlockHopper() {
         this(0);
@@ -53,9 +54,9 @@ public class BlockHopper extends BlockTransparent {
             facing = BlockFace.DOWN;
         }
 
-        this.meta = facing.getIndex();
+        this.setDamage(facing.getIndex());
 
-        boolean powered = this.level.isBlockPowered(this);
+        boolean powered = this.level.isBlockPowered(this.getLocation());
 
         if (powered == this.isEnabled()) {
             this.setEnabled(!powered);
@@ -70,8 +71,8 @@ public class BlockHopper extends BlockTransparent {
                 .putInt("y", (int) this.y)
                 .putInt("z", (int) this.z);
 
-        new BlockEntityHopper(this.level.getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
-        return true;
+        BlockEntityHopper hopper = (BlockEntityHopper) BlockEntity.createBlockEntity(BlockEntity.HOPPER, this.level.getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4), nbt);
+        return hopper != null;
     }
 
     @Override
@@ -106,23 +107,23 @@ public class BlockHopper extends BlockTransparent {
     }
 
     public BlockFace getFacing() {
-        return BlockFace.fromIndex(this.meta & 7);
+        return BlockFace.fromIndex(this.getDamage() & 7);
     }
 
     public boolean isEnabled() {
-        return (this.meta & 0x08) != 8;
+        return (this.getDamage() & 0x08) != 8;
     }
 
     public void setEnabled(boolean enabled) {
         if (isEnabled() != enabled) {
-            this.meta ^= 0x08;
+            this.setDamage(this.getDamage() ^ 0x08);
         }
     }
 
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            boolean powered = this.level.isBlockPowered(this);
+            boolean powered = this.level.isBlockPowered(this.getLocation());
 
             if (powered == this.isEnabled()) {
                 this.setEnabled(!powered);
@@ -157,5 +158,10 @@ public class BlockHopper extends BlockTransparent {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 }

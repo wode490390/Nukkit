@@ -19,7 +19,8 @@ public class BlockWaterLily extends BlockFlowable {
     }
 
     public BlockWaterLily(int meta) {
-        super(meta);
+        // Lily pad can't have meta. Also stops the server from throwing an exception with the block palette.
+        super(0);
     }
 
     @Override
@@ -33,15 +34,33 @@ public class BlockWaterLily extends BlockFlowable {
     }
 
     @Override
+    public double getMinX() {
+        return this.x + 0.0625;
+    }
+
+    @Override
+    public double getMinZ() {
+        return this.z + 0.0625;
+    }
+
+    @Override
+    public double getMaxX() {
+        return this.x + 0.9375;
+    }
+
+    @Override
+    public double getMaxY() {
+        return this.y + 0.015625;
+    }
+
+    @Override
+    public double getMaxZ() {
+        return this.z + 0.9375;
+    }
+
+    @Override
     protected AxisAlignedBB recalculateBoundingBox() {
-        return new AxisAlignedBB(
-                this.x + 0.0625,
-                this.y,
-                this.z + 0.0625,
-                this.x + 0.9375,
-                this.y + 0.015625,
-                this.z + 0.9375
-        );
+        return this;
     }
 
     @Override
@@ -80,5 +99,15 @@ public class BlockWaterLily extends BlockFlowable {
     @Override
     public boolean canPassThrough() {
         return false;
+    }
+
+    @Override
+    public int getFullId() {
+        return this.getId() << 4;
+    }
+
+    @Override
+    public void setDamage(int meta) {
+
     }
 }

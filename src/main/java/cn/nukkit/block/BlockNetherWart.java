@@ -25,11 +25,6 @@ public class BlockNetherWart extends BlockFlowable {
     }
 
     @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
-    }
-
-    @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
         if (down.getId() == SOUL_SAND) {
@@ -48,9 +43,9 @@ public class BlockNetherWart extends BlockFlowable {
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (new Random().nextInt(10) == 1) {
-                if (this.meta < 0x03) {
+                if (this.getDamage() < 0x03) {
                     BlockNetherWart block = (BlockNetherWart) this.clone();
-                    ++block.meta;
+                    block.setDamage(block.getDamage() + 1);
                     BlockGrowEvent ev = new BlockGrowEvent(this, block);
                     Server.getInstance().getPluginManager().callEvent(ev);
 
@@ -85,7 +80,7 @@ public class BlockNetherWart extends BlockFlowable {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (this.meta == 0x03) {
+        if (this.getDamage() == 0x03) {
             return new Item[]{
                     new ItemNetherWart(0, 2 + (int) (Math.random() * ((4 - 2) + 1)))
             };

@@ -16,7 +16,7 @@ import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
 
 
-public class BlockSkull extends BlockTransparent {
+public class BlockSkull extends BlockTransparentMeta {
 
     public BlockSkull() {
         this(0);
@@ -48,15 +48,14 @@ public class BlockSkull extends BlockTransparent {
 
     @Override
     public String getName() {
-        BlockEntity blockEntity = getLevel().getBlockEntity(this);
         int itemMeta = 0;
-        if (blockEntity != null) itemMeta = blockEntity.namedTag.getByte("SkullType");
-        return ItemSkull.getItemSkullName(itemMeta);
-    }
 
-    @Override
-    public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz) {
-        return this.place(item, block, target, face, fx, fy, fz, null);
+        if (this.level != null) {
+            BlockEntity blockEntity = getLevel().getBlockEntity(this);
+            if (blockEntity != null) itemMeta = blockEntity.namedTag.getByte("SkullType");
+        }
+
+        return ItemSkull.getItemSkullName(itemMeta);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class BlockSkull extends BlockTransparent {
             case EAST:
             case WEST:
             case UP:
-                this.meta = face.getIndex();
+                this.setDamage(face.getIndex());
                 break;
             case DOWN:
             default:
@@ -87,7 +86,10 @@ public class BlockSkull extends BlockTransparent {
                 nbt.put(aTag.getName(), aTag);
             }
         }
-        new BlockEntitySkull(getLevel().getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
+        BlockEntitySkull skull = (BlockEntitySkull) BlockEntity.createBlockEntity(BlockEntity.SKULL, getLevel().getChunk((int) block.x >> 4, (int) block.z >> 4), nbt);
+        if (skull == null) {
+            return false;
+        }
 
         // TODO: 2016/2/3 SPAWN WITHER
 

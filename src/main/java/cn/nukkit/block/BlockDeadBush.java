@@ -19,7 +19,8 @@ public class BlockDeadBush extends BlockFlowable {
     }
 
     public BlockDeadBush(int meta) {
-        super(meta);
+        // Dead bushes can't have meta. Also stops the server from throwing an exception with the block palette.
+        super(0);
     }
 
     @Override
@@ -31,11 +32,16 @@ public class BlockDeadBush extends BlockFlowable {
     public int getId() {
         return DEAD_BUSH;
     }
+    
+    @Override
+    public boolean canBeReplaced() {
+        return true;
+    }
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
-        if (down.getId() == SAND || down.getId() == TERRACOTTA || down.getId() == STAINED_TERRACOTTA || down.getId() == PODZOL) {
+        if (down.getId() == SAND || down.getId() == TERRACOTTA || down.getId() == STAINED_TERRACOTTA || down.getId() == DIRT  || down.getId() == PODZOL) {
             this.getLevel().setBlock(block, this, true, true);
             return true;
         }

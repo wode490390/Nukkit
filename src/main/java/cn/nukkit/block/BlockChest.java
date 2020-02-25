@@ -5,14 +5,15 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntityChest;
 import cn.nukkit.inventory.ContainerInventory;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
-import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.Faceable;
 
 import java.util.Map;
 
@@ -20,7 +21,7 @@ import java.util.Map;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockChest extends BlockTransparent {
+public class BlockChest extends BlockTransparentMeta implements Faceable {
 
     public BlockChest() {
         this(0);
@@ -61,16 +62,35 @@ public class BlockChest extends BlockTransparent {
     }
 
     @Override
-    public AxisAlignedBB recalculateBoundingBox() {
-        return new AxisAlignedBB(
-                this.x + 0.0625,
-                this.y,
-                this.z + 0.0625,
-                this.x + 0.9375,
-                this.y + 0.9475,
-                this.z + 0.9375
-        );
+    public double getMinX() {
+        return this.x + 0.0625;
     }
+
+    @Override
+    public double getMinY() {
+        return this.y;
+    }
+
+    @Override
+    public double getMinZ() {
+        return this.z + 0.0625;
+    }
+
+    @Override
+    public double getMaxX() {
+        return this.x + 0.9375;
+    }
+
+    @Override
+    public double getMaxY() {
+        return this.y + 0.9475;
+    }
+
+    @Override
+    public double getMaxZ() {
+        return this.z + 0.9375;
+    }
+
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
@@ -113,7 +133,11 @@ public class BlockChest extends BlockTransparent {
             }
         }
 
-        BlockEntityChest blockEntity = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        BlockEntityChest blockEntity = (BlockEntityChest) BlockEntity.createBlockEntity(BlockEntity.CHEST, this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+
+        if (blockEntity == null) {
+            return false;
+        }
 
         if (chest != null) {
             chest.pairWith(blockEntity);
@@ -153,7 +177,10 @@ public class BlockChest extends BlockTransparent {
                         .putInt("x", (int) this.x)
                         .putInt("y", (int) this.y)
                         .putInt("z", (int) this.z);
-                chest = new BlockEntityChest(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                chest = (BlockEntityChest) BlockEntity.createBlockEntity(BlockEntity.CHEST, this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                if (chest == null) {
+                    return false;
+                }
             }
 
             if (chest.namedTag.contains("Lock") && chest.namedTag.get("Lock") instanceof StringTag) {
@@ -188,7 +215,12 @@ public class BlockChest extends BlockTransparent {
     }
 
     @Override
-    public Item[] getDrops(Item item) {
-        return super.getDrops(item);
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

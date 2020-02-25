@@ -1,13 +1,14 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 
 /**
  * Created by CreeperFace on 26. 11. 2016.
  */
-public class BlockDoubleSlabRedSandstone extends BlockSolid {
+public class BlockDoubleSlabRedSandstone extends BlockSolidMeta {
 
     public BlockDoubleSlabRedSandstone() {
         this(0);
@@ -50,14 +51,19 @@ public class BlockDoubleSlabRedSandstone extends BlockSolid {
                 ""
         };
 
-        return "Double " + names[this.meta & 0x07] + " Slab";
+        return "Double " + names[this.getDamage() & 0x07] + " Slab";
+    }
+
+    @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockSlabRedSandstone(), this.getDamage() & 0x07);
     }
 
     @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    Item.get(Item.RED_SANDSTONE_SLAB, this.meta & 0x07, 2)
+                    Item.get(Item.RED_SANDSTONE_SLAB, this.getDamage() & 0x07, 2)
             };
         } else {
             return new Item[0];

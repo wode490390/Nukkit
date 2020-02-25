@@ -2,18 +2,16 @@ package cn.nukkit.block;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
-import cn.nukkit.utils.BlockColor;
 
 /**
  * author: MagicDroidX
  * Nukkit Project
  */
-public class BlockBricksStone extends BlockSolid {
+public class BlockBricksStone extends BlockSolidMeta {
     public static final int NORMAL = 0;
     public static final int MOSSY = 1;
     public static final int CRACKED = 2;
     public static final int CHISELED = 3;
-
 
     public BlockBricksStone() {
         this(0);
@@ -47,14 +45,14 @@ public class BlockBricksStone extends BlockSolid {
                 "Chiseled Stone Bricks"
         };
 
-        return names[this.meta & 0x03];
+        return names[this.getDamage() & 0x03];
     }
 
     @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    Item.get(Item.STONE_BRICKS, this.meta & 0x03, 1)
+                    Item.get(Item.STONE_BRICKS, this.getDamage() & 0x03, 1)
             };
         } else {
             return new Item[0];
@@ -69,10 +67,5 @@ public class BlockBricksStone extends BlockSolid {
     @Override
     public boolean canHarvestWithHand() {
         return false;
-    }
-
-    @Override
-    public BlockColor getColor() {
-        return BlockColor.RED_BLOCK_COLOR;
     }
 }

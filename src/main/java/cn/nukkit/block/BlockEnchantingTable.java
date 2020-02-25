@@ -21,11 +21,6 @@ import java.util.Map;
  */
 public class BlockEnchantingTable extends BlockTransparent {
     public BlockEnchantingTable() {
-        this(0);
-    }
-
-    public BlockEnchantingTable(int meta) {
-        super(meta);
     }
 
     @Override
@@ -95,9 +90,8 @@ public class BlockEnchantingTable extends BlockTransparent {
             }
         }
 
-        BlockEntity.createBlockEntity(BlockEntity.ENCHANT_TABLE, getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
-
-        return true;
+        BlockEntityEnchantTable enchantTable = (BlockEntityEnchantTable) BlockEntity.createBlockEntity(BlockEntity.ENCHANT_TABLE, getLevel().getChunk((int) this.x >> 4, (int) this.z >> 4), nbt);
+        return enchantTable != null;
     }
 
     @Override
@@ -114,7 +108,10 @@ public class BlockEnchantingTable extends BlockTransparent {
                         .putInt("x", (int) this.x)
                         .putInt("y", (int) this.y)
                         .putInt("z", (int) this.z);
-                enchantTable = new BlockEntityEnchantTable(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                enchantTable = (BlockEntityEnchantTable) BlockEntity.createBlockEntity(BlockEntity.ENCHANT_TABLE, this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                if (enchantTable == null) {
+                    return false;
+                }
             }
 
             if (enchantTable.namedTag.contains("Lock") && enchantTable.namedTag.get("Lock") instanceof StringTag) {

@@ -6,12 +6,7 @@ import cn.nukkit.utils.BlockColor;
 
 public class BlockChorusPlant extends BlockTransparent {
 
-    public BlockChorusPlant(int meta) {
-        super(meta);
-    }
-
     public BlockChorusPlant() {
-        this(0);
     }
 
     @Override

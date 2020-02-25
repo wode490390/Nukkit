@@ -12,6 +12,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.nbt.tag.Tag;
+import cn.nukkit.utils.Faceable;
 
 import java.util.Map;
 
@@ -19,7 +20,7 @@ import java.util.Map;
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockFurnaceBurning extends BlockSolid {
+public class BlockFurnaceBurning extends BlockSolidMeta implements Faceable {
 
     public BlockFurnaceBurning() {
         this(0);
@@ -66,8 +67,8 @@ public class BlockFurnaceBurning extends BlockSolid {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        int faces[] = {2, 5, 3, 4};
-        this.meta = faces[player != null ? player.getDirection().getHorizontalIndex() : 0];
+        int[] faces = {2, 5, 3, 4};
+        this.setDamage(faces[player != null ? player.getDirection().getHorizontalIndex() : 0]);
         this.getLevel().setBlock(block, this, true, true);
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<>("Items"))
@@ -87,9 +88,8 @@ public class BlockFurnaceBurning extends BlockSolid {
             }
         }
 
-        new BlockEntityFurnace(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
-
-        return true;
+        BlockEntityFurnace furnace = (BlockEntityFurnace) BlockEntity.createBlockEntity(BlockEntity.FURNACE, this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+        return furnace != null;
     }
 
     @Override
@@ -112,7 +112,10 @@ public class BlockFurnaceBurning extends BlockSolid {
                         .putInt("x", (int) this.x)
                         .putInt("y", (int) this.y)
                         .putInt("z", (int) this.z);
-                furnace = new BlockEntityFurnace(this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                furnace = (BlockEntityFurnace) BlockEntity.createBlockEntity(BlockEntity.FURNACE, this.getLevel().getChunk((int) (this.x) >> 4, (int) (this.z) >> 4), nbt);
+                if (furnace == null) {
+                    return false;
+                }
             }
 
             if (furnace.namedTag.contains("Lock") && furnace.namedTag.get("Lock") instanceof StringTag) {
@@ -128,10 +131,15 @@ public class BlockFurnaceBurning extends BlockSolid {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(new BlockFurnace());
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         if (item.isPickaxe() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    new ItemBlock(new BlockFurnace())
+                    this.toItem()
             };
         } else {
             return new Item[0];
@@ -156,5 +164,10 @@ public class BlockFurnaceBurning extends BlockSolid {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x7);
     }
 }

@@ -11,21 +11,19 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.Hash;
 import it.unimi.dsi.fastutil.longs.LongArraySet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * author: Angelic47
  * Nukkit Project
  */
-public class BlockLeaves extends BlockTransparent {
+public class BlockLeaves extends BlockTransparentMeta {
     public static final int OAK = 0;
     public static final int SPRUCE = 1;
-    public static final int BRICH = 2;
+    public static final int BIRCH = 2;
     public static final int JUNGLE = 3;
-    public static final int ACACIA = 4;
-    public static final int DARK_OAK = 5;
 
     public BlockLeaves() {
         this(0);
@@ -132,11 +130,11 @@ public class BlockLeaves extends BlockTransparent {
         return 0;
     }
 
-    private Boolean findLog(Block pos, Set<Long> visited, Integer distance, Integer check) {
+    private Boolean findLog(Block pos, LongSet visited, Integer distance, Integer check) {
         return findLog(pos, visited, distance, check, null);
     }
 
-    private Boolean findLog(Block pos, Set<Long> visited, Integer distance, Integer check, BlockFace fromSide) {
+    private Boolean findLog(Block pos, LongSet visited, Integer distance, Integer check, BlockFace fromSide) {
         ++check;
         long index = Hash.hashBlock((int) pos.x, (int) pos.y, (int) pos.z);
         if (visited.contains(index)) return false;
@@ -216,13 +214,14 @@ public class BlockLeaves extends BlockTransparent {
         }
     }
 
-    public boolean isDecayable() {
-        return (this.getDamage() & 0x04) == 0;
-    }
-
     @Override
     public BlockColor getColor() {
         return BlockColor.FOLIAGE_BLOCK_COLOR;
+    }
+
+    @Override
+    public boolean canSilkTouch() {
+        return true;
     }
 
     protected boolean canDropApple() {
@@ -231,10 +230,5 @@ public class BlockLeaves extends BlockTransparent {
 
     protected Item getSapling() {
         return Item.get(BlockID.SAPLING, this.getDamage() & 0x03);
-    }
-
-    @Override
-    public boolean canSilkTouch() {
-        return true;
     }
 }

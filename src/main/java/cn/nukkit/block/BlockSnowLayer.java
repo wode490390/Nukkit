@@ -1,10 +1,12 @@
 package cn.nukkit.block;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.block.BlockFadeEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemSnowball;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
+import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 
@@ -12,14 +14,26 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/6 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockSnowLayer extends BlockFlowable {
+public class BlockSnowLayer extends BlockFallable {
+
+    private int meta;
 
     public BlockSnowLayer() {
         this(0);
     }
 
     public BlockSnowLayer(int meta) {
-        super(meta);
+        this.meta = meta;
+    }
+
+    @Override
+    public final int getDamage() {
+        return this.meta;
+    }
+
+    @Override
+    public final void setDamage(int meta) {
+        this.meta = meta;
     }
 
     @Override
@@ -52,8 +66,6 @@ public class BlockSnowLayer extends BlockFlowable {
         return true;
     }
 
-    //TODO:雪片叠垒乐
-
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         Block down = this.down();
@@ -67,15 +79,14 @@ public class BlockSnowLayer extends BlockFlowable {
 
     @Override
     public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_NORMAL) {
-            if (this.down().isTransparent()) {
-                this.getLevel().useBreakOn(this);
-
-                return Level.BLOCK_UPDATE_NORMAL;
-            }
-        } else if (type == Level.BLOCK_UPDATE_RANDOM) {
+        super.onUpdate(type);
+        if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (this.getLevel().getBlockLightAt((int) this.x, (int) this.y, (int) this.z) >= 10) {
-                this.getLevel().setBlock(this, new BlockAir(), true);
+                BlockFadeEvent event = new BlockFadeEvent(this, get(AIR));
+                level.getServer().getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    level.setBlock(this, event.getNewState(), true);
+                }
                 return Level.BLOCK_UPDATE_NORMAL;
             }
         }
@@ -83,10 +94,15 @@ public class BlockSnowLayer extends BlockFlowable {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemSnowball();
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         if (item.isShovel() && item.getTier() >= ItemTool.TIER_WOODEN) {
             return new Item[]{
-                    new ItemSnowball()
+                    this.toItem()
             };
         } else {
             return new Item[0];
@@ -101,6 +117,31 @@ public class BlockSnowLayer extends BlockFlowable {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+    
+    @Override
+    public boolean isTransparent() {
+        return true;
+    }
+
+    @Override
+    public boolean canBeFlowedInto() {
+        return true;
+    }
+
+    @Override
+    public boolean canPassThrough() {
+        return true;
+    }
+
+    @Override
+    public boolean isSolid() {
+        return false;
+    }
+
+    @Override
+    protected AxisAlignedBB recalculateBoundingBox() {
+        return null;
     }
 }
 

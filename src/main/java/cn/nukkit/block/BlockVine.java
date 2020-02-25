@@ -8,20 +8,13 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.SimpleAxisAlignedBB;
 import cn.nukkit.utils.BlockColor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Pub4Game on 15.01.2016.
  */
-public class BlockVine extends BlockTransparent {
-
-    private static final int FLAG_SOUTH = 0x01;
-    private static final int FLAG_WEST = 0x02;
-    private static final int FLAG_NORTH = 0x04;
-    private static final int FLAG_EAST = 0x08;
+public class BlockVine extends BlockTransparentMeta {
 
     public BlockVine(int meta) {
         super(meta);
@@ -90,8 +83,8 @@ public class BlockVine extends BlockTransparent {
         double f4 = 0;
         double f5 = 0;
         double f6 = 0;
-        boolean flag = this.meta > 0;
-        if ((this.meta & 0x02) > 0) {
+        boolean flag = this.getDamage() > 0;
+        if ((this.getDamage() & 0x02) > 0) {
             f4 = Math.max(f4, 0.0625);
             f1 = 0;
             f2 = 0;
@@ -100,7 +93,7 @@ public class BlockVine extends BlockTransparent {
             f6 = 1;
             flag = true;
         }
-        if ((this.meta & 0x08) > 0) {
+        if ((this.getDamage() & 0x08) > 0) {
             f1 = Math.min(f1, 0.9375);
             f4 = 1;
             f2 = 0;
@@ -109,7 +102,7 @@ public class BlockVine extends BlockTransparent {
             f6 = 1;
             flag = true;
         }
-        if ((this.meta & 0x01) > 0) {
+        if ((this.getDamage() & 0x01) > 0) {
             f3 = Math.min(f3, 0.9375);
             f6 = 1;
             f1 = 0;
@@ -126,7 +119,7 @@ public class BlockVine extends BlockTransparent {
             f3 = 0;
             f6 = 1;
         }
-        return new AxisAlignedBB(
+        return new SimpleAxisAlignedBB(
                 this.x + f1,
                 this.y + f2,
                 this.z + f3,
@@ -136,31 +129,15 @@ public class BlockVine extends BlockTransparent {
         );
     }
 
-    private static final Map<Integer, BlockFace> faces = new HashMap<Integer, BlockFace>(){{
-        put(FLAG_SOUTH, BlockFace.SOUTH);
-        put(FLAG_WEST, BlockFace.WEST);
-        put(FLAG_NORTH, BlockFace.NORTH);
-        put(FLAG_EAST, BlockFace.EAST);
-    }};
-
-    private static final Map<BlockFace, Integer> facesPlace = new HashMap<BlockFace, Integer>(){{
-        put(BlockFace.SOUTH, FLAG_SOUTH);
-        put(BlockFace.WEST, FLAG_WEST);
-        put(BlockFace.NORTH, FLAG_NORTH);
-        put(BlockFace.EAST, FLAG_EAST);
-    }};
-
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if(!target.isSolid() || face == BlockFace.UP || face == BlockFace.DOWN){
-            return false;
+        if (target.isSolid() && face.getHorizontalIndex() != -1) {
+            this.setDamage(getMetaFromFace(face.getOpposite()));
+            this.getLevel().setBlock(block, this, true, true);
+            return true;
         }
-        this.meta = facesPlace.getOrDefault(face, 0);
-        if (block.getId() == this.getId()) {
-            this.meta |= block.meta;
-        }
-        this.getLevel().setBlock(block, this, true, true);
-        return true;
+
+        return false;
     }
 
     @Override
@@ -182,25 +159,44 @@ public class BlockVine extends BlockTransparent {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            int[] meta = new int[]{this.meta};
-            faces.forEach((flag, side) -> {
-                if ((meta[0] & flag) != 0){
-                    if(!this.getSide(side).isSolid()){
-                        meta[0] &= ~flag;
-                    }
+            if (!this.getSide(getFace()).isSolid()) {
+                Block up = this.up();
+                if (up.getId() != this.getId() || up.getDamage() != this.getDamage()) {
+                    this.getLevel().useBreakOn(this, null, null, true);
+                    return Level.BLOCK_UPDATE_NORMAL;
                 }
-            });
-            if (meta[0] != this.meta) {
-                if (meta[0] == 0) {
-                    this.level.useBreakOn(this);
-                } else {
-                    this.meta = meta[0];
-                    this.level.setBlock(this, this);
-                }
-                return Level.BLOCK_UPDATE_NORMAL;
             }
         }
         return 0;
+    }
+
+    private BlockFace getFace() {
+        int meta = this.getDamage();
+        if ((meta & 1) > 0) {
+            return BlockFace.SOUTH;
+        } else if ((meta & 2) > 0) {
+            return BlockFace.WEST;
+        } else if ((meta & 4) > 0) {
+            return BlockFace.NORTH;
+        } else if ((meta & 8) > 0) {
+            return BlockFace.EAST;
+        }
+
+        return BlockFace.SOUTH;
+    }
+
+    private int getMetaFromFace(BlockFace face) {
+        switch (face) {
+            case SOUTH:
+            default:
+                return 0x01;
+            case WEST:
+                return 0x02;
+            case NORTH:
+                return 0x04;
+            case EAST:
+                return 0x08;
+        }
     }
 
     @Override

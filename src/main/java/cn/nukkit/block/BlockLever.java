@@ -3,15 +3,17 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.event.block.BlockRedstoneEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.sound.LeverSound;
+import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.Faceable;
 
 /**
  * @author Nukkit Project Team
  */
-public class BlockLever extends BlockFlowable {
+public class BlockLever extends BlockFlowable implements Faceable {
 
     public BlockLever() {
         this(0);
@@ -47,23 +49,28 @@ public class BlockLever extends BlockFlowable {
     }
 
     @Override
+    public Item toItem() {
+        return new ItemBlock(this, 0);
+    }
+
+    @Override
     public Item[] getDrops(Item item) {
         return new Item[]{toItem()};
     }
 
     public boolean isPowerOn() {
-        return (this.meta & 0x08) > 0;
+        return (this.getDamage() & 0x08) > 0;
     }
 
     @Override
     public boolean onActivate(Item item, Player player) {
         this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, isPowerOn() ? 15 : 0, isPowerOn() ? 0 : 15));
-        this.meta ^= 0x08;
+        this.setDamage(this.getDamage() ^ 0x08);
 
         this.getLevel().setBlock(this, this, false, true);
-        this.getLevel().addSound(new LeverSound(this, this.isPowerOn()));
+        this.getLevel().addSound(this, SoundEnum.RANDOM_CLICK); //TODO: correct pitch
 
-        LeverOrientation orientation = LeverOrientation.byMetadata(this.isPowerOn() ? this.meta ^ 0x08 : this.meta);
+        LeverOrientation orientation = LeverOrientation.byMetadata(this.isPowerOn() ? this.getDamage() ^ 0x08 : this.getDamage());
         BlockFace face = orientation.getFacing();
         //this.level.updateAroundRedstone(this, null);
         this.level.updateAroundRedstone(this.getLocation().getSide(face.getOpposite()), isPowerOn() ? face : null);
@@ -73,7 +80,7 @@ public class BlockLever extends BlockFlowable {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            int face = this.isPowerOn() ? this.meta ^ 0x08 : this.meta;
+            int face = this.isPowerOn() ? this.getDamage() ^ 0x08 : this.getDamage();
             BlockFace faces = LeverOrientation.byMetadata(face).getFacing().getOpposite();
             if (!this.getSide(faces).isSolid()) {
                 this.level.useBreakOn(this);
@@ -85,7 +92,7 @@ public class BlockLever extends BlockFlowable {
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         if (target.isNormalBlock()) {
-            this.meta = LeverOrientation.forFacings(face, player.getHorizontalFacing()).getMetadata();
+            this.setDamage(LeverOrientation.forFacings(face, player.getHorizontalFacing()).getMetadata());
             this.getLevel().setBlock(block, this, true, true);
             return true;
         }
@@ -97,7 +104,7 @@ public class BlockLever extends BlockFlowable {
         this.getLevel().setBlock(this, new BlockAir(), true, true);
 
         if (isPowerOn()) {
-            BlockFace face = LeverOrientation.byMetadata(this.isPowerOn() ? this.meta ^ 0x08 : this.meta).getFacing();
+            BlockFace face = LeverOrientation.byMetadata(this.isPowerOn() ? this.getDamage() ^ 0x08 : this.getDamage()).getFacing();
             this.level.updateAround(this.getLocation().getSide(face.getOpposite()));
         }
         return true;
@@ -109,7 +116,7 @@ public class BlockLever extends BlockFlowable {
     }
 
     public int getStrongPower(BlockFace side) {
-        return !isPowerOn() ? 0 : LeverOrientation.byMetadata(this.isPowerOn() ? this.meta ^ 0x08 : this.meta).getFacing() == side ? 15 : 0;
+        return !isPowerOn() ? 0 : LeverOrientation.byMetadata(this.isPowerOn() ? this.getDamage() ^ 0x08 : this.getDamage()).getFacing() == side ? 15 : 0;
     }
 
     @Override
@@ -210,6 +217,11 @@ public class BlockLever extends BlockFlowable {
                 META_LOOKUP[face.getMetadata()] = face;
             }
         }
+    }
+
+    @Override
+    public BlockFace getBlockFace() {
+        return BlockFace.fromHorizontalIndex(this.getDamage() & 0x07);
     }
 
     @Override

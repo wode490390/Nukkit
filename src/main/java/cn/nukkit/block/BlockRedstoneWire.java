@@ -2,6 +2,7 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.block.BlockRedstoneEvent;
+import cn.nukkit.event.redstone.RedstoneUpdateEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemRedstone;
 import cn.nukkit.level.Level;
@@ -88,7 +89,7 @@ public class BlockRedstoneWire extends BlockFlowable {
     private void calculateCurrentChanges(boolean force) {
         Vector3 pos = this.getLocation();
 
-        int meta = this.meta;
+        int meta = this.getDamage();
         int maxStrength = meta;
         this.canProvidePower = false;
         int power = this.getIndirectPower();
@@ -103,17 +104,19 @@ public class BlockRedstoneWire extends BlockFlowable {
 
         for (BlockFace face : Plane.HORIZONTAL) {
             Vector3 v = pos.getSide(face);
-            boolean flag = v.getX() != this.getX() || v.getZ() != this.getZ();
 
-            if (flag) {
-                strength = this.getMaxCurrentStrength(v, strength);
+            if (v.getX() == this.getX() && v.getZ() == this.getZ()) {
+                continue;
             }
 
-            if (this.level.getBlock(v).isNormalBlock() && !this.level.getBlock(pos.up()).isNormalBlock()) {
-                if (flag) {
-                    strength = this.getMaxCurrentStrength(v.up(), strength);
-                }
-            } else if (flag && !this.level.getBlock(v).isNormalBlock()) {
+
+            strength = this.getMaxCurrentStrength(v, strength);
+
+            boolean vNormal = this.level.getBlock(v).isNormalBlock();
+
+            if (vNormal && !this.level.getBlock(pos.up()).isNormalBlock()) {
+                strength = this.getMaxCurrentStrength(v.up(), strength);
+            } else if (!vNormal) {
                 strength = this.getMaxCurrentStrength(v.down(), strength);
             }
         }
@@ -128,12 +131,14 @@ public class BlockRedstoneWire extends BlockFlowable {
 
         if (power > maxStrength - 1) {
             maxStrength = power;
+        } else if (power < maxStrength && strength <= maxStrength) {
+            maxStrength = Math.max(power, strength - 1);
         }
 
         if (meta != maxStrength) {
             this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, meta, maxStrength));
 
-            this.meta = maxStrength;
+            this.setDamage(maxStrength);
             this.level.setBlock(this, this, false, false);
 
             this.level.updateAroundRedstone(this, null);
@@ -195,6 +200,12 @@ public class BlockRedstoneWire extends BlockFlowable {
         if (type != Level.BLOCK_UPDATE_NORMAL && type != Level.BLOCK_UPDATE_REDSTONE) {
             return 0;
         }
+        // Redstone event
+        RedstoneUpdateEvent ev = new RedstoneUpdateEvent(this);
+        getLevel().getServer().getPluginManager().callEvent(ev);
+        if (ev.isCancelled()) {
+            return 0;
+        }
 
         if (type == Level.BLOCK_UPDATE_NORMAL && !this.canBePlacedOn(this.getLocation().down())) {
             this.getLevel().useBreakOn(this);
@@ -220,7 +231,7 @@ public class BlockRedstoneWire extends BlockFlowable {
         if (!this.canProvidePower) {
             return 0;
         } else {
-            int power = this.meta;
+            int power = this.getDamage();
 
             if (power == 0) {
                 return 0;
