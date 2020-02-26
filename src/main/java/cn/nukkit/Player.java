@@ -1372,7 +1372,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
             AxisAlignedBB realBB = this.boundingBox.clone();
             realBB.setMaxY(realBB.getMinY() + 0.1);
-            bb.setMinY(bb.getMinY() - 0.2);
+            realBB.setMinY(realBB.getMinY() - 0.2);
 
             int minX = NukkitMath.floorDouble(bb.getMinX());
             int minY = NukkitMath.floorDouble(bb.getMinY());
