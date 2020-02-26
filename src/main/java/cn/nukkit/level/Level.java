@@ -275,8 +275,6 @@ public class Level implements ChunkManager, Metadatable {
             throw new LevelException("Caused by " + Utils.getExceptionMessage(e));
         }
 
-        this.timings = new LevelTimings(this);
-
         if (convert) {
             this.server.getLogger().info(this.server.getLanguage().translateString("nukkit.level.updating",
                     TextFormat.GREEN + this.provider.getName() + TextFormat.WHITE));
@@ -324,18 +322,19 @@ public class Level implements ChunkManager, Metadatable {
         this.updateQueue = new BlockUpdateScheduler(this, levelCurrentTick);
 
         this.chunkTickRadius = Math.min(this.server.getViewDistance(),
-                Math.max(1, (Integer) this.server.getConfig("chunk-ticking.tick-radius", 4)));
-        this.chunksPerTicks = (int) this.server.getConfig("chunk-ticking.per-tick", 40);
-        this.chunkGenerationQueueSize = (int) this.server.getConfig("chunk-generation.queue-size", 8);
-        this.chunkPopulationQueueSize = (int) this.server.getConfig("chunk-generation.population-queue-size", 2);
+                Math.max(1, this.server.getConfig("chunk-ticking.tick-radius", 4)));
+        this.chunksPerTicks = this.server.getConfig("chunk-ticking.per-tick", 40);
+        this.chunkGenerationQueueSize = this.server.getConfig("chunk-generation.queue-size", 8);
+        this.chunkPopulationQueueSize = this.server.getConfig("chunk-generation.population-queue-size", 2);
         this.chunkTickList.clear();
-        this.clearChunksOnTick = (boolean) this.server.getConfig("chunk-ticking.clear-tick-list", true);
-        this.cacheChunks = (boolean) this.server.getConfig("chunk-sending.cache-chunks", false);
+        this.clearChunksOnTick = this.server.getConfig("chunk-ticking.clear-tick-list", true);
+        this.cacheChunks = this.server.getConfig("chunk-sending.cache-chunks", false);
         this.temporalPosition = new Position(0, 0, 0, this);
         this.temporalVector = new Vector3(0, 0, 0);
         this.tickRate = 1;
 
         this.skyLightSubtracted = this.calculateSkylightSubtracted(1);
+        this.timings = new LevelTimings(this);
     }
 
     public static long chunkHash(int x, int z) {
