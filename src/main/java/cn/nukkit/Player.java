@@ -70,6 +70,7 @@ import cn.nukkit.utils.*;
 import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
 import com.nukkitx.network.raknet.RakNetReliability;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import java.awt.*;
 import java.io.IOException;
@@ -182,7 +183,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
     protected int chunkRadius;
     protected int viewDistance;
-    protected final int chunksPerTick;
+    protected int chunksPerTick;
     protected final int spawnThreshold;
 
     protected Position spawnPosition = null;
@@ -788,7 +789,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
-    public void sendChunk(int x, int z, DataPacket packet) {
+    public void sendChunk(int x, int z, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, DataPacket packet) {
         if (!this.connected) {
             return;
         }
@@ -807,7 +808,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
-    public void sendChunk(int x, int z, int subChunkCount, byte[] payload) {
+    public void sendChunk(int x, int z, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, byte[] payload) {
         if (!this.connected) {
             return;
         }

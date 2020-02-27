@@ -66,8 +66,13 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
 
     protected boolean isInit;
 
+    /** Cache **/
     protected BatchPacket chunkPacketOld;
     protected BatchPacket chunkPacket;
+    protected long[] blobIds;
+    protected Long2ObjectOpenHashMap<byte[]> clientBlobs;
+    protected byte[] clientBlobCachedPayload;
+    protected int subChunkCount;
 
     @Override
     public BaseFullChunk clone() {
@@ -131,6 +136,38 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
             pk.trim();
         }
         return chunkPacketOld;
+    }
+
+    public void setBlobIds(long[] blobIds) {
+        this.blobIds = blobIds;
+    }
+
+    public long[] getBlobIds() {
+        return blobIds;
+    }
+
+    public void setClientBlobs(Long2ObjectOpenHashMap<byte[]> blobs) {
+        this.clientBlobs = blobs;
+    }
+
+    public Long2ObjectOpenHashMap<byte[]> getClientBlobs() {
+        return clientBlobs;
+    }
+
+    public void setClientBlobCachedPayload(byte[] clientBlobCachedPayload) {
+        this.clientBlobCachedPayload = clientBlobCachedPayload;
+    }
+
+    public byte[] getClientBlobCachedPayload() {
+        return clientBlobCachedPayload;
+    }
+
+    public void setSubChunkCount(int subChunkCount) {
+        this.subChunkCount = subChunkCount;
+    }
+
+    public int getSubChunkCount() {
+        return subChunkCount;
     }
 
     public void initChunk() {

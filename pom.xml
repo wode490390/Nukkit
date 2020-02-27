@@ -153,6 +153,12 @@
             <version>1.6.15</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>zero-allocation-hashing</artifactId>
+            <version>0.10.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

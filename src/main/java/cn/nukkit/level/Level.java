@@ -2610,12 +2610,14 @@ public class Level implements ChunkManager, Metadatable {
         this.chunkSendQueue.get(index).put(player.getLoaderId(), player);
     }
 
-    private void sendChunk(int x, int z, long index, DataPacket packet, DataPacket packetOld) {
+    private void sendChunk(int x, int z, long index, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, DataPacket packet, DataPacket packetOld) {
         if (this.chunkSendTasks.contains(index)) {
             for (Player player : this.chunkSendQueue.get(index).values()) {
                 if (player.isConnected() && player.usedChunks.containsKey(index)) {
-                    if (player.getProtocol() < 361) player.sendChunk(x, z, packetOld);
-                    else player.sendChunk(x, z, packet);
+                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, packetOld);
+                    else {
+                        player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, packet);
+                    }
                 }
             }
 
@@ -2637,10 +2639,14 @@ public class Level implements ChunkManager, Metadatable {
             this.chunkSendTasks.add(index);
             BaseFullChunk chunk = getChunk(x, z);
             if (chunk != null) {
+                int subChunkCount = chunk.getSubChunkCount();
+                long[] blobIds = chunk.getBlobIds();
+                Long2ObjectOpenHashMap<byte[]> clientBlobs = chunk.getClientBlobs();
+                byte[] clientBlobCachedPayload = chunk.getClientBlobCachedPayload();
                 BatchPacket packet = chunk.getChunkPacket();
                 BatchPacket packetOld = chunk.getChunkPacketOld();
                 if (packet != null && packetOld != null) {
-                    this.sendChunk(x, z, index, packet, packetOld);
+                    this.sendChunk(x, z, index, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, packet, packetOld);
                     continue;
                 }
             }
@@ -2654,7 +2660,7 @@ public class Level implements ChunkManager, Metadatable {
         this.timings.syncChunkSendTimer.stopTiming();
     }
 
-    public void chunkRequestCallback(long timestamp, int x, int z, int subChunkCount, byte[] payload, byte[] payloadOld) {
+    public void chunkRequestCallback(long timestamp, int x, int z, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, byte[] payload, byte[] payloadOld) {
         this.timings.syncChunkSendTimer.startTiming();
         long index = Level.chunkHash(x, z);
 
@@ -2663,10 +2669,14 @@ public class Level implements ChunkManager, Metadatable {
             BatchPacket dataOld = getChunkCacheFromData(x, z, subChunkCount, payloadOld, true);
             BaseFullChunk chunk = getChunk(x, z, false);
             if (chunk != null && chunk.getChanges() <= timestamp) {
+                chunk.setSubChunkCount(subChunkCount);
                 chunk.setChunkPacket(data);
                 chunk.setChunkPacketOld(dataOld);
+                chunk.setBlobIds(blobIds);
+                chunk.setClientBlobs(clientBlobs);
+                chunk.setClientBlobCachedPayload(clientBlobCachedPayload);
             }
-            this.sendChunk(x, z, index, data, dataOld);
+            this.sendChunk(x, z, index, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, data, dataOld);
             this.timings.syncChunkSendTimer.stopTiming();
             return;
         }
@@ -2674,8 +2684,8 @@ public class Level implements ChunkManager, Metadatable {
         if (this.chunkSendTasks.contains(index)) {
             for (Player player : this.chunkSendQueue.get(index).values()) {
                 if (player.isConnected() && player.usedChunks.containsKey(index)) {
-                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, payloadOld);
-                    else player.sendChunk(x, z, subChunkCount, payload);
+                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, payloadOld);
+                    else player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, payload);
                 }
             }
 

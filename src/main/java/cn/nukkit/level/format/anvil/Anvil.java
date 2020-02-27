@@ -8,12 +8,16 @@ import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.format.generic.BaseLevelProvider;
 import cn.nukkit.level.format.generic.BaseRegionLoader;
 import cn.nukkit.level.generator.Generator;
+import cn.nukkit.math.XXHash64;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.ChunkException;
 import cn.nukkit.utils.ThreadCache;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 import java.io.File;
@@ -152,7 +156,26 @@ public class Anvil extends BaseLevelProvider {
             }
         }
 
-        this.getLevel().chunkRequestCallback(timestamp, x, z, count, encodeChunk(false, chunk, sections, count, extraData, blockEntities), encodeChunk(true, chunk, sections, count, extraData, blockEntities));
+        Long2ObjectOpenHashMap<byte[]> clientBlobs = new Long2ObjectOpenHashMap<>(16 + 1); // 16 subChunk + 1 biome
+
+        LongList blobIds = new LongArrayList();
+        for (int i = 0; i < count; i++) {
+            byte[] subChunk = new byte[6145]; // 1 subChunkVersion (always 0) + 4096 blockIds + 2048 blockMeta
+            System.arraycopy(sections[i].getBytes(), 0, subChunk, 1, 6144); // skip subChunkVersion
+            long hash = XXHash64.getHash(subChunk);
+            blobIds.add(hash);
+            clientBlobs.put(hash, subChunk);
+        }
+
+        byte[] biome = chunk.getBiomeIdArray();
+        long hash = XXHash64.getHash(biome);
+        blobIds.add(hash);
+        clientBlobs.put(hash, biome);
+
+        byte[] clientBlobCachedPayload = new byte[1 + blockEntities.length]; // borderBlocks + blockEntities
+        System.arraycopy(blockEntities, 0, clientBlobCachedPayload, 1, blockEntities.length); // borderBlocks array size is always 0, skip it
+
+        this.getLevel().chunkRequestCallback(timestamp, x, z, count, blobIds.toLongArray(), clientBlobs, clientBlobCachedPayload, encodeChunk(false, chunk, sections, count, extraData, blockEntities), encodeChunk(true, chunk, sections, count, extraData, blockEntities));
 
         return null;
     }
