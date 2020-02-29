@@ -116,6 +116,8 @@ public class Anvil extends BaseLevelProvider {
 
         return new AsyncTask() {
 
+            boolean success = false;
+
             long timestamp = chunk.getChanges();
             int count = 0;
 
@@ -127,81 +129,87 @@ public class Anvil extends BaseLevelProvider {
 
             @Override
             public void onRun() {
-                byte[] blockEntities = new byte[0];
+                try {
+                    byte[] blockEntities = new byte[0];
 
-                if (!chunk.getBlockEntities().isEmpty()) {
-                    List<CompoundTag> tagList = new ArrayList<>();
+                    if (!chunk.getBlockEntities().isEmpty()) {
+                        List<CompoundTag> tagList = new ArrayList<>();
 
-                    for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-                        if (blockEntity instanceof BlockEntitySpawnable) {
-                            tagList.add(((BlockEntitySpawnable) blockEntity).getSpawnCompound());
+                        for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+                            if (blockEntity instanceof BlockEntitySpawnable) {
+                                tagList.add(((BlockEntitySpawnable) blockEntity).getSpawnCompound());
+                            }
+                        }
+
+                        try {
+                            blockEntities = NBTIO.write(tagList, ByteOrder.LITTLE_ENDIAN, true);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
                     }
 
-                    try {
-                        blockEntities = NBTIO.write(tagList, ByteOrder.LITTLE_ENDIAN, true);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
+                    BinaryStream extraData;
+                    if (!extra.isEmpty()) {
+                        extraData = new BinaryStream();
+                        extraData.putVarInt(extra.size());
+                        for (Map.Entry<Integer, Integer> entry : extra.entrySet()) {
+                            extraData.putVarInt(entry.getKey());
+                            extraData.putLShort(entry.getValue());
+                        }
+                    } else {
+                        extraData = null;
                     }
-                }
 
-                Map<Integer, Integer> extra = chunk.getBlockExtraDataArray();
-                BinaryStream extraData;
-                if (!extra.isEmpty()) {
-                    extraData = new BinaryStream();
-                    extraData.putVarInt(extra.size());
-                    for (Map.Entry<Integer, Integer> entry : extra.entrySet()) {
-                        extraData.putVarInt(entry.getKey());
-                        extraData.putLShort(entry.getValue());
+                    cn.nukkit.level.format.ChunkSection[] sections = chunk.getSections();
+                    for (int i = sections.length - 1; i >= 0; i--) {
+                        if (!sections[i].isEmpty()) {
+                            count = i + 1;
+                            break;
+                        }
                     }
-                } else {
-                    extraData = null;
-                }
 
-                cn.nukkit.level.format.ChunkSection[] sections = chunk.getSections();
-                for (int i = sections.length - 1; i >= 0; i--) {
-                    if (!sections[i].isEmpty()) {
-                        count = i + 1;
-                        break;
+                    Long2ObjectOpenHashMap<byte[]> clientBlobs = new Long2ObjectOpenHashMap<>(16 + 1); // 16 subChunk + 1 biome
+
+                    LongList blobIds = new LongArrayList();
+                    for (int i = 0; i < count; i++) {
+                        byte[] subChunk = new byte[6145]; // 1 subChunkVersion (always 0) + 4096 blockIds + 2048 blockMeta
+                        System.arraycopy(sections[i].getBytes(), 0, subChunk, 1, 6144); // skip subChunkVersion
+                        long hash = XXHash64.getHash(subChunk);
+                        blobIds.add(hash);
+                        clientBlobs.put(hash, subChunk);
                     }
-                }
 
-                Long2ObjectOpenHashMap<byte[]> clientBlobs = new Long2ObjectOpenHashMap<>(16 + 1); // 16 subChunk + 1 biome
-
-                LongList blobIds = new LongArrayList();
-                for (int i = 0; i < count; i++) {
-                    byte[] subChunk = new byte[6145]; // 1 subChunkVersion (always 0) + 4096 blockIds + 2048 blockMeta
-                    System.arraycopy(sections[i].getBytes(), 0, subChunk, 1, 6144); // skip subChunkVersion
-                    long hash = XXHash64.getHash(subChunk);
+                    byte[] biome = chunk.getBiomeIdArray();
+                    long hash = XXHash64.getHash(biome);
                     blobIds.add(hash);
-                    clientBlobs.put(hash, subChunk);
+                    clientBlobs.put(hash, biome);
+
+                    byte[] clientBlobCachedPayload = new byte[1 + blockEntities.length]; // borderBlocks + blockEntities
+                    System.arraycopy(blockEntities, 0, clientBlobCachedPayload, 1, blockEntities.length); // borderBlocks array size is always 0, skip it
+
+                    chunkBlobCache = new ChunkBlobCache(count, blobIds.toLongArray(), clientBlobs, clientBlobCachedPayload);
+
+                    payload = encodeChunk(false, chunk, sections, count, extraData, blockEntities);
+                    payloadOld = encodeChunk(true, chunk, sections, count, extraData, blockEntities);
+
+                    if (level.isCacheChunks()) {
+                        chunkPacketCache = new ChunkPacketCache(
+                                Level.getChunkCacheFromData(x, z, count, payload),
+                                Level.getChunkCacheFromData(x, z, count, payloadOld, true)
+                        );
+                    }
+                    success = true;
+                } catch (Exception e) {
+                    Server.getInstance().getLogger().alert("Chunk async load failed", e);
                 }
-
-                byte[] biome = chunk.getBiomeIdArray();
-                long hash = XXHash64.getHash(biome);
-                blobIds.add(hash);
-                clientBlobs.put(hash, biome);
-
-                byte[] clientBlobCachedPayload = new byte[1 + blockEntities.length]; // borderBlocks + blockEntities
-                System.arraycopy(blockEntities, 0, clientBlobCachedPayload, 1, blockEntities.length); // borderBlocks array size is always 0, skip it
-
-                chunkBlobCache = new ChunkBlobCache(count, blobIds.toLongArray(), clientBlobs, clientBlobCachedPayload);
-
-                payload = encodeChunk(false, chunk, sections, count, extraData, blockEntities);
-                payloadOld = encodeChunk(true, chunk, sections, count, extraData, blockEntities);
-
-                if (level.isCacheChunks()) {
-                    chunkPacketCache = new ChunkPacketCache(
-                            Level.getChunkCacheFromData(x, z, count, payload),
-                            Level.getChunkCacheFromData(x, z, count, payloadOld, true)
-                    );
-                }
-
             }
 
             @Override
             public void onCompletion(Server server) {
-                getLevel().chunkRequestCallback(timestamp, x, z, count, chunkBlobCache, chunkPacketCache, payload, payloadOld);
+                if (success) {
+                    getLevel().chunkRequestCallback(timestamp, x, z, count, chunkBlobCache, chunkPacketCache, payload, payloadOld);
+                }
             }
         };
     }
