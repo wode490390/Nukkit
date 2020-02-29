@@ -45,6 +45,8 @@ import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.*;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.generic.BaseFullChunk;
+import cn.nukkit.level.format.generic.ChunkBlobCache;
+import cn.nukkit.level.format.generic.ChunkPacketCache;
 import cn.nukkit.level.particle.PunchBlockParticle;
 import cn.nukkit.level.sound.ExperienceOrbSound;
 import cn.nukkit.level.sound.ItemFrameItemRemovedSound;
@@ -789,7 +791,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
-    public void sendChunk(int x, int z, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, DataPacket packet) {
+    public void sendChunk(int x, int z, int subChunkCount, ChunkBlobCache chunkBlobCache, DataPacket packet) {
         if (!this.connected) {
             return;
         }
@@ -808,7 +810,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
-    public void sendChunk(int x, int z, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, byte[] payload) {
+    public void sendChunk(int x, int z, int subChunkCount, ChunkBlobCache chunkBlobCache, byte[] payload) {
         if (!this.connected) {
             return;
         }

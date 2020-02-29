@@ -24,9 +24,7 @@ import cn.nukkit.level.format.ChunkSection;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.format.LevelProvider;
 import cn.nukkit.level.format.anvil.Anvil;
-import cn.nukkit.level.format.generic.BaseFullChunk;
-import cn.nukkit.level.format.generic.BaseLevelProvider;
-import cn.nukkit.level.format.generic.EmptyChunkSection;
+import cn.nukkit.level.format.generic.*;
 import cn.nukkit.level.format.leveldb.LevelDB;
 import cn.nukkit.level.format.mcregion.McRegion;
 import cn.nukkit.level.generator.Generator;
@@ -2610,14 +2608,12 @@ public class Level implements ChunkManager, Metadatable {
         this.chunkSendQueue.get(index).put(player.getLoaderId(), player);
     }
 
-    private void sendChunk(int x, int z, long index, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, DataPacket packet, DataPacket packetOld) {
+    private void sendChunk(int x, int z, long index, int subChunkCount, ChunkBlobCache chunkBlobCache, ChunkPacketCache chunkPacketCache) {
         if (this.chunkSendTasks.contains(index)) {
             for (Player player : this.chunkSendQueue.get(index).values()) {
                 if (player.isConnected() && player.usedChunks.containsKey(index)) {
-                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, packetOld);
-                    else {
-                        player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, packet);
-                    }
+                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, chunkBlobCache, chunkPacketCache.getPacketOld());
+                    else player.sendChunk(x, z, subChunkCount, chunkBlobCache, chunkPacketCache.getPacket());
                 }
             }
 
@@ -2639,14 +2635,10 @@ public class Level implements ChunkManager, Metadatable {
             this.chunkSendTasks.add(index);
             BaseFullChunk chunk = getChunk(x, z);
             if (chunk != null) {
-                int subChunkCount = chunk.getSubChunkCount();
-                long[] blobIds = chunk.getBlobIds();
-                Long2ObjectOpenHashMap<byte[]> clientBlobs = chunk.getClientBlobs();
-                byte[] clientBlobCachedPayload = chunk.getClientBlobCachedPayload();
-                BatchPacket packet = chunk.getChunkPacket();
-                BatchPacket packetOld = chunk.getChunkPacketOld();
-                if (packet != null && packetOld != null) {
-                    this.sendChunk(x, z, index, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, packet, packetOld);
+                ChunkBlobCache blobCache = chunk.getBlobCache();
+                ChunkPacketCache packetCache = chunk.getPacketCache();
+                if (blobCache != null && packetCache != null) {
+                    this.sendChunk(x, z, index, blobCache.getSubChunkCount(), blobCache, packetCache);
                     continue;
                 }
             }
@@ -2660,23 +2652,31 @@ public class Level implements ChunkManager, Metadatable {
         this.timings.syncChunkSendTimer.stopTiming();
     }
 
-    public void chunkRequestCallback(long timestamp, int x, int z, int subChunkCount, long[] blobIds, Long2ObjectOpenHashMap<byte[]> clientBlobs, byte[] clientBlobCachedPayload, byte[] payload, byte[] payloadOld) {
+    public boolean isCacheChunks() {
+        return cacheChunks;
+    }
+
+    /**
+     * Chunk request callback on main thread
+     * If this.cacheChunks == false, the ChunkPacketCache can be null;
+     */
+    public void chunkRequestCallback(long timestamp, int x, int z, int subChunkCount, ChunkBlobCache chunkBlobCache, ChunkPacketCache chunkPacketCache, byte[] payload, byte[] payloadOld) {
         this.timings.syncChunkSendTimer.startTiming();
         long index = Level.chunkHash(x, z);
 
         if (this.cacheChunks) {
-            BatchPacket data = getChunkCacheFromData(x, z, subChunkCount, payload);
-            BatchPacket dataOld = getChunkCacheFromData(x, z, subChunkCount, payloadOld, true);
+            if (chunkPacketCache == null) {
+                chunkPacketCache = new ChunkPacketCache(
+                        getChunkCacheFromData(x, z, subChunkCount, payload),
+                        getChunkCacheFromData(x, z, subChunkCount, payloadOld, true)
+                );
+            }
             BaseFullChunk chunk = getChunk(x, z, false);
             if (chunk != null && chunk.getChanges() <= timestamp) {
-                chunk.setSubChunkCount(subChunkCount);
-                chunk.setChunkPacket(data);
-                chunk.setChunkPacketOld(dataOld);
-                chunk.setBlobIds(blobIds);
-                chunk.setClientBlobs(clientBlobs);
-                chunk.setClientBlobCachedPayload(clientBlobCachedPayload);
+                chunk.setBlobCache(chunkBlobCache);
+                chunk.setPacketCache(chunkPacketCache);
             }
-            this.sendChunk(x, z, index, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, data, dataOld);
+            this.sendChunk(x, z, index, subChunkCount, chunkBlobCache, chunkPacketCache);
             this.timings.syncChunkSendTimer.stopTiming();
             return;
         }
@@ -2684,8 +2684,8 @@ public class Level implements ChunkManager, Metadatable {
         if (this.chunkSendTasks.contains(index)) {
             for (Player player : this.chunkSendQueue.get(index).values()) {
                 if (player.isConnected() && player.usedChunks.containsKey(index)) {
-                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, payloadOld);
-                    else player.sendChunk(x, z, subChunkCount, blobIds, clientBlobs, clientBlobCachedPayload, payload);
+                    if (player.getProtocol() < 361) player.sendChunk(x, z, subChunkCount, chunkBlobCache, payloadOld);
+                    else player.sendChunk(x, z, subChunkCount, chunkBlobCache, payload);
                 }
             }
 

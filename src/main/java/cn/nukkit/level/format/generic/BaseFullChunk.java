@@ -67,12 +67,8 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     protected boolean isInit;
 
     /** Cache **/
-    protected BatchPacket chunkPacketOld;
-    protected BatchPacket chunkPacket;
-    protected long[] blobIds;
-    protected Long2ObjectOpenHashMap<byte[]> clientBlobs;
-    protected byte[] clientBlobCachedPayload;
-    protected int subChunkCount;
+    protected ChunkPacketCache packetCache;
+    protected ChunkBlobCache blobCache;
 
     @Override
     public BaseFullChunk clone() {
@@ -108,66 +104,20 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
         return chunk;
     }
 
-    public void setChunkPacket(BatchPacket packet) {
-        if (packet != null) {
-            packet.trim();
-        }
-        this.chunkPacket = packet;
+    public void setBlobCache(ChunkBlobCache blobCache) {
+        this.blobCache = blobCache;
     }
 
-    public BatchPacket getChunkPacket() {
-        BatchPacket pk = chunkPacket;
-        if (pk != null) {
-            pk.trim();
-        }
-        return chunkPacket;
+    public ChunkBlobCache getBlobCache() {
+        return blobCache;
     }
 
-    public void setChunkPacketOld(BatchPacket packet) {
-        if (packet != null) {
-            packet.trim();
-        }
-        this.chunkPacketOld = packet;
+    public void setPacketCache(ChunkPacketCache packetCache) {
+        this.packetCache = packetCache;
     }
 
-    public BatchPacket getChunkPacketOld() {
-        BatchPacket pk = chunkPacketOld;
-        if (pk != null) {
-            pk.trim();
-        }
-        return chunkPacketOld;
-    }
-
-    public void setBlobIds(long[] blobIds) {
-        this.blobIds = blobIds;
-    }
-
-    public long[] getBlobIds() {
-        return blobIds;
-    }
-
-    public void setClientBlobs(Long2ObjectOpenHashMap<byte[]> blobs) {
-        this.clientBlobs = blobs;
-    }
-
-    public Long2ObjectOpenHashMap<byte[]> getClientBlobs() {
-        return clientBlobs;
-    }
-
-    public void setClientBlobCachedPayload(byte[] clientBlobCachedPayload) {
-        this.clientBlobCachedPayload = clientBlobCachedPayload;
-    }
-
-    public byte[] getClientBlobCachedPayload() {
-        return clientBlobCachedPayload;
-    }
-
-    public void setSubChunkCount(int subChunkCount) {
-        this.subChunkCount = subChunkCount;
-    }
-
-    public int getSubChunkCount() {
-        return subChunkCount;
+    public ChunkPacketCache getPacketCache() {
+        return packetCache;
     }
 
     public void initChunk() {
@@ -528,7 +478,7 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     @Override
     public void setChanged() {
         this.changes++;
-        chunkPacket = null;
+        packetCache = null;
     }
 
     @Override
@@ -627,9 +577,9 @@ public abstract class BaseFullChunk implements FullChunk, ChunkManager {
     }
 
     public boolean compress() {
-        BatchPacket pk = chunkPacket;
+        ChunkPacketCache pk = this.getPacketCache();
         if (pk != null) {
-            pk.trim();
+            pk.compress();
             return true;
         }
         return false;
