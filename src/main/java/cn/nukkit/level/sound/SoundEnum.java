@@ -1,5 +1,7 @@
 package cn.nukkit.level.sound;
 
+import java.util.Arrays;
+
 /**
  * @author CreeperFace
  */
@@ -592,5 +594,9 @@ public enum SoundEnum {
 
     public String getSound() {
         return this.sound;
+    }
+
+    public static SoundEnum fromName(String name) {
+        return Arrays.stream(values()).filter(e -> e.sound.equals(name)).findFirst().orElse(null);
     }
 }
