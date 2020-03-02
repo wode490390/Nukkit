@@ -5,19 +5,17 @@ import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.ByteEntityData;
 import cn.nukkit.entity.data.IntEntityData;
-import cn.nukkit.entity.data.SlotEntityData;
+import cn.nukkit.entity.data.NBTEntityData;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFirework;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddEntityPacket;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.network.protocol.LevelSoundEventPacket;
-import cn.nukkit.network.protocol.PlaySoundPacket;
 
 import java.util.Random;
 
@@ -36,8 +34,8 @@ public class EntityFirework extends Entity {
         super(chunk, nbt);
 
         this.fireworkAge = 0;
-        Random rand = new Random();
 
+        Random rand = new Random();
         this.motionX = rand.nextGaussian() * 0.001D;
         this.motionZ = rand.nextGaussian() * 0.001D;
         this.motionY = 0.05D;
@@ -48,12 +46,10 @@ public class EntityFirework extends Entity {
             firework = new ItemFirework();
         }
 
-        this.lifetime = firework instanceof ItemFirework ? ((ItemFirework) firework).getLifeTime() : 30;
-
-        this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, firework));
+        this.lifetime = firework instanceof ItemFirework ? ((ItemFirework) firework).getLifeTime() : (30 + rand.nextInt(6) + rand.nextInt(7));
+        this.setDataProperty(new NBTEntityData(Entity.DATA_DISPLAY_ITEM, firework.getNamedTag()));
         this.setDataProperty(new IntEntityData(Entity.DATA_DISPLAY_OFFSET, 1));
         this.setDataProperty(new ByteEntityData(Entity.DATA_HAS_DISPLAY, 1));
-
     }
 
     @Override
@@ -97,15 +93,7 @@ public class EntityFirework extends Entity {
 
 
             if (this.fireworkAge == 0) {
-                PlaySoundPacket pk = new PlaySoundPacket();
-                pk.name = SoundEnum.FIREWORK_LAUNCH.getSound();
-                pk.volume = 1;
-                pk.pitch = 1;
-                pk.x = getFloorX();
-                pk.y = getFloorY();
-                pk.z = getFloorZ();
-
-                this.level.addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk);
+                this.getLevel().addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_LAUNCH);
             }
 
             this.fireworkAge++;
@@ -117,16 +105,9 @@ public class EntityFirework extends Entity {
                 pk.event = EntityEventPacket.FIREWORK_EXPLOSION;
                 pk.eid = this.getId();
 
-                LevelSoundEventPacket pk2 = new LevelSoundEventPacket();
-                pk2.sound = LevelSoundEventPacket.SOUND_LARGE_BLAST;
-                pk2.extraData = -1;
-                pk2.pitch = -1;
-                pk2.x = (float) getX();
-                pk2.y = (float) getY();
-                pk2.z = (float) getZ();
+                level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_LARGE_BLAST, -1);
 
                 Server.broadcastPacket(getViewers().values(), pk);
-                this.level.addChunkPacket(this.getFloorX() >> 4, this.getFloorZ() >> 4, pk2);
 
                 this.kill();
                 hasUpdate = true;
@@ -149,7 +130,17 @@ public class EntityFirework extends Entity {
 
     public void setFirework(Item item) {
         this.firework = item;
-        this.setDataProperty(new SlotEntityData(Entity.DATA_DISPLAY_ITEM, item));
+        this.setDataProperty(new NBTEntityData(Entity.DATA_DISPLAY_ITEM, item.getNamedTag()));
+    }
+
+    @Override
+    public float getWidth() {
+        return 0.25f;
+    }
+
+    @Override
+    public float getHeight() {
+        return 0.25f;
     }
 
     @Override
@@ -168,15 +159,5 @@ public class EntityFirework extends Entity {
         pk.speedZ = (float) this.motionZ;
         pk.metadata = this.dataProperties;
         player.dataPacket(pk);
-    }
-
-    @Override
-    public float getWidth() {
-        return 0.25f;
-    }
-
-    @Override
-    public float getHeight() {
-        return 0.25f;
     }
 }

@@ -16,6 +16,7 @@ import cn.nukkit.utils.DyeColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author CreeperFace
@@ -32,12 +33,16 @@ public class ItemFirework extends Item {
 
     public ItemFirework(Integer meta, int count) {
         super(FIREWORKS, meta, count, "Fireworks");
+        initNamedTag();
+    }
 
+    public void initNamedTag() {
         if (!hasCompoundTag() || !this.getNamedTag().contains("Fireworks")) {
             CompoundTag tag = getNamedTag();
             if (tag == null) {
                 tag = new CompoundTag();
 
+                Random rand = new Random();
                 CompoundTag ex = new CompoundTag()
                         .putByteArray("FireworkColor", new byte[]{(byte) DyeColor.BLACK.getDyeData()})
                         .putByteArray("FireworkFade", new byte[]{})
@@ -48,6 +53,7 @@ public class ItemFirework extends Item {
                 tag.putCompound("Fireworks", new CompoundTag("Fireworks")
                         .putList(new ListTag<CompoundTag>("Explosions").add(ex))
                         .putByte("Flight", 1)
+                        .putInt("LifeTime", 30 + rand.nextInt(6) + rand.nextInt(7))
                 );
 
                 this.setNamedTag(tag);
@@ -95,6 +101,16 @@ public class ItemFirework extends Item {
         return false;
     }
 
+    public void setLifeTime(int ticks) {
+        initNamedTag();
+        this.getNamedTag().getCompound("Fireworks").putInt("LifeTime", ticks);
+    }
+
+    public int getLifeTime() {
+        initNamedTag();
+        return this.getNamedTag().getCompound("Fireworks").getInt("LifeTime");
+    }
+
     public void addExplosion(FireworkExplosion explosion) {
         List<DyeColor> colors = explosion.getColors();
         List<DyeColor> fades = explosion.getFades();
@@ -127,7 +143,7 @@ public class ItemFirework extends Item {
         this.getNamedTag().getCompound("Fireworks").putList(new ListTag<CompoundTag>("Explosions"));
     }
 
-    private void spawnFirework(Level level, Vector3 pos) {
+    public void spawnFirework(Level level, Vector3 pos) {
         CompoundTag nbt = new CompoundTag()
                 .putList(new ListTag<DoubleTag>("Pos")
                         .add(new DoubleTag("", pos.x + 0.5))
