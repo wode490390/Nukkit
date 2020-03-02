@@ -1,5 +1,5 @@
 {
-  "version": 388,
+  "version": 389,
   "recipes": [
     {
       "id": "Bookshelf_woodplanks_recipeId",
@@ -8768,6 +8768,32 @@
       "priority": 0
     },
     {
+      "id": "minecraft:beehive",
+      "type": 1,
+      "input": {
+        "A": {
+          "id": 5,
+          "damage": -1
+        },
+        "B": {
+          "id": 736,
+          "damage": -1
+        }
+      },
+      "output": [
+        {
+          "id": -219
+        }
+      ],
+      "shape": [
+        "AAA",
+        "BBB",
+        "AAA"
+      ],
+      "block": "crafting_table",
+      "priority": 0
+    },
+    {
       "id": "minecraft:beetroot_soup",
       "type": 0,
       "input": [
@@ -9049,6 +9075,9 @@
         "A": {
           "id": -6,
           "damage": -1
+          ]
+          ]]]]]
+          [p;]
         }
       },
       "output": [
@@ -13913,6 +13942,110 @@
         }
       ],
       "shape": [
+        "AA"
+      ],
+      "block": "crafting_table",
+      "priority": 0
+    },
+    {
+      "id": "minecraft:honey_block",
+      "type": 1,
+      "input": {
+        "A": {
+          "id": 737,
+          "damage": -1
+        }
+      },
+      "output": [
+        {
+          "id": -220
+        },
+        {
+          "id": 374,
+          "count": 4
+        }
+      ],
+      "shape": [
+        "AA",
+        "AA"
+      ],
+      "block": "crafting_table",
+      "priority": 0
+    },
+    {
+      "id": "minecraft:honey_bottle",
+      "type": 0,
+      "input": [
+        {
+          "id": -220,
+          "damage": -1
+        },
+        {
+          "id": 374,
+          "damage": -1
+        },
+        {
+          "id": 374,
+          "damage": -1
+        },
+        {
+          "id": 374,
+          "damage": -1
+        },
+        {
+          "id": 374,
+          "damage": -1
+        }
+      ],
+      "output": [
+        {
+          "id": 737,
+          "count": 4
+        }
+      ],
+      "block": "crafting_table",
+      "priority": 0
+    },
+    {
+      "id": "minecraft:honey_bottle_to_sugar",
+      "type": 1,
+      "input": {
+        "A": {
+          "id": 737,
+          "damage": -1
+        }
+      },
+      "output": [
+        {
+          "id": 353,
+          "count": 3
+        },
+        {
+          "id": 374
+        }
+      ],
+      "shape": [
+        "A"
+      ],
+      "block": "crafting_table",
+      "priority": 0
+    },
+    {
+      "id": "minecraft:honeycomb_block",
+      "type": 1,
+      "input": {
+        "A": {
+          "id": 736,
+          "damage": -1
+        }
+      },
+      "output": [
+        {
+          "id": -221
+        }
+      ],
+      "shape": [
+        "AA",
         "AA"
       ],
       "block": "crafting_table",

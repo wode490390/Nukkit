@@ -2,6 +2,7 @@ package cn.nukkit.inventory;
 
 import cn.nukkit.Server;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemID;
 import cn.nukkit.network.protocol.BatchPacket;
 import cn.nukkit.network.protocol.CraftingDataPacket;
 import cn.nukkit.utils.BinaryStream;
@@ -168,7 +169,7 @@ public class CraftingManager {
             int ingredient = ((Number) potionMix.get("ingredient")).intValue();
             int toPotionId = ((Number) potionMix.get("toPotionId")).intValue();
 
-            registerBrewingRecipe(new BrewingRecipe(Item.get(Item.POTION, fromPotionId), Item.get(ingredient), Item.get(Item.POTION, toPotionId)));
+            registerBrewingRecipe(new BrewingRecipe(Item.get(ItemID.POTION, fromPotionId), Item.get(ingredient), Item.get(ItemID.POTION, toPotionId)));
         }
 
         List<Map> containerMixes = config.getMapList("containerMixes");
