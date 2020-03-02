@@ -1,16 +1,15 @@
 package cn.nukkit.item;
 
-import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockFire;
-import cn.nukkit.block.BlockSolid;
-import cn.nukkit.block.BlockSolidMeta;
-import cn.nukkit.event.block.BlockIgniteEvent;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.sound.SoundEnum;
 import cn.nukkit.math.BlockFace;
-
+import cn.nukkit.level.Level;
+import cn.nukkit.Player;
+import cn.nukkit.block.BlockSolid;
+import cn.nukkit.block.BlockSolidMeta;
 import java.util.concurrent.ThreadLocalRandom;
+import cn.nukkit.event.block.BlockIgniteEvent;
+import cn.nukkit.block.BlockFire;
 
 /**
  * Created by PetteriM1
