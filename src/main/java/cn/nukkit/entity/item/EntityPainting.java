@@ -59,6 +59,12 @@ public class EntityPainting extends EntityHanging {
     }
 
     @Override
+    public void spawnTo(Player player) {
+        player.dataPacket(createAddEntityPacket());
+        super.spawnTo(player);
+    }
+
+    @Override
     public boolean attack(EntityDamageEvent source) {
         if (super.attack(source)) {
             if (source instanceof EntityDamageByEntityEvent) {

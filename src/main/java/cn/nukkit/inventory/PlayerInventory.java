@@ -488,7 +488,7 @@ public class PlayerInventory extends BaseInventory {
         pk.inventoryId = ContainerIds.CREATIVE;
 
         if (!p.isSpectator()) { //fill it for all gamemodes except spectator
-            pk.slots = Item.getCreativeItems().stream().toArray(Item[]::new);
+            pk.slots = p.getCreativeItems().toArray(new Item[0]);
         }
 
         p.dataPacket(pk);

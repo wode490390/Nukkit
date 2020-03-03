@@ -1303,7 +1303,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
             InventoryContentPacket inventoryContentPacket = new InventoryContentPacket();
             inventoryContentPacket.inventoryId = InventoryContentPacket.SPECIAL_CREATIVE;
-            inventoryContentPacket.slots = Item.getCreativeItems().stream().toArray(Item[]::new);
+            inventoryContentPacket.slots = this.getCreativeItems().toArray(new Item[0]);
             this.dataPacket(inventoryContentPacket);
         }
 
@@ -4855,5 +4855,19 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @Override
     public void addMovement(double x, double y, double z, double yaw, double pitch, double headYaw) {
         this.sendPosition(new Vector3(x, y, z), yaw, pitch, MovePlayerPacket.MODE_NORMAL, this.getViewers().values().toArray(new Player[0]));
+    }
+
+    public ArrayList<Item> getCreativeItems() {
+        return Item.getCreativeItems();
+    }
+
+    public int getCreativeItemIndex(Item item) {
+        ArrayList<Item> creative = this.getCreativeItems();
+        for (int i = 0; i < creative.size(); i++) {
+            if (item.equals(creative.get(i), !item.isTool())) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
