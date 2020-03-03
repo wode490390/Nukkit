@@ -108,6 +108,11 @@ public class ItemFirework extends Item {
 
     public int getLifeTime() {
         initNamedTag();
+        if (!this.getNamedTag().getCompound("Fireworks").exist("LifeTime")) {
+            Random rand = new Random();
+            this.getNamedTag().getCompound("Fireworks").putInt("LifeTime", 30 + rand.nextInt(6) + rand.nextInt(7));
+        }
+
         return this.getNamedTag().getCompound("Fireworks").getInt("LifeTime");
     }
 
