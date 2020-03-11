@@ -1,5 +1,6 @@
 package cn.nukkit.entity.projectile;
 
+import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityLiving;
 import cn.nukkit.entity.data.LongEntityData;
@@ -95,7 +96,10 @@ public abstract class EntityProjectile extends Entity {
 
     @Override
     public boolean canCollideWith(Entity entity) {
-        return (entity instanceof EntityLiving || entity instanceof EntityEndCrystal) && !this.onGround;
+        if (this.onGround) return false;
+        if (entity instanceof EntityLiving) {
+            return !(entity instanceof Player) || !((Player) entity).isSpectator();
+        } else return entity instanceof EntityEndCrystal;
     }
 
     @Override
