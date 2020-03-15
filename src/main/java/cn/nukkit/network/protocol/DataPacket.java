@@ -23,6 +23,8 @@ public abstract class DataPacket extends BinaryStream implements Cloneable {
 
     public RakNetReliability reliability = RakNetReliability.RELIABLE_ORDERED;
 
+    public Throwable stack = null;
+
     public abstract int pid();
 
     public abstract void decode();
