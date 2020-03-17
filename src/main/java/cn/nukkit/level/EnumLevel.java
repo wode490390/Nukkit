@@ -19,7 +19,7 @@ public enum EnumLevel {
     public static void initLevels() {
         OVERWORLD.level = Server.getInstance().getDefaultLevel();
 
-        Level netherLevel = Server.getInstance().getLevelByName("nether");
+        Level netherLevel = Server.getInstance().getLevel("nether");
         // attempt to load the nether world if it is allowed in server properties
         if (netherLevel != null && Server.getInstance().isNetherAllowed()) {
             NETHER.level = netherLevel;

@@ -31,6 +31,8 @@ public class PlayerChunkManager {
     private final LongConsumer removeChunkLoader;
     private volatile int radius;
 
+    public final AtomicLong suspendChunksSentCounter = new AtomicLong();
+
     public PlayerChunkManager(Player player) {
         this.player = player;
         this.comparator = new AroundPlayerChunkComparator(player);
@@ -101,6 +103,7 @@ public class PlayerChunkManager {
 
                 chunksPerTick--;
                 this.chunksSentCounter.incrementAndGet();
+                this.suspendChunksSentCounter.incrementAndGet();
             }
         }
     }

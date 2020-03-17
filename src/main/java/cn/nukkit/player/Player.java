@@ -18,6 +18,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityInteractable;
 import cn.nukkit.entity.EntityTypes;
 import cn.nukkit.entity.data.EntityData;
+import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.entity.impl.EntityLiving;
 import cn.nukkit.entity.impl.Human;
@@ -263,6 +264,10 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
 
     protected double lastRightClickTime = 0.0;
     private Vector3i lastBreakPosition = new Vector3i();
+
+    public boolean suspend;
+    public Queue<DataPacket> suspendQueue = new ConcurrentLinkedQueue<>();
+    public boolean needChunkPublisherUpdate;
 
     public int getStartActionTick() {
         return startAction;
@@ -994,6 +999,24 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
             return this.directDataPacket(packet);
         }
 
+        // intercept
+        if (this.suspend) {
+            switch (packet.pid()) {
+                case ProtocolInfo.SET_TIME_PACKET:
+                case ProtocolInfo.LEVEL_EVENT_PACKET:
+                    return false;
+                case ProtocolInfo.UPDATE_BLOCK_PACKET:
+                case ProtocolInfo.SET_ENTITY_MOTION_PACKET:
+                    this.suspendQueue.offer(packet);
+                    return false;
+                case ProtocolInfo.MOVE_PLAYER_PACKET:
+                    MovePlayerPacket pk = (MovePlayerPacket) packet;
+                    if (pk.mode != MovePlayerPacket.MODE_RESET) {
+                        return false;
+                    }
+            }
+        }
+
         DataPacketSendEvent event = new DataPacketSendEvent(this, packet);
         this.server.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -1641,7 +1664,7 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
         startGamePacket.yaw = (float) this.yaw;
         startGamePacket.pitch = (float) this.pitch;
         startGamePacket.seed = -1;
-        startGamePacket.dimension = /*(byte) (this.level.getDimension() & 0xff)*/0;
+        startGamePacket.dimension = (byte) (this.level.getDimension() & 0xff);
         startGamePacket.worldGamemode = getClientFriendlyGamemode(this.gamemode);
         startGamePacket.difficulty = this.server.getDifficulty();
         startGamePacket.spawnX = (int) this.x;
@@ -1703,6 +1726,42 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
         }
 
         try (Timing ignore = Timings.playerNetworkSendTimer.startTiming()) {
+            if (this.suspend) {
+                if (this.needChunkPublisherUpdate) {
+                    NetworkChunkPublisherUpdatePacket packet = new NetworkChunkPublisherUpdatePacket();
+                    packet.position = this.asVector3i();
+                    packet.radius = this.chunkManager.getRadius();
+                    this.dataPacket(packet);
+                }
+
+                long count = this.getChunkManager().suspendChunksSentCounter.get();
+                if (count > 20) {
+                    //this.sendPosition(this, this.yaw, this.pitch, MovePlayerPacket.MODE_RESET);
+                    MovePlayerPacket pk = new MovePlayerPacket();
+                    pk.entityRuntimeId = this.getUniqueId();
+                    pk.x = (float) this.x;
+                    pk.y = (float) this.y + this.getEyeHeight();
+                    pk.z = (float) this.z;
+                    pk.pitch = (float) this.pitch;
+                    pk.yaw = (float) this.yaw;
+                    pk.headYaw = (float) this.yaw;
+                    pk.mode = MovePlayerPacket.MODE_RESET;
+                    pk.onGround = true;
+                    this.dataPacket(pk);
+
+                    this.suspend = false;
+
+                    this.sendAttributes();
+                    this.setFlag(EntityFlag.MOVING, true);
+                    this.setFlag(EntityFlag.MOVING, false);
+                }
+            } else if (!this.suspendQueue.isEmpty()) {
+                DataPacket packet;
+                while ((packet = this.suspendQueue.poll()) != null) {
+                    this.dataPacket(packet);
+                }
+            }
+
             if (!this.outboundQueue.isEmpty()) {
                 Player[] players = new Player[]{this};
                 List<DataPacket> packets = new ArrayList<>(this.outboundQueue.size());
@@ -2430,7 +2489,9 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
                             }
                             break packetswitch;
                         case PlayerActionPacket.ACTION_DIMENSION_CHANGE_ACK:
-                            this.sendPosition(this, this.yaw, this.pitch, MovePlayerPacket.MODE_NORMAL);
+                            //this.sendPosition(this, this.yaw, this.pitch, MovePlayerPacket.MODE_RESET);
+                            this.needChunkPublisherUpdate = false;
+                            log.info("DIMENSION_CHANGE_SUCCESS: {}", this.getName());
                             break; //TODO
                         case PlayerActionPacket.ACTION_START_GLIDE:
                             PlayerToggleGlideEvent playerToggleGlideEvent = new PlayerToggleGlideEvent(this, true);
@@ -4431,13 +4492,15 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
 
     //todo a lot on dimension
 
+    @Deprecated
     private void setDimension(int dimension) {
         ChangeDimensionPacket pk = new ChangeDimensionPacket();
         pk.dimension = dimension;
         pk.x = (float) this.x;
         pk.y = (float) this.y;
         pk.z = (float) this.z;
-        this.directDataPacket(pk);
+        //this.directDataPacket(pk);
+        this.dataPacket(pk);
     }
 
     @Override
@@ -4558,27 +4621,62 @@ public class Player extends Human implements CommandSender, InventoryHolder, Chu
         this.fishing = null;
     }
 
+    static int getDimensionFromName(String name) {
+        switch (name.toLowerCase()) {
+            case "world":
+                return 0;
+            case "nether":
+                return 1;
+            case "the_end":
+                return 2;
+        }
+        return 3;
+    }
+
     @Override
     public boolean switchLevel(Level level) {
         Level oldLevel = this.level;
         if (super.switchLevel(level)) {
-            SetSpawnPositionPacket spawnPosition = new SetSpawnPositionPacket();
+            //int oldDimension = oldLevel.getDimension();
+            //int newDimension = level.getDimension();
+            int oldDimension = getDimensionFromName(oldLevel.getId());
+            int newDimension = getDimensionFromName(level.getId());
+            log.info("{} dimension {} to {}", this.getName(), oldDimension, newDimension);
+
+            if (oldDimension != newDimension) {
+                this.suspend = true;
+
+                ChangeDimensionPacket pk = new ChangeDimensionPacket();
+                pk.dimension = newDimension;
+                pk.x = (float) this.x;
+                pk.y = (float) this.y;
+                pk.z = (float) this.z;
+                pk.respawn = false; // true: 2 to 0
+                //this.directDataPacket(pk);
+                this.dataPacket(pk);
+
+                this.getChunkManager().suspendChunksSentCounter.set(0);
+                this.needChunkPublisherUpdate = true;
+            }
+
+            /*SetSpawnPositionPacket spawnPosition = new SetSpawnPositionPacket();
             spawnPosition.spawnType = SetSpawnPositionPacket.TYPE_WORLD_SPAWN;
             Position spawn = level.getSpawnLocation();
             spawnPosition.x = spawn.getFloorX();
             spawnPosition.y = spawn.getFloorY();
             spawnPosition.z = spawn.getFloorZ();
-            this.dataPacket(spawnPosition);
+            this.dataPacket(spawnPosition);*/
 
             this.getChunkManager().prepareRegion(this.getChunkX(), this.getChunkZ());
 
-            SetTimePacket setTime = new SetTimePacket();
+            /*SetTimePacket setTime = new SetTimePacket();
             setTime.time = level.getTime();
             this.dataPacket(setTime);
 
             GameRulesChangedPacket gameRulesChanged = new GameRulesChangedPacket();
             gameRulesChanged.gameRules = level.getGameRules();
-            this.dataPacket(gameRulesChanged);
+            this.dataPacket(gameRulesChanged);*/
+
             return true;
         }
 
