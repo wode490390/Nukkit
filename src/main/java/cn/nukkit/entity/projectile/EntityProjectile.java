@@ -98,7 +98,9 @@ public abstract class EntityProjectile extends Entity {
     public boolean canCollideWith(Entity entity) {
         if (this.onGround) return false;
         if (entity instanceof EntityLiving) {
-            return !(entity instanceof Player) || !((Player) entity).isSpectator();
+            if (entity instanceof Player) {
+                return !((Player) entity).isSpectator() && !entity.getDataFlag(Entity.DATA_FLAGS, Entity.DATA_FLAG_INVISIBLE);
+            } else return true;
         } else return entity instanceof EntityEndCrystal;
     }
 
