@@ -185,8 +185,8 @@ public class Anvil extends BaseLevelProvider {
                     blobIds.add(hash);
                     clientBlobs.put(hash, biome);
 
-                    byte[] clientBlobCachedPayload = new byte[1 + blockEntities.length]; // borderBlocks + blockEntities
-                    System.arraycopy(blockEntities, 0, clientBlobCachedPayload, 1, blockEntities.length); // borderBlocks array size is always 0, skip it
+                    byte[] clientBlobCachedPayload = new byte[1 + 1 + blockEntities.length]; // borderBlocks + extraData + blockEntities
+                    System.arraycopy(blockEntities, 0, clientBlobCachedPayload, 2, blockEntities.length); // Skip borderBlocks and extraData
 
                     chunkBlobCache = new ChunkBlobCache(count, blobIds.toLongArray(), clientBlobs, clientBlobCachedPayload);
 
