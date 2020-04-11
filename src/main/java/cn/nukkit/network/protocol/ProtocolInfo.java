@@ -165,5 +165,7 @@ public interface ProtocolInfo {
     int PACKET_NETEASE_JSON = 0xcb;
     int PACKET_CHANGE_MODEL_TEXTURE = 0xcc;
 
+    int CONFIRM_SKIN_PACKET = 0xe4;
+
     int BATCH_PACKET = 0xfe;
 }

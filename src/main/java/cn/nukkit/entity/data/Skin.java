@@ -36,6 +36,7 @@ public class Skin {
     public static final String GEOMETRY_CUSTOM = convertLegacyGeometryName("geometry.humanoid.custom");
     public static final String GEOMETRY_CUSTOM_SLIM = convertLegacyGeometryName("geometry.humanoid.customSlim");
 
+    private boolean playerSkin = false; //如果是玩家皮肤，那么需要根据中国版规则进行皮肤反作弊检测
     private String skinId;
     private String skinResourcePatch = GEOMETRY_CUSTOM;
     private SerializedImage skinData;
@@ -101,6 +102,15 @@ public class Skin {
             return SerializedImage.EMPTY;
         }
         return skinData;
+    }
+
+    public boolean isPlayerSkin() {
+        return playerSkin;
+    }
+
+    public Skin setPlayerSkin(boolean playerSkin) {
+        this.playerSkin = playerSkin;
+        return this;
     }
 
     public String getSkinId() {
