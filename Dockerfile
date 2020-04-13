@@ -3,7 +3,7 @@
 # Requires Docker v17.05
 
 # Use OpenJDK JDK image for intermiediate build
-FROM openjdk:8-jdk-slim AS build
+FROM openjdk:11-jdk-slim AS build
 
 # Install packages required for build
 RUN apt-get -y update 
@@ -24,7 +24,7 @@ RUN git submodule update --init
 RUN mvn clean package
 
 # Use OpenJDK JRE image for runtime
-FROM openjdk:8-jre-slim AS run
+FROM openjdk:11-jre-slim AS run
 LABEL maintainer="Micheal Waltz <dockerfiles@ecliptik.com>"
 
 # Copy artifact from build image
