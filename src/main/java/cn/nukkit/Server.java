@@ -848,7 +848,8 @@ public class Server {
     }
 
     public void onPlayerCompleteLoginSequence(Player player) {
-        this.sendFullPlayerListData(player);
+        //在EntityHuman中会发送各自的皮肤的，这里不需要发送全部
+        //this.sendFullPlayerListData(player);
     }
 
     public void onPlayerLogin(Player player) {

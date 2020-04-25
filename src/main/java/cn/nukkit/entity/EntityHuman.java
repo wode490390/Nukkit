@@ -272,6 +272,8 @@ public class EntityHuman extends EntityHumanType {
             pk.eid = this.getId();
             player.dataPacket(pk);
             this.hasSpawned.remove(player.getLoaderId());
+
+            if (this instanceof Player) this.server.removePlayerListData(this.getUniqueId(), new Player[]{player});
         }
     }
 
