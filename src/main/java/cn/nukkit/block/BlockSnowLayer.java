@@ -37,6 +37,11 @@ public class BlockSnowLayer extends BlockFallable {
     }
 
     @Override
+    public int getFullId() {
+        return (this.getId() << 4) + this.getDamage();
+    }
+
+    @Override
     public String getName() {
         return "Snow Layer";
     }
