@@ -122,6 +122,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public static final int ENCHANT_WINDOW_ID = 3;
     public static final int BEACON_WINDOW_ID = 4;
 
+    public int protocol = ProtocolInfo.CURRENT_PROTOCOL;
+
     protected final SourceInterface interfaz;
 
     public boolean playedBefore;
@@ -1033,6 +1035,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return false;
         }
 
+        packet.version = this.protocol;
+
         try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
             DataPacketSendEvent event = new DataPacketSendEvent(this, packet);
             this.server.getPluginManager().callEvent(event);
@@ -1064,6 +1068,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (!this.connected) {
             return -1;
         }
+
+        packet.version = this.protocol;
 
         try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
             DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
@@ -1101,6 +1107,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (!this.connected) {
             return -1;
         }
+
+        packet.version = this.protocol;
 
         try (Timing timing = Timings.getSendDataPacketTiming(packet)) {
             DataPacketSendEvent ev = new DataPacketSendEvent(this, packet);
@@ -2136,6 +2144,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         this.close("", message, false);
                         break;
                     }
+
+                    this.protocol = Math.max(loginPacket.protocol, 389);
 
                     this.username = TextFormat.clean(loginPacket.username);
                     this.displayName = this.username;

@@ -39,7 +39,7 @@ public class LoginPacket extends DataPacket {
             setOffset(getOffset() + 2);
             this.protocol = getInt();
         }
-        if (protocol != ProtocolInfo.CURRENT_PROTOCOL) {
+        if (protocol < 388) {
             // decoding the chain could cause issues on newer or older versions.
             return;
         }

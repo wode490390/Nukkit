@@ -33,7 +33,11 @@ public class PlayerSkinPacket extends DataPacket {
     public void encode() {
         reset();
         putUUID(uuid);
-        putSkin(skin);
+        if (this.version >= ProtocolInfo.CURRENT_PROTOCOL) {
+            putSkin(skin);
+        } else {
+            putSkinV389(skin);
+        }
         putString(newSkinName);
         putString(oldSkinName);
         putBoolean(skin.isTrusted());

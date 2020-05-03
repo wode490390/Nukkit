@@ -56,6 +56,7 @@ import cn.nukkit.network.SourceInterface;
 import cn.nukkit.network.protocol.BatchPacket;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.PlayerListPacket;
+import cn.nukkit.network.protocol.PlayerSkinPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.network.query.QueryHandler;
 import cn.nukkit.network.rcon.RCON;
@@ -677,6 +678,42 @@ public class Server {
             return;
         }
 
+        int version = 389;
+        for (DataPacket pk : packets) {
+            if (pk instanceof PlayerListPacket || pk instanceof PlayerSkinPacket) {
+                version = Math.max(version, pk.version);
+            }
+        }
+
+        List<Player> old = new ArrayList<>();
+        List<String> targets = new ArrayList<>();
+        for (Player p : players) {
+            if (p.isConnected()) {
+                if (p.protocol < version) {
+                    old.add(p);
+                } else {
+                    targets.add(this.identifier.get(p.rawHashCode()));
+                }
+            }
+        }
+
+        if (!old.isEmpty()) {
+            int protocol = old.get(0).protocol;
+            int len = packets.length;
+            DataPacket[] pks = new DataPacket[len];
+            for (int i = 0; i < len; i++) {
+                DataPacket pk = packets[i].clone();
+                pk.setBuffer(new byte[32], 0);
+                pk.isEncoded = false;
+                pk.version = protocol;
+                pks[i] = pk;
+            }
+            this.batchPackets(old.toArray(new Player[0]), pks, forceSync);
+        }
+        if (targets.isEmpty()) {
+            return;
+        }
+
         Timings.playerNetworkSendTimer.startTiming();
         byte[][] payload = new byte[packets.length * 2][];
         int size = 0;
@@ -691,13 +728,6 @@ public class Server {
             packets[i] = null;
             size += payload[i * 2].length;
             size += payload[i * 2 + 1].length;
-        }
-
-        List<String> targets = new ArrayList<>();
-        for (Player p : players) {
-            if (p.isConnected()) {
-                targets.add(this.identifier.get(p.rawHashCode()));
-            }
         }
 
         if (!forceSync && this.networkCompressionAsync) {

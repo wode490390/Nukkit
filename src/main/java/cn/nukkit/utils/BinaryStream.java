@@ -303,6 +303,29 @@ public class BinaryStream {
         }
     }
 
+    public void putSkinV389(Skin skin) {
+        this.putString(skin.getSkinId());
+        this.putString(skin.getSkinResourcePatch());
+        this.putImage(skin.getSkinData());
+
+        List<SkinAnimation> animations = skin.getAnimations();
+        this.putLInt(animations.size());
+        for (SkinAnimation animation : animations) {
+            this.putImage(animation.image);
+            this.putLInt(animation.type);
+            this.putLFloat(animation.frames);
+        }
+
+        this.putImage(skin.getCapeData());
+        this.putString(skin.getGeometryData());
+        this.putString(skin.getAnimationData());
+        this.putBoolean(skin.isPremium());
+        this.putBoolean(skin.isPersona());
+        this.putBoolean(skin.isCapeOnClassic());
+        this.putString(skin.getCapeId());
+        this.putString(skin.getFullSkinId());
+    }
+
     public Skin getSkin() {
         Skin skin = new Skin();
         skin.setSkinId(this.getString());
