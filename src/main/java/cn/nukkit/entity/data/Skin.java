@@ -1,9 +1,7 @@
 package cn.nukkit.entity.data;
 
 import cn.nukkit.nbt.stream.FastByteArrayOutputStream;
-import cn.nukkit.utils.Binary;
-import cn.nukkit.utils.SerializedImage;
-import cn.nukkit.utils.SkinAnimation;
+import cn.nukkit.utils.*;
 import com.google.common.base.Preconditions;
 import lombok.ToString;
 import net.minidev.json.JSONObject;
@@ -41,6 +39,8 @@ public class Skin {
     private String skinResourcePatch = GEOMETRY_CUSTOM;
     private SerializedImage skinData;
     private final List<SkinAnimation> animations = new ArrayList<>();
+    private final List<PersonaPiece> personaPieces = new ArrayList<>();
+    private final List<PersonaPieceTint> tintColors = new ArrayList<>();
     private SerializedImage capeData;
     private String geometryData;
     private String animationData;
@@ -48,6 +48,9 @@ public class Skin {
     private boolean persona;
     private boolean capeOnClassic;
     private String capeId;
+    private String skinColor = "#0";
+    private String armSize = "wide";
+    private boolean trusted = true;
 
     static {
         Arrays.fill(FULL_WHITE_SKIN, (byte) 0xff);
@@ -277,6 +280,14 @@ public class Skin {
         return animations;
     }
 
+    public List<PersonaPiece> getPersonaPieces() {
+        return personaPieces;
+    }
+
+    public List<PersonaPieceTint> getTintColors() {
+        return tintColors;
+    }
+
     public boolean isPremium() {
         return premium;
     }
@@ -302,6 +313,30 @@ public class Skin {
     public Skin setCapeOnClassic(boolean capeOnClassic) {
         this.capeOnClassic = capeOnClassic;
         return this;
+    }
+
+    public boolean isTrusted() {
+        return trusted;
+    }
+
+    public void setTrusted(boolean trusted) {
+        this.trusted = trusted;
+    }
+
+    public String getSkinColor() {
+        return skinColor;
+    }
+
+    public void setSkinColor(String skinColor) {
+        this.skinColor = skinColor;
+    }
+
+    public String getArmSize() {
+        return armSize;
+    }
+
+    public void setArmSize(String armSize) {
+        this.armSize = armSize;
     }
 
     public String getFullSkinId() {
