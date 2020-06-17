@@ -32,9 +32,4 @@ public class BlockChorusFlower extends BlockTransparent {
     public int getToolType() {
         return ItemTool.TYPE_NONE;
     }
-
-    @Override
-    public Item[] getDrops(Item item) {
-        return new Item[0];
-    }
 }
