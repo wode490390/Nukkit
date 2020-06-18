@@ -172,9 +172,14 @@ public class Anvil extends BaseLevelProvider {
                     Long2ObjectOpenHashMap<byte[]> clientBlobs = new Long2ObjectOpenHashMap<>(16 + 1); // 16 subChunk + 1 biome
 
                     LongList blobIds = new LongArrayList();
+                    BinaryStream bs = new BinaryStream();
                     for (int i = 0; i < count; i++) {
-                        byte[] subChunk = new byte[6145]; // 1 subChunkVersion (always 0) + 4096 blockIds + 2048 blockMeta
-                        System.arraycopy(sections[i].getBytes(), 0, subChunk, 1, 6144); // skip subChunkVersion
+                        //byte[] subChunk = new byte[6145]; // 1 subChunkVersion (always 0) + 4096 blockIds + 2048 blockMeta
+                        bs.reset();
+                        //bs.putByte((byte) 0);
+                        sections[i].writeTo(bs);
+                        //System.arraycopy(sections[i].getBytes(), 0, subChunk, 1, 6144); // skip subChunkVersion
+                        byte[] subChunk = bs.getBuffer();
                         long hash = XXHash64.getHash(subChunk);
                         blobIds.add(hash);
                         clientBlobs.put(hash, subChunk);
@@ -219,8 +224,9 @@ public class Anvil extends BaseLevelProvider {
         stream.reset();
         if (isOld) stream.putByte((byte) count);  //count is now sent in packet
         for (int i = 0; i < count; i++) {
-            stream.putByte((byte) 0);
-            stream.put(sections[i].getBytes());
+            //stream.putByte((byte) 0);
+            sections[i].writeTo(stream);
+            //stream.put(sections[i].getBytes());
         }
         if (isOld) {
             for (byte height : chunk.getHeightMapArray()) {

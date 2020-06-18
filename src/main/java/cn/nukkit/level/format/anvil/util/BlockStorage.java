@@ -1,5 +1,9 @@
 package cn.nukkit.level.format.anvil.util;
 
+import cn.nukkit.Server;
+import cn.nukkit.level.GlobalBlockPalette;
+import cn.nukkit.level.util.PalettedBlockStorage;
+import cn.nukkit.utils.BinaryStream;
 import com.google.common.base.Preconditions;
 
 import java.util.Arrays;
@@ -89,6 +93,20 @@ public class BlockStorage {
 
     public byte[] getBlockData() {
         return blockData.getData();
+    }
+
+    public void writeTo(BinaryStream stream) {
+        PalettedBlockStorage storage = new PalettedBlockStorage();
+        for (int i = 0; i < SECTION_SIZE; i++) {
+            int runtimeId = 0;
+            try {
+                runtimeId = GlobalBlockPalette.getOrCreateRuntimeId(blockIds[i] & 0xff, blockData.get(i));
+            } catch (Exception e) {
+                Server.getInstance().getLogger().logException(e);
+            }
+            storage.setBlock(i, runtimeId);
+        }
+        storage.writeTo(stream);
     }
 
     public BlockStorage copy() {
