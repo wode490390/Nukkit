@@ -222,11 +222,17 @@ public class Anvil extends BaseLevelProvider {
     private byte[] encodeChunk(boolean isOld, Chunk chunk, cn.nukkit.level.format.ChunkSection[] sections, int count, BinaryStream extraData, byte[] blockEntities) {
         BinaryStream stream = ThreadCache.binaryStream.get();
         stream.reset();
-        if (isOld) stream.putByte((byte) count);  //count is now sent in packet
-        for (int i = 0; i < count; i++) {
-            //stream.putByte((byte) 0);
-            sections[i].writeTo(stream);
-            //stream.put(sections[i].getBytes());
+        if (isOld) {
+            stream.putByte((byte) count);  //count is now sent in packet
+            for (int i = 0; i < count; i++) {
+                stream.putByte((byte) 0);
+                if (sections[i] instanceof ChunkSection) ((ChunkSection) sections[i]).writeToOld(stream);
+                else sections[i].writeTo(stream);
+            }
+        } else {
+            for (int i = 0; i < count; i++) {
+                sections[i].writeTo(stream);
+            }
         }
         if (isOld) {
             for (byte height : chunk.getHeightMapArray()) {

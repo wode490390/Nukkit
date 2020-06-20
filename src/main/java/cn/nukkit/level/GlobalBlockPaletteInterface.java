@@ -4,8 +4,8 @@ import java.util.NoSuchElementException;
 
 public interface GlobalBlockPaletteInterface {
 
-    int getOrCreateRuntimeId0(int protocol, int id, int meta);
+    int getOrCreateRuntimeId0(int id, int meta);
 
-    int getOrCreateRuntimeId0(int protocol, int legacyId) throws NoSuchElementException;
+    int getOrCreateRuntimeId0(int legacyId) throws NoSuchElementException;
 
 }

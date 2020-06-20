@@ -316,8 +316,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         return buffer;
     }
 
-    /*
-    public void writeTo(BinaryStream stream) {
+    public void writeToOld(BinaryStream stream) {
         synchronized (storage) {
 
             byte[] ids = storage.getBlockIds();
@@ -328,7 +327,7 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
             System.arraycopy(data, 0, merged, ids.length, data.length);
             stream.put(merged);
         }
-    }*/
+    }
 
     @Override
     public void writeTo(BinaryStream stream) {

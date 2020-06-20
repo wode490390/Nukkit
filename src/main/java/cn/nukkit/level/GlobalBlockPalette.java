@@ -69,7 +69,7 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
     }
 
     @Override
-    public int getOrCreateRuntimeId0(int protocol, int id, int meta) {
+    public int getOrCreateRuntimeId0(int id, int meta) {
         int legacyId = id << 6 | meta;
         int runtimeId = legacyToRuntimeId.get(legacyId);
         if (runtimeId == -1) {
@@ -82,18 +82,18 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
     }
 
     @Override
-    public int getOrCreateRuntimeId0(int protocol, int legacyId) throws NoSuchElementException {
+    public int getOrCreateRuntimeId0(int legacyId) throws NoSuchElementException {
         return getOrCreateRuntimeId0(legacyId >> 4, legacyId & 0xf);
     }
 
     //外部直接调用这两个方法
 
-    public static int getOrCreateRuntimeId(int protocol, int id, int meta) {
-        return instance.getOrCreateRuntimeId0(protocol, id, meta);
+    public static int getOrCreateRuntimeId(int id, int meta) {
+        return instance.getOrCreateRuntimeId0(id, meta);
     }
 
-    public static int getOrCreateRuntimeId(int protocol, int legacyId) throws NoSuchElementException {
-        return instance.getOrCreateRuntimeId0(protocol, legacyId);
+    public static int getOrCreateRuntimeId(int legacyId) throws NoSuchElementException {
+        return instance.getOrCreateRuntimeId0(legacyId);
     }
 
 }

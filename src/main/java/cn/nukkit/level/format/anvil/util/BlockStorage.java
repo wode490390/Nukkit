@@ -102,7 +102,7 @@ public class BlockStorage {
             try {
                 runtimeId = GlobalBlockPalette.getOrCreateRuntimeId(blockIds[i] & 0xff, blockData.get(i));
             } catch (Exception e) {
-                Server.getInstance().getLogger().logException(e);
+                //Server.getInstance().getLogger().logException(e);
             }
             storage.setBlock(i, runtimeId);
         }
