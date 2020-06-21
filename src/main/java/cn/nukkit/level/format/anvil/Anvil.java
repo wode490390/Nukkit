@@ -227,7 +227,7 @@ public class Anvil extends BaseLevelProvider {
             for (int i = 0; i < count; i++) {
                 stream.putByte((byte) 0);
                 if (sections[i] instanceof ChunkSection) ((ChunkSection) sections[i]).writeToOld(stream);
-                else sections[i].writeTo(stream);
+                else if (sections[i] instanceof EmptyChunkSection) ((EmptyChunkSection) sections[i]).writeToOld(stream);
             }
         } else {
             for (int i = 0; i < count; i++) {
@@ -242,11 +242,12 @@ public class Anvil extends BaseLevelProvider {
         }
         stream.put(chunk.getBiomeIdArray());
         stream.putByte((byte) 0);
+        /*
         if (extraData != null) {
             stream.put(extraData.getBuffer());
         } else {
             stream.putVarInt(0);
-        }
+        }*/
         stream.put(blockEntities);
 
         return stream.getBuffer();

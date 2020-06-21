@@ -1,6 +1,5 @@
 package cn.nukkit.level.format.anvil.util;
 
-import cn.nukkit.Server;
 import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.util.PalettedBlockStorage;
 import cn.nukkit.utils.BinaryStream;

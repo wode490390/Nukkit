@@ -2048,15 +2048,19 @@ public abstract class Entity extends Location implements Metadatable {
     }
 
     public void setDataFlag(int propertyId, int id, boolean value) {
+        this.setDataFlag(propertyId, id, value, true);
+    }
+
+    public void setDataFlag(int propertyId, int id, boolean value, boolean send) {
         if (this.getDataFlag(propertyId, id) != value) {
             if (propertyId == EntityHuman.DATA_PLAYER_FLAGS) {
                 byte flags = (byte) this.getDataPropertyByte(propertyId);
                 flags ^= 1 << id;
-                this.setDataProperty(new ByteEntityData(propertyId, flags));
+                this.setDataProperty(new ByteEntityData(propertyId, flags), send);
             } else {
                 long flags = this.getDataPropertyLong(propertyId);
                 flags ^= 1L << id;
-                this.setDataProperty(new LongEntityData(propertyId, flags));
+                this.setDataProperty(new LongEntityData(propertyId, flags), send);
             }
 
         }
