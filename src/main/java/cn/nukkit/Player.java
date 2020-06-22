@@ -911,7 +911,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         pos = respawnEvent.getRespawnPosition();
 
-        if (this.getHealth() <= 0) {
+        if (this.getHealth() < 1) {
             RespawnPacket respawnPacket = new RespawnPacket();
             pos = this.getSpawn();
             respawnPacket.x = (float) pos.x;
@@ -1660,8 +1660,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.lastUpdate = currentTick;
 
-        if (this.fishing != null) {
-            if (this.distance(fishing) > 80) {
+        if (this.fishing != null && this.server.getTick() % 20 == 0) {
+            if (this.distance(fishing) > 33) {
                 this.stopFishing(false);
             }
         }
@@ -1721,7 +1721,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                         boolean ignore = block == Block.LADDER || block == Block.VINES || block == Block.COBWEB;
 
                         if (!this.hasEffect(Effect.JUMP) && diff > 0.6 && expectedVelocity < this.speed.y && !ignore) {
-                            if (this.inAirTicks < 100) {
+                            if (this.inAirTicks < 150) {
                                 this.setMotion(new Vector3(0, expectedVelocity, 0));
                             } else if (this.kick(PlayerKickEvent.Reason.FLYING_DISABLED, "Flying is not enabled on this server")) {
                                 return false;
@@ -2052,7 +2052,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         spawnPosition.level.sendTime(this);
 
-        this.setMovementSpeed(DEFAULT_SPEED);
         this.sendAttributes();
         this.setNameTagVisible(true);
         this.setNameTagAlwaysVisible(true);
@@ -4844,6 +4843,18 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
 
         this.fishing = null;
+    }
+
+    @Override
+    public boolean doesTriggerPressurePlate() {
+        return this.gamemode != SPECTATOR;
+    }
+
+    @Override
+    public String toString() {
+        return "Player(name='" + getName() +
+                "', location=" + super.toString() +
+                ')';
     }
 
     @Override

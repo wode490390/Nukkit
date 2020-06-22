@@ -4,6 +4,8 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockChorusPlant extends BlockTransparent {
 
     public BlockChorusPlant() {
@@ -36,7 +38,7 @@ public class BlockChorusPlant extends BlockTransparent {
 
     @Override
     public Item[] getDrops(Item item) {
-        return new Item[0];
+        return ThreadLocalRandom.current().nextBoolean() ? new Item[]{Item.get(Item.CHORUS_FRUIT, 0, 1)} : new Item[0];
     }
 
     @Override

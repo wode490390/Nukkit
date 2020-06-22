@@ -23,7 +23,7 @@ public class ItemBanner extends Item {
     public ItemBanner(Integer meta, int count) {
         super(BANNER, meta, count, "Banner");
         this.block = Block.get(Block.STANDING_BANNER);
-        this.correctNBT();
+        //this.correctNBT(); // it seems to be causing crashes when crafting banners
     }
 
     @Override
