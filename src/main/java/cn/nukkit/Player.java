@@ -896,10 +896,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     }
 
     protected void doFirstSpawn() {
-
-        this.setEnableClientCommand(true);
-        this.getAdventureSettings().update();
-
         this.sendPotionEffects(this);
         this.sendData(this);
 
@@ -1168,12 +1164,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             level = ((Position) pos).getLevel();
         }
         this.spawnPosition = new Position(pos.x, pos.y, pos.z, level);
-        SetSpawnPositionPacket pk = new SetSpawnPositionPacket();
-        pk.spawnType = SetSpawnPositionPacket.TYPE_PLAYER_SPAWN;
-        pk.x = (int) this.spawnPosition.x;
-        pk.y = (int) this.spawnPosition.y;
-        pk.z = (int) this.spawnPosition.z;
-        this.dataPacket(pk);
+        if (this.isOnline()) {
+            SetSpawnPositionPacket pk = new SetSpawnPositionPacket();
+            pk.spawnType = SetSpawnPositionPacket.TYPE_PLAYER_SPAWN;
+            pk.x = (int) this.spawnPosition.x;
+            pk.y = (int) this.spawnPosition.y;
+            pk.z = (int) this.spawnPosition.z;
+            this.dataPacket(pk);
+        }
     }
 
     public void stopSleep() {
