@@ -177,7 +177,7 @@ public class Anvil extends BaseLevelProvider {
                         //byte[] subChunk = new byte[6145]; // 1 subChunkVersion (always 0) + 4096 blockIds + 2048 blockMeta
                         bs.reset();
                         //bs.putByte((byte) 0);
-                        sections[i].writeTo(bs);
+                        sections[i].writeToCache(bs);
                         //System.arraycopy(sections[i].getBytes(), 0, subChunk, 1, 6144); // skip subChunkVersion
                         byte[] subChunk = bs.getBuffer();
                         long hash = XXHash64.getHash(subChunk);

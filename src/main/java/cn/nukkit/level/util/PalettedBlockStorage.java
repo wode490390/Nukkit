@@ -1,11 +1,20 @@
 package cn.nukkit.level.util;
 
+import cn.nukkit.level.GlobalBlockPalette;
+import cn.nukkit.nbt.NBTIO;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.BinaryStream;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.extern.log4j.Log4j2;
 
+import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.IntConsumer;
 
+@Log4j2
 public class PalettedBlockStorage {
 
     private static final int SIZE = 4096;
@@ -50,6 +59,29 @@ public class PalettedBlockStorage {
 
         stream.putVarInt(palette.size());
         palette.forEach((IntConsumer) stream::putVarInt);
+    }
+
+    public void writeToCache(BinaryStream stream) {
+        stream.putByte((byte) getPaletteHeader(bitArray.getVersion(), false));
+
+        for (int word : bitArray.getWords()) {
+            stream.putLInt(word);
+        }
+
+        stream.putVarInt(palette.size());
+        List<CompoundTag> tagList = new ArrayList<>();
+        for (int runtimeId : palette) {
+            //tagList.add(GlobalBlockPalette.getState(runtimeId));
+            int legacyId = GlobalBlockPalette.getLegacyId(runtimeId);
+            tagList.add(new CompoundTag()
+                    .putString("name", GlobalBlockPalette.getName(runtimeId))
+                    .putShort("val", legacyId & 0x3f));
+        }
+        try {
+            stream.put(NBTIO.write(tagList, ByteOrder.LITTLE_ENDIAN, true));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void onResize(BitArrayVersion version) {

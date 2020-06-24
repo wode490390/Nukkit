@@ -7,6 +7,11 @@ import cn.nukkit.nbt.tag.ListTag;
 import com.google.common.io.ByteStreams;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,6 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Log4j2
 public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
 
     private static GlobalBlockPaletteInterface instance = new GlobalBlockPalette();
@@ -26,12 +32,16 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
 
     private final Int2IntMap legacyToRuntimeId = new Int2IntOpenHashMap();
     private final Int2IntMap runtimeIdToLegacy = new Int2IntOpenHashMap();
+    private final Int2ObjectMap<String> runtimeIdToString = new Int2ObjectOpenHashMap<>();
+    private final Object2IntMap<String> stringToRuntimeId = new Object2IntOpenHashMap<>();
+    private final Int2ObjectMap<CompoundTag> runtimeIdToState = new Int2ObjectOpenHashMap<>();
     private final AtomicInteger runtimeIdAllocator = new AtomicInteger(0);
     public final byte[] BLOCK_PALETTE;
 
     public GlobalBlockPalette() {
         legacyToRuntimeId.defaultReturnValue(-1);
         runtimeIdToLegacy.defaultReturnValue(-1);
+        stringToRuntimeId.defaultReturnValue(-1);
 
         ListTag<CompoundTag> tag;
         try (InputStream stream = Server.class.getClassLoader().getResourceAsStream("runtime_block_states.dat")) {
@@ -46,6 +56,12 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
 
         for (CompoundTag state : tag.getAll()) {
             int runtimeId = runtimeIdAllocator.getAndIncrement();
+            runtimeIdToState.put(runtimeId, state);
+
+            String name = state.getCompound("block").getString("name");
+            stringToRuntimeId.putIfAbsent(name, runtimeId);
+            runtimeIdToString.putIfAbsent(runtimeId, name);
+
             if (!state.contains("LegacyStates")) continue;
 
             List<CompoundTag> legacyStates = state.getList("LegacyStates", CompoundTag.class).getAll();
@@ -58,7 +74,7 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
                 int legacyId = legacyState.getInt("id") << 6 | legacyState.getShort("val");
                 legacyToRuntimeId.put(legacyId, runtimeId);
             }
-            state.remove("meta"); // No point in sending this since the client doesn't use it.
+            //state.remove("LegacyStates"); // No point in sending this since the client doesn't use it.
         }
 
         try {
@@ -86,7 +102,22 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
         return getOrCreateRuntimeId0(legacyId >> 4, legacyId & 0xf);
     }
 
-    //外部直接调用这两个方法
+    @Override
+    public int getLegacyId0(int runtimeId) {
+        return runtimeIdToLegacy.get(runtimeId);
+    }
+
+    @Override
+    public String getName0(int runtimeId) {
+        String name = runtimeIdToString.get(runtimeId);
+        return name == null ? "minecraft:air" : name;
+    }
+
+    public CompoundTag getState0(int runtimeId) {
+        return runtimeIdToState.get(runtimeId);
+    }
+
+    //外部直接调用下面几个方法
 
     public static int getOrCreateRuntimeId(int id, int meta) {
         return instance.getOrCreateRuntimeId0(id, meta);
@@ -96,4 +127,11 @@ public class GlobalBlockPalette implements GlobalBlockPaletteInterface {
         return instance.getOrCreateRuntimeId0(legacyId);
     }
 
+    public static int getLegacyId(int runtimeId) {
+        return instance.getLegacyId0(runtimeId);
+    }
+
+    public static String getName(int id) {
+        return instance.getName0(id);
+    }
 }

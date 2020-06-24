@@ -339,6 +339,16 @@ public class ChunkSection implements cn.nukkit.level.format.ChunkSection {
         }
     }
 
+    @Override
+    public void writeToCache(BinaryStream stream) {
+        synchronized (storage) {
+            stream.putByte((byte) 8); // Paletted chunk because Mojang messed up the old one
+            stream.putByte((byte) 2);
+            this.storage.writeToCache(stream);
+            EMPTY_STORAGE.writeToCache(stream);
+        }
+    }
+
     public boolean compress() {
         if (blockLight != null) {
             byte[] arr1 = blockLight;
