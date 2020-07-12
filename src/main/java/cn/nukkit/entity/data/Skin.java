@@ -84,7 +84,7 @@ public class Skin {
 
     private boolean isValidSkin() {
         return skinData != null && skinData.width >= 64 && skinData.height >= 32 &&
-                skinData.data.length >= SINGLE_SKIN_SIZE;
+                skinData.data.length >= SINGLE_SKIN_SIZE && skinData.data.length == skinData.width * skinData.height * 4;
     }
 
     private boolean isValidResourcePatch() {
