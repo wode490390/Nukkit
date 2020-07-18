@@ -341,7 +341,8 @@ public class Skin {
 
     public String getFullSkinId() {
         String skinId = getSkinId();
-        return UUID.nameUUIDFromBytes(Binary.appendBytes(skinId.getBytes(), getSkinData().data)).toString(); //TODO: Client sends full skin ID as normal skin ID. Find out what this is actually for.
+        String full = UUID.nameUUIDFromBytes(Binary.appendBytes(skinId.getBytes(), getSkinData().data)).toString();
+        return full; //TODO: Client sends full skin ID as normal skin ID. Find out what this is actually for.
     }
 
     private static SerializedImage parseBufferedImage(BufferedImage image) {
