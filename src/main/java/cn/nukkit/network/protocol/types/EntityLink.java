@@ -10,13 +10,11 @@ public class EntityLink {
     public long toEntityUniquieId;
     public byte type;
     public boolean immediate;
-    public boolean riderInitiated;
 
-    public EntityLink(long fromEntityUniquieId, long toEntityUniquieId, byte type, boolean immediate, boolean riderInitiated) {
+    public EntityLink(long fromEntityUniquieId, long toEntityUniquieId, byte type, boolean immediate) {
         this.fromEntityUniquieId = fromEntityUniquieId;
         this.toEntityUniquieId = toEntityUniquieId;
         this.type = type;
         this.immediate = immediate;
-        this.riderInitiated = riderInitiated;
     }
 }

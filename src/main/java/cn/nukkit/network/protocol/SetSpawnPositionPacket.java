@@ -17,7 +17,7 @@ public class SetSpawnPositionPacket extends DataPacket {
     public int y;
     public int z;
     public int x;
-    public int dimension = 0;
+    public boolean spawnForced = false;
 
     @Override
     public void decode() {
@@ -29,8 +29,7 @@ public class SetSpawnPositionPacket extends DataPacket {
         this.reset();
         this.putVarInt(this.spawnType);
         this.putBlockVector3(this.x, this.y, this.z);
-        this.putVarInt(dimension);
-        this.putBlockVector3(this.x, this.y, this.z);
+        this.putBoolean(this.spawnForced);
     }
 
     @Override

@@ -243,8 +243,6 @@ public class Server {
 
     private PlayerDataSerializer playerDataSerializer = new DefaultPlayerDataSerializer(this);
 
-    private final Set<String> ignoredPackets = new HashSet<>();
-
     Server(final String filePath, String dataPath, String pluginPath, String predefinedLanguage) {
         Preconditions.checkState(instance == null, "Already initialized!");
         currentThread = Thread.currentThread(); // Saves the current thread instance as a reference, used in Server#isPrimaryThread()
@@ -324,20 +322,6 @@ public class Server {
 
         log.info("Loading {} ...", TextFormat.GREEN + "nukkit.yml" + TextFormat.WHITE);
         this.config = new Config(this.dataPath + "nukkit.yml", Config.YAML);
-
-        Nukkit.DEBUG = NukkitMath.clamp(this.getConfig("debug.level", 1), 1, 3);
-
-        int logLevel = (Nukkit.DEBUG + 3) * 100;
-        org.apache.logging.log4j.Level currentLevel = Nukkit.getLogLevel();
-        for (org.apache.logging.log4j.Level level : org.apache.logging.log4j.Level.values()) {
-            if (level.intLevel() == logLevel && level.intLevel() > currentLevel.intLevel()) {
-                Nukkit.setLogLevel(level);
-                break;
-            }
-        }
-
-        ignoredPackets.addAll(getConfig().getStringList("debug.ignored-packets"));
-        ignoredPackets.add("BatchPacket");
 
         log.info("Loading {} ...", TextFormat.GREEN + "server.properties" + TextFormat.WHITE);
         this.properties = new Config(this.dataPath + "server.properties", Config.PROPERTIES, new ConfigSection() {
@@ -430,6 +414,17 @@ public class Server {
 
         if (this.getPropertyBoolean("hardcore", false) && this.getDifficulty() < 3) {
             this.setPropertyInt("difficulty", 3);
+        }
+
+        Nukkit.DEBUG = NukkitMath.clamp(this.getConfig("debug.level", 1), 1, 3);
+
+        int logLevel = (Nukkit.DEBUG + 3) * 100;
+        org.apache.logging.log4j.Level currentLevel = Nukkit.getLogLevel();
+        for (org.apache.logging.log4j.Level level : org.apache.logging.log4j.Level.values()) {
+            if (level.intLevel() == logLevel && level.intLevel() > currentLevel.intLevel()) {
+                Nukkit.setLogLevel(level);
+                break;
+            }
         }
 
         boolean bugReport;
@@ -710,7 +705,7 @@ public class Server {
         } else {
             try {
                 byte[] data = Binary.appendBytes(payload);
-                this.broadcastPacketsCallback(Network.deflateRaw(data, this.networkCompressionLevel), targets);
+                this.broadcastPacketsCallback(Zlib.deflate(data, this.networkCompressionLevel), targets);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -2259,11 +2254,9 @@ public class Server {
         Entity.registerEntity("Evoker", EntityEvoker.class);
         Entity.registerEntity("Ghast", EntityGhast.class);
         Entity.registerEntity("Guardian", EntityGuardian.class);
-        Entity.registerEntity("Hoglin", EntityHoglin.class);
         Entity.registerEntity("Husk", EntityHusk.class);
         Entity.registerEntity("MagmaCube", EntityMagmaCube.class);
         Entity.registerEntity("Phantom", EntityPhantom.class);
-        Entity.registerEntity("Piglin", EntityPiglin.class);
         Entity.registerEntity("Pillager", EntityPillager.class);
         Entity.registerEntity("Ravager", EntityRavager.class);
         Entity.registerEntity("Shulker", EntityShulker.class);
@@ -2279,7 +2272,6 @@ public class Server {
         Entity.registerEntity("Wither", EntityWither.class);
         Entity.registerEntity("WitherSkeleton", EntityWitherSkeleton.class);
         Entity.registerEntity("Zombie", EntityZombie.class);
-        Entity.registerEntity("Zoglin", EntityZoglin.class);
         Entity.registerEntity("ZombiePigman", EntityZombiePigman.class);
         Entity.registerEntity("ZombieVillager", EntityZombieVillager.class);
         Entity.registerEntity("ZombieVillagerV1", EntityZombieVillagerV1.class);
@@ -2306,7 +2298,6 @@ public class Server {
         Entity.registerEntity("Sheep", EntitySheep.class);
         Entity.registerEntity("SkeletonHorse", EntitySkeletonHorse.class);
         Entity.registerEntity("Squid", EntitySquid.class);
-        Entity.registerEntity("Strider", EntityStrider.class);
         Entity.registerEntity("TropicalFish", EntityTropicalFish.class);
         Entity.registerEntity("Turtle", EntityTurtle.class);
         Entity.registerEntity("Villager", EntityVillager.class);
@@ -2365,10 +2356,6 @@ public class Server {
 
     public void setPlayerDataSerializer(PlayerDataSerializer playerDataSerializer) {
         this.playerDataSerializer = Preconditions.checkNotNull(playerDataSerializer, "playerDataSerializer");
-    }
-
-    public boolean isIgnoredPacket(Class<? extends DataPacket> clazz) {
-        return this.ignoredPackets.contains(clazz.getSimpleName());
     }
 
     public static Server getInstance() {

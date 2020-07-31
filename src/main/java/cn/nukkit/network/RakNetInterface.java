@@ -17,6 +17,7 @@ import cn.nukkit.raknet.server.ServerInstance;
 import cn.nukkit.utils.Binary;
 import cn.nukkit.utils.MainLogger;
 import cn.nukkit.utils.Utils;
+import cn.nukkit.utils.Zlib;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -259,7 +260,7 @@ public class RakNetInterface implements ServerInstance, AdvancedSourceInterface 
                 }
                 buffer = packet.getBuffer();
                 try {
-                    buffer = Network.deflateRaw(
+                    buffer = Zlib.deflate(
                             Binary.appendBytes(Binary.writeUnsignedVarInt(buffer.length), buffer),
                             Server.getInstance().networkCompressionLevel);
                 } catch (Exception e) {

@@ -2,6 +2,7 @@ package cn.nukkit.network;
 
 import cn.nukkit.Server;
 import cn.nukkit.scheduler.AsyncTask;
+import cn.nukkit.utils.Zlib;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CompressBatchedPacket extends AsyncTask {
     @Override
     public void onRun() {
         try {
-            this.finalData = Network.deflateRaw(data, level);
+            this.finalData = Zlib.deflate(data, level);
             this.data = null;
         } catch (Exception e) {
             //ignore

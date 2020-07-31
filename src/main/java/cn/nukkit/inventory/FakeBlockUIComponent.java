@@ -1,7 +1,6 @@
 package cn.nukkit.inventory;
 
 import cn.nukkit.Player;
-import cn.nukkit.event.inventory.InventoryCloseEvent;
 import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
@@ -33,14 +32,6 @@ public class FakeBlockUIComponent extends PlayerUIComponent {
         this.onOpen(who);
 
         return true;
-    }
-
-    @Override
-    public void close(Player who) {
-        InventoryCloseEvent ev = new InventoryCloseEvent(this, who);
-        who.getServer().getPluginManager().callEvent(ev);
-
-        this.onClose(who);
     }
 
     @Override
