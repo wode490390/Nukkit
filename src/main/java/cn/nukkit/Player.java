@@ -2769,16 +2769,18 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     //this.resetCraftingGridType();
 
 
-                    if (entityEventPacket.event == EntityEventPacket.EATING_ITEM) {
-                        if (entityEventPacket.data == 0 || entityEventPacket.eid != this.id) {
+                    switch (entityEventPacket.event) {
+                        case EntityEventPacket.EATING_ITEM:
+                            if (entityEventPacket.data == 0 || entityEventPacket.eid != this.id) {
+                                break;
+                            }
+
+                            entityEventPacket.eid = this.id;
+                            entityEventPacket.isEncoded = false;
+
+                            this.dataPacket(entityEventPacket);
+                            Server.broadcastPacket(this.getViewers().values(), entityEventPacket);
                             break;
-                        }
-
-                        entityEventPacket.eid = this.id;
-                        entityEventPacket.isEncoded = false;
-
-                        this.dataPacket(entityEventPacket);
-                        Server.broadcastPacket(this.getViewers().values(), entityEventPacket);
                         case EntityEventPacket.ENCHANT:
                             if (entityEventPacket.eid != this.id) {
                                 break;
