@@ -321,7 +321,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     private static void initCreativeItems() {
         clearCreativeItems();
 
-        Config config = new Config(Config.YAML);
+        Config config = new Config(Config.JSON);
         config.load(Server.class.getClassLoader().getResourceAsStream("creativeitems.json"));
         List<Map> list = config.getMapList("items");
 
@@ -422,7 +422,7 @@ public class Item implements Cloneable, BlockID, ItemID {
 
         Pattern integerPattern = Pattern.compile("^[1-9]\\d*$");
         if (integerPattern.matcher(b[0]).matches()) {
-            id = Integer.valueOf(b[0]);
+            id = Integer.parseInt(b[0]);
         } else {
             try {
                 id = Item.class.getField(b[0].toUpperCase()).getInt(null);
@@ -431,7 +431,7 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
 
         id = id & 0xFFFF;
-        if (b.length != 1) meta = Integer.valueOf(b[1]) & 0xFFFF;
+        if (b.length != 1) meta = Integer.parseInt(b[1]) & 0xFFFF;
 
         return get(id, meta);
     }

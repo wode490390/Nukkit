@@ -30,9 +30,10 @@ Links
 
 Build JAR file
 -------------
-- `git clone https://github.com/NukkitX/Nukkit`
+- `git clone https://github.com/CloudburstMC/Nukkit`
 - `cd Nukkit`
 - `git submodule update --init`
+- `chmod +x mvnw`
 - `./mvnw clean package`
 
 The compiled JAR can be found in the `target/` directory.
@@ -50,7 +51,7 @@ Docker
 
 Running Nukkit in [Docker](https://www.docker.com/) (17.05+ or higher).
 
-Build image from source,
+Build image from the source,
 
 ```
 docker build -t nukkit .
