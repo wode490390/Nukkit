@@ -1132,6 +1132,7 @@ public class Level implements ChunkManager, Metadatable {
                 int tickSpeed = gameRules.getInteger(GameRule.RANDOM_TICK_SPEED);
 
                 if (tickSpeed > 0) {
+                    tickSpeed = 1;
                     if (this.useSections) {
                         for (ChunkSection section : ((Chunk) chunk).getSections()) {
                             if (!(section instanceof EmptyChunkSection)) {
