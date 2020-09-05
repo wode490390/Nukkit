@@ -7,23 +7,24 @@ import cn.nukkit.block.Block;
  * Nukkit Project
  */
 public abstract class SandyBiome extends CoveredBiome {
+
     @Override
-    public int getSurfaceDepth(int x, int y, int z) {
+    public int getSurfaceDepth(int y) {
         return 3;
     }
 
     @Override
-    public int getSurfaceId(int x, int y, int z) {
-        return SAND << 4;
+    public int getSurfaceBlock(int y) {
+        return Block.SAND;
     }
 
     @Override
-    public int getGroundDepth(int x, int y, int z) {
+    public int getGroundDepth(int y) {
         return 2;
     }
 
     @Override
-    public int getGroundId(int x, int y, int z) {
-        return SANDSTONE << 4;
+    public int getGroundBlock(int y) {
+        return Block.SANDSTONE;
     }
 }

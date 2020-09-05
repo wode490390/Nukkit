@@ -6,23 +6,23 @@ package cn.nukkit.level.biome.type;
  */
 public abstract class WateryBiome extends CoveredBiome {
     @Override
-    public int getSurfaceDepth(int x, int y, int z) {
+    public int getSurfaceDepth(int y) {
         return 0;
     }
 
     @Override
-    public int getSurfaceId(int x, int y, int z) {
+    public int getSurfaceBlock(int y) {
         //doesn't matter, surface depth is 0
         return 0;
     }
 
     @Override
-    public int getGroundDepth(int x, int y, int z) {
+    public int getGroundDepth(int y) {
         return 5;
     }
 
     @Override
-    public int getGroundId(int x, int y, int z) {
-        return DIRT << 4;
+    public int getGroundBlock(int y) {
+        return DIRT;
     }
 }
