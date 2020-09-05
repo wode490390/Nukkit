@@ -16,9 +16,11 @@ import java.util.Random;
  * Handles the placement of stained clay for all mesa variants
  */
 public class MesaBiome extends CoveredBiome {
-    static final int[]    colorLayer   = new int[64];
+    static final int[] colorLayer = new int[64];
     static final SimplexF redSandNoise = new SimplexF(new NukkitRandom(937478913), 2f, 1 / 4f, 1 / 4f);
-    static final SimplexF colorNoise   = new SimplexF(new NukkitRandom(193759875), 2f, 1 / 4f, 1 / 32f);
+    static final SimplexF colorNoise = new SimplexF(new NukkitRandom(193759875), 2f, 1 / 4f, 1 / 32f);
+    private SimplexF moundNoise = new SimplexF(new NukkitRandom(347228794), 2f, 1 / 4f, getMoundFrequency());
+    protected int moundHeight;
 
     static {
         Random random = new Random(29864);
@@ -30,7 +32,7 @@ public class MesaBiome extends CoveredBiome {
         setRandomLayerColor(random, 10, 14); // red
         for (int i = 0, j = 0; i < random.nextInt(3) + 3; i++) {
             j += random.nextInt(6) + 4;
-            if (j >= colorLayer.length - 3) {
+            if (j >= colorLayer.length -3) {
                 break;
             }
             if (random.nextInt(2) == 0 || j < colorLayer.length - 1 && random.nextInt(2) == 0) {
@@ -52,8 +54,12 @@ public class MesaBiome extends CoveredBiome {
         }
     }
 
-    private SimplexF moundNoise = new SimplexF(new NukkitRandom(347228794), 2f, 1 / 4f, getMoundFrequency());
-    protected int moundHeight;
+    int randY = 0;
+    int redSandThreshold = 0;
+    boolean isRedSand = false;
+    //cache this too so we can access it in getSurfaceBlock and getSurfaceMeta without needing to calculate it twice
+    int currMeta = 0;
+    int startY = 0;
 
     public MesaBiome() {
         PopulatorCactus cactus = new PopulatorCactus();
@@ -69,57 +75,40 @@ public class MesaBiome extends CoveredBiome {
         this.setMoundHeight(17);
     }
 
-    public void setMoundHeight(int height) {
+    public void setMoundHeight(int height)  {
         this.moundHeight = height;
     }
 
     @Override
     public int getSurfaceDepth(int y) {
-        return this.getSurfaceDepth(0, y, 0);
-    }
-
-    @Override
-    public int getSurfaceDepth(int x, int y, int z) {
-        return y < (71 + Math.round((redSandNoise.noise2D(x, z, true) + 1) * 1.5f)) ? 3 : y - 66;
+        isRedSand = y < redSandThreshold;
+        startY = y;
+        //if true, we'll be generating red sand
+        return isRedSand ? 3 : y - 66;
     }
 
     @Override
     public int getSurfaceBlock(int y) {
-        return this.getSurfaceBlock(0, y, 0);
-    }
-
-    @Override
-    public int getSurfaceBlock(int x, int y, int z) {
-        if (y < (71 + Math.round((redSandNoise.noise2D(x, z, true) + 1) * 1.5f))) {
+        if (isRedSand) {
             return SAND;
         } else {
-            int meta = colorLayer[(y + Math.round((colorNoise.noise2D(x, z, true) + 1) * 1.5f)) & 0x3F];
-            return meta == -1 ? TERRACOTTA : STAINED_TERRACOTTA;
+            currMeta = colorLayer[(y + randY) & 0x3F];
+            return currMeta == -1 ? TERRACOTTA : STAINED_TERRACOTTA;
         }
     }
 
     @Override
     public int getSurfaceMeta(int y) {
-        return this.getSurfaceMeta(0, y, 0);
-    }
-
-    @Override
-    public int getSurfaceMeta(int x, int y, int z) {
-        if (y < (71 + Math.round((redSandNoise.noise2D(x, z, true) + 1) * 1.5f))) {
+        if (isRedSand) {
             return BlockSand.RED;
         } else {
-            return Math.max(0, colorLayer[(y + Math.round((colorNoise.noise2D(x, z, true) + 1) * 1.5f)) & 0x3F]);
+            return Math.max(0, currMeta);
         }
     }
 
     @Override
     public int getGroundDepth(int y) {
-        return this.getGroundDepth(0, y, 0);
-    }
-
-    @Override
-    public int getGroundDepth(int x, int y, int z) {
-        return y < (71 + Math.round((redSandNoise.noise2D(x, z, true) + 1) * 1.5f)) ? 2 : 0;
+        return isRedSand ? 2 : 0;
     }
 
     @Override
@@ -132,7 +121,14 @@ public class MesaBiome extends CoveredBiome {
         return "Mesa";
     }
 
-    protected float getMoundFrequency() {
+    @Override
+    public void preCover(int x, int z) {
+        //random noise from 0-3
+        randY = Math.round((colorNoise.noise2D(x, z, true) + 1) * 1.5f);
+        redSandThreshold = 71 + Math.round((redSandNoise.noise2D(x, z, true) + 1) * 1.5f);
+    }
+
+    protected float getMoundFrequency()    {
         return 1 / 128f;
     }
 
@@ -143,7 +139,7 @@ public class MesaBiome extends CoveredBiome {
         return (n > a && n < a + 0.2f) ? (int) ((n - a) * 5f * moundHeight) : n < a + 0.1f ? 0 : moundHeight;
     }
 
-    protected float minHill() {
+    protected float minHill()   {
         return -0.1f;
     }
 
